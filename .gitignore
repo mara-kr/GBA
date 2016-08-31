@@ -1,0 +1,11 @@
+*.svp
+*.pyc
+*~
+ucli.key
+
+
+*.bak
+*.log
+
+Desktop.ini
+
