@@ -4,29 +4,81 @@
     Data transfered from internal to FIFO by DMA channel 1/2
     Sample rate comes from timer
 
-    Playback Procedure #TODO
+    Initalizing Playback:
+        Select Timer 0/1 in SOUNDCNT_H
+        Clear FIFO
+        Write Sample byte to FIFO
+        Initalize transfer mode for DMA 1/2 (set FIFO as dest)
+        Initalize DMA Sound settings in sound control register
+        Start timer
 
-    Initalizing Playback #TODO
+    Playback Procedure
+        If timer overflows:
+            Move 8b data from FIFO to sound circuit
+            If FIFO contains only 16B (4x32b):
+                Request more data per DMA
+                Receive 16B (4x32b) per DMA
+
+
 
 2) GBC Compatible Sound
     Channel 1 - Rectangular Tone & Sweep
     Channel 2 - Rectangular Tone
     Channel 3 - Wave Output
     Channel 4 - White Noise
+        Noise Random Generator (Polynomail Counter)
+            Noise randomly switches between HIGH & LOW.
+            Output level calculated by shift register,
+            reset to X=0x40 (7b) or X=0x4000(15b)
+            7b: X=X>>1; IF carry THEN out=High, X=X^0x60 ELSE out=LOW
+            15b: X=X>>1; IF carry THEN out=High, X=X^0x6000 ELSE out=LOW
 
 3) Sound Registers
-    SOUNDCNT_L
+    SOUNDCNT_L: Channel L/R Volume (R/W)
+        [2:0]   : Soudn 1-4 Master Volume RIGHT (0-7)
+        [3]     : Not used
+        [6:4]   : Sound 1-4 Master Volume LEFT (0-7)
+        [7]     : Unused
+        [11:8]  : Sound 1-4 Enable Flags RIGHT (0=Disable, 1=Enable)
+        [15:12] : Sound 1-4 Enable Flags LEFT (0=Disable, 1=Enable)
 
-    SOUNDCNT_H
+    SOUNDCNT_H: DMA Sound Control/Mixing (R/W)
+        [1:0]   : Sound 1-4 Volume  (0=25%, 1=50%, 2=100%, 3=Illigal)
+        [2]     : DMA Sound A Volume (0=50%, 1=100%)
+        [3]     : DMA Sound B Volume (0=50%, 1=100%)
+        [7:4]   : Not Used
+        [8]     : DMA Sound A Enable RIGHT (0=Disable, 1=Enable)
+        [9]     : DMA Sound A Enable LEFT (0=Disable, 1=Enable)
+        [10]    : DMA Sound A Timer select (0=Timer 0, 1=Timer 1)
+        [11]    : DMA Sound A Reset FIFO (1=Reset)
+        [12]    : DMA Sound B Enable RIGHT (1=Enable)
+        [13]    : DMA Sound B Enable LEFT (1=Enable)
+        [14]    : DMA Sound B Timer Select (0=Timer 0, 1=Timer 1)
+        [15]    : DMA Sound B Reset FIFO (1=Reset)
 
-    SOUNDCNT_X
+    SOUNDCNT_X: Sound on/off (R/W)
+        [0]     : Sound 1 ON flag (Read Only)
+        [1]     : Sound 2 ON flag (Read Only)
+        [2]     : Sound 3 ON flag (Read Only)
+        [3]     : Sound 4 ON flag (Read Only)
+        [6:4]   : Unused
+        [7]     : PSG/FIFO Master Enable (1=Enable)
+        [31:8]  : Unused
 
-    SOUNDBIAS
+    SOUNDBIAS: Sound PWM Control
+        [9:0]   : Bias Level (Default=0x200, convert signed samples)
+        [13:10] : Unused
+        [15:14] : Amplitude Resolution
+                  0: 9b,32768Hz
+                  1: 8b,65536Hz
+                  2: 7b,131072Hz
+                  3: 6b,262144Hz
+        [31:16] : Unused
 
 
 
     SOUND1CNT_L: Channel 1 Sweep register
-        [0:2]   : Number of sweep shift
+        [0:2]   : Number of sweep shift (T (Period) = T +/- T/2^n)
         [3]     : Sweep Frequency Direction (0-increase, 1-decrease)
         [6:4]   : Sweep Time, units of 7.8ms
         [15:7]  : Unused
@@ -46,6 +98,7 @@
         [13:11] : Unused
         [14]    : Length Flag (1-Stop output when length in SOUND1CNT_H expires)
         [15]    : Initial (1-Restart sound)
+
 
 
 
@@ -89,32 +142,31 @@
         [2:0]   : Dividing Ratio of Frequencies
                   Selects 14-step prescalar input clock to produce
                   shift clock for polynomial counter
-                  000: # TODO
+                  000: f*2      100: f/4        f-4.194034Mhz, sound system clk
+                  001: f        101: f/5
+                  010: f/2      110: f/6
+                  011: f/3      111: f/7
         [3]     : Counter Step/Width (0-15 bits, 1=7 bits)
         [7:4]   : Shift Clock Frequency (s)
         [13:8]  : Unused
         [14]    : Length Flag (1-Stop output when SOUND4CNT_L len expires)
         [15]    : Initial (1-Restart Sound)
 
-    Noise Random Generator #TODO
 
 
+    FIFO_{A,B}_{L,H}: Sound {A,B} FIFO, Data {[0,1],[2,3]} (Direct Sound)
+        Recieves 4B of audio data (internal FIFO is 8x32b)
+            Data 0 (LSB) played first
 
-    FIFO_A_L
 
-    FIFO_A_H
-
-    FIFO_B_L
-
-    FIFO_B_H
 
 
 
 4) Miscellaneous
-    Max output level
+    NOTE: GBA hardware interally resamples to 32.758khz (default SOUNDBIAS)
 
-    Resampling
+    Pulse Width Modulation:
+        GBA can only output low/high voltage 'bits' output at 16.78Mhz
+        With default sample rate (32768Hz), 512 bits output per sample.
+        Each sample output as N (9b) low bits, then 512-N high bits.
 
-    Pulse Width Modulation
-
-    Changing Bias Level
