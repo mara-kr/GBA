@@ -1,8 +1,6 @@
 ################# GBA Graphics Overview ################
 #
-#TODO Rotate/Scale, R/S registers, single/double sprite size, Attr 3 for sprite
-#TODO Blending, blending registers
-#
+#TODO Special Effects, blending registers
 #
 1) Background Types
     -Text Background
@@ -15,7 +13,7 @@
     -Rotate/Scale Background (R/S background)
         -Tile based - same as text
         -Only use 8-bit palette (256x16b color @ 0x05000000)
-        TODO - Registers
+        -Set X/Y scaling & shearing with registers
 
     -Bitmap Background
         -Pixel data at locations in memory, colors or offsets into palette
@@ -29,7 +27,6 @@
     -[10] Set to flip tile horizontally
     -[11] Set to flip tile vertically
     -[15:12] Palette number
-
 
 
 3) Background Registers
@@ -66,6 +63,7 @@
         Stores current Y location of LCD (incremented on each line)
 
 
+
     REG_BG*CNT: Background control
         [1:0]   Priority (0 is high)
         [2:3]   Starting addr of tile data (addr = 0x06000000 + This*0x4000)
@@ -73,9 +71,8 @@
         [6]     Mosiac effect on (1) or off (0)
         [7]     Color palette type (1->8-bit, 0->4bit - see Text BG)
         [12:8]  Starting addr of tile map (addr = 0x06000000 + This*0x800)
-        [13]    Tile rotational backgrounds repeatedly at edges (1) or
-                display as single tile with area outside transparent (0).
-                Read-only for BG0,BG1
+        [13]    Display Area Overflow (Transparent (0) or Wraparound (1)
+                Only for BG2,BG3
         [15:14] Tile map size:
                 00: 256x256 (text), 128x128 (R/S)
                 01: 512x256 (text), 256x256 (R/S)
@@ -84,6 +81,37 @@
 
     REG_BG*HOFS & REG_BG*VOFS: Horizontal/Vertical scroll coordinate (WO)
         [0:9]   Scroll value (pixels)
+
+    REG_BG*PA: BG* Read Source Pixel X increment (WO) - BG2,BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Scale background (rel. to upper-left) in X by 1/value
+
+    REG_BG*PB: BG* Write Dest Pixel X Increment (WO) - BG2, BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Shear X coords over y ({1,-1} => sheared {left,right} going down screen
+
+    REG_BG*PC: BG* Read Source Pixel Y Increment (WO) - BG2, BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Shear Y coords over X ({1,-1} => sheared {up,down} to the right)
+
+    REG_BG*PD: BG* Write Dest Pixel Y Increment (WO) - BG2, BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Scale background in y direction by 1/value
+
+    REG_BG{2,3}{X,Y}: X/Y Coordinate for BG* Rotational Background (WO)
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Define location of (0,0) pixel
+
 
 
     REG_WIN*H: Window X coordinates (WO)
@@ -101,6 +129,7 @@
     REG_WINOUT: Outside window & sprite window
         [5:0]   {Blends, Sprites, BG3, BG2, BG1, BG0} outside
         [14:8]  {Blends, Sprites, BG3, BG2, BG1, BG0} in sprite window (OBJ)
+
 
 
     REG_MOSAIC: Mosaic control
@@ -128,7 +157,7 @@
     Bytes 0,1 (Attribute 0)
         [7:0]   Y coordinate of sprite (upper-left for regular, center for R/S)
         [8]     Rotation/Scaling on/off
-        [9]     Single size (0) or Double size TODO
+        [9]     Single size (0) or Double size (1) specified
         [11:10] 00: normal
                 01: semi-transparent
                 10: Obj window
@@ -157,7 +186,16 @@
         [11:10] Priority
         [15:12] Palette number (for 16 color palettes)
 
-    Bytes 6,7 (Attribute 3) TODO!!! Confusing!!!
+    Bytes 6,7 (Attribute 3): Rotation & Scaling
+        Spread across 4 sequential sprites (starting w/ sprite 0)
+        Sprite 0: PA (DX)  - scale sprite in x direction by 1/VAL
+        Sprite 1: PB (DMX) - Shears X coordinates of sprite over y
+                             1  => Sheared left going down
+                             -1 => Sheared right going down
+        Sprite 2: PC (DY)  - Sheares Y coordinates over X
+                             1  => Sheared upwards to right
+                             -1 => Sheared downwards to right
+        Sprite 3: PD (DMY) - Scales image in y direction by 1/VAL
         [7:0]   Fraction
         [14:8]  Integer
         [15]    Sign bit
@@ -183,10 +221,11 @@
 
 
 
-
 7) Mosaic
+    Ex. Setting X-Size to 5 => pixels 0-5 are colorized as pixel 0,
+                               pixels 6-11 are coorized as pixel 6, etc.
 
-8) Special Effects
+8) Special Effects #TODO
 
 
 8) Priority

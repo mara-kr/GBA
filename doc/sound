@@ -1,1 +1,120 @@
 ############### GBA SOUND OVERVIEW ###############
+
+1) Direct (DMA) Sound
+    Data transfered from internal to FIFO by DMA channel 1/2
+    Sample rate comes from timer
+
+    Playback Procedure #TODO
+
+    Initalizing Playback #TODO
+
+2) GBC Compatible Sound
+    Channel 1 - Rectangular Tone & Sweep
+    Channel 2 - Rectangular Tone
+    Channel 3 - Wave Output
+    Channel 4 - White Noise
+
+3) Sound Registers
+    SOUNDCNT_L
+
+    SOUNDCNT_H
+
+    SOUNDCNT_X
+
+    SOUNDBIAS
+
+
+
+    SOUND1CNT_L: Channel 1 Sweep register
+        [0:2]   : Number of sweep shift
+        [3]     : Sweep Frequency Direction (0-increase, 1-decrease)
+        [6:4]   : Sweep Time, units of 7.8ms
+        [15:7]  : Unused
+        Frequency change described by X(t)=X(t-1) +/- X(t-1) / 2^n
+
+    SOUND{1,2}CNT_H: Channel {1,2} Duty/Len/Envelope
+        [5:0]   : Sound length, units of (64-n)/256 sec
+        [7:6]   : Wave Pattern Duty (percent high)
+                  00: 12.5%     10: 50%
+                  01: 25%       11: 75%
+        [10:8]  : Envelope Step-Time, units of n/64 sec
+        [11]    : Envelope Direction (0-decrease, 1-increase)
+        [15:12] : Initial Volume of envelope (0 - no sound)
+
+    SOUND{1,2}CNT_X: Channel {1,2} Frequency Control
+        [10:0]  : Frequency 131072 / (2048-n) Hz
+        [13:11] : Unused
+        [14]    : Length Flag (1-Stop output when length in SOUND1CNT_H expires)
+        [15]    : Initial (1-Restart sound)
+
+
+
+    SOUND3CNT_L: Channel 3 Stop/Wave RAM select
+        [4:0]   : Unused
+        [5]     : Wave RAM Dimension (0-One bank, 32 digits, 1-Two banks)
+        [6]     : Wave RAM Bank Number (Below)
+        [7]     : Sound Channel 3 Off (0-Stop, 1-Playback)
+        [15:8]  : Unused
+        Selected Bank number is played, R/W wave RAM addresses other.
+        When dimension=Two banks, output starts by replaying selected bank
+
+    SOUND3CNT_H: Channel 3 Length/Volume
+        [7:0]   : Sound Length, units of (256-n)/256 sec
+        [12:8]  : Unused
+        [14:13] : Sound Volume (0-mute, 1-100%, 2-50%, 3-25%)
+        [15]    : Force Volume (0-use above, 1-Force 75%)
+
+    SOUND3CNT_X: Channel 3 Frequency/Control
+        [10:0]  : Sample rate, 2097152/(2048-n) Hz
+        [13:11] : Unused
+        [14]    : Length Flag (1-Stop output when SOUND3CNT_H len expires)
+        [15]    : Initial (1-Restart Sound)
+
+    WAVE_RAM{0-3}_{L,H}: Channel 3 Wave Pattern RAM
+        Holds wave data output by channel 3.
+        Exists in 2 banks, selected bank playing, other bank is read/written
+        After all output played, output of same/other bank restarted
+        Shift-register - 128 bits shifted, Least significant 4 are output
+
+
+
+    SOUND4CNT_L: Channel 4 Length/Envelope
+        [5:0]   : Sound length; units of (64-n)/256 sec
+        [7:6]   : Unused
+        [10:8]  : Envelope Step-TIme; units of n/64 sec
+        [11]    : Envelope Direction (0-decrease, 1-increase)
+        [15:12] : Initial Volume of envelope
+
+    SOUND4CNT_H: Channel 4 Frequency/Control
+        [2:0]   : Dividing Ratio of Frequencies
+                  Selects 14-step prescalar input clock to produce
+                  shift clock for polynomial counter
+                  000: # TODO
+        [3]     : Counter Step/Width (0-15 bits, 1=7 bits)
+        [7:4]   : Shift Clock Frequency (s)
+        [13:8]  : Unused
+        [14]    : Length Flag (1-Stop output when SOUND4CNT_L len expires)
+        [15]    : Initial (1-Restart Sound)
+
+    Noise Random Generator #TODO
+
+
+
+    FIFO_A_L
+
+    FIFO_A_H
+
+    FIFO_B_L
+
+    FIFO_B_H
+
+
+
+4) Miscellaneous
+    Max output level
+
+    Resampling
+
+    Pulse Width Modulation
+
+    Changing Bias Level
