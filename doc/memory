@@ -1,3 +1,163 @@
 ########### GBA Memory Overview ###########
-# TODO Memory map
-# TODO DMA
+1) Memory Map
+    System ROM :        0x00000000-0x00003FFF (16kB),  32-bit port
+                        BIOS (executable, not readable)
+                        Reads will give instruction after inst. used to read
+
+    Extern Work RAM:    0x02000000-0x0203FFFF (256kB), 16-bit port, 2-wait
+                        Mirrored every 0x40000 from 0x02000000-0x02FFFFFF
+                        Game Data/Code (usually THUMB code)
+
+    Intern Work RAM:    0x03000000-0x03007FFF (32kB),  32-bit port
+                        Mirrored every 0x8000 from 0x03000000 to 0x03FFFFFF
+                        Game Data/Code - Fastest (usually ARM code)
+
+    IO RAM:             0x04000000-0x040003FF (1kB), 2x32-bit port
+                        0x04000800 mirrored every 0x10000, 0x04000000-0x04FFFFFF
+                        MMIO Registers
+
+    Palette RAM:        0x05000000-0x050003FF (1kB),   16-bit port
+                        Mirrored every 0x400 from 0x05000000-0x05FFFFFF
+                        Specified 16b color for palette modes
+                        BG palette @ 0x05000000, Sprite palette @ 0x05000200
+
+    VRAM:               0x06000000-0x06017FFF (96kB),  16-bit port
+                        0x06010000-0x06017FFF mirrored on 0x06018000-0x0601FFFF
+                        0x06000000-0x06020000 mirrored every 0x20000 in
+                            0x06000000-0x06FFFFFFF
+                        Frame buffer/tile {data,maps} in bitmapped/{text,R/S}
+
+    OAM:                0x07000000-0x070003FF (1kB),   32-bit port
+                        Mirrored every 0x400 from 0x07000000-0x07FFFFFF
+                        Object Attribute Memory (Sprite data)
+
+    Game Pak ROM        0x08000000-Cartridge size,     16-bit port, Wait State 0
+                        Execution starts at instruction 0x08000000
+
+    Game Pak ROM Img 1  0x0A000000-Cartridge size,     16-bit port, Wait State 1
+                        Mirror of Game Pak Rom (different speed)
+
+    Game Pak ROM Img 2  0x0C000000-Cartridge size,     16-bit port, Wait State 2
+                        Mirror of Game Pak Rom (different speed)
+
+    Game Pak SRAM       0x0E000000-0x0E00FFFF (max 64kB), 8-bit port
+                        SRAM/Flash ROM for saving game data
+
+    Cartridge Size can be up to 32MB
+
+2) Access Times
+   dd
+    Region        Bus   Read      Write     Cycles
+    BIOS ROM      32    8/16/32   -         1/1/1
+    Work RAM 32K  32    8/16/32   8/16/32   1/1/1
+    I/O           32    8/16/32   8/16/32   1/1/1
+    OAM           32    8/16/32   16/32     1/1/1 *
+    Work RAM 256K 16    8/16/32   8/16/32   3/3/6 **
+    Palette RAM   16    8/16/32   16/32     1/1/2 *
+    VRAM          16    8/16/32   16/32     1/1/2 *
+    GamePak ROM   16    8/16/32   -         5/5/8 **/***
+    GamePak Flash 16    8/16/32   16/32     5/5/8 **/***
+    GamePak SRAM  8     8         8         5     **
+    Timing Notes:
+    *   Plus 1 cycle if GBA accesses video memory at the same time.
+    **  Default waitstate settings, see System Control chapter.
+    *** Separate timings for sequential, and non-sequential accesses.
+        One cycle equals approx. 59.59ns (ie. 16.78MHz clock).
+        Sequential vs Random access timings on p.23 of Nintendo GBA doc
+    All memory (except GamePak SRAM) can be accessed by 16bit and 32bit DMA.
+
+3) Memory Control Registers
+    REG_WSCNT: Wait State Control
+        [1:0]   : SRAM wait state (00=4,01=3,10=2,11=8 cycles)
+        [3:2]   : Bank 0x08000000 initial wait state
+                  00: 4 cycles  01: 3 cycles    10: 2 cycles    11: 8 cycles
+        [4]     : Bank 0x08000000 subsequent wait state (0=2,1=1 cycles)
+        [6:5]   : Bank 0x0A000000 initial wait state
+                  00: 4 cycles  01: 3 cycles    10: 2 cycles    11: 8 cycles
+        [7]     : Bank 0x0A000000 subsequent wait state (0=4,1=1 cycles)
+        [9:8]   : Bank 0x0C000000 initial wait state
+                  00: 4 cycles  01: 3 cycles    10: 2 cycles    11: 8 cycles
+        [10]    : Bank 0x0C000000 subsequent wait state (0=8,1=1 cycles)
+        [12:11] : PHI Terminal Output
+                  00: Disable   01: 4Mhz      10: 8 Mhz       11: 16 Mhz
+        [13]    : Unused
+        [14]    : Prefetch (1=Enable, 0=Disable)
+                  Read opcodes from Game Pak ROM when CPU isn't using bus
+                  Prefetch buffer is 8x16-bit
+        [15]    : Game Pak Type (0=GBA,1=GBC)
+
+        The Game Pak uses a 16bit, so 32bit accesses are split in two
+            (second fragment is always sequential)
+
+
+
+    REG_IMC_L: Internal Memory control (undocumented)
+
+    REG_IMC_H: Internal Memory control
+        [7:0]   : Unused
+        [11:8]  : WRAM Wait state control
+                  1101 - 2 Wait states (3/3/6 for 8/16/32b access)
+                  1110 - 1 Wait state  (2/2/4 for 8/16/32b access)
+                  1111 - Illegal
+        [15:12] : Unused
+
+4) DMA (Direct Memory Access)
+    GBA has 4 DMA channels, highest priority to DMA0, then DMA1, ...
+    Lower priority channels are paused until higher priority complete
+    CPU paused when DMA transfers are active
+
+
+    DMA0 - Timing criticl transfers (HBlank DMA)
+           Should not operate for longer than .25ms (for sound)
+    DMA1, DMA2 - Can be used to feed sound FIFOs
+    DMA3 - Can write to Game pak ROM/Flash ROM (but not SRAM)
+
+
+    Hardware does not change content of SAD/DAD/CNT_L registers
+    Upon Enable changing 0->1: Reload SAD, DAD, CNT_L
+    Upon Repeat: Reload CNT_L, optionally DAD
+
+    Timing:
+        All units transferred by sequential read/write (except first)
+        Transfer Time: 2N+2(n-1)S+xI
+            N+(n-1)S read cycles + N+(n-1)S write cycles
+            2I normally, 4I if source,dest in gamepak memory area
+
+    REG_DMA0SAD: DMA0 Source Address (WO)
+        [26:0]  : Source address
+        [31:27] : Unused
+
+    REG_DMA{1-3}SAD: DMA{1-3} Source Address (WO)
+        [27:0]  : Source address
+        [31:28] : Unused
+
+    REG_DMA{0-2}DAD: DMA{0-2} Destination Address (WO)
+        [26:0]  : Destination address
+        [31:27] : Unused
+
+    REG_DMA3DAD: DMA3 Destination Address (WO)
+        [27:0]  : Destination address
+        [31:28] : Unused
+
+    REG_DMA{0-3}CNT_L: DMA Count register
+        [13:0]  : Number of words/half-words (set in Control[10]) to transfer
+        [15:14] : Unused
+
+    REG_DMA{0-3}CNT_H: DMA Control Register
+        [4:0]   : Unused
+        [6:5]   : Dest Addr Control (0=incr, 1=decr, 2=fixed, 3=incr/reload)
+        [8:7]   : Source Addr Control (0=incr, 1=decr, 2=fixed, 3=incr/reload)
+        [9]     : DMA Repeat (0=Off, 1=On) - must be zero if [11] set
+                  0: Enable bit cleared after data amt. transfered
+                  1: Enable bit set after transfer,
+                     Transfer restarted when start condition becomes True
+        [10]    : DMA Transfer Type (0=16bit, 1=32bit)
+        [11]    : Game Pak DRQ
+        [13:12] : DMA Start Timing (0=Immed., 1=VBlank, 2=HBlank, 3=Special)
+                  Special: DMA0=Illegal, DMA{1,2}=Sound FIFO, DMA3=Video Capture
+                  Sound FIFO: 4x32b transfer upon DMA rq. from sound controller
+                  Video Capture: Started when VCOUNT=2, stopped when VCOUNT=162
+        [14]    : IRQ upon end of Word Count (0=Disable, 1=Enable)
+        [15]    : DMA Enable (0=Off, 1=On)
+                  Wait 2 cycles after changing 0->1 before DMA Reg access
+                  Automatically cleared at end, can cleared by user to stop DMA

@@ -170,3 +170,5 @@
         With default sample rate (32768Hz), 512 bits output per sample.
         Each sample output as N (9b) low bits, then 512-N high bits.
 
+        This is how arbitrary frequency generating can work
+
