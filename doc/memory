@@ -46,7 +46,6 @@
     Cartridge Size can be up to 32MB
 
 2) Access Times
-   dd
     Region        Bus   Read      Write     Cycles
     BIOS ROM      32    8/16/32   -         1/1/1
     Work RAM 32K  32    8/16/32   8/16/32   1/1/1

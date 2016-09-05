@@ -44,7 +44,7 @@
         Reading returns current counter value
         Writing initalizes reload value, but does not affect current value
         Reload value copied to counter if:
-            Timer overflows (automaticall)
+            Timer overflows (automatically)
             Timer start bit changed from 0->1
 
     TM*CNT_H: Timer * Control
