@@ -59,3 +59,52 @@
         [7]     : Timer Start/Stop (0=Stop, 1=Operate)
         [15:8]  : Unused
 
+
+
+3) Interrupt Control
+    The ARM7TDMI only has one IRQ line, the GBA has 14 possible interrupts
+    Upon interrupt execution (any interrupt), the CPU switches to IRQ mode,
+    and a physical interrupt vector is called (0x00000018), which calls a
+    user handler (0x03007FFC). 0x03007F00-0x03007F9F is used for INT stack
+
+
+    IME: Interrupt Master Enable Register
+        [0]:     Disable all interrupts (0=disable all, 1=use IE register)
+        [31:1]:  Unused
+
+    IE: Interrupt Enable Register (0=Disable, 1=Enable)
+        [0]:     LCD V-Blank
+        [1]:     LCD H-Blank
+        [2]:     LCD V-Counter Match
+        [3]:     Timer 0 Overflow
+        [4]:     Timer 1 Overflow
+        [5]:     Timer 2 Overflow
+        [6]:     Timer 3 Overflow
+        [7]:     Serial Communication
+        [8]:     DMA 0
+        [9]:     DMA 1
+        [10]:    DMA 2
+        [11]:    DMA 3
+        [12]:    Keypad
+        [13]:    GamePak (external IRQ source)
+        [15:14]: Unused
+
+    IF: Interrupt Request Flags / IRQ Acknowledge (1=Request Interrupt)
+        [0]:     LCD V-Blank
+        [1]:     LCD H-Blank
+        [2]:     LCD V-Counter Match
+        [3]:     Timer 0 Overflow
+        [4]:     Timer 1 Overflow
+        [5]:     Timer 2 Overflow
+        [6]:     Timer 3 Overflow
+        [7]:     Serial Communication
+        [8]:     DMA 0
+        [9]:     DMA 1
+        [10]:    DMA 2
+        [11]:    DMA 3
+        [12]:    Keypad
+        [13]:    GamePak (external IRQ source)
+        [15:14]: Unused
+
+        Interrupts are acknowledged by writing 1 to one of the IRQ bits,
+        the IRQ bit will then be cleared
