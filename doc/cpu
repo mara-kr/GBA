@@ -1,8 +1,4 @@
 ############# GPA CPU OVERVIEW ###########
-#
-# TODO Interrupts, interrupt control
-# TODO Thumb vs ARM
-#
 
 1) Thumb vs ARM
     Processor has two instruction sets 32-bit ARM & 16-bit THUMB
@@ -96,43 +92,3 @@
 
     System can support Virtual memory (ABORT for page faults)
     ARM Swap is uninterruptable (LOCK signal->1 for duration of swap op)
-
-
-$) Tests
-    Memory:
-        Address R/W
-        Big & Little Endian (BIGEND bit)
-        Mem access with abort
-        Sequential Reads/Write sets sequential flag
-        Word & Half-word transfers
-        Transfers in ARM & THUMB mode
-        Alignment checks
-        Bidirectional BUS signals (nRW, NENOUT)
-
-    ARM/THUMB:
-        Switch to THUMB, switching back to ARM
-
-    Mode switching:
-        Banked GPR/PC works
-
-    Execptions:
-        Undefined instruction
-        Data/instruction prefetch abort
-        Next address preserved in appropriate link register
-        CPSR copied into SPSR
-        CPSR mode bits changed
-        IRQ handling works (w/ branch at 0x00000018)
-
-    Registers:
-        R/W to all ok
-        Can't change CPSR I/F bit in user mode
-
-    Reset - works properly
-
-    Instructions (ARM):
-        Multiply/Multiply Long, esp. cycle times
-        Shift field for second operand
-        SWI changes modes properly, correct cycle times
-
-    Instructions (THUMB):
-
