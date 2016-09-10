@@ -10,6 +10,8 @@ ucli.key
 
 Desktop.ini
 
+.vlogansetup.*
+
 ARM7TDMI/.vlogansetup.*
 ARM7TDMI/ALU/.vlogansetup.*
 ARM7TDMI/inter.vpd
