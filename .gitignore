@@ -1,6 +1,7 @@
 *.svp
 *.pyc
 *~
+*.swp
 ucli.key
 
 
@@ -8,4 +9,19 @@ ucli.key
 *.log
 
 Desktop.ini
+
+ARM7TDMI/.vlogansetup.*
+ARM7TDMI/ALU/.vlogansetup.*
+ARM7TDMI/inter.vpd
+ARM7TDMI/csrc/
+
+ARM7TDMI/simv
+ARM7TDMI/simv.daidir
+ARM7TDMI/64
+ARM7TDMI/DVEfiles
+ARM7TDMI/build/*
+ARM7TDMI/BusLog.txt
+ARM7TDMI/.synopsys*
+ARM7TDMI/.restart*
+ALU/AN.DB/*
 
