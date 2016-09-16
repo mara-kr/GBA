@@ -17,10 +17,10 @@ test_alu: clean
 test_core: clean
 	$(INIT) && \
 	vhdlan -f $(WORK_DIR)/file_lists/core_files && \
-	$(VLOGAN) $(WORK_DIR)/CoreSimTimer.sv && \
-	$(VCS) CoreSimTimer
+	$(VLOGAN) $(WORK_DIR)/core_tb.sv && \
+	$(VCS) core_tb
 
 clean:
 	rm -rf build
 	rm -rf 64
-
+	rm -rf AN.DB

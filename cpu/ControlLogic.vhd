@@ -186,19 +186,7 @@ entity ControlLogic is port(
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
-                       SIZE       : out std_logic_vector(1 downto 0);
-					   PROT       : out std_logic_vector(1 downto 0);
-					   TRANS      : out std_logic_vector(1 downto 0);
-					   -- Memory management interface
-					   CPnTRANS   : out std_logic;
-					   CPnOPC     : out std_logic;
-					   -- Coprocessor interface
-					   CPnMREQ    : out std_logic;
-					   CPnSEQ     : out std_logic;
-					   CPTBIT     : out std_logic;
-					   CPnI       : out std_logic;
-					   CPA	      : in std_logic;
-					   CPB	      : in std_logic
+                       SIZE       : out std_logic_vector(1 downto 0)
 					   );
 
 end ControlLogic;
@@ -2440,9 +2428,6 @@ SIZE  <= CTS_B when (IDR_LDRB or IDR_LDRBT or IDR_STRB or IDR_STRBT or IDR_LDRSB
                      ExecuteInst='1' and nLDR_St0='0' and STR_St='0' else
          CTS_W;
 
--- Outputs which are currently not in use
-PROT  <= "00";
-TRANS <= CTT_N;
 
 end RTL;
 

@@ -16,26 +16,14 @@ entity ARM7TDMIS_Top is port(
 							-- Interrupts
 							nRESET        : in std_logic;
 	                        nIRQ          : in std_logic;
-							nFIQ          : in std_logic;
+                            nFIQ          : in std_logic;
 							-- Memory interface
 							ADDR          : out std_logic_vector(31 downto 0);
 	                        WDATA         : out std_logic_vector(31 downto 0);
 	                        RDATA         : in  std_logic_vector(31 downto 0);
 							ABORT	      : in std_logic;
 							WRITE         : out std_logic;
-                            SIZE          : out std_logic_vector(1 downto 0);
-							PROT          : out std_logic_vector(1 downto 0);
-							TRANS         : out std_logic_vector(1 downto 0);
-							-- Memory management interface
-							CPnTRANS      : out std_logic;
-							CPnOPC        : out std_logic;
-							-- Coprocessor interface
-							CPnMREQ       : out std_logic;
-							CPnSEQ        : out std_logic;
-							CPTBIT        : out std_logic;
-							CPnI          : out std_logic;
-							CPA	          : in std_logic;
-							CPB	          : in std_logic
+                            SIZE          : out std_logic_vector(1 downto 0)
 							);
 end ARM7TDMIS_Top;
 
@@ -503,23 +491,11 @@ component ControlLogic is port(
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					   -- Interrupts
 					   nIRQ       : in std_logic;
-					   nFIQ       : in std_logic;
+                       nFIQ       : in std_logic;
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
-                       SIZE       : out std_logic_vector(1 downto 0);
-					   PROT       : out std_logic_vector(1 downto 0);
-					   TRANS      : out std_logic_vector(1 downto 0);
-					   -- Memory management interface
-					   CPnTRANS   : out std_logic;
-					   CPnOPC     : out std_logic;
-					   -- Coprocessor interface
-					   CPnMREQ    : out std_logic;
-					   CPnSEQ     : out std_logic;
-					   CPTBIT     : out std_logic;
-					   CPnI       : out std_logic;
-					   CPA	      : in std_logic;
-					   CPB	      : in std_logic
+                       SIZE       : out std_logic_vector(1 downto 0)
 					   );
 end component;
 
@@ -1138,23 +1114,11 @@ ControlLogic_Inst:component ControlLogic port map(
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					   -- Interrupts
 					   nIRQ       => nIRQ,
-					   nFIQ       => nFIQ,
+                       nFIQ       => nFIQ,
 					   -- Memory interface
 					   ABORT      => ABORT,
    					   WRITE      => WRITE,
-                       SIZE       => SIZE_Int,
-					   PROT       => PROT,
-					   TRANS      => TRANS,
-					   -- Memory management interface
-					   CPnTRANS   => CPnTRANS,
-					   CPnOPC     => CPnOPC,
-					   -- Coprocessor interface
-					   CPnMREQ    => CPnMREQ,
-					   CPnSEQ     => CPnSEQ,
-					   CPTBIT     => CPTBIT,
-					   CPnI       => CPnI,
-					   CPA	      => CPA,
-					   CPB	      => CPB
+                       SIZE       => SIZE_Int
 					   );
 
 

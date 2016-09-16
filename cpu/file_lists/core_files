@@ -1,4 +1,3 @@
-../ClockAndResetGenerator.vhd
 ../ARMPackage.vhd
 ../ARMSMSSPackage.vhd
 ../MSSCompPackage.vhd
@@ -22,18 +21,4 @@
 ../ControlLogic.vhd
 ../BBusMultiplexer.vhd
 
-../RAM32B.vhd
-../S19FRPackage.vhd
-../ROMS19FR.vhd
-../AdrCtrlReg.vhd
-../Decoder.vhd
-../DataMux.vhd
-../CLKENGenerator.vhd
-../MemoryRemapper.vhd
-../CycleCounter.vhd
-../BusMonitor.vhd
-../ABORTGenerator.vhd
-../ARMSimMemSubsystem.vhd
-
 ../ARM7TDMIS_TOP.vhd
-../ARMCoreSimTop.vhd
