@@ -17,8 +17,6 @@ entity ARM7TDMIS_Top is port(
 							nRESET        : in std_logic;
 	                        nIRQ          : in std_logic;
 							nFIQ          : in std_logic;
-							-- Bus control
-							CFGBIGEND     : in std_logic;
 							-- Memory interface
 							ADDR          : out std_logic_vector(31 downto 0);
 	                        WDATA         : out std_logic_vector(31 downto 0);
@@ -506,8 +504,6 @@ component ControlLogic is port(
 					   -- Interrupts
 					   nIRQ       : in std_logic;
 					   nFIQ       : in std_logic;
-					   -- Bus control
-					   CFGBIGEND  : in std_logic;
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
@@ -1143,8 +1139,6 @@ ControlLogic_Inst:component ControlLogic port map(
 					   -- Interrupts
 					   nIRQ       => nIRQ,
 					   nFIQ       => nFIQ,
-					   -- Bus control
-					   CFGBIGEND  => CFGBIGEND,
 					   -- Memory interface
 					   ABORT      => ABORT,
    					   WRITE      => WRITE,

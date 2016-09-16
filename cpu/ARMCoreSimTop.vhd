@@ -28,8 +28,6 @@ component ARM7TDMIS_Top is port(
 							nRESET        : in std_logic;
 	                        nIRQ          : in std_logic;
 							nFIQ          : in std_logic;
-							-- Bus control
-							CFGBIGEND     : in std_logic;
 							-- Memory interface
 							ADDR          : out std_logic_vector(31 downto 0);
 	                        WDATA         : out std_logic_vector(31 downto 0);
@@ -69,11 +67,8 @@ signal SIZE      : std_logic_vector (1 downto 0) := (others => '0');
 signal PROT      : std_logic_vector (1 downto 0) := (others => '0');
 signal TRANS     : std_logic_vector (1 downto 0) := (others => '0');
 signal WRITE     : std_logic := '0';
-signal CFGBIGEND : std_logic := '0';
 
 begin
-
-CFGBIGEND <= '0';
 
 CLKAndReset:component ClockAndResetGenerator port map (
 	                                      nRESET  => nRESET,
@@ -132,8 +127,6 @@ CoreUnderTest:component ARM7TDMIS_Top port map(
 							nRESET        => nRESET,
 	                        nIRQ          => '1',
 							nFIQ          => '1',
-							-- Bus control
-							CFGBIGEND     => CFGBIGEND,
 							-- Memory interface
 							ADDR          => ADDR,
 	                        WDATA         => WDATA,

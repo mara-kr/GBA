@@ -183,8 +183,6 @@ entity ControlLogic is port(
 					   -- Interrupts
 					   nIRQ       : in std_logic;
 					   nFIQ       : in std_logic;
-					   -- Bus control
-					   CFGBIGEND  : in std_logic;
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
