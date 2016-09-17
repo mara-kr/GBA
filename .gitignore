@@ -3,6 +3,11 @@
 *~
 ucli.key
 
+csrc/*
+simv.daidir/*
+*.swp
+.__afs*
+
 
 *.bak
 *.log
