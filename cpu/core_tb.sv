@@ -8,6 +8,7 @@
  *
  * TODO Add IRQ (Interrupt Request) generator module
  * TODO Support DMAActive CPU signal
+ * TODO Ensure endianness is correct
  */
 
 module core_tb;
@@ -34,6 +35,7 @@ module core_tb;
     initial begin
         clk = 0;
         rst_n = 1'b1;
+        irq_n = 1'b1;
         #1 rst_n = 1'b0;
         #1 rst_n = 1'b1;
         forever #2 clk <= ~clk;
@@ -42,13 +44,17 @@ module core_tb;
     /* So the simulation stops */
     initial begin
         @(posedge clk);
-        #100 $finish;
+        #300 $finish;
     end
 
     /* Clock cycle counter */
     integer cyc_count;
-    always_ff @(posedge clk)
-        if (rst_n) cyc_count++;
+    always_ff @(posedge clk, negedge rst_n) begin
+        if (~rst_n)
+            cyc_count <= 0;
+        else
+            cyc_count <= cyc_count + 1;
+    end
 
     final $display("Simulation finished at cycle %d", cyc_count);
 
@@ -178,7 +184,7 @@ module sim_memory
         end else if (`PAK_ROM_1_START <= addr && addr <= `PAK_ROM_1_END) begin
             /* Handles VCS max bit vector size */
             if (`PAK_ROM_1_START + `PAK_ROM_1_SIZE < addr)
-                $display("Address %h maps outisde of PAK_ROM_1 unit!")
+                $display("Address %h maps outisde of PAK_ROM_1 unit!", addr);
             rdata = pak_rom_data;
             pak_rom_addr = addr - `PAK_ROM_1_START;
             abort = write; /* Write to ROM illegal */
@@ -186,7 +192,7 @@ module sim_memory
             num_cycles = 3'd1;
         end else if (`PAK_ROM_2_START <= addr && addr <= `PAK_ROM_2_END) begin
             if (`PAK_ROM_2_START + `PAK_ROM_2_SIZE < addr)
-                $display("Address %h maps outisde of PAK_ROM_2 unit!")
+                $display("Address %h maps outisde of PAK_ROM_2 unit!", addr);
             rdata = pak_rom_data;
             pak_rom_addr = addr - `PAK_ROM_2_START;
             abort = write; /* Write to ROM illegal */
@@ -194,7 +200,7 @@ module sim_memory
             num_cycles = 3'd2;
         end else if (`PAK_ROM_3_START <= addr && addr <= `PAK_ROM_3_END) begin
             if (`PAK_ROM_3_START + `PAK_ROM_3_SIZE < addr)
-                $display("Address %h maps outisde of PAK_ROM_3 unit!")
+                $display("Address %h maps outisde of PAK_ROM_3 unit!", addr);
             rdata = pak_rom_data;
             pak_rom_addr = addr - `PAK_ROM_3_START;
             abort = write; /* Write to ROM illegal */
@@ -357,9 +363,9 @@ module bus_monitor
 
     always_comb begin
         case (size)
-            `MEM_SIZE_BYTE: mem_size = "byte";
-            `MEM_SIZE_HALF: mem_size = "half";
-            `MEM_SIZE_WORD: mem_size = "word";
+            `MEM_SIZE_BYTE: mem_size = "1";
+            `MEM_SIZE_HALF: mem_size = "2";
+            `MEM_SIZE_WORD: mem_size = "4";
             `MEM_SIZE_RESR: begin
                 mem_size = "reserved";
                 $display("ERROR: Reserved memory size!");
@@ -376,12 +382,18 @@ module bus_monitor
     end
 
 `ifdef BUS_LOG_EN
-    always_ff @(posedge clk) begin
-        if (rst_n & clken) begin // Maybe don't need clken,
-                                   // but old code had it
-            $fwrite(f, "%s %x to %x, size %s", mem_op, data, addr, mem_size);
-            if (abort)
+
+    logic [31:0] last_read_addr;
+    always_ff @(posedge clk, negedge rst_n) begin
+        if (~rst_n) last_read_addr <= 32'hFFFF_FFFF;
+        else if (rst_n & ~clken) begin // Maybe don't need clken,
+            if ((last_read_addr != addr) && (~(^rdata === 1'bx)) || write) begin
+                $fwrite(f, "%s %x @ %x, size %s\n", mem_op, data, addr, mem_size);
+                last_read_addr <= addr;
+            end
+            if (abort) begin
                 $fwrite(f, "Got ABORT from %s to %x", mem_op, addr);
+            end
         end
     end
 `endif

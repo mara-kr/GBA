@@ -3,9 +3,9 @@
 /* File to read hex GamePak data from */
 `define PAK_ROM_FILE "RomFile.txt"
 /* File to read GBA Bios from */
-`define SYS_ROM_FILE "BiosFile.txt"
+`define SYS_ROM_FILE "gba_bios.hex"
 /* File to write bus interactions to */
-`define BUS_LOG_FILE "BusLog.txt"
+`define BUS_LOG_FILE "../BusLog.txt"
 /* Uncomment for logging */
 `define BUS_LOG_EN
 
@@ -51,4 +51,3 @@
 `define PAK_ROM_3_START  32'h0C00_0000 // Wait State 2
 `define PAK_ROM_3_END    32'h0DFF_FFFF
 `define PAK_ROM_3_SIZE   (1 << 14)
-
