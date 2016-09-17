@@ -1,7 +1,9 @@
 /* Signal definitions for ARM7TDMI-S Core test */
 
 /* File to read hex GamePak data from */
-`define GBA_ROM_FILE "RomFile.txt"
+`define PAK_ROM_FILE "RomFile.txt"
+/* File to read GBA Bios from */
+`define SYS_ROM_FILE "BiosFile.txt"
 /* File to write bus interactions to */
 `define BUS_LOG_FILE "BusLog.txt"
 /* Uncomment for logging */
@@ -35,16 +37,18 @@
 `define OAM_START        32'h0700_0000
 `define OAM_END          32'h0700_03FF
 `define OAM_SIZE        (`OAM_END-`OAM_START)
-`define PAK_ROM_1_START  32'h0800_0000 // Wait State 0
-`define PAK_ROM_1_END    32'h09FF_FFFF
-`define PAK_ROM_1_SIZE  (`PAK_ROM_1_END-`PAK_ROM_1_START)
-`define PAK_ROM_2_START  32'h0A00_0000 // Wait State 1
-`define PAK_ROM_2_END    32'h0BFF_FFFF
-`define PAK_ROM_2_SIZE  (`PAK_ROM_2_END-`PAK_ROM_2_START)
-`define PAK_ROM_3_START  32'h0C00_0000 // Wait State 2
-`define PAK_ROM_3_END    32'h0DFF_FFFF
-`define PAK_ROM_3_SIZE  (`PAK_ROM_3_END-`PAK_ROM_3_START)
 `define PAK_RAM_START    32'h0E00_0000
 `define PAK_RAM_END      32'h0E00_FFFF
 `define PAK_RAM_SIZE    (`PAK_RAM_END-`PAK_RAM_START)
+
+/* VCS Max bit vector size is 16M */
+`define PAK_ROM_1_START  32'h0800_0000 // Wait State 0
+`define PAK_ROM_1_END    32'h09FF_FFFF
+`define PAK_ROM_1_SIZE   (1 << 14)
+`define PAK_ROM_2_START  32'h0A00_0000 // Wait State 1
+`define PAK_ROM_2_END    32'h0BFF_FFFF
+`define PAK_ROM_2_SIZE   (1 << 14)
+`define PAK_ROM_3_START  32'h0C00_0000 // Wait State 2
+`define PAK_ROM_3_END    32'h0DFF_FFFF
+`define PAK_ROM_3_SIZE   (1 << 14)
 
