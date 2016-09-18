@@ -43,8 +43,12 @@ module core_tb;
 
     /* So the simulation stops */
     initial begin
+        $monitor("PC={%h,%h}, PSR={%h,%h},DecodeInst = %h, FirstInst %h",
+                 DUT.RegFile_PCIn, DUT.RegFile_PCOut,
+                 DUT.PSR_CPSRIn, DUT.PSR_CPSROut, DUT.IPDR_InstForDecode,
+                 DUT.IPRD_FirstInstFetch);
         @(posedge clk);
-        #300 $finish;
+        #1000 $finish;
     end
 
     /* Clock cycle counter */
@@ -206,7 +210,7 @@ module sim_memory
             abort = write; /* Write to ROM illegal */
             clken_en = 1'b1; /* Approximate "wait state" logic */
             num_cycles = 3'd3;
-        end else begin
+        end else if (~(^addr == 1'bx)) begin
             $display("Addr %h does not map to memory region!", addr);
         end
     end
