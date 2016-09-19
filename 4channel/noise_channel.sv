@@ -8,6 +8,7 @@ module noise_channel(
     logic [14:0] LFSR;
     logic [14:0] LFSR_right_shift;
     logic step7;
+    logic old_step7;
     logic [12:0] frequency_timer_period;
     logic [3:0] shift_freq;
     logic frequency_timer_clock;
@@ -35,7 +36,7 @@ module noise_channel(
     end
 
     always_ff @(posedge frequency_timer_clock, posedge reset) begin
-        if (reset) begin
+        if (reset || (step7 != old_step7)) begin //if LFSR changed width 
             if (step7) begin
                 LFSR <= 7'h40;
             end
@@ -46,9 +47,42 @@ module noise_channel(
         else begin
             LFSR <= {(LFSR[1] ^ LFSR[0]), LFSR_right_shift[13:0]};
             if( step7) begin //just ignore the top 8 bits
-                LFSR <= {(LFSR[1] ^ LFSR[0]), LFSR_right_shift[6]};
+                LFSR <= {(LFSR[1] ^ LFSR[0]), LFSR_right_shift[6:0]};
             end
         end
+        old_step7 <= step7;
     end
 
 endmodule: noise_channel
+
+module noise_channel_test();
+    logic clock;
+    logic reset;
+    logic [7:0] NR43;
+    logic wave;
+
+    noise_channel dut(clock, reset, NR43, wave);
+
+    initial begin
+        $monitor("freq_clock=%b, reset=%b, NR43=%b, wave=%b LFSR=%b", 
+                dut.frequency_timer_clock, reset, NR43, wave, dut.LFSR);
+        
+        clock <= 1;
+        reset <= 1;
+        #2
+        reset <= 0;
+        $display("Set to 15 bit LSFR");
+        NR43 <= 8'b0000_0_000; //polynomial counter shift = 0, 15 step, dividing ratio freq = 0
+        #1000
+        $display("Check that the LSFR is now 7 bit");
+        NR43 <= 8'b0000_1_000; //polynomial counter shift = 0, 7 step, dividing ration freq = 0
+        #1000
+        $finish;
+
+    end
+
+    always
+        #1 clock = !clock;
+
+endmodule: noise_channel_test
+
