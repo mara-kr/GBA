@@ -1,14 +1,8 @@
 /* Signal definitions for ARM7TDMI-S Core test */
+import "DPI-C" function string getenv(input string env_name);
 
-/* File to read hex GamePak data from */
-`define PAK_ROM_FILE "RomFile.txt"
-/* File to read GBA Bios from */
-`define SYS_ROM_FILE "gba_bios.hex"
-/* File to write bus interactions to */
-`define BUS_LOG_FILE "../BusLog.txt"
 /* Uncomment for logging */
 `define BUS_LOG_EN
-
 
 /* Memory access sizes */
 `define MEM_SIZE_BYTE 2'b00

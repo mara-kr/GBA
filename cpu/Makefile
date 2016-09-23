@@ -1,11 +1,20 @@
 # Makefile for CPU - compiles SV/VHDL code together in build/
 # The synopsys_sim.setup makes SV/VHDL simulator time agree (to sec)
 
+WORK_DIR=$(shell pwd)
+
+#BIOS_FILE=$(WORK_DIR)/gba_bios.hex
+BIOS_FILE=$(WORK_DIR)/roms/pixels.hex
+ROM_FILE=$(WORK_DIR)/roms/main.hex
+BUS_LOG_FILE=$(WORK_DIR)/BusLog.txt
+
 VCS=vcs -debug -R
 VLOGAN=vlogan -sverilog -q
-WORK_DIR=$(shell pwd)
-BIOS_FILE=../gba_bios.hex
-INIT=mkdir -p build && cd build && cp ../synopsys_sim.setup . && cp $(BIOS_FILE) .
+FILES=$(WORK_DIR)/synopsys_sim.setup $(BIOS_FILE) $(ROM_FILE)
+INIT=mkdir -p build && cp $(FILES) build/ && cd build
+export GBA_CPU_BIOS_FILE=$(BIOS_FILE)
+export GBA_CPU_ROM_FILE=$(ROM_FILE)
+export GBA_CPU_BUS_LOG=$(BUS_LOG_FILE)
 
 default: test_core
 
@@ -23,6 +32,7 @@ test_core: clean
 
 gui:
 	cd build && ./simv -gui &
+
 clean:
 	rm -rf build
 	rm -rf 64

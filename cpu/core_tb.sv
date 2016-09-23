@@ -3,16 +3,15 @@
 /* Testbench system for ARM7TDMI-S Core
  * Author: Neil Ryan, nryan@andrew.cmu.edu
  *
- * Reads ROM memory from files (names in core_tb_defines.vh).
- * Logs bus interactions to `BUS_LOG_FILE if `BUS_LOG_EN is defined
+ * Reads BIOS ROM from $(GBA_CPU_BIOS_FILE)
+ * Reads GamePak ROM from $(GBA_CPU_ROM_FILE)
+ * Logs bus interactions to $(GBA_CPU_BUS_LOG) if `BUS_LOG_EN is defined
  *
  * TODO Add IRQ (Interrupt Request) generator module
- * TODO Support DMAActive CPU signal
- * TODO Ensure endianness is correct
  */
 
 module core_tb;
-    logic clk, clken;
+    logic clk, pause;
     logic rst_n;
     logic irq_n; // Interrupt Request
     // Memory interface
@@ -20,39 +19,44 @@ module core_tb;
     logic [1:0] size;
     logic abort, write;
 
-    ARM7TDMIS_Top DUT (.CLK(clk), .CLKEN(clken), .NRESET(rst_n),
+    ARM7TDMIS_Top DUT (.CLK(clk), .PAUSE(pause), .NRESET(rst_n),
                        .NIRQ(irq_n), .ADDR(addr), .WDATA(wdata),
                        .RDATA(rdata), .SIZE(size), .ABORT(abort),
                        .WRITE(write), .NFIQ(1'b1));
 
-    bus_monitor busMon (.clk, .rst_n, .clken, .addr, .wdata, .rdata,
-                        .size, .abort, .write);
+    bus_monitor #("GBA_CPU_BUS_LOG") busMon (.clk, .rst_n, .pause, .addr,
+                                             .wdata, .rdata, .size, .abort,
+                                             .write);
 
     sim_memory sim_mem (.clk, .rst_n, .addr, .wdata, .size, .write,
-                         .rdata, .abort, .clken);
+                         .rdata, .abort, .pause);
 
     /* Clock and Reset Generation */
     initial begin
         clk = 0;
         rst_n = 1'b1;
         irq_n = 1'b1;
-        #1 rst_n = 1'b0;
-        #1 rst_n = 1'b1;
-        forever #2 clk <= ~clk;
+        forever #1 clk <= ~clk;
     end
 
+    integer i;
+    integer cyc_count;
     /* So the simulation stops */
     initial begin
-        $monitor("PC={%h,%h}, PSR={%h,%h},DecodeInst = %h, FirstInst %h",
-                 DUT.RegFile_PCIn, DUT.RegFile_PCOut,
-                 DUT.PSR_CPSRIn, DUT.PSR_CPSROut, DUT.IPDR_InstForDecode,
-                 DUT.IPRD_FirstInstFetch);
+        $monitor("Cycle: %3d\tPC={%h}, PSR={%h}, DecodeInst = %h, Mode = %b %b,%b",
+                 cyc_count,DUT.RegFile_PCOut,
+                 DUT.PSR_CPSROut, DUT.IPDR_InstForDecode,
+                 DUT.RegFile_RFMode[5], DUT.RegFile_RFMode[4:0],
+                 DUT.ThDC_ThumbDecoderEn);
         @(posedge clk);
-        #1000 $finish;
+        rst_n <= 1'b0;
+        @(posedge clk);
+        rst_n <= 1'b1;
+        @(posedge clk);
+        #200 $finish;
     end
 
     /* Clock cycle counter */
-    integer cyc_count;
     always_ff @(posedge clk, negedge rst_n) begin
         if (~rst_n)
             cyc_count <= 0;
@@ -60,7 +64,29 @@ module core_tb;
             cyc_count <= cyc_count + 1;
     end
 
-    final $display("Simulation finished at cycle %d", cyc_count);
+    final begin
+        $display("Simulation finished at cycle %d", cyc_count);
+        $display("CPSR: %h \tNZCV = %b \tCPSR_Ctrl = %b",
+                 DUT.PSR_Inst.CPSR, DUT.PSR_Inst.CPSR[31:28], DUT.PSR_Inst.CPSR[7:0]);
+        for (i = 0; i <= 15; i++)
+            $display("UserModeReg \t%2d: %h",i, DUT.RegFile_Inst.UMRegisterFile[i]);
+        $display("\n");
+        for (i = 8; i <= 14; i++)
+            $display("FIQModeReg \t%2d: %h", i, DUT.RegFile_Inst.FIQMRegisterFile[i]);
+        $display("FIQ_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_FIQ);
+        for (i = 13; i <= 14; i++)
+            $display("SuperModeReg \t%2d: %h", i, DUT.RegFile_Inst.SVCMRegisterFile[i]);
+        $display("Super_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_SVC);
+        for (i = 13; i <= 14; i++)
+            $display("ABORTModeReg \t%2d: %h", i, DUT.RegFile_Inst.AMRegisterFile[i]);
+        $display("ABORT_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_Abort);
+        for (i = 13; i <= 14; i++)
+            $display("IRQModeReg \t%2d: %h", i, DUT.RegFile_Inst.IRQMRegisterFile[i]);
+        $display("IRQ_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_IRQ);
+        for (i = 13; i <= 14; i++)
+            $display("UndefModeReg \t%2d: %h", i, DUT.RegFile_Inst.UndMRegisterFile[i]);
+        $display("Undef_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_Undef);
+    end
 
 endmodule: core_tb
 
@@ -70,7 +96,7 @@ module sim_memory
     input  logic [1:0]  size,
     input  logic        write,
     output logic [31:0] rdata,
-    output logic        abort, clken);
+    output logic        abort, pause);
 
     /* Memory read data signals*/
     logic [31:0] sys_rom_data, extern_ram_data, intern_ram_data;
@@ -104,49 +130,47 @@ module sim_memory
 
 
     /* GBA RAMs */
-    memory #(`EXTERN_RAM_SIZE) extern_ram (.clk, .clken, .wdata,
+    memory #(`EXTERN_RAM_SIZE) extern_ram (.clk, .pause, .wdata,
                                            .addr(extern_ram_addr),
                                            .byte_we(extern_ram_we),
                                            .rdata(extern_ram_data));
-    memory #(`INTERN_RAM_SIZE) intern_ram (.clk, .clken, .wdata,
+    memory #(`INTERN_RAM_SIZE) intern_ram (.clk, .pause, .wdata,
                                            .addr(intern_ram_addr),
                                            .byte_we(intern_ram_we),
                                            .rdata(intern_ram_data));
-    memory #(`IO_REG_RAM_SIZE) io_reg_ram (.clk, .clken, .wdata,
+    memory #(`IO_REG_RAM_SIZE) io_reg_ram (.clk, .pause, .wdata,
                                            .addr(io_reg_ram_addr),
                                            .byte_we(io_reg_ram_we),
                                            .rdata(io_reg_ram_data));
-    memory #(`PALLET_RAM_SIZE) pallet_ram (.clk, .clken, .wdata,
+    memory #(`PALLET_RAM_SIZE) pallet_ram (.clk, .pause, .wdata,
                                            .addr(pallet_ram_addr),
                                            .byte_we(pallet_ram_we),
                                            .rdata(pallet_ram_data));
-    memory #(`VRAM_SIZE)       vram       (.clk, .clken, .wdata,
+    memory #(`VRAM_SIZE)       vram       (.clk, .pause, .wdata,
                                            .addr(vram_addr),
                                            .byte_we(vram_we),
                                            .rdata(vram_data));
-    memory #(`OAM_SIZE)        oam        (.clk, .clken, .wdata,
+    memory #(`OAM_SIZE)        oam        (.clk, .pause, .wdata,
                                            .addr(oam_addr),
                                            .byte_we(oam_we),
                                            .rdata(oam_data));
-    memory #(`PAK_RAM_SIZE)    pak_ram    (.clk, .clken, .wdata,
+    memory #(`PAK_RAM_SIZE)    pak_ram    (.clk, .pause, .wdata,
                                            .addr(pak_ram_addr),
                                            .byte_we(pak_ram_we),
                                            .rdata(pak_ram_data));
     /* ROMs */
-    rom_memory #(`PAK_ROM_1_SIZE,`PAK_ROM_FILE)  pak_rom (.clk, .clken,
-                                                          .addr(pak_rom_addr),
-                                                          .rdata(pak_rom_data));
-    rom_memory #(`SYSTEM_ROM_SIZE,`SYS_ROM_FILE) sys_rom (.clk, .clken,
-                                                          .addr(sys_rom_addr),
-                                                          .rdata(sys_rom_data));
+    rom_memory #(`PAK_ROM_1_SIZE,"GBA_CPU_ROM_FILE")
+        pak_rom (.clk, .addr(pak_rom_addr), .rdata(pak_rom_data));
+    rom_memory #(`SYSTEM_ROM_SIZE,"GBA_CPU_BIOS_FILE")
+        sys_rom (.clk, .addr(sys_rom_addr), .rdata(sys_rom_data));
 
     logic [3:0] byte_we;
     mem_decoder mdecode (.addr, .size, .write, .byte_we);
 
     logic [2:0] num_cycles;
-    logic       clken_en;
-    clken_generator clken_gen (.clk, .rst_n, .clken,
-                               .en(clken_en), .num_cycles(num_cycles));
+    logic       pause_en;
+    pause_generator pause_gen (.clk, .rst_n, .pause,
+                               .en(pause_en), .num_cycles(num_cycles));
 
     /* Mapping of memory access to different memories & error handling */
     always_comb begin
@@ -158,7 +182,7 @@ module sim_memory
         oam_we = 4'd0;
         pak_ram_we = 4'd0;
         abort = 1'b0;
-        clken_en = 1'b0;
+        pause_en = 1'b0;
         num_cycles = 3'd0;
         pak_rom_addr = 0;
         if (addr <= `SYSTEM_ROM_END) begin
@@ -192,7 +216,7 @@ module sim_memory
             rdata = pak_rom_data;
             pak_rom_addr = addr - `PAK_ROM_1_START;
             abort = write; /* Write to ROM illegal */
-            clken_en = 1'b1; /* Approximate "wait state" logic */
+            pause_en = 1'b1; /* Approximate "wait state" logic */
             num_cycles = 3'd1;
         end else if (`PAK_ROM_2_START <= addr && addr <= `PAK_ROM_2_END) begin
             if (`PAK_ROM_2_START + `PAK_ROM_2_SIZE < addr)
@@ -200,7 +224,7 @@ module sim_memory
             rdata = pak_rom_data;
             pak_rom_addr = addr - `PAK_ROM_2_START;
             abort = write; /* Write to ROM illegal */
-            clken_en = 1'b1; /* Approximate "wait state" logic */
+            pause_en = 1'b1; /* Approximate "wait state" logic */
             num_cycles = 3'd2;
         end else if (`PAK_ROM_3_START <= addr && addr <= `PAK_ROM_3_END) begin
             if (`PAK_ROM_3_START + `PAK_ROM_3_SIZE < addr)
@@ -208,9 +232,9 @@ module sim_memory
             rdata = pak_rom_data;
             pak_rom_addr = addr - `PAK_ROM_3_START;
             abort = write; /* Write to ROM illegal */
-            clken_en = 1'b1; /* Approximate "wait state" logic */
+            pause_en = 1'b1; /* Approximate "wait state" logic */
             num_cycles = 3'd3;
-        end else if (~(^addr == 1'bx)) begin
+        end else if (~$isunknown(addr) && write) begin
             $display("Addr %h does not map to memory region!", addr);
         end
     end
@@ -220,7 +244,7 @@ endmodule: sim_memory
 /* Simulation memory for RAM units, synchronous read/write */
 module memory
     #(parameter SIZE=10)
-    (input  logic clk, clken,
+    (input  logic clk, pause,
      input  logic [SIZE:0] addr,
      input  logic [31:0] wdata,
      input  logic [3:0] byte_we,
@@ -238,7 +262,7 @@ module memory
      assign rdata = {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]};
 
      always_ff @(posedge clk) begin
-         if (~clken) begin
+         if (~pause) begin
              if (byte_we[3]) mem[align_addr+3] <= b_wdata[3];
              if (byte_we[2]) mem[align_addr+2] <= b_wdata[2];
              if (byte_we[1]) mem[align_addr+1] <= b_wdata[1];
@@ -250,6 +274,15 @@ module memory
          end
      end
 
+             /*
+    always_comb begin
+         b_rdata[3] = mem[align_addr+3];
+         b_rdata[2] = mem[align_addr+2];
+         b_rdata[1] = mem[align_addr+1];
+         b_rdata[0] = mem[align_addr+0];
+     end
+             */
+
 endmodule: memory
 
 /* Same as memory module, only initalizes memory to values in
@@ -257,7 +290,7 @@ endmodule: memory
 module rom_memory
     #(parameter SIZE=10,
       parameter MEM_FILE="foo.txt")
-    (input  logic clk, clken,
+    (input  logic clk,
      input  logic [SIZE:0] addr,
      output logic [31:0] rdata);
 
@@ -275,10 +308,20 @@ module rom_memory
          b_rdata[1] <= mem[align_addr+1];
          b_rdata[0] <= mem[align_addr+0];
      end
+/*
+    always_comb begin
+         b_rdata[3] = mem[align_addr+3];
+         b_rdata[2] = mem[align_addr+2];
+         b_rdata[1] = mem[align_addr+1];
+         b_rdata[0] = mem[align_addr+0];
+     end
+*/
 
     /* Initalize ROM */
+    string filename;
     initial begin
-        $readmemh(MEM_FILE, mem);
+        filename = getenv(MEM_FILE);
+        $readmemh(filename, mem);
     end
 
 endmodule: rom_memory
@@ -309,18 +352,18 @@ module mem_decoder
 
 endmodule: mem_decoder
 
-/* Module to generate CLKEN signal based on number of wait cycles.
- * After en->1, CLKEN will be held for num_cycles */
-module clken_generator
+/* Module to generate PAUSE signal based on number of wait cycles.
+ * After en->1, pause will be held for num_cycles */
+module pause_generator
    (input logic clk, rst_n,
     input logic en,
     input logic [2:0] num_cycles,
-    output logic clken);
+    output logic pause);
 
     logic [2:0] curr_cycles;
     logic en_set_low;
 
-    assign clken = curr_cycles > 0;
+    assign pause = (curr_cycles > 0);
 
     always_ff @(posedge clk, negedge rst_n) begin
         if (~rst_n) begin
@@ -339,12 +382,13 @@ module clken_generator
             end
         end
     end
-endmodule: clken_generator
+endmodule: pause_generator
 
 /* Monitor bus events and print them to `BUS_LOG_FILE if
  * `BUS_LOG_EN is defined */
 module bus_monitor
-   (input  logic        clk, clken, rst_n,
+   #(parameter LOG_FILE="foo.txt")
+   (input  logic        clk, rst_n, pause,
     input  logic [31:0] addr, wdata, rdata,
     input  logic [1:0]  size,
     input  logic        abort, write);
@@ -355,13 +399,15 @@ module bus_monitor
 
 `ifdef BUS_LOG_EN
     integer f;
+    string filename;
     initial begin
-        f = $fopen(`BUS_LOG_FILE, "w");
+        filename = getenv(LOG_FILE);
+        f = $fopen(filename, "w");
     end
 
     final begin
         $fclose(f);
-        $display("Bus Log in %s", `BUS_LOG_FILE);
+        $display("Bus Log in %s", filename);
     end
 `endif
 
@@ -390,8 +436,8 @@ module bus_monitor
     logic [31:0] last_read_addr;
     always_ff @(posedge clk, negedge rst_n) begin
         if (~rst_n) last_read_addr <= 32'hFFFF_FFFF;
-        else if (rst_n & ~clken) begin // Maybe don't need clken,
-            if ((last_read_addr != addr) && (~(^rdata === 1'bx)) || write) begin
+        else if (rst_n & ~pause) begin // Maybe don't need pause,
+            if ((last_read_addr != addr && ~$isunknown(rdata)) || write) begin
                 $fwrite(f, "%s %x @ %x, size %s\n", mem_op, data, addr, mem_size);
                 last_read_addr <= addr;
             end

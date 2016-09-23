@@ -12,7 +12,7 @@ use WORK.ARMPackage.all;
 entity ARM7TDMIS_Top is port(
 	                        -- Clock
 							CLK           : in std_logic;
-							CLKEN         : in std_logic;
+							PAUSE         : in std_logic;
 							-- Interrupts
 							nRESET        : in std_logic;
 	                        nIRQ          : in std_logic;
@@ -498,6 +498,9 @@ component ControlLogic is port(
                        SIZE       : out std_logic_vector(1 downto 0)
 					   );
 end component;
+
+-- Control signals
+signal CLKEN        : std_logic := '0';
 
 
 -- ALU signals
@@ -1121,6 +1124,9 @@ ControlLogic_Inst:component ControlLogic port map(
                        SIZE       => SIZE_Int
 					   );
 
+
+-- Generate CLKEN signal
+CLKEN <= not PAUSE;
 
 -- Check if slack estimation takes place
 assert not CSlackEstim
