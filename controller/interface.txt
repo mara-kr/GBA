@@ -1,0 +1,54 @@
+############ SNES CONTROLLER INTERFACE ################3
+
+Connector wiring:
+
+       ----------------------------- ---------------------
+      |                             |                      \
+      | (1)     (2)     (3)     (4) |   (5)     (6)     (7) |
+      |                             |                      /
+       ----------------------------- ---------------------
+
+
+        Pin     Description             Color of wire in cable
+        ===     ===========             ======================
+        1       +5v                     White
+        2       Data clock              Yellow
+        3       Data latch              Orange
+        4       Serial data             Red
+        5       ? (+5v)                 no wire
+        6       ? (+5v)                 no wire
+        7       Ground                  Brown
+
+
+Protocol:
+    CPU sends out 12us wide positive pulse into Data latch (pin 3).
+    6us later, CPU sends out 16 data clock pulses on Data clock (pin 2)
+        Pulses are 50% duty cycle, 12us per full cycle.
+    Controller shifts latched button states on Serial data (pin 4) on posedge,
+        CPU samples data on negedge.
+
+    Repeat at ~60Hz.
+
+Button Data Format:
+            Clock Cycle     Button Reported
+            ===========     ===============
+            0               B
+            1               Y
+            2               Select
+            3               Start
+            4               Up on joypad
+            5               Down on joypad
+            6               Left on joypad
+            7               Right on joypad
+            8               A
+            9               X
+            10              L
+            11              R
+            12              none (always high)
+            13              none (always high)
+            14              none (always high)
+            15              none (always high)
+
+CPU Interface:
+    (output logic VDD, data_latch, data_clock, GND,
+     input  logic serial_data);
