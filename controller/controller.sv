@@ -7,19 +7,18 @@
  * Data cycle takes 210us - 12*16(data) + 12(pulse) + 6(wait)
  */
 
+//TODO change US_CYCLES to 100, WAIT_CYCLES to 16460 * `US_CYCLES
 `define US_CYCLES 100  // Cycles per microsecond - 100MHz clock
-`define WAIT_CYCLES (16460 * `US_CYCLES)  // 16.46 ms (16.67ms - 210us)
+`define WAIT_CYCLES ((16460 * `US_CYCLES) - 1)  // 16.46 ms (16.67ms - 210us)
 `define CYC_WIDTH ($clog2(`WAIT_CYCLES))
-`define LATCH_PULSE_CYCLES (12 * `US_CYCLES)
-`define LATCH_WAIT_CYCLES  (6 * `US_CYCLES)
-`define LATCH_CYCLES (6 * `US_CYCLES) // (half the full (12us) clock)
+`define LATCH_PULSE_CYCLES ((12 * `US_CYCLES) - 1)
+`define LATCH_WAIT_CYCLES  ((6 * `US_CYCLES) - 1)
+`define LATCH_CYCLES ((6 * `US_CYCLES) - 1) // (half the full (12us) clock)
 
 module controller
-    (output logic        vdd, data_latch, data_clock, gnd,
+    (output logic        data_latch, data_clock,
      output logic [15:0] buttons,
      input  logic        serial_data, clock, reset_n);
-
-     assign {vdd, gnd} = {1'b1, 1'b0}; // Sure hope this works
 
      enum logic [2:0] {WAIT, LATCH_PULSE, LATCH_WAIT, CYC_HI, CYC_LO} cs, ns;
 
@@ -33,14 +32,13 @@ module controller
                                  .clear(button_clr), .D(button_cyc_cnt));
 
      always_ff @(posedge clock, negedge reset_n) begin
-         if (~reset_n) begin
-             cs <= WAIT;
-             buttons <= 16'd0;
-         end else begin
-             cs <= ns;
-             if (button_en) buttons[button_cyc_cnt] <= serial_data;
-             else buttons <= buttons;
-         end
+         if (~reset_n) cs <= WAIT;
+         else cs <= ns;
+     end
+     
+     always_ff @(negedge data_clock, negedge reset_n) begin
+         if (~reset_n) buttons <= 16'd0;
+         else buttons[button_cyc_cnt] <= serial_data;
      end
 
      always_comb begin
@@ -86,12 +84,12 @@ module controller
              end
              CYC_LO: begin
                  if (cycle_cnt == `LATCH_CYCLES) begin
+                     cycle_clr = 1'b1;
+                     button_en = 1'b1;
                      if (button_cyc_cnt == 4'd15) begin
                          ns = WAIT;
-                         button_clr = 1'b1;
                      end else begin
                          ns = CYC_HI;
-                         button_en = 1'b1;
                      end
                  end else begin
                      ns = CYC_LO;
@@ -114,3 +112,28 @@ module counter
      end
 
 endmodule: counter
+
+/*
+module controller_tb;
+    logic        vdd, data_latch, data_clock, gnd;
+    logic [15:0] buttons;
+    logic        serial_data, clock, reset_n;
+
+    controller dut (.*);
+    initial begin
+        $monitor("buttons = %b_%b_%b_%b", buttons[15:12], buttons[11:8],
+            buttons[7:4], buttons[3:0]);
+        clock = 0;
+        reset_n = 1;
+        #1 reset_n <= 0;
+        #1 reset_n <= 1;
+        forever #1 clock <= ~clock;
+    end
+
+    initial begin
+        serial_data = 1'b1;
+        #600 $finish;
+    end
+
+endmodule: controller_tb
+*/
