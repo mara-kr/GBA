@@ -19,6 +19,7 @@ module core_tb;
     logic [1:0] size;
     logic abort, write;
 
+
     ARM7TDMIS_Top DUT (.CLK(clk), .PAUSE(pause), .NRESET(rst_n),
                        .NIRQ(irq_n), .ADDR(addr), .WDATA(wdata),
                        .RDATA(rdata), .SIZE(size), .ABORT(abort),
@@ -36,6 +37,8 @@ module core_tb;
         clk = 0;
         rst_n = 1'b1;
         irq_n = 1'b1;
+        #1 rst_n <= 1'b0;
+        #1 rst_n <= 1'b1;
         forever #1 clk <= ~clk;
     end
 
@@ -43,15 +46,13 @@ module core_tb;
     integer cyc_count;
     /* So the simulation stops */
     initial begin
-        $monitor("Cycle: %3d\tPC={%h}, PSR={%h}, DecodeInst = %h, Mode = %b %b,%b",
+        /*
+        $monitor("Cycle: %3d\tPC={%h}, PSR={%h}, DecodeInst = %h, Mode = %b,%b",
                  cyc_count,DUT.RegFile_PCOut,
                  DUT.PSR_CPSROut, DUT.IPDR_InstForDecode,
-                 DUT.RegFile_RFMode[5], DUT.RegFile_RFMode[4:0],
+                 DUT.RegFile_RFMode[4:0],
                  DUT.ThDC_ThumbDecoderEn);
-        @(posedge clk);
-        rst_n <= 1'b0;
-        @(posedge clk);
-        rst_n <= 1'b1;
+        */
         @(posedge clk);
         #200 $finish;
     end
@@ -131,38 +132,45 @@ module sim_memory
 
     /* GBA RAMs */
     memory #(`EXTERN_RAM_SIZE) extern_ram (.clk, .pause, .wdata,
+                                           .rst_n,
                                            .addr(extern_ram_addr),
                                            .byte_we(extern_ram_we),
                                            .rdata(extern_ram_data));
     memory #(`INTERN_RAM_SIZE) intern_ram (.clk, .pause, .wdata,
+                                           .rst_n,
                                            .addr(intern_ram_addr),
                                            .byte_we(intern_ram_we),
                                            .rdata(intern_ram_data));
     memory #(`IO_REG_RAM_SIZE) io_reg_ram (.clk, .pause, .wdata,
+                                           .rst_n,
                                            .addr(io_reg_ram_addr),
                                            .byte_we(io_reg_ram_we),
                                            .rdata(io_reg_ram_data));
     memory #(`PALLET_RAM_SIZE) pallet_ram (.clk, .pause, .wdata,
+                                           .rst_n,
                                            .addr(pallet_ram_addr),
                                            .byte_we(pallet_ram_we),
                                            .rdata(pallet_ram_data));
     memory #(`VRAM_SIZE)       vram       (.clk, .pause, .wdata,
+                                           .rst_n,
                                            .addr(vram_addr),
                                            .byte_we(vram_we),
                                            .rdata(vram_data));
     memory #(`OAM_SIZE)        oam        (.clk, .pause, .wdata,
+                                           .rst_n,
                                            .addr(oam_addr),
                                            .byte_we(oam_we),
                                            .rdata(oam_data));
     memory #(`PAK_RAM_SIZE)    pak_ram    (.clk, .pause, .wdata,
+                                           .rst_n,
                                            .addr(pak_ram_addr),
                                            .byte_we(pak_ram_we),
                                            .rdata(pak_ram_data));
     /* ROMs */
     rom_memory #(`PAK_ROM_1_SIZE,"GBA_CPU_ROM_FILE")
-        pak_rom (.clk, .addr(pak_rom_addr), .rdata(pak_rom_data));
+        pak_rom (.clk, .rst_n, .addr(pak_rom_addr), .rdata(pak_rom_data));
     rom_memory #(`SYSTEM_ROM_SIZE,"GBA_CPU_BIOS_FILE")
-        sys_rom (.clk, .addr(sys_rom_addr), .rdata(sys_rom_data));
+        sys_rom (.clk, .rst_n, .addr(sys_rom_addr), .rdata(sys_rom_data));
 
     logic [3:0] byte_we;
     mem_decoder mdecode (.addr, .size, .write, .byte_we);
@@ -244,7 +252,7 @@ endmodule: sim_memory
 /* Simulation memory for RAM units, synchronous read/write */
 module memory
     #(parameter SIZE=10)
-    (input  logic clk, pause,
+    (input  logic clk, rst_n, pause,
      input  logic [SIZE:0] addr,
      input  logic [31:0] wdata,
      input  logic [3:0] byte_we,
@@ -261,8 +269,12 @@ module memory
      logic [7:0] b_rdata [3:0]; // Byte rdata
      assign rdata = {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]};
 
-     always_ff @(posedge clk) begin
-         if (~pause) begin
+     integer i;
+     always_ff @(posedge clk, negedge rst_n) begin
+         if (~rst_n) begin
+             for (i = 0; i <= SIZE; i++) mem[i] = 8'd0;
+             b_rdata = {8'b0, 8'b0, 8'b0, 8'b0};
+         end else if (~pause) begin
              if (byte_we[3]) mem[align_addr+3] <= b_wdata[3];
              if (byte_we[2]) mem[align_addr+2] <= b_wdata[2];
              if (byte_we[1]) mem[align_addr+1] <= b_wdata[1];
@@ -273,8 +285,8 @@ module memory
              b_rdata[0] <= mem[align_addr+0];
          end
      end
+     /*
 
-             /*
     always_comb begin
          b_rdata[3] = mem[align_addr+3];
          b_rdata[2] = mem[align_addr+2];
@@ -290,7 +302,7 @@ endmodule: memory
 module rom_memory
     #(parameter SIZE=10,
       parameter MEM_FILE="foo.txt")
-    (input  logic clk,
+    (input  logic clk, rst_n,
      input  logic [SIZE:0] addr,
      output logic [31:0] rdata);
 
@@ -302,20 +314,25 @@ module rom_memory
      logic [7:0] b_rdata [3:0]; // Byte rdata
      assign rdata = {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]};
 
-     always_ff @(posedge clk) begin
-         b_rdata[3] <= mem[align_addr+3];
-         b_rdata[2] <= mem[align_addr+2];
-         b_rdata[1] <= mem[align_addr+1];
-         b_rdata[0] <= mem[align_addr+0];
+     always_ff @(posedge clk, negedge rst_n) begin
+         if (~rst_n) begin
+             b_rdata = {8'b0, 8'b0, 8'b0, 8'b0};
+         end else begin
+             b_rdata[3] <= mem[align_addr+3];
+             b_rdata[2] <= mem[align_addr+2];
+             b_rdata[1] <= mem[align_addr+1];
+             b_rdata[0] <= mem[align_addr+0];
+         end
      end
-/*
+     /*
+
     always_comb begin
          b_rdata[3] = mem[align_addr+3];
          b_rdata[2] = mem[align_addr+2];
          b_rdata[1] = mem[align_addr+1];
          b_rdata[0] = mem[align_addr+0];
      end
-*/
+             */
 
     /* Initalize ROM */
     string filename;
@@ -334,21 +351,26 @@ module mem_decoder
      input  logic        write,
      output logic [3:0]  byte_we);
 
-     assign byte_we[3] = (addr[1:0] == 2'd3 && size == `MEM_SIZE_BYTE) ||
-                         (addr[1] && size == `MEM_SIZE_HALF) ||
-                         (size == `MEM_SIZE_WORD);
+     always_comb begin
+         byte_we = 4'd0;
+         if (write) begin
+             byte_we[3] = (addr[1:0] == 2'd3 && size == `MEM_SIZE_BYTE) ||
+                          (addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
 
-     assign byte_we[2] = (addr[1:0] == 2'd2 && size == `MEM_SIZE_BYTE) ||
-                         (addr[1] && size == `MEM_SIZE_HALF) ||
-                         (size == `MEM_SIZE_WORD);
+             byte_we[2] = (addr[1:0] == 2'd2 && size == `MEM_SIZE_BYTE) ||
+                          (addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
 
-     assign byte_we[1] = (addr[1:0] == 2'd1 && size == `MEM_SIZE_BYTE) ||
-                         (~addr[1] && size == `MEM_SIZE_HALF) ||
-                         (size == `MEM_SIZE_WORD);
+             byte_we[1] = (addr[1:0] == 2'd1 && size == `MEM_SIZE_BYTE) ||
+                          (~addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
 
-     assign byte_we[0] = (addr[1:0] == 2'd0 && size == `MEM_SIZE_BYTE) ||
-                         (~addr[1] && size == `MEM_SIZE_HALF) ||
-                         (size == `MEM_SIZE_WORD);
+             byte_we[0] = (addr[1:0] == 2'd0 && size == `MEM_SIZE_BYTE) ||
+                          (~addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
+         end
+     end
 
 endmodule: mem_decoder
 

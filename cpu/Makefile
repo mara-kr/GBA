@@ -24,7 +24,7 @@ test_alu: clean
 	$(VLOGAN) $(WORK_DIR)/ALU/alu_tb.sv && \
 	$(VCS) alu_sv_tb
 
-test_core: clean
+test_core:
 	$(INIT) && \
 	vhdlan -f $(WORK_DIR)/file_lists/core_files && \
 	$(VLOGAN) $(WORK_DIR)/core_tb_defines.vh $(WORK_DIR)/core_tb.sv && \
