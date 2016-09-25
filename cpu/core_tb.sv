@@ -46,14 +46,25 @@ module core_tb;
     integer cyc_count;
     /* So the simulation stops */
     initial begin
-        /*
-        $monitor("Cycle: %3d\tPC={%h}, PSR={%h}, DecodeInst = %h, Mode = %b,%b",
-                 cyc_count,DUT.RegFile_PCOut,
-                 DUT.PSR_CPSROut, DUT.IPDR_InstForDecode,
-                 DUT.RegFile_RFMode[4:0],
-                 DUT.ThDC_ThumbDecoderEn);
-        */
-        @(posedge clk);
+        $monitor("r0\t%h\nr1\t%h\nr2\t%h\nr3\t%h\nr4\t%h\nr5\t%h\nr6\t%h\n\
+r7\t%h\nr8\t%h\nr9\t%h\nr10\t%h\nr11\t%h\nr12\t%h\n\
+sp\t%h\nlr\t%h\n",
+                 DUT.RegFile_Inst.UMRegisterFile[0],
+                 DUT.RegFile_Inst.UMRegisterFile[1],
+                 DUT.RegFile_Inst.UMRegisterFile[2],
+                 DUT.RegFile_Inst.UMRegisterFile[3],
+                 DUT.RegFile_Inst.UMRegisterFile[4],
+                 DUT.RegFile_Inst.UMRegisterFile[5],
+                 DUT.RegFile_Inst.UMRegisterFile[6],
+                 DUT.RegFile_Inst.UMRegisterFile[7],
+                 DUT.RegFile_Inst.UMRegisterFile[8],
+                 DUT.RegFile_Inst.UMRegisterFile[9],
+                 DUT.RegFile_Inst.UMRegisterFile[10],
+                 DUT.RegFile_Inst.UMRegisterFile[11],
+                 DUT.RegFile_Inst.UMRegisterFile[12],
+                 DUT.RegFile_Inst.UMRegisterFile[13],
+                 DUT.RegFile_Inst.UMRegisterFile[14],
+                 );
         #200 $finish;
     end
 
@@ -72,15 +83,9 @@ module core_tb;
         for (i = 0; i <= 15; i++)
             $display("UserModeReg \t%2d: %h",i, DUT.RegFile_Inst.UMRegisterFile[i]);
         $display("\n");
-        for (i = 8; i <= 14; i++)
-            $display("FIQModeReg \t%2d: %h", i, DUT.RegFile_Inst.FIQMRegisterFile[i]);
-        $display("FIQ_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_FIQ);
         for (i = 13; i <= 14; i++)
             $display("SuperModeReg \t%2d: %h", i, DUT.RegFile_Inst.SVCMRegisterFile[i]);
         $display("Super_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_SVC);
-        for (i = 13; i <= 14; i++)
-            $display("ABORTModeReg \t%2d: %h", i, DUT.RegFile_Inst.AMRegisterFile[i]);
-        $display("ABORT_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_Abort);
         for (i = 13; i <= 14; i++)
             $display("IRQModeReg \t%2d: %h", i, DUT.RegFile_Inst.IRQMRegisterFile[i]);
         $display("IRQ_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_IRQ);
