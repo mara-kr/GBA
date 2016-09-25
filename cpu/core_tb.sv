@@ -15,7 +15,8 @@ module core_tb;
     logic rst_n;
     logic irq_n; // Interrupt Request
     // Memory interface
-    logic [31:0] addr, wdata, rdata;
+    logic [31:0] addr, wdata;
+    wire  [31:0] rdata;
     logic [1:0] size;
     logic abort, write;
 
@@ -101,75 +102,8 @@ module sim_memory
     input  logic [31:0] addr, wdata,
     input  logic [1:0]  size,
     input  logic        write,
-    output logic [31:0] rdata,
+    output wire  [31:0] rdata,
     output logic        abort, pause);
-
-    /* Memory read data signals*/
-    logic [31:0] sys_rom_data, extern_ram_data, intern_ram_data;
-    logic [31:0] io_reg_ram_data, pallet_ram_data, vram_data;
-    logic [31:0] oam_data, pak_ram_data, pak_rom_data;
-
-    /* Memory Byte Write Enable signals */
-    logic [3:0] extern_ram_we, intern_ram_we;
-    logic [3:0] io_reg_ram_we, pallet_ram_we;
-    logic [3:0] vram_we, oam_we, pak_ram_we;
-
-    logic [31:0] sys_rom_addr, extern_ram_addr, intern_ram_addr;
-    logic [31:0] io_reg_ram_addr, pallet_ram_addr, vram_addr;
-    logic [31:0] oam_addr, pak_ram_addr, pak_rom_addr;
-
-    /* Pak Rom set in always comb */
-    assign sys_rom_addr = addr;
-    assign extern_ram_addr = addr - `EXTERN_RAM_START;
-    assign intern_ram_addr = addr - `INTERN_RAM_START;
-    assign io_reg_ram_addr = addr - `IO_REG_RAM_START;
-    assign pallet_ram_addr = addr - `PALLET_RAM_START;
-    assign vram_addr = addr - `VRAM_START;
-    assign oam_addr = addr - `OAM_START;
-    assign pak_ram_addr = addr - `PAK_RAM_START;
-
-
-    /* GBA RAMs */
-    memory #(`EXTERN_RAM_SIZE) extern_ram (.clk, .pause, .wdata,
-                                           .rst_n,
-                                           .addr(extern_ram_addr),
-                                           .byte_we(extern_ram_we),
-                                           .rdata(extern_ram_data));
-    memory #(`INTERN_RAM_SIZE) intern_ram (.clk, .pause, .wdata,
-                                           .rst_n,
-                                           .addr(intern_ram_addr),
-                                           .byte_we(intern_ram_we),
-                                           .rdata(intern_ram_data));
-    memory #(`IO_REG_RAM_SIZE) io_reg_ram (.clk, .pause, .wdata,
-                                           .rst_n,
-                                           .addr(io_reg_ram_addr),
-                                           .byte_we(io_reg_ram_we),
-                                           .rdata(io_reg_ram_data));
-    memory #(`PALLET_RAM_SIZE) pallet_ram (.clk, .pause, .wdata,
-                                           .rst_n,
-                                           .addr(pallet_ram_addr),
-                                           .byte_we(pallet_ram_we),
-                                           .rdata(pallet_ram_data));
-    memory #(`VRAM_SIZE)       vram       (.clk, .pause, .wdata,
-                                           .rst_n,
-                                           .addr(vram_addr),
-                                           .byte_we(vram_we),
-                                           .rdata(vram_data));
-    memory #(`OAM_SIZE)        oam        (.clk, .pause, .wdata,
-                                           .rst_n,
-                                           .addr(oam_addr),
-                                           .byte_we(oam_we),
-                                           .rdata(oam_data));
-    memory #(`PAK_RAM_SIZE)    pak_ram    (.clk, .pause, .wdata,
-                                           .rst_n,
-                                           .addr(pak_ram_addr),
-                                           .byte_we(pak_ram_we),
-                                           .rdata(pak_ram_data));
-    /* ROMs */
-    rom_memory #(`PAK_ROM_1_SIZE,"GBA_CPU_ROM_FILE")
-        pak_rom (.clk, .rst_n, .addr(pak_rom_addr), .rdata(pak_rom_data));
-    rom_memory #(`SYSTEM_ROM_SIZE,"GBA_CPU_BIOS_FILE")
-        sys_rom (.clk, .rst_n, .addr(sys_rom_addr), .rdata(sys_rom_data));
 
     logic [3:0] byte_we;
     mem_decoder mdecode (.addr, .size, .write, .byte_we);
@@ -179,87 +113,80 @@ module sim_memory
     pause_generator pause_gen (.clk, .rst_n, .pause,
                                .en(pause_en), .num_cycles(num_cycles));
 
-    logic [31:0] prev_addr;
-    /* Data Mux should match last address presetned to memory
-     * (since reads are sequential)
-     */
-    always_ff @(posedge clk, negedge rst_n) begin
-        if (~rst_n) prev_addr <= 32'd0;
-        else prev_addr <= addr;
-    end
+    /* GBA RAMs */
+    memory #(`EXTERN_RAM_START, `EXTERN_RAM_SIZE)
+        extern_ram (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
+
+    memory #(`INTERN_RAM_START, `INTERN_RAM_SIZE)
+        intern_ram (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
+
+    memory #(`IO_REG_RAM_START, `IO_REG_RAM_SIZE)
+        io_reg_ram (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
+
+    memory #(`PALLET_RAM_START, `PALLET_RAM_SIZE)
+        pallet_ram (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
+
+    memory #(`VRAM_START, `VRAM_SIZE)
+        vram (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
+
+    memory #(`OAM_START, `OAM_SIZE)
+        oam (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
+
+    memory #(`PAK_RAM_START, `PAK_RAM_SIZE)
+        pak_ram (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
+
+    /* ROMs */
+    rom_memory #(`PAK_ROM_1_START, `PAK_ROM_1_SIZE, "GBA_CPU_ROM_FILE")
+        pak1_rom (.clk, .rst_n, .addr, .rdata);
+
+    rom_memory #(`PAK_ROM_2_START, `PAK_ROM_2_SIZE, "GBA_CPU_ROM_FILE")
+        pak2_rom (.clk, .rst_n, .addr, .rdata);
+
+    rom_memory #(`PAK_ROM_3_START, `PAK_ROM_3_SIZE, "GBA_CPU_ROM_FILE")
+        pak3_rom (.clk, .rst_n, .addr, .rdata);
+
+    rom_memory #(`SYSTEM_ROM_START, `SYSTEM_ROM_SIZE,"GBA_CPU_BIOS_FILE")
+        sys_rom (.clk, .rst_n, .addr, .rdata);
 
     /* Mapping of memory access to different memories & error handling */
     always_comb begin
-        extern_ram_we = 4'd0;
-        intern_ram_we = 4'd0;
-        io_reg_ram_we = 4'd0;
-        pallet_ram_we = 4'd0;
-        vram_we = 4'd0;
-        oam_we = 4'd0;
-        pak_ram_we = 4'd0;
         abort = 1'b0;
         pause_en = 1'b0;
         num_cycles = 3'd0;
-        pak_rom_addr = 0;
+        // TODO Rework abort logic with new system
+        /*
         if (prev_addr <= `SYSTEM_ROM_END) begin
-            rdata = sys_rom_data;
-            abort = write; /* Write to ROM illegal */
-        end else if (`EXTERN_RAM_START <= prev_addr && prev_addr <= `EXTERN_RAM_END) begin
-            rdata = extern_ram_data;
-            extern_ram_we = byte_we;
-        end else if (`INTERN_RAM_START <= prev_addr && prev_addr <= `INTERN_RAM_END) begin
-            rdata = intern_ram_data;
-            intern_ram_we = byte_we;
-        end else if (`IO_REG_RAM_START <= prev_addr && prev_addr <= `IO_REG_RAM_END) begin
-            rdata = io_reg_ram_data;
-            io_reg_ram_we = byte_we;
-        end else if (`PALLET_RAM_START <= prev_addr && prev_addr <= `PALLET_RAM_END) begin
-            rdata = pallet_ram_data;
-            pallet_ram_we = byte_we;
-        end else if (`VRAM_START <= prev_addr && prev_addr <= `VRAM_END) begin
-            rdata = vram_data;
-            vram_we = byte_we;
-        end else if (`OAM_START <= prev_addr && prev_addr <= `OAM_END) begin
-            rdata = oam_data;
-            oam_we = byte_we;
-        end else if (`PAK_RAM_START <= prev_addr && prev_addr <= `PAK_RAM_END) begin
-            rdata = pak_ram_data;
-            pak_ram_we = byte_we;
-        end else if (`PAK_ROM_1_START <= prev_addr && prev_addr <= `PAK_ROM_1_END) begin
-            /* Handles VCS max bit vector size */
-            if (`PAK_ROM_1_START + `PAK_ROM_1_SIZE < prev_addr)
-                $display("Address %h maps outisde of PAK_ROM_1 unit!", prev_addr);
-            rdata = pak_rom_data;
-            pak_rom_addr = prev_addr - `PAK_ROM_1_START;
-            abort = write; /* Write to ROM illegal */
-            pause_en = 1'b1; /* Approximate "wait state" logic */
+            abort = write; // Write to ROM illegal
+        end else if (`PAK_ROM_1_START <= prev_addr &&
+            prev_addr <= `PAK_ROM_1_END) begin
+            // Handles VCS max bit vector size
+            abort = write; // Write to ROM illegal
+            pause_en = 1'b1; // Approximate "wait state" logic
             num_cycles = 3'd1;
-        end else if (`PAK_ROM_2_START <= prev_addr && prev_addr <= `PAK_ROM_2_END) begin
-            if (`PAK_ROM_2_START + `PAK_ROM_2_SIZE < prev_addr)
-                $display("Address %h maps outisde of PAK_ROM_2 unit!", prev_addr);
-            rdata = pak_rom_data;
-            pak_rom_addr = prev_addr - `PAK_ROM_2_START;
-            abort = write; /* Write to ROM illegal */
-            pause_en = 1'b1; /* Approximate "wait state" logic */
+        end else if (`PAK_ROM_2_START <= prev_addr &&
+            prev_addr <= `PAK_ROM_2_END) begin
+            abort = write; // Write to ROM illegal
+            pause_en = 1'b1; // Approximate "wait state" logic
             num_cycles = 3'd2;
-        end else if (`PAK_ROM_3_START <= prev_addr && prev_addr <= `PAK_ROM_3_END) begin
-            if (`PAK_ROM_3_START + `PAK_ROM_3_SIZE < prev_addr)
-                $display("Address %h maps outisde of PAK_ROM_3 unit!", prev_addr);
-            rdata = pak_rom_data;
-            pak_rom_addr = prev_addr - `PAK_ROM_3_START;
-            abort = write; /* Write to ROM illegal */
-            pause_en = 1'b1; /* Approximate "wait state" logic */
+        end else if (`PAK_ROM_3_START <= prev_addr &&
+            prev_addr <= `PAK_ROM_3_END) begin
+            abort = write; // Write to ROM illegal
+            pause_en = 1'b1; // Approximate "wait state" logic
             num_cycles = 3'd3;
         end else if (~$isunknown(prev_addr) && write) begin
             $display("Addr %h does not map to memory region!", prev_addr);
         end
+        */
     end
 
 endmodule: sim_memory
 
-/* Simulation memory for RAM units, synchronous read/write */
+/* Simulation memory for RAM units, synchronous read/write
+ * Read data output in bus-style - High impedence if not in range
+ */
 module memory
-    #(parameter SIZE=10)
+    #(parameter START_ADDR=32'h0,
+      parameter SIZE=32'h10)
     (input  logic clk, rst_n, pause,
      input  logic [31:0] addr, wdata,
      input  logic [3:0] byte_we,
@@ -267,32 +194,43 @@ module memory
 
      logic [7:0] mem [SIZE:0];
 
-     logic [31:0] align_addr, write_addr;
-     assign align_addr = {addr[31:2], 2'b0};
-     logic [3:0] we;
-
+     logic [31:0] align_addr, prev_addr;
      logic [7:0] b_rdata [3:0]; // Byte rdata
-     assign rdata = {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]};
+     logic [3:0] we;
+     logic curr_in_range, prev_in_range;
 
-     integer i;
+     assign align_addr = (addr - START_ADDR) & 32'hFFFF_FFFC;
+
+     assign curr_in_range = (START_ADDR <= addr &&
+                             align_addr < SIZE);
+
+     assign rdata = (prev_in_range) ?
+                    {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]} : 32'bz;
+
      always_ff @(posedge clk, negedge rst_n) begin
          if (~rst_n) begin
-             for (i = 0; i <= SIZE; i++) mem[i] = 8'd0;
-             b_rdata = {8'b0, 8'b0, 8'b0, 8'b0};
-             write_addr <= 32'd0;
+             for (integer i = 0; i <= SIZE; i++) mem[i] = 8'd0;
+             b_rdata <= {8'b0, 8'b0, 8'b0, 8'b0};
+             prev_addr <= 32'd0;
+             prev_in_range <= 1'b0;
              we <= 4'd0;
          end else if (~pause) begin
+             prev_in_range <= curr_in_range;
              /* Write data presented 1 cycle after address & WE */
-             write_addr <= align_addr;
-             we <= byte_we;
-             if (we[3]) mem[write_addr+3] <= wdata[31:24];
-             if (we[2]) mem[write_addr+2] <= wdata[23:16];
-             if (we[1]) mem[write_addr+1] <= wdata[15:8];
-             if (we[0]) mem[write_addr] <= wdata[7:0];
-             b_rdata[3] <= mem[align_addr+3];
-             b_rdata[2] <= mem[align_addr+2];
-             b_rdata[1] <= mem[align_addr+1];
-             b_rdata[0] <= mem[align_addr+0];
+             prev_addr <= align_addr;
+             we <= (align_addr <= SIZE) ? byte_we : 4'd0;
+             if (prev_addr <= SIZE) begin
+                 if (we[3]) mem[prev_addr+3] <= wdata[31:24];
+                 if (we[2]) mem[prev_addr+2] <= wdata[23:16];
+                 if (we[1]) mem[prev_addr+1] <= wdata[15:8];
+                 if (we[0]) mem[prev_addr] <= wdata[7:0];
+             end
+             if (align_addr <= SIZE) begin
+                 b_rdata[3] <= mem[align_addr+3];
+                 b_rdata[2] <= mem[align_addr+2];
+                 b_rdata[1] <= mem[align_addr+1];
+                 b_rdata[0] <= mem[align_addr+0];
+             end
          end
      end
 
@@ -301,28 +239,40 @@ endmodule: memory
 /* Same as memory module, only initalizes memory to values in
  * `GBA_ROM_FILE (also no writes, since it's rom */
 module rom_memory
-    #(parameter SIZE=10,
-      parameter MEM_FILE="foo.txt")
+    #(parameter START_ADDR=32'h0,
+      parameter SIZE=32'h10,
+      parameter MEM_FILE="ENV_VAR_VALUE")
     (input  logic clk, rst_n,
      input  logic [31:0] addr,
      output logic [31:0] rdata);
 
      logic [7:0] mem [SIZE:0];
 
-     logic [31:0] align_addr;
-     assign align_addr = {addr[31:2], 2'd0};
-
+     logic [31:0] align_addr, prev_addr;
      logic [7:0] b_rdata [3:0]; // Byte rdata
-     assign rdata = {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]};
+     logic [3:0] we;
+     logic curr_in_range, prev_in_range;
+
+     assign align_addr = (addr - START_ADDR) & 32'hFFFF_FFFC;
+
+     assign curr_in_range = (START_ADDR <= addr &&
+                             align_addr < SIZE);
+
+     assign rdata = (prev_in_range) ?
+                    {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]} : 32'bz;
 
      always_ff @(posedge clk, negedge rst_n) begin
          if (~rst_n) begin
-             b_rdata = {8'b0, 8'b0, 8'b0, 8'b0};
+             b_rdata <= {8'b0, 8'b0, 8'b0, 8'b0};
+             prev_in_range <= 1'b0;
          end else begin
-             b_rdata[3] <= mem[align_addr+3];
-             b_rdata[2] <= mem[align_addr+2];
-             b_rdata[1] <= mem[align_addr+1];
-             b_rdata[0] <= mem[align_addr+0];
+             prev_in_range <= curr_in_range;
+             if (align_addr <= SIZE) begin
+                 b_rdata[3] <= mem[align_addr+3];
+                 b_rdata[2] <= mem[align_addr+2];
+                 b_rdata[1] <= mem[align_addr+1];
+                 b_rdata[0] <= mem[align_addr+0];
+             end
          end
      end
 
@@ -470,7 +420,7 @@ module mem_tb;
     logic [31:0] wdata, rdata, addr;
     logic [3:0] byte_we;
 
-    memory #(10) DUT (.*);
+    memory DUT (.*);
     initial begin
         addr = 32'd0;
         wdata = 32'd0;
