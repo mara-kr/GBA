@@ -8,6 +8,7 @@ module frequency_sweep (
         
         logic enable_flag;
         logic [10:0] freq_shadow;
+        logic [10:0] new_frequency;
         logic [2:0] sweep_shift;
         logic decrease;
         logic [2:0] sweep_period;
@@ -15,6 +16,7 @@ module frequency_sweep (
         logic [11:0] calc_freq;
         logic [10:0] freq;
         logic initialization;
+        logic overflow;
 
         assign sweep_shift = NR10[2:0];
         assign decrease = NR10[3];

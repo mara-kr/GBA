@@ -1,5 +1,3 @@
-//TODO: need to add volume control
-
 module wave_channel (
     input logic system_clock,
     input logic reset,
@@ -29,7 +27,6 @@ module wave_channel (
     assign frequency_timer_period = (2048-frequency)*4;
     assign waveform_pattern = {addr_0x9E, addr_0x9C, addr_0x9A, addr_0x98, 
                                 addr_0x96, addr_0x94, addr_0x92, addr_0x90};
-    assign index_offset = (top_byte) ? 4 : 0;
     assign wave = (waveform_pattern[(position_counter+3)-:4]) >> volume_control;
 
     frequency_timer ft(system_clock, reset, frequency_timer_period, frequency_timer_clock);

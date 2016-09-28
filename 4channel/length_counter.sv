@@ -16,6 +16,7 @@ module length_counter (
     logic old_sound_length_counter;
     logic update_regs;
     logic [7:0]old_NRx1;
+    logic update_sound_length_counter;
 
     logic [5:0] counter;
 

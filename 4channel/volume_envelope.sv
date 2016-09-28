@@ -50,7 +50,7 @@ module volume_envelope (
 endmodule: volume_envelope
 
  
-module clock_divider_test ();
+module volume_envelope_test ();
     logic clock;
     logic [7:0] NRx2;
     logic [3:0] volume;
@@ -96,4 +96,4 @@ module clock_divider_test ();
     always    
          #1 clock = !clock;
 
-endmodule: clock_divider_test;
+endmodule: volume_envelope_test;
