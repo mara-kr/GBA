@@ -61,9 +61,10 @@ endmodule: wave_channel
 
 
 /** test only checks that position counter gets incremented correctly **/
-module wave_channel_test ();
+/**module wave_channel_test ();
     logic clock;
     logic reset;
+    logic [7:0] NR32;
     logic [7:0] NR33;
     logic [7:0] NR34;
     logic [15:0] addr_0x90;
@@ -77,7 +78,7 @@ module wave_channel_test ();
     logic [3:0] wave;
 
 
-    wave_channel dut(clock, reset, NR33, NR34, addr_0x90, addr_0x92,
+    wave_channel dut(clock, reset, NR32, NR33, NR34, addr_0x90, addr_0x92,
          addr_0x94, addr_0x96, addr_0x98, addr_0x9A, addr_0x9C, addr_0x9E, wave);
 
     initial begin
@@ -104,4 +105,4 @@ module wave_channel_test ();
     always 
         #1 clock = !clock;
 
-endmodule: wave_channel_test
+endmodule: wave_channel_test*/
