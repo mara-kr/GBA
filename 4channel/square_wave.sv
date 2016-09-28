@@ -4,7 +4,7 @@ module square_wave (
     input logic [7:0] NRx1,
     input logic [7:0] NRx3,
     input logic [7:0] NRx4,
-    output logic [27:0] wave);
+    output logic [3:0] wave);
 
     //clocked at frequeny*4
     logic [2:0] num_cycles;
@@ -34,11 +34,13 @@ module square_wave (
         end
         else if (num_cycles < max_cycles_high) begin
             num_cycles <= num_cycles + 1;
-            wave = 28'b0000_1000_0000_0000_0000_0000_0000; //equivalent to a 1
+           // wave = 28'b0000_1000_0000_0000_0000_0000_0000; //equivalent to a 1
+            wave = 4'b1;
         end
         else begin
             num_cycles <= num_cycles + 1;
-            wave = 28'b1111_1000_0000_0000_0000_0000_0000; //equivalent to a -1
+            //wave = 28'b1111_1000_0000_0000_0000_0000_0000; //equivalent to a -1
+            wave = 4'b1111;
         end
     end
 
@@ -50,12 +52,12 @@ module square_wave_test();
     logic [7:0] NRx1;
     logic [7:0] NRx3;
     logic [7:0] NRx4;
-    logic [27:0] wave;
+    logic [3:0] wave;
 
     square_wave dut(clock, reset, NRx1, NRx3, NRx4, wave);
     initial begin
         $monitor("freq_clock=%b, reset=%b, duty_cycle:%b, freq_bits;%b, output:%b, num_cycles=%d",
-             dut.frequency_timer_clock, reset, NRx1[7:6], {NRx4[2:0], NRx3[7:0]}, wave[27:23], dut.num_cycles);
+             dut.frequency_timer_clock, reset, NRx1[7:6], {NRx4[2:0], NRx3[7:0]}, wave, dut.num_cycles);
 
         clock = 0;
         reset = 1;

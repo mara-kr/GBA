@@ -3,7 +3,7 @@ module noise_channel(
     input logic system_clock, //frequency timer
     input logic reset,
     input logic [7:0] NR43,
-    output logic wave);
+    output logic [3:0] wave);
     
     logic [14:0] LFSR;
     logic [14:0] LFSR_right_shift;
@@ -59,7 +59,7 @@ module noise_channel_test();
     logic clock;
     logic reset;
     logic [7:0] NR43;
-    logic wave;
+    logic [3:0] wave;
 
     noise_channel dut(clock, reset, NR43, wave);
 

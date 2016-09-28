@@ -9,13 +9,13 @@ module square1 (
     input logic [7:0] NR12,
     inout logic [7:0] NR13,
     inout logic [7:0] NR14,
-    output logic [23: 0]wave); //TODO: maybe change this to 8 bits everywhere?
+    output logic [3: 0]wave); //TODO: maybe change this to 8 bits everywhere?
 
     logic clock_256;
     logic clock_128;
     logic clock_64;
     logic enable_square_wave;
-    logic [23:0] square_wave;
+    logic [3:0] square_wave;
     logic [3:0] volume_level;
 
     assign wave = wave >> volume_level;
@@ -37,13 +37,13 @@ module square2 (
     input logic [7:0] NR22,
     input logic [7:0] NR23,
     input logic [7:0] NR24,
-    output logic wave);
+    output logic [3:0] wave);
 
     logic clock_256;
     logic clock_128;
     logic clock_64;
     logic enable_square_wave;
-    logic [23:0] square_wave;
+    logic [3:0] square_wave;
     logic [3:0] volume_level;
 
     assign wave = wave >> volume_level;
@@ -96,13 +96,13 @@ module noise (
     input logic [7:0] NR42,
     input logic [7:0] NR43,
     input logic [7:0] NR44,
-    output logic wave);
+    output logic [3:0] wave);
 
     logic clock_256;
     logic clock_128;
     logic clock_64;
     logic enable_square_wave;
-    logic [23:0] square_wave;
+    logic [3:0] square_wave;
     logic [3:0] volume_level;
 
     assign wave = wave >> volume_level;

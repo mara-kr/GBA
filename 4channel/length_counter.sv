@@ -5,10 +5,10 @@
 //      3. there is no reset, maybe need to set all registers to zero?
 module length_counter (
     input logic clock_256,
-    input logic [23:0] input_wave,
+    input logic [3:0] input_wave,
     input logic [7:0] NRx1, 
     input logic [7:0] NRx4,
-    output logic [23:0] wave);
+    output logic [3:0] wave);
 
     logic internal_enable;
     logic initialization_flag;
@@ -25,7 +25,7 @@ module length_counter (
     //1: counter
     assign sound_length_counter = NRx4[6];
     assign internal_enable = (counter) ? 1'b1 : 1'b0;
-    assign wave = (internal_enable) ? input_wave : 23'b0;
+    assign wave = (internal_enable) ? input_wave : 4'b0;
 
     assign update_regs = (old_NRx1 != NRx1) ? 1'b1 : 1'b0;
     assign update_sound_length_counter = (old_sound_length_counter != sound_length_counter) ? 
@@ -49,10 +49,10 @@ endmodule: length_counter
 module length_counter_test ();
 
     logic clock;
-    logic [23:0] input_wave;
+    logic [3:0] input_wave;
     logic [7:0] NRx1;
     logic [7:0] NRx4;
-    logic [23:0] wave;
+    logic [3:0] wave;
 
     length_counter dut(clock, input_wave, NRx1, NRx4, wave);
 
