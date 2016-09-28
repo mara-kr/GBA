@@ -18,7 +18,7 @@ module square1 (
     clock_divider(clock_512, reset, clock_256,  clock_128, clock_64);
     frequency_sweep(clock_128, reset, NR10, NR13, NR14, enable_square_wave);
     square_wave (system_clock, reset, NR11, NR13, NR14, square_wave);
-    length_counter (clock_256, square_wave, NR11, NR14, wave); //TODO: check volume level??
+    length_counter (clock_256, square_wave, NR11, NR14, wave);
     volume_envelope(clock_64, NR12, volume_level);
  
 endmodule: square1
@@ -41,12 +41,11 @@ module square2 (
 
     clock_divider(clock_512, reset, clock_256,  clock_128, clock_64);
     square_wave (system_clock, reset, NR11, NR13, NR14, square_wave);
-    length_counter (clock_256, square_wave, NR11, NR14, wave); //TODO: check volume level??
+    length_counter (clock_256, square_wave, NR11, NR14, wave);
     volume_envelope(clock_64, NR12, volume_level);
 
 endmodule: square2
 
-//TODO: what do you do with with NR33 and NR34 regs??
 module wave (
     input logic [7:0] NR30,
     input logic [7:0] NR31,
@@ -64,9 +63,10 @@ module wave (
     output logic [3:0] wave)
 
     clock_divider(clock_512, reset, clock_256,  clock_128, clock_64);
-    wave_channel (system_clock, reset, addr_0x90, addr_0x92, addr_0x94,
+    wave_channel (system_clock, reset, NR32, NR33, NR34,
+                addr_0x90, addr_0x92, addr_0x94,
                 addr_0x96, addr_0x98, addr_0x9A, addr_0x9C, addr_0x9E, wave);
-    length_counter (clock_256, square_wave, NR31, NR34, wave); //TODO: check volume level??
+    length_counter (clock_256, square_wave, NR31, NR34, wave);
 
 endmodule: wave
 
@@ -84,4 +84,7 @@ module noise (
     volume_envelope(clock_64, NR42, volume_level);
 
 endmodule: noise
+
+
+//TODO: need to add the mixer to add all 4 channels
 
