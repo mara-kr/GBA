@@ -2,8 +2,8 @@ module frequency_sweep (
         input logic clock_128,
         input logic reset,
         input logic [7:0] NR10,
-        inout logic [7:0] NR13, //TODO: change this to an inout wire
-        inout logic [7:0] NR14,
+        inout wire [7:0] NR13, //TODO: change this to an inout wire
+        inout wire [7:0] NR14,
         output logic enable_square_wave);
         
         logic enable_flag;
@@ -26,7 +26,7 @@ module frequency_sweep (
                                         (freq_shadow >> sweep_shift) + freq_shadow;
         assign overflow = (calc_freq > 2047) ? 1 : 0;
         assign enable_square_wave = ~overflow;
-        assign intialization = NR14[7];
+        assign initialization = NR14[7];
 
         assign new_frequency = (!overflow && enable_flag) ? calc_freq[10:0] : {NR14[2:0], NR13};
         assign {NR14[2:0],NR13} = (!overflow && enable_flag) ? calc_freq[10:0] : {NR14[2:0], NR13};
