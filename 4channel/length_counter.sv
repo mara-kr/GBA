@@ -8,7 +8,7 @@ module length_counter (
     input logic [23:0] input_wave,
     input logic [7:0] NRx1, 
     input logic [7:0] NRx4,
-    output logic [23:0] volume);
+    output logic [23:0] wave);
 
     logic internal_enable;
     logic initialization_flag;
@@ -24,7 +24,7 @@ module length_counter (
     //1: counter
     assign sound_length_counter = NRx4[6];
     assign internal_enable = (counter) ? 1'b1 : 1'b0;
-    assign volume = (internal_enable) ? input_wave : 23'b0;
+    assign wave = (internal_enable) ? input_wave : 23'b0;
 
     assign update_regs = (old_NRx1 != NRx1) ? 1'b1 : 1'b0;
     assign update_sound_length_counter = (old_sound_length_counter != sound_length_counter) ? 
@@ -51,14 +51,13 @@ module length_counter_test ();
     logic [23:0] input_wave;
     logic [7:0] NRx1;
     logic [7:0] NRx4;
-    logic [23:0] volume;
+    logic [23:0] wave;
 
-    length_counter dut(clock, input_wave, NRx1, NRx4, volume);
+    length_counter dut(clock, input_wave, NRx1, NRx4, wave);
 
     initial begin 
-        $monitor("clock= %b, NRx1=%b, NRx4=%b, volume=%h, int_enable=%b, counter=%d \ 
-                    sound_l_cnter = %d, update_regs=%d" ,
-                clock, NRx1, NRx4, volume, dut.internal_enable, dut.counter, 
+        $monitor("clock= %b, NRx1=%b, NRx4=%b, wave=%h, int_enable=%b, counter=%d sound_l_cnter = %d, update_regs=%d" ,
+                clock, NRx1, NRx4, wave, dut.internal_enable, dut.counter, 
                 dut.sound_length_counter, dut.update_regs);
 
          clock = 0;
@@ -67,11 +66,11 @@ module length_counter_test ();
          #2
          input_wave = 24'hDEADBE;
         
-         NRx1 = 8'd10; //volume should be set to the input wave until time is up
+         NRx1 = 8'd10; //wave should be set to the input wave until time is up
          NRx4[6] = 1; //set to count mode
          NRx4[7] = 0; //turn off initialization
-        #18 assert (volume == input_wave);
-        #2 assert (volume == 0);
+        #18 assert (wave == input_wave);
+        #2 assert (wave == 0);
         
         #6 NRx1 = 8'd5;
         #4 NRx1 = 5'd6; //reset the counter
@@ -92,7 +91,7 @@ module length_counter_test ();
         #2 assert(dut.counter == (NRx1 - 1));
         #2 NRx4[7] = 0; //counter should reset
         #14 assert(dut.counter == 0);
-            assert (volume == 0);
+            assert (wave == 0);
 
 
 
