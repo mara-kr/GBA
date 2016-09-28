@@ -1,3 +1,5 @@
+//TODO: need to add volume control
+
 module wave_channel (
     input logic system_clock,
     input logic reset,

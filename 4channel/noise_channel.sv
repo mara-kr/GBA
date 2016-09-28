@@ -1,4 +1,4 @@
-
+//TODO: why is wave only 1 bit??
 module noise_channel(
     input logic system_clock, //frequency timer
     input logic reset,
