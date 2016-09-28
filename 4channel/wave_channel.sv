@@ -3,6 +3,7 @@
 module wave_channel (
     input logic system_clock,
     input logic reset,
+    input logic [7:0] NR32,
     input logic [7:0] NR33,
     input logic [7:0] NR34,
     input logic [15:0] addr_0x90,
@@ -20,6 +21,7 @@ module wave_channel (
     logic frequency_timer_clock;
     logic [6:0] position_counter;
     logic [127:0]waveform_pattern;
+    logic [3:0] volume_control;
 
     logic top_byte;
     
@@ -28,9 +30,19 @@ module wave_channel (
     assign waveform_pattern = {addr_0x9E, addr_0x9C, addr_0x9A, addr_0x98, 
                                 addr_0x96, addr_0x94, addr_0x92, addr_0x90};
     assign index_offset = (top_byte) ? 4 : 0;
-    assign wave = waveform_pattern[(position_counter+3)-:4];
+    assign wave = (waveform_pattern[(position_counter+3)-:4]) >> volume_control;
 
     frequency_timer ft(system_clock, reset, frequency_timer_period, frequency_timer_clock);
+
+    always_comb begin
+        case (NR32[7:5])
+            3'b000: volume_control = 3'd4;
+            3'b001: volume_control = 3'd0;
+            3'b010: volume_control = 3'd1;
+            3'b011: volume_control = 3'd2;
+            default: volume_control = 3'd3; //forced 3/4 output
+        endcase
+    end
 
     always_ff @(posedge frequency_timer_clock, posedge reset) begin
         if(reset) begin
