@@ -27,3 +27,6 @@ ARM7TDMI/.synopsys*
 ARM7TDMI/.restart*
 ALU/AN.DB/*
 
+cpu/build/*
+cpu/inter.vpd
+cpu/vc_hdrs.h
