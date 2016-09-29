@@ -487,6 +487,12 @@ component ControlLogic is port(
 					    RmBitZero        : in std_logic;
 
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       -- AddrLow for DataRotator in IPDR
+					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        Addr             : in  std_logic_vector(31 downto 0);
+                        DataAddrLow      : out std_logic_vector(1 downto 0);
+
+					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					   -- External signals
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					   -- Interrupts
@@ -581,6 +587,7 @@ signal IPDR_Offset12Bit         : std_logic_vector(31 downto 0) := (others => '0
 signal IPDR_Offset8Bit          : std_logic_vector(31 downto 0) := (others => '0');
 signal IPDR_Immediate8Bit       : std_logic_vector(31 downto 0) := (others => '0');
 signal IPDR_EndianMode          : std_logic := '0';
+signal IPDR_DataAddrLow         : std_logic_vector(1 downto 0) := (others => '0');
 
 signal IPDR_SignExt			    : std_logic := '0';
 signal IPDR_ZeroExt			    : std_logic := '0';
@@ -784,7 +791,7 @@ IPDR_Inst:component IPDR port map(
 					   -- Interfaces for the internal CPU modules
 					   InstForDecode        => IPDR_InstForDecode,
 					   InstFetchAbort       => IPDR_InstFetchAbort,
-					   ADDRLow              => ADDR_Int(1 downto 0),
+					   ADDRLow              => IPDR_DataAddrLow,
 					   StagnatePipeline	    => IPDR_StagnatePipeline,
 					   StagnatePipelineDel	=> IPDR_StagnatePipelineDel,
 					   FirstInstFetch		=> IPRD_FirstInstFetch,
@@ -1111,6 +1118,12 @@ ControlLogic_Inst:component ControlLogic port map(
 					   -- Rm[0] input for ARM/Thumb state detection during BX
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					   RmBitZero  => RegFile_BBusOut(0),  -- !!! Check A or B bus
+
+					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       -- AddrLow for DataRotator in IPDR
+					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        Addr        => ADDR_Int,
+                        DataAddrLow => IPDR_DataAddrLow,
 
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					   -- External signals

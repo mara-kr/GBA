@@ -320,7 +320,7 @@ begin
         DecoderOut(23 downto 11) <= (23 downto 11 => HalfWordForDecode(10)); -- sign extend
         DecoderOut(10 downto 0) <= HalfWordForDecode(10 downto 0);
     elsif (HalfWordForDecode(15 downto 13)="111") then         -- BL
-        DecoderOut(31 downto 28) <= "1111";
+        DecoderOut(31 downto 28) <= "1110";
         DecoderOut(27 downto 24) <= "1011";
         DecoderOut(23 downto 11) <= (23 downto 11 => HalfWordForDecode(10));
         DecoderOut(10 downto 0)  <= HalfWordForDecode(10 downto 0);

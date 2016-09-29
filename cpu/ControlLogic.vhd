@@ -177,6 +177,13 @@ entity ControlLogic is port(
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					    RmBitZero        : in std_logic;
 
+
+					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       -- AddrLow for DataRotator in IPDR
+					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        Addr             : in  std_logic_vector(31 downto 0);
+                        DataAddrLow      : out std_logic_vector(1 downto 0);
+
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 					   -- External signals
 					   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -192,6 +199,8 @@ entity ControlLogic is port(
 end ControlLogic;
 
 architecture RTL of ControlLogic is
+
+signal LastAddr     : std_logic_vector(31 downto 0);
 
 -- Saved value of InstForDecode input(valid for the whole time of instruction execution)
 signal InstForDecodeLatched  : std_logic_vector(InstForDecode'range) := (others =>'0');
@@ -1616,8 +1625,12 @@ AdrCntEn <= not StagnatePipeline_Int or  -- Address counter is enabled during lo
 
 ExceptionVectorSel <= ExceptFC;  -- First cycle of exception handling
 
-PCIncStep  <= '0'; -- TBD  '0'- ARM(+4) / '1'- Thumb(+2)
-AdrIncStep <= '0'; -- TBD  '0'- ARM(+4) or STM/LDM / '1'- Thumb(+2)
+
+-- TBD  '0'- ARM(+4) / '1'- Thumb(+2)
+PCIncStep  <= CPSRTFlag or (IDR_BX and (not CPSRTFlag));
+-- TBD  '0'- ARM(+4) or STM/LDM / '1'- Thumb(+2)
+AdrIncStep <= (CPSRTFlag or (IDR_BX and (not CPSRTFlag))) and
+              (not IDR_STM) and (not IDR_LDM);
 
 -- Switch ADDR register to the input of PC
 AdrToPCSel <=  ExceptFC or -- First cycle of interrupt entering
@@ -2406,7 +2419,7 @@ PSRMode <= NewMode when ExceptFC='1' else -- First cycle of the exception
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- Thumb decoder enable
-ThumbDecoderEn <= '0'; -- TBD
+ThumbDecoderEn <= CPSRTFlag; -- TBD
 
 -- TBD
 WRITE <= ((IDR_STR or IDR_STRB or IDR_STRBT or IDR_STRT or IDR_STRH)and
@@ -2424,10 +2437,23 @@ WriteAdr <= WriteAdr_Int;
 -- TBD (Thumb mode suppport should be added)
 SIZE  <= CTS_B when (IDR_LDRB or IDR_LDRBT or IDR_STRB or IDR_STRBT or IDR_LDRSB)='1' and
                      ExecuteInst='1' and nLDR_St0='0' and STR_St='0' else
-		 CTS_HW when (IDR_LDRH or IDR_STRH or IDR_LDRSH)='1' and
-                     ExecuteInst='1' and nLDR_St0='0' and STR_St='0' else
+    	 CTS_HW when ((IDR_LDRH or IDR_STRH or IDR_LDRSH)='1' and
+                      ExecuteInst='1' and nLDR_St0='0' and STR_St='0') else
          CTS_W;
 
+AddrReg:process(nRESET,CLK)
+begin
+if nRESET='0' then
+    LastAddr <= (others => '0');
+elsif CLK='1' and CLK'event then
+    if CLKEN='1' then
+        LastAddr <= Addr;
+    end if;
+end if;
+end process;
+
+DataAddrLow <= "00" when (IDR_LDR='1' or IDR_LDRT='1') else
+               LastAddr(1) & '0' when (IDR_LDRH='1' or IDR_LDRSH='1') else
+               LastAddr(1 downto 0);
 
 end RTL;
-
