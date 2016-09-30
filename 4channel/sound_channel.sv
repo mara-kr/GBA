@@ -1,5 +1,6 @@
-//TODO: check system clock should be 24 MHZ
+//TODO: check system clock should be 4 MHZ
 //TODO: double check with specs, check every register
+//TODO: assumption that I can upscale 4 bit audio to 24 bit
 module square1 (
     input logic system_clock,
     input logic clock_512,
