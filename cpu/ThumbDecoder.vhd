@@ -6,8 +6,12 @@
 
 library	IEEE;
 use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 
 entity ThumbDecoder is port(
+                       CLK             : in  std_logic;
+                       nRESET          : in  std_logic;
+                       CLKEN           : in  std_logic;
 					   InstForDecode   : in  std_logic_vector(31 downto 0);
 					   ExpandedInst	   : out std_logic_vector(31 downto 0);
 					   HalfWordAddress : in  std_logic;
@@ -23,6 +27,8 @@ signal DecoderOut        : std_logic_vector(31 downto 0) := (others => '0');
 
 signal ThBLFP_Int : std_logic := '0'; -- The first part of Thumb branch with link instruction
 signal ThBLSP_Int : std_logic := '0'; -- The second part of Thumb branch with link instruction
+signal ThBLFP_Reg : std_logic_vector(10 downto 0) := (others => '0');
+signal ThBLFP_Reg_EN : std_logic;
 
 -----------------------------------------------------------------
 -- Instruction types
@@ -43,10 +49,22 @@ HalfWordForDecode <= InstForDecode(15 downto 0) when HalfWordAddress='0' else
 ExpandedInst <= DecoderOut when ThumbDecoderEn='1' else -- Thumb instruction
 				InstForDecode;                          -- ARM instruction
 
+ThBL_Reg:process(nRESET, CLK)
+begin
+    if nRESET='0' then
+        ThBLFP_Reg <= (others => '0');
+    elsif CLK='1' and CLK'event then -- Maybe need CLKEN?
+        if (CLKEN='1' and ThBLFP_Reg_EN='1') then
+            ThBLFP_Reg <= HalfWordForDecode(10 downto 0);
+        end if;
+    end if;
+end process;
+
 -- Combinatorial process
 -- Naming based on ARM ISA
 ThDcdComb:process(HalfWordForDecode)
 begin
+    ThBLFP_Reg_EN <= '0';
     -- Move Instructions
     if (HalfWordForDecode(15 downto 11)="00100") then           -- MOV1
         DecoderOut(31 downto 28) <= "1110";
@@ -320,10 +338,21 @@ begin
         DecoderOut(23 downto 11) <= (23 downto 11 => HalfWordForDecode(10)); -- sign extend
         DecoderOut(10 downto 0) <= HalfWordForDecode(10 downto 0);
     elsif (HalfWordForDecode(15 downto 13)="111") then         -- BL
-        DecoderOut(31 downto 28) <= "1110";
-        DecoderOut(27 downto 24) <= "1011";
-        DecoderOut(23 downto 11) <= (23 downto 11 => HalfWordForDecode(10));
-        DecoderOut(10 downto 0)  <= HalfWordForDecode(10 downto 0);
+        if (HalfWordForDecode(12 downto 11)="10") then
+            ThBLFP_Reg_EN <= '1';
+            DecoderOut(31 downto 28) <= "1110";
+            DecoderOut(27 downto 24) <= "0000";
+            DecoderOut(23 downto 11) <= "0000000000000";
+            DecoderOut(10 downto 0) <= "00000000000";
+        else -- HalfWordForDecode(12:11)="11"
+            DecoderOut(31 downto 28) <= "1110";
+            DecoderOut(27 downto 24) <= "1011";
+            DecoderOut(23) <= ThBLFP_Reg(10);
+            DecoderOut(22 downto 12) <= ThBLFP_Reg;
+            DecoderOut(11 downto 1)  <=
+                std_logic_vector(unsigned(HalfWordForDecode(10 downto 0)) - 1);
+            DecoderOut(0) <= '0';
+        end if;
     elsif (HalfWordForDecode(15 downto 7)="010001110") then    -- BX
         DecoderOut(31 downto 28) <= "1110";
         DecoderOut(27 downto 24) <= "0001";

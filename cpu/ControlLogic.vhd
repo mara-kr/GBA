@@ -2452,7 +2452,8 @@ elsif CLK='1' and CLK'event then
 end if;
 end process;
 
-DataAddrLow <= "00" when (IDR_LDR='1' or IDR_LDRT='1') else
+DataAddrLow <= LastAddr(1 downto 0) when (BRANCH_ST1='1' or BRANCH_ST2='1') else
+              "00" when (IDR_LDR='1' or IDR_LDRT='1') else
                LastAddr(1) & '0' when (IDR_LDRH='1' or IDR_LDRSH='1') else
                LastAddr(1 downto 0);
 

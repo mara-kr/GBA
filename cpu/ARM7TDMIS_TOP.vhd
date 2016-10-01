@@ -310,6 +310,9 @@ end component;
 
 -- Combinatorial Thumb decoder
 component ThumbDecoder is port(
+                       CLK             : in  std_logic;
+                       nRESET          : in  std_logic;
+                       CLKEN           : in  std_logic;
 					   InstForDecode   : in  std_logic_vector(31 downto 0);
 					   ExpandedInst	   : out std_logic_vector(31 downto 0);
 					   HalfWordAddress : in  std_logic;
@@ -940,7 +943,10 @@ ThumbDecoder_Inst:component ThumbDecoder
 					   HalfWordAddress => IPDR_HalfWordAddress,
 					   ThumbDecoderEn  => ThDC_ThumbDecoderEn,
 					   ThBLFP          => ThDC_ThBLFP,
-                       ThBLSP          => ThDC_ThBLSP
+                       ThBLSP          => ThDC_ThBLSP,
+                       CLK             => CLK,
+                       nRESET          => nRESET,
+                       CLKEN           => CLKEN
 					       );
 
 end generate;

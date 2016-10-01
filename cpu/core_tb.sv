@@ -47,26 +47,15 @@ module core_tb;
     integer cyc_count;
     /* So the simulation stops */
     initial begin
-        $monitor("r0\t%h\nr1\t%h\nr2\t%h\nr3\t%h\nr4\t%h\nr5\t%h\nr6\t%h\n\
-r7\t%h\nr8\t%h\nr9\t%h\nr10\t%h\nr11\t%h\nr12\t%h\n\
-sp\t%h\nlr\t%h\n",
+        $monitor("r0\t%h\nr1\t%h\nsp\t%h\nlr\t%h\nPC\t%h\nCPSR\t%h\n",
                  DUT.RegFile_Inst.UMRegisterFile[0],
                  DUT.RegFile_Inst.UMRegisterFile[1],
-                 DUT.RegFile_Inst.UMRegisterFile[2],
-                 DUT.RegFile_Inst.UMRegisterFile[3],
-                 DUT.RegFile_Inst.UMRegisterFile[4],
-                 DUT.RegFile_Inst.UMRegisterFile[5],
-                 DUT.RegFile_Inst.UMRegisterFile[6],
-                 DUT.RegFile_Inst.UMRegisterFile[7],
-                 DUT.RegFile_Inst.UMRegisterFile[8],
-                 DUT.RegFile_Inst.UMRegisterFile[9],
-                 DUT.RegFile_Inst.UMRegisterFile[10],
-                 DUT.RegFile_Inst.UMRegisterFile[11],
-                 DUT.RegFile_Inst.UMRegisterFile[12],
                  DUT.RegFile_Inst.UMRegisterFile[13],
                  DUT.RegFile_Inst.UMRegisterFile[14],
+                 DUT.RegFile_Inst.UMRegisterFile[15],
+                 DUT.PSR_Inst.CPSR
                  );
-        #200 $finish;
+        #150 $finish;
     end
 
     /* Clock cycle counter */
