@@ -1,6 +1,7 @@
-//`default_nettype none
+`default_nettype none
 module audio_testbench_sv (
-    input  logic clk_100,
+    input logic clk_100,
+    input logic BTNC,
     output logic AC_ADR0,
     output logic AC_ADR1,
     output logic AC_GPIO0,
@@ -17,12 +18,17 @@ module audio_testbench_sv (
     input  logic SW4,
     input  logic SW5,
     input  logic SW6,
-    input  logic SW7,
-    input  logic BTNC);
+    input  logic SW7);
 
+
+    //logic clk_100;
+    //logic BTNC; 
+    
+    //logic clk_100;
+    //logic BTNC;
     //audio codec
     logic        clk_100_buffered;
-    logic [5:0]  counter;
+    logic [5:0]  counter_saw_tooth;
     logic [23:0] hphone_l, hphone_r;
     logic        hphone_valid;
     logic        new_sample;
@@ -48,6 +54,15 @@ module audio_testbench_sv (
     logic [7:0] NR23;
     logic [7:0] NR24;
     logic [3:0] channel_2;
+    
+    //square1 channel
+    logic [7:0] NR10;
+    logic [7:0] NR11;
+    wire [7:0] NR13;
+    wire [7:0] NR14;
+    logic [3:0] channel_1;
+    logic set_N13_NR14_z; 
+
     
     //noise channel
     logic [7:0] NR43;
@@ -114,9 +129,9 @@ module audio_testbench_sv (
         .addr_0x9E(addr_0x9E),
         .output_wave(channel_3));
     
-    square2 sq(
-            .system_clock(),
-            .clock_512(),
+    square2 sq2(
+            .system_clock(clk_100),
+            .clock_512(clk_100),
             .reset(BTNC),
             .NR20(NRx0),
             .NR21(NR21),
@@ -125,11 +140,22 @@ module audio_testbench_sv (
             .NR24(NR24),
             .output_wave(channel_2));
     
+    square1 sq1(
+        .system_clock(clk_100),
+        .clock_512(clk_100),
+        .reset(BTNC),
+        .NR10,
+        .NR11(NR11),
+        .NR12(NRx2),
+        .NR13(NR13),
+        .NR14(NR14),
+        .output_wave(channel_1),
+        .set_N13_NR14_z(set_N13_NR14_z));
     
     //inputs for wave channel
     //assign NR32 = volume control
     assign NR33 = 8'b11111111;
-    assign NR34 = 3'b111;
+    assign NR34 = 8'b111;
     assign addr_0x90 = {4'd2,4'd3,4'd0, 4'd1};
     assign addr_0x92 = {4'd6, 4'd7, 4'd4, 4'd5};
     assign addr_0x94 = {4'd10, 4'd11, 4'd8, 4'd9};
@@ -139,9 +165,16 @@ module audio_testbench_sv (
     assign addr_0x9C = {4'd10, 4'd11, 4'd8, 4'd9};
     assign addr_0x9E = {4'd14, 4'd15, 4'd12, 4'd13};
     
+    //inputs for square1 channel
+    assign NR10 = 8'b11111001;
+    assign NR11 = 8'b10111111;
+    assign NR14 = (set_N13_NR14_z) ? {8'bz} : 8'b00000111;
+    assign NR13 = (set_N13_NR14_z) ? {8'bz} : 8'b11111111;
+
+    
     //inputs for square2 channel -- this is for 50% duty cycle
-    assign NR21[7:6] = 2'b10;
-    assign NR24 = 3'b111;
+    assign NR21 = 8'b10111111;
+    assign NR24 = 8'b00000111;
     assign NR23 = 8'b11111111;
     
     //inputs for noise channel
@@ -149,39 +182,46 @@ module audio_testbench_sv (
     
     //set generic registers such as volume envelope and length to 0
     assign NRx0 = 0;
-    assign NRx1 = 8'd10; //wave should be set to the input wave until time is up
-    assign NRx2 = 8'b01111001; // start at volume -0111 attenuate for 1 step
+    assign NRx1 = 8'b0011_1111;
+    assign NRx2 = 8'b0111_1001; // start at volume -0111 attenuate for 1 step
     assign NRx3 = 0;
-    assign NRx4 = 8'b0100000;
+    assign NRx4 = 0;
     
     always_ff @(posedge clk_100) begin
-        //maybe need to do some clock checking?
         hphone_valid <= 0;
         hphone_l <= 0;
         hphone_r <= 0;
-
+        
+        if (BTNC) begin
+            counter_saw_tooth <= 0;
+        end
         if (new_sample == 1) begin
-            case ({SW2, SW1, SW0})
-                3'b001: begin
+            case ({SW3, SW2, SW1, SW0})  
+                4'b0001: begin
+                    hphone_valid <= 1'b1;
+                    hphone_r <= {channel_1, 18'd0};
+                    hphone_l <= {channel_1, 18'd0};
+                end 
+                4'b0010: begin
                     hphone_valid <= 1'b1;
                     hphone_r <= {channel_2, 18'd0};
                     hphone_l <= {channel_2, 18'd0};
                 end 
-                3'b010: begin
+                4'b0100: begin
                     hphone_valid <= 1'b1;
                     hphone_r <= {channel_3, 18'd0};
                     hphone_l <= {channel_3, 18'd0};
                 end 
-                3'b100: begin
+                4'b1000: begin
                     hphone_valid <= 1'b1;
                     hphone_r <= {channel_4, 18'd0};
                     hphone_l <= {channel_4, 18'd0};
                 end 
                 default begin 
-                    counter <= counter + 1;
+                    counter_saw_tooth <= counter_saw_tooth + 1;
                     hphone_valid <= 1'b1;
-                    hphone_r <= {counter, 18'd0};
-                    hphone_l <= {counter, 18'd0};
+                    hphone_r <= {counter_saw_tooth, 18'd0};
+                    hphone_l <= {counter_saw_tooth, 18'd0};
                 end
             endcase
         end
@@ -191,5 +231,14 @@ module audio_testbench_sv (
         .O (clk_100_buffered),
         .I (clk_100)
         );
-   
+
+        /**initial begin
+            clk_100 <= 0;
+            #8 BTNC <= 1;
+            #2 BTNC <= 0;
+        end
+        always
+            #1 clk_100 = !clk_100;
+          */
+ 
 endmodule: audio_testbench_sv

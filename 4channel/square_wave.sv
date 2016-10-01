@@ -1,3 +1,4 @@
+`default_nettype none
 module square_wave (
     input logic system_clock,
     input logic reset,
@@ -40,13 +41,13 @@ module square_wave (
         else begin
             num_cycles <= num_cycles + 1;
             //wave = 28'b1111_1000_0000_0000_0000_0000_0000; //equivalent to a -1
-            wave = 4'b1111;
+            wave = 4'b0;
         end
     end
 
 endmodule: square_wave
 
-module square_wave_test();
+/*module square_wave_test();
     logic clock;
     logic reset;
     logic [7:0] NRx1;
@@ -89,4 +90,4 @@ module square_wave_test();
     end
     always
         #1 clock = !clock;
-endmodule: square_wave_test
+endmodule: square_wave_test*/

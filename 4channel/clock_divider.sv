@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 
 
 module clock_divider (
@@ -22,7 +22,7 @@ module clock_divider (
 endmodule: clock_divider
 
 
-module clock_divider_test ();
+/*module clock_divider_test ();
 
     logic clock_512;
     logic clock_256;
@@ -47,4 +47,4 @@ module clock_divider_test ();
     always    
          #1 clock_512 = !clock_512;
 
-endmodule: clock_divider_test
+endmodule: clock_divider_test*/

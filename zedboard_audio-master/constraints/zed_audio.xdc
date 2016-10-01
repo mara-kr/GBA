@@ -31,7 +31,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports AC_GPIO2]
 set_property PACKAGE_PIN Y6 [get_ports AC_GPIO3]
 set_property IOSTANDARD LVCMOS33 [get_ports AC_GPIO3]
 
-
 # I2C Data Interface to ADAU1761 (for configuration)
 set_property PACKAGE_PIN AB4 [get_ports AC_SCK]
 set_property IOSTANDARD LVCMOS33 [get_ports AC_SCK]
@@ -44,3 +43,30 @@ set_property IOSTANDARD LVCMOS33 [get_ports AC_ADR0]
 
 set_property PACKAGE_PIN Y5 [get_ports AC_ADR1]
 set_property IOSTANDARD LVCMOS33 [get_ports AC_ADR1]
+
+set_property PACKAGE_PIN F22 [get_ports {SW0}];  # "SW0"
+set_property IOSTANDARD LVCMOS33 [get_ports SW0]
+
+set_property PACKAGE_PIN G22 [get_ports {SW1}];  # "SW1"
+set_property IOSTANDARD LVCMOS33 [get_ports SW1]
+
+set_property PACKAGE_PIN H22 [get_ports {SW2}];  # "SW2"
+set_property IOSTANDARD LVCMOS33 [get_ports SW2]
+
+set_property PACKAGE_PIN F21 [get_ports {SW3}];  # "SW3"
+set_property IOSTANDARD LVCMOS33 [get_ports SW3]
+
+set_property PACKAGE_PIN H19 [get_ports {SW4}];  # "SW4"
+set_property IOSTANDARD LVCMOS33 [get_ports SW4]
+
+set_property PACKAGE_PIN H18 [get_ports {SW5}];  # "SW5"
+set_property IOSTANDARD LVCMOS33 [get_ports SW5]
+
+set_property PACKAGE_PIN H17 [get_ports {SW6}];  # "SW6"
+set_property IOSTANDARD LVCMOS33 [get_ports SW6]
+
+set_property PACKAGE_PIN M15 [get_ports {SW7}];  # "SW7"
+set_property IOSTANDARD LVCMOS33 [get_ports SW7]
+
+set_property PACKAGE_PIN P16 [get_ports {BTNC}];  # "BTNC"
+set_property IOSTANDARD LVCMOS33 [get_ports BTNC]
