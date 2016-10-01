@@ -1,3 +1,5 @@
+//need to add nr30
+
 module wave_channel (
     input logic system_clock,
     input logic reset,

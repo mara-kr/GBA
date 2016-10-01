@@ -1,10 +1,12 @@
+`default_nettype none
 module frequency_sweep (
         input logic clock_128,
         input logic reset,
         input logic [7:0] NR10,
-        inout wire [7:0] NR13, //TODO: change this to an inout wire
+        inout wire [7:0] NR13,
         inout wire [7:0] NR14,
-        output logic enable_square_wave);
+        output logic enable_square_wave,
+        output logic set_N13_NR14_z);
         
         logic enable_flag;
         logic [10:0] freq_shadow;
@@ -14,7 +16,6 @@ module frequency_sweep (
         logic [2:0] sweep_period;
         logic [2:0] sweep_timer;
         logic [11:0] calc_freq;
-        logic [10:0] freq;
         logic initialization;
         logic overflow;
 
@@ -29,17 +30,30 @@ module frequency_sweep (
         assign initialization = NR14[7];
 
         assign new_frequency = (!overflow && enable_flag) ? calc_freq[10:0] : {NR14[2:0], NR13};
-        assign {NR14[2:0],NR13} = (!overflow && enable_flag) ? calc_freq[10:0] : {NR14[2:0], NR13};
-
+        assign NR14 = (set_N13_NR14_z) ? {5'b0, calc_freq[10:8]} : 8'bz;
+        assign NR13 = (set_N13_NR14_z) ? calc_freq[7:0] : 8'bz;
+        
+        always_comb begin
+            if (reset) begin
+                set_N13_NR14_z = 0;
+            end
+            else if (!overflow && enable_flag && ~reset) begin
+                set_N13_NR14_z = 1;
+            end
+            else begin
+                set_N13_NR14_z = 0;
+            end
+        end
+        
         always_ff @(posedge clock_128, posedge reset) begin
             if (reset) begin
                 sweep_timer <= sweep_period;
                 freq_shadow <= {NR14[2:0], NR13};
+                enable_flag <= 0;
             end
             else if (sweep_timer == 0) begin
                 sweep_timer <= sweep_period;
                 if (sweep_period != 0  && sweep_shift != 0) begin
-                    $display("overflow=%b, calc_freq=%b", overflow, calc_freq);
                     enable_flag <= 1;
                 end
                 else begin

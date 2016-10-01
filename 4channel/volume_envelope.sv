@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 
 //Assumptions;
 //  1. anytime any register value is changed the volume envelope will reset
@@ -6,6 +6,7 @@
 //  3. If there is a register change, updates begin on next clock cycle
 module volume_envelope (
         input logic clock_64,
+        input logic reset,
         input logic [7:0] NRx2,
         output logic [3:0] volume_level);
 
@@ -28,8 +29,8 @@ module volume_envelope (
             old_NRx2 <= NRx2;
         end
 
-        always_ff @(posedge clock_64) begin
-            if (update_regs) begin
+        always_ff @(posedge clock_64, posedge reset) begin
+            if (update_regs || reset) begin
                 num_steps <= NRx2[2:0];
                 increase <= NRx2[3];
                 calc_volume_level <= NRx2[7:4];
@@ -50,7 +51,7 @@ module volume_envelope (
 endmodule: volume_envelope
 
  
-module volume_envelope_test ();
+/*module volume_envelope_test ();
     logic clock;
     logic [7:0] NRx2;
     logic [3:0] volume;
@@ -96,4 +97,4 @@ module volume_envelope_test ();
     always    
          #1 clock = !clock;
 
-endmodule: volume_envelope_test;
+endmodule: volume_envelope_test;*/

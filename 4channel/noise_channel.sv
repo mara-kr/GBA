@@ -55,7 +55,7 @@ module noise_channel(
 
 endmodule: noise_channel
 
-module noise_channel_test();
+/*module noise_channel_test();
     logic clock;
     logic reset;
     logic [7:0] NR43;
@@ -84,5 +84,5 @@ module noise_channel_test();
     always
         #1 clock = !clock;
 
-endmodule: noise_channel_test
+endmodule: noise_channel_test*/
 

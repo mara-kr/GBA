@@ -5,6 +5,7 @@
 //      3. there is no reset, maybe need to set all registers to zero?
 module length_counter (
     input logic clock_256,
+    input logic reset,
     input logic [3:0] input_wave,
     input logic [7:0] NRx1, 
     input logic [7:0] NRx4,
@@ -35,8 +36,8 @@ module length_counter (
         old_sound_length_counter <= sound_length_counter;
     end
 
-    always_ff @(posedge clock_256, posedge update_regs) begin
-        if (update_regs || initialization_flag || update_sound_length_counter)  begin
+    always_ff @(posedge clock_256, posedge reset) begin
+        if (update_regs || initialization_flag || update_sound_length_counter || reset)  begin
             counter <= (NRx1[5:0] -1); //start at -1 because it includes 0
         end
         else if (sound_length_counter == 1 & counter != 0) begin
@@ -46,7 +47,7 @@ module length_counter (
 endmodule: length_counter
 
 
-module length_counter_test ();
+/*module length_counter_test ();
 
     logic clock;
     logic [3:0] input_wave;
@@ -102,4 +103,4 @@ module length_counter_test ();
     always    
          #1 clock = !clock;
 
-endmodule: length_counter_test
+endmodule: length_counter_test*/
