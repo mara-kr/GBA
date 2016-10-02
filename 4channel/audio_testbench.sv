@@ -23,9 +23,7 @@ module audio_testbench_sv (
 
     //logic clk_100;
     //logic BTNC; 
-    
-    //logic clk_100;
-    //logic BTNC;
+
     //audio codec
     logic        clk_100_buffered;
     logic [5:0]  counter_saw_tooth;
@@ -53,20 +51,20 @@ module audio_testbench_sv (
     logic [7:0] NR21;
     logic [7:0] NR23;
     logic [7:0] NR24;
-    logic [3:0] channel_2;
+    logic [27:0] channel_2;
     
     //square1 channel
     logic [7:0] NR10;
     logic [7:0] NR11;
     wire [7:0] NR13;
     wire [7:0] NR14;
-    logic [3:0] channel_1;
+    logic [27:0] channel_1;
     logic set_N13_NR14_z; 
 
     
     //noise channel
     logic [7:0] NR43;
-    logic [3:0] channel_4;
+    logic [27:0] channel_4;
     
     //generic registers- for testing keep the same for all channels
     logic [7:0] NRx0;
@@ -168,7 +166,7 @@ module audio_testbench_sv (
     //inputs for square1 channel
     assign NR10 = 8'b11111001;
     assign NR11 = 8'b10111111;
-    assign NR14 = (set_N13_NR14_z) ? {8'bz} : 8'b00000111;
+    assign NR14 = (set_N13_NR14_z) ? {5'b0,3'bz} : 8'b00000111;
     assign NR13 = (set_N13_NR14_z) ? {8'bz} : 8'b11111111;
 
     
@@ -199,23 +197,23 @@ module audio_testbench_sv (
             case ({SW3, SW2, SW1, SW0})  
                 4'b0001: begin
                     hphone_valid <= 1'b1;
-                    hphone_r <= {channel_1, 18'd0};
-                    hphone_l <= {channel_1, 18'd0};
+                    hphone_r <= {channel_1};
+                    hphone_l <= {channel_1};
                 end 
                 4'b0010: begin
                     hphone_valid <= 1'b1;
-                    hphone_r <= {channel_2, 18'd0};
-                    hphone_l <= {channel_2, 18'd0};
+                    hphone_r <= {channel_2};
+                    hphone_l <= {channel_2};
                 end 
                 4'b0100: begin
                     hphone_valid <= 1'b1;
-                    hphone_r <= {channel_3, 18'd0};
-                    hphone_l <= {channel_3, 18'd0};
+                    hphone_r <= {channel_3};
+                    hphone_l <= {channel_3};
                 end 
                 4'b1000: begin
                     hphone_valid <= 1'b1;
-                    hphone_r <= {channel_4, 18'd0};
-                    hphone_l <= {channel_4, 18'd0};
+                    hphone_r <= {channel_4};
+                    hphone_l <= {channel_4};
                 end 
                 default begin 
                     counter_saw_tooth <= counter_saw_tooth + 1;
@@ -239,6 +237,6 @@ module audio_testbench_sv (
         end
         always
             #1 clk_100 = !clk_100;
-          */
+*/
  
 endmodule: audio_testbench_sv
