@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 module audio_testbench_sv (
     input logic clk_100,
     input logic BTNC,
@@ -45,26 +45,26 @@ module audio_testbench_sv (
     logic [15:0] addr_0x9A;
     logic [15:0] addr_0x9C;
     logic [15:0] addr_0x9E;
-    logic [3:0] channel_3;
+    logic [23:0] channel_3;
     
     //square2 channel
     logic [7:0] NR21;
     logic [7:0] NR23;
     logic [7:0] NR24;
-    logic [27:0] channel_2;
+    logic [23:0] channel_2;
     
     //square1 channel
     logic [7:0] NR10;
     logic [7:0] NR11;
     wire [7:0] NR13;
     wire [7:0] NR14;
-    logic [27:0] channel_1;
+    logic [23:0] channel_1;
     logic set_N13_NR14_z; 
 
     
     //noise channel
     logic [7:0] NR43;
-    logic [27:0] channel_4;
+    logic [23:0] channel_4;
     
     //generic registers- for testing keep the same for all channels
     logic [7:0] NRx0;
@@ -230,7 +230,7 @@ module audio_testbench_sv (
         .I (clk_100)
         );
 
-        /**initial begin
+      /*  initial begin
             clk_100 <= 0;
             #8 BTNC <= 1;
             #2 BTNC <= 0;

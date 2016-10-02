@@ -75,12 +75,12 @@ module wave (
     input logic [15:0] addr_0x9A,
     input logic [15:0] addr_0x9C,
     input logic [15:0] addr_0x9E,
-    output logic [3:0] output_wave);
+    output logic [23:0] output_wave);
 
     logic clock_256;
     logic clock_128;
     logic clock_64;
-    logic [3:0] predefined_wave;
+    logic [23:0] predefined_wave;
     logic [3:0] volume_level;
 
     clock_divider cd2(clock_512, reset, clock_256,  clock_128, clock_64);
