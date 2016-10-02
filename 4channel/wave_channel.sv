@@ -14,7 +14,7 @@ module wave_channel (
     input logic [15:0] addr_0x9A,
     input logic [15:0] addr_0x9C,
     input logic [15:0] addr_0x9E,
-    output logic [3:0] wave);
+    output logic [23:0] wave);
 
     logic [12:0] frequency_timer_period;
     logic [10:0]frequency;
@@ -29,7 +29,7 @@ module wave_channel (
     assign frequency_timer_period = (2048-frequency)*4;
     assign waveform_pattern = {addr_0x9E, addr_0x9C, addr_0x9A, addr_0x98, 
                                 addr_0x96, addr_0x94, addr_0x92, addr_0x90};
-    assign wave = (waveform_pattern[(position_counter+3)-:4]) >> volume_control;
+    assign wave = ({waveform_pattern[(position_counter+3)-:4], 20'b0}) >> volume_control;
 
     frequency_timer ft(system_clock, reset, frequency_timer_period, frequency_timer_clock);
 
