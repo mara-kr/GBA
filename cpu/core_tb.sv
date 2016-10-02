@@ -35,6 +35,7 @@ module core_tb;
 
     /* Clock and Reset Generation */
     initial begin
+        $display("Start"); // Start of SIM for diff script
         clk = 0;
         rst_n = 1'b1;
         irq_n = 1'b1;
@@ -43,19 +44,32 @@ module core_tb;
         forever #1 clk <= ~clk;
     end
 
-    integer i;
     integer cyc_count;
     /* So the simulation stops */
     initial begin
-        $monitor("r0\t%h\nr1\t%h\nsp\t%h\nlr\t%h\nPC\t%h\nCPSR\t%h\n",
-                 DUT.RegFile_Inst.UMRegisterFile[0],
-                 DUT.RegFile_Inst.UMRegisterFile[1],
-                 DUT.RegFile_Inst.UMRegisterFile[13],
-                 DUT.RegFile_Inst.UMRegisterFile[14],
-                 DUT.RegFile_Inst.UMRegisterFile[15],
-                 DUT.PSR_Inst.CPSR
-                 );
         #150 $finish;
+    end
+
+    always_ff @(posedge clk) begin
+        if (rst_n) begin
+            $display("r0\t\t%h", DUT.RegFile_Inst.RegFileAOut[0]);
+            $display("r1\t\t%h", DUT.RegFile_Inst.RegFileAOut[1]);
+            $display("r2\t\t%h", DUT.RegFile_Inst.RegFileAOut[2]);
+            $display("r3\t\t%h", DUT.RegFile_Inst.RegFileAOut[3]);
+            $display("r4\t\t%h", DUT.RegFile_Inst.RegFileAOut[4]);
+            $display("r5\t\t%h", DUT.RegFile_Inst.RegFileAOut[5]);
+            $display("r6\t\t%h", DUT.RegFile_Inst.RegFileAOut[6]);
+            $display("r7\t\t%h", DUT.RegFile_Inst.RegFileAOut[7]);
+            $display("r8\t\t%h", DUT.RegFile_Inst.RegFileAOut[8]);
+            $display("r9\t\t%h", DUT.RegFile_Inst.RegFileAOut[9]);
+            $display("r10\t\t%h", DUT.RegFile_Inst.RegFileAOut[10]);
+            $display("r11\t\t%h", DUT.RegFile_Inst.RegFileAOut[11]);
+            $display("r12\t\t%h", DUT.RegFile_Inst.RegFileAOut[12]);
+            $display("sp\t\t%h", DUT.RegFile_Inst.RegFileAOut[13]);
+            $display("lr\t\t%h", DUT.RegFile_Inst.RegFileAOut[14]);
+            $display("pc\t\t%h", DUT.RegFile_Inst.RegFileAOut[15]);
+            $display("cpsr\t%h\n", DUT.PSR_Inst.CPSR);
+        end
     end
 
     /* Clock cycle counter */
@@ -64,24 +78,6 @@ module core_tb;
             cyc_count <= 0;
         else
             cyc_count <= cyc_count + 1;
-    end
-
-    final begin
-        $display("Simulation finished at cycle %d", cyc_count);
-        $display("CPSR: %h \tNZCV = %b \tCPSR_Ctrl = %b",
-                 DUT.PSR_Inst.CPSR, DUT.PSR_Inst.CPSR[31:28], DUT.PSR_Inst.CPSR[7:0]);
-        for (i = 0; i <= 15; i++)
-            $display("UserModeReg \t%2d: %h",i, DUT.RegFile_Inst.UMRegisterFile[i]);
-        $display("\n");
-        for (i = 13; i <= 14; i++)
-            $display("SuperModeReg \t%2d: %h", i, DUT.RegFile_Inst.SVCMRegisterFile[i]);
-        $display("Super_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_SVC);
-        for (i = 13; i <= 14; i++)
-            $display("IRQModeReg \t%2d: %h", i, DUT.RegFile_Inst.IRQMRegisterFile[i]);
-        $display("IRQ_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_IRQ);
-        for (i = 13; i <= 14; i++)
-            $display("UndefModeReg \t%2d: %h", i, DUT.RegFile_Inst.UndMRegisterFile[i]);
-        $display("Undef_SPSR\t    %h\n", DUT.PSR_Inst.SPSR_Undef);
     end
 
 endmodule: core_tb
