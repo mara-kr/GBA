@@ -1,7 +1,7 @@
 //`default_nettype none
 module audio_testbench_sv (
-    input logic clk_100,
-    input logic BTNC,
+    //input logic clk_100,
+    //input logic BTNC,
     output logic AC_ADR0,
     output logic AC_ADR1,
     output logic AC_GPIO0,
@@ -21,8 +21,8 @@ module audio_testbench_sv (
     input  logic SW7);
 
 
-    //logic clk_100;
-    //logic BTNC; 
+    logic clk_100;
+    logic BTNC; 
 
     //audio codec
     logic        clk_100_buffered;
@@ -166,8 +166,8 @@ module audio_testbench_sv (
     //inputs for square1 channel
     assign NR10 = 8'b11111001;
     assign NR11 = 8'b10111111;
-    assign NR14 = (set_N13_NR14_z) ? {5'b0,3'bz} : 8'b00000111;
-    assign NR13 = (set_N13_NR14_z) ? {8'bz} : 8'b11111111;
+    assign NR14 = (set_N13_NR14_z) ? {5'b0,3'bz} : 8'b00000000;
+    assign NR13 = (set_N13_NR14_z) ? {8'bz} : 8'b11111011;
 
     
     //inputs for square2 channel -- this is for 50% duty cycle
@@ -230,13 +230,13 @@ module audio_testbench_sv (
         .I (clk_100)
         );
 
-      /*  initial begin
+  initial begin
             clk_100 <= 0;
             #8 BTNC <= 1;
             #2 BTNC <= 0;
         end
         always
             #1 clk_100 = !clk_100;
-*/
+
  
 endmodule: audio_testbench_sv
