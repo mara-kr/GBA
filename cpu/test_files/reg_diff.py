@@ -86,10 +86,10 @@ if __name__=="__main__":
         if (len(toks) > 0 and toks[0] == "Start"):
             break
 
-    print("VCS initial:")
+    print("VCS initial: (<)")
     vcs_diff = get_reg_diff(vcs_f)
     qemu_f.readline() # Ignore 0x0 in ?? () line
-    print("QEMU initial:")
+    print("QEMU initial: (>)")
     qemu_diff = get_reg_diff(qemu_f)
 
     vcs_f.close()
