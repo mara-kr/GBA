@@ -6,14 +6,19 @@ module frequency_timer (
     output logic frequency_timer_clock);
     
     logic [12:0] counter;
+    logic update_regs;
+    
+    logic [12:0]frequency_timer_period_old;
 
+    assign update_regs = (frequency_timer_period != frequency_timer_period_old)
+                         ? 1 : 0;
     always_ff @(posedge clock, posedge reset) begin
         if(reset) begin
             counter = 0;
             frequency_timer_clock <= 0;
             frequency_timer_clock <= 0;
         end
-        else if(counter == 0) begin
+        else if(counter == 0 || update_regs) begin
             counter <= frequency_timer_period;
             frequency_timer_clock <= ~frequency_timer_clock;
 
@@ -21,6 +26,7 @@ module frequency_timer (
         else begin
             counter <= counter -1;
         end
+        frequency_timer_period_old <= frequency_timer_period;
     end
     
 endmodule: frequency_timer

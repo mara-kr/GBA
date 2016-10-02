@@ -19,6 +19,9 @@ module frequency_sweep (
         logic initialization;
         logic overflow;
 
+        logic [7:0] internal_NR13_reg;
+        logic [7:0] internal_N14_reg;
+        
         assign sweep_shift = NR10[2:0];
         assign decrease = NR10[3];
         assign sweep_period = NR10[6:4];
@@ -59,13 +62,12 @@ module frequency_sweep (
                 else begin
                     enable_flag <= 0;
                 end
-                freq_shadow <= new_frequency;
             end
             else begin
                 enable_flag <= 0;
                 sweep_timer <= sweep_timer - 1;
             end
-
+            freq_shadow <= new_frequency;
         end
 
 endmodule: frequency_sweep

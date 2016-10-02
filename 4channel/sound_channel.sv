@@ -18,8 +18,8 @@ module square1 (
     logic clock_128;
     logic clock_64;
     logic enable_square_wave;
-    logic [27:0] square_wave;
-    logic [27:0] length_wave;
+    logic [23:0] square_wave;
+    logic [23:0] length_wave;
     logic [3:0] volume_level;
 
     assign output_wave = (length_wave); //?  length_wave + volume_level : 0;
@@ -46,8 +46,8 @@ module square2 (
     logic clock_256;
     logic clock_128;
     logic clock_64;
-    logic [27:0] square_wave;
-    logic [27:0] length_wave;
+    logic [23:0] square_wave;
+    logic [23:0] length_wave;
     logic [3:0] volume_level;
 
     assign output_wave = (length_wave); //?  length_wave + volume_level : 0;
@@ -105,7 +105,7 @@ module noise (
     logic clock_256;
     logic clock_128;
     logic clock_64;
-    logic [27:0] noise_wave;
+    logic [23:0] noise_wave;
     logic [23:0] length_wave;
     logic [3:0] volume_level;
 
