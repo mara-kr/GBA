@@ -3,10 +3,11 @@ module frequency_sweep (
         input logic clock_128,
         input logic reset,
         input logic [7:0] NR10,
-        inout wire [7:0] NR13,
-        inout wire [7:0] NR14,
-        output logic enable_square_wave,
-        output logic set_N13_NR14_z);
+        input logic [7:0] NR13,
+        input logic [7:0] NR14,
+        output logic [7:0] internal_NR13_reg,
+        output logic [7:0] internal_NR14_reg,
+        output logic enable_square_wave);
         
         logic enable_flag;
         logic [10:0] freq_shadow;
@@ -19,8 +20,9 @@ module frequency_sweep (
         logic initialization;
         logic overflow;
 
-        logic [7:0] internal_NR13_reg;
-        logic [7:0] internal_N14_reg;
+        logic update_regs;
+        logic [7:0] NR13_old;
+        logic [7:0] NR14_old;
         
         assign sweep_shift = NR10[2:0];
         assign decrease = NR10[3];
@@ -32,21 +34,9 @@ module frequency_sweep (
         assign enable_square_wave = ~overflow;
         assign initialization = NR14[7];
 
-        assign new_frequency = (!overflow && enable_flag) ? calc_freq[10:0] : {NR14[2:0], NR13};
-        assign NR14 = (set_N13_NR14_z) ? {5'bz, calc_freq[10:8]} : 8'bz;
-        assign NR13 = (set_N13_NR14_z) ? calc_freq[7:0] : 8'bz;
+        assign new_frequency = {internal_NR14_reg[2:0], internal_NR13_reg};
+        assign update_regs = (NR13 != NR13_old || NR14 != NR14_old) ? 1 : 0;
         
-        always_comb begin
-            if (reset) begin
-                set_N13_NR14_z = 0;
-            end
-            else if (!overflow && enable_flag && ~reset) begin
-                set_N13_NR14_z = 1;
-            end
-            else begin
-                set_N13_NR14_z = 0;
-            end
-        end
         
         always_ff @(posedge clock_128, posedge reset) begin
             if (reset) begin
@@ -68,7 +58,24 @@ module frequency_sweep (
                 sweep_timer <= sweep_timer - 1;
             end
             freq_shadow <= new_frequency;
+            NR13_old <= NR13;
+            NR14_old <= NR14;
         end
+        
+        always_ff @(posedge clock_128, posedge reset) begin
+            if (update_regs || reset) begin
+                internal_NR13_reg <= NR13;
+                internal_NR14_reg <= NR14;
+            end
+            else if (!overflow && enable_flag) begin
+                internal_NR13_reg <= calc_freq[7:0];
+                internal_NR14_reg <= {5'b0, calc_freq[10:8]};
+            end
+            else begin
+                internal_NR13_reg <= internal_NR13_reg;
+                internal_NR14_reg <= internal_NR14_reg;
+            end
+         end
 
 endmodule: frequency_sweep
 
