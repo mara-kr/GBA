@@ -11,18 +11,18 @@ module square1 (
     input logic [7:0] NR12,
     inout wire [7:0] NR13,
     inout wire [7:0] NR14,
-    output logic [3: 0]output_wave,
+    output logic [27: 0]output_wave,
     output logic set_N13_NR14_z); 
 
     logic clock_256;
     logic clock_128;
     logic clock_64;
     logic enable_square_wave;
-    logic [3:0] square_wave;
-    logic [3:0] length_wave;
+    logic [27:0] square_wave;
+    logic [27:0] length_wave;
     logic [3:0] volume_level;
 
-    assign output_wave = (length_wave) ?  length_wave + volume_level : 0;
+    assign output_wave = (length_wave); //?  length_wave + volume_level : 0;
     clock_divider cd(clock_512, reset, clock_256,  clock_128, clock_64);
     frequency_sweep fs(clock_128, reset, NR10, NR13, NR14, enable_square_wave, set_N13_NR14_z);
     square_wave sw(system_clock, reset, NR11, NR13, NR14, square_wave);
@@ -41,16 +41,16 @@ module square2 (
     input logic [7:0] NR22,
     input logic [7:0] NR23,
     input logic [7:0] NR24,
-    output logic [3:0] output_wave);
+    output logic [23:0] output_wave);
 
     logic clock_256;
     logic clock_128;
     logic clock_64;
-    logic [3:0] square_wave;
-    logic [3:0] length_wave;
+    logic [27:0] square_wave;
+    logic [27:0] length_wave;
     logic [3:0] volume_level;
 
-    assign output_wave = (length_wave) ?  length_wave + volume_level : 0;
+    assign output_wave = (length_wave); //?  length_wave + volume_level : 0;
     clock_divider cd1(clock_512, reset, clock_256,  clock_128, clock_64);
     square_wave sw1(system_clock, reset, NR21, NR23, NR24, square_wave);
     length_counter lc1(clock_256, reset, square_wave, NR21, NR24, length_wave);
@@ -100,16 +100,16 @@ module noise (
     input logic [7:0] NR42,
     input logic [7:0] NR43,
     input logic [7:0] NR44,
-    output logic [3:0] output_wave);
+    output logic [23:0] output_wave);
 
     logic clock_256;
     logic clock_128;
     logic clock_64;
-    logic [3:0] noise_wave;
-    logic [3:0] length_wave;
+    logic [27:0] noise_wave;
+    logic [23:0] length_wave;
     logic [3:0] volume_level;
 
-    assign output_wave = length_wave + volume_level;
+    assign output_wave = length_wave; //+ volume_level;
     clock_divider cd3(clock_512, reset, clock_256,  clock_128, clock_64);
     noise_channel nc3(system_clock, reset, NR43, noise_wave);
     length_counter lc3(clock_256, reset, noise_wave, NR41, NR44, length_wave);

@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 module frequency_sweep (
         input logic clock_128,
         input logic reset,
@@ -30,7 +30,7 @@ module frequency_sweep (
         assign initialization = NR14[7];
 
         assign new_frequency = (!overflow && enable_flag) ? calc_freq[10:0] : {NR14[2:0], NR13};
-        assign NR14 = (set_N13_NR14_z) ? {5'b0, calc_freq[10:8]} : 8'bz;
+        assign NR14 = (set_N13_NR14_z) ? {5'bz, calc_freq[10:8]} : 8'bz;
         assign NR13 = (set_N13_NR14_z) ? calc_freq[7:0] : 8'bz;
         
         always_comb begin

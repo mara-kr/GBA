@@ -3,7 +3,7 @@ module noise_channel(
     input logic system_clock, //frequency timer
     input logic reset,
     input logic [7:0] NR43,
-    output logic [3:0] wave);
+    output logic [23:0] wave);
     
     logic [14:0] LFSR;
     logic [14:0] LFSR_right_shift;
@@ -14,7 +14,7 @@ module noise_channel(
     logic frequency_timer_clock;
     logic [6:0] base_divisor;
 
-    assign wave = ~(LFSR[0]);
+    assign wave = {~(LFSR[0]), 23'b0};
     assign step7 = NR43[3];
     assign LFSR_right_shift = LFSR >> 1;
     assign shift_freq = NR43[7:4];
