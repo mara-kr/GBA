@@ -194,7 +194,6 @@ module memory
 
      always_ff @(posedge clk, negedge rst_n) begin
          if (~rst_n) begin
-             for (integer i = 0; i <= SIZE; i++) mem[i] = 8'd0;
              b_rdata <= {8'b0, 8'b0, 8'b0, 8'b0};
              prev_addr <= 32'd0;
              prev_in_range <= 1'b0;
@@ -342,9 +341,9 @@ module bus_monitor
     input  logic [1:0]  size,
     input  logic        abort, write);
 
-    string mem_size, mem_op;
-    logic [31:0] data;
-    assign data = (write) ? wdata : rdata;
+    string mem_size;
+    logic [31:0] waddr;
+    logic [1:0] wsize;
 
 `ifdef BUS_LOG_EN
     integer f;
@@ -361,7 +360,7 @@ module bus_monitor
 `endif
 
     always_comb begin
-        case (size)
+        case (wsize)
             `MEM_SIZE_BYTE: mem_size = "1";
             `MEM_SIZE_HALF: mem_size = "2";
             `MEM_SIZE_WORD: mem_size = "4";
@@ -373,25 +372,31 @@ module bus_monitor
         endcase
     end
 
-    always_comb begin
-        case(write)
-            1'b0: mem_op = "Read";
-            1'b1: mem_op = "Write";
-        endcase
+    always_ff @(posedge clk, negedge rst_n) begin
+        if (~rst_n) begin
+            wsize <= 2'b0;
+            waddr <= 32'b0;
+        end else begin
+            wsize <= size;
+            waddr <= addr;
+        end
     end
 
 `ifdef BUS_LOG_EN
 
-    logic [31:0] last_read_addr;
+    logic writing;
     always_ff @(posedge clk, negedge rst_n) begin
-        if (~rst_n) last_read_addr <= 32'hFFFF_FFFF;
-        else if (rst_n & ~pause) begin // Maybe don't need pause,
-            if ((last_read_addr != addr && ~$isunknown(rdata)) || write) begin
-                $fwrite(f, "%s %x @ %x, size %s\n", mem_op, data, addr, mem_size);
-                last_read_addr <= addr;
+        if (~rst_n) begin
+            writing <= 1'b0;
+        end else if (rst_n & ~pause) begin // Maybe don't need pause,
+            if (write) begin
+                writing <= 1'b1;
+            end else if (writing) begin
+                $fwrite(f, "Wrote %x @ %x, size %s\n", wdata, waddr, mem_size);
+                writing <= 1'b0;
             end
             if (abort) begin
-                $fwrite(f, "Got ABORT from %s to %x", mem_op, addr);
+                $fwrite(f, "Got ABORT from write to %x", waddr);
             end
         end
     end

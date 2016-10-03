@@ -2,7 +2,7 @@
 import "DPI-C" function string getenv(input string env_name);
 
 /* Uncomment for logging */
-//`define BUS_LOG_EN
+`define BUS_LOG_EN
 
 /* Memory access sizes */
 `define MEM_SIZE_BYTE 2'b00
