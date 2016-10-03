@@ -43,7 +43,7 @@ def get_regs(f):
 def get_reg_diff(f):
     reg_diff = []
     old_regs = get_regs(f)
-    for i in xrange(len(old_regs)):
+    for i in xrange(len(old_regs)): # Print initial set values
         if (int(old_regs[i], 16) != 0):
             print("%s: %s\n" %(REG_NAMES[i], old_regs[i]));
 
@@ -61,15 +61,15 @@ def get_reg_diff(f):
 def compare_diffs(vcs_diff, qemu_diff, vcs_file, qemu_file):
     vcs_diff_f = open(vcs_file, "w")
     for x in vcs_diff:
-        vcs_diff_f.write("%s: %s\n" % (x[0], x[1]))
+        vcs_diff_f.write("%4s: %-.10s\n" % (x[0], x[1]))
     vcs_diff_f.close()
 
     qemu_diff_f = open(qemu_file, "w")
     for x in qemu_diff:
-        qemu_diff_f.write("%s: %s\n" % (x[0], x[1]))
+        qemu_diff_f.write("%4s: %-.10s\n" % (x[0], x[1]))
     qemu_diff_f.close()
 
-    subprocess.call(["diff", vcs_file, qemu_file])
+    subprocess.call(["diff", '-y','-W 60', vcs_file, qemu_file])
 
 
 if __name__=="__main__":
