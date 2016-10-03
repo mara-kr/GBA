@@ -47,7 +47,7 @@ module core_tb;
     integer cyc_count;
     /* So the simulation stops */
     initial begin
-        #200 $finish;
+        #500 $finish;
     end
 
     always_ff @(posedge clk) begin
@@ -194,6 +194,7 @@ module memory
 
      always_ff @(posedge clk, negedge rst_n) begin
          if (~rst_n) begin
+             for (int i = 0; i <= SIZE; i++) mem[i] <= 32'd0;
              b_rdata <= {8'b0, 8'b0, 8'b0, 8'b0};
              prev_addr <= 32'd0;
              prev_in_range <= 1'b0;
