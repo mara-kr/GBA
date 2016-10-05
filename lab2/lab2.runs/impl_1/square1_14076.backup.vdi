@@ -1,0 +1,504 @@
+#-----------------------------------------------------------
+# Vivado v2015.2 (64-bit)
+# SW Build 1266856 on Fri Jun 26 16:35:25 MDT 2015
+# IP Build 1264090 on Wed Jun 24 14:22:01 MDT 2015
+# Start of session at: Sat Oct  1 16:55:14 2016
+# Process ID: 12460
+# Log file: /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/impl_1/square1.vdi
+# Journal file: /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/impl_1/vivado.jou
+#-----------------------------------------------------------
+source square1.tcl -notrace
+Design is defaulting to srcset: sources_1
+Design is defaulting to constrset: constrs_1
+INFO: [Netlist 29-17] Analyzing 45 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2015.2
+INFO: [Device 21-403] Loading part xc7z020clg484-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc]
+WARNING: [Vivado 12-584] No ports matched 'clk_100'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:2]
+CRITICAL WARNING: [Vivado 12-1387] No valid object(s) found for create_clock constraint with option '-objects [get_ports clk_100]'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:2]
+Resolution: Check if the specified object(s) exists in the current design. If it does, ensure that the correct design hierarchy was specified for the object. If you are working with clocks, make sure create_clock was used to create the clock object before it is referenced.
+INFO: [Timing 38-35] Done setting XDC timing constraints. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:4]
+WARNING: [Vivado 12-627] No clocks matched 'zed_audio_clk_48M'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:4]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:4]
+get_clocks: Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 1796.586 ; gain = 489.523 ; free physical = 771 ; free virtual = 15064
+WARNING: [Vivado 12-627] No clocks matched 'clk_100'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:4]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:4]
+CRITICAL WARNING: [Vivado 12-1387] No valid object(s) found for set_false_path constraint with option '-from [get_clocks zed_audio_clk_48M]'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:4]
+Resolution: Check if the specified object(s) exists in the current design. If it does, ensure that the correct design hierarchy was specified for the object. If you are working with clocks, make sure create_clock was used to create the clock object before it is referenced.
+WARNING: [Vivado 12-627] No clocks matched 'clk_100'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:5]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:5]
+WARNING: [Vivado 12-627] No clocks matched 'zed_audio_clk_48M'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:5]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:5]
+CRITICAL WARNING: [Vivado 12-1387] No valid object(s) found for set_false_path constraint with option '-from [get_clocks clk_100]'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:5]
+Resolution: Check if the specified object(s) exists in the current design. If it does, ensure that the correct design hierarchy was specified for the object. If you are working with clocks, make sure create_clock was used to create the clock object before it is referenced.
+WARNING: [Vivado 12-584] No ports matched 'clk_100'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:9]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:9]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'clk_100'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:10]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:10]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_MCLK'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:13]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:13]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_MCLK'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:14]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:14]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO0'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:19]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:19]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO0'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:20]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:20]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO1'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:23]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:23]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO1'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:24]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:24]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO2'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:27]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:27]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO2'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:28]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:28]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO3'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:31]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:31]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_GPIO3'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:32]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:32]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_SCK'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:35]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:35]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_SCK'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:36]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:36]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_SDA'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:38]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:38]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_SDA'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:39]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:39]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_ADR0'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:41]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:41]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_ADR0'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:42]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:42]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_ADR1'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:44]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:44]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'AC_ADR1'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:45]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:45]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW0'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:47]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:47]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW0'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:48]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:48]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW1'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:50]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:50]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW1'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:51]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:51]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW2'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:53]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:53]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW2'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:54]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:54]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW3'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:56]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:56]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW3'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:57]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:57]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW4'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:59]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:59]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW4'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:60]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:60]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW5'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:62]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:62]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW5'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:63]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:63]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW6'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:65]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:65]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW6'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:66]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:66]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW7'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:68]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:68]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'SW7'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:69]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:69]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'BTNC'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:71]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:71]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+WARNING: [Vivado 12-584] No ports matched 'BTNC'. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:72]
+CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:72]
+Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object.
+Finished Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 8 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 8 instances
+
+link_design: Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 1796.586 ; gain = 778.758 ; free physical = 771 ; free virtual = 15063
+Command: opt_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-1223] The version limit for your license is '2016.07' and will expire in -62 days. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+Running DRC as a precondition to command opt_design
+
+Starting DRC Task
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Project 1-461] DRC finished with 0 Errors
+INFO: [Project 1-462] Please refer to the DRC report (report_drc) for more information.
+
+Time (s): cpu = 00:00:00.13 ; elapsed = 00:00:00.13 . Memory (MB): peak = 1811.617 ; gain = 7.027 ; free physical = 771 ; free virtual = 15063
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Starting Logic Optimization Task
+
+Phase 1 Retarget
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Opt 31-49] Retargeted 0 cell(s).
+Phase 1 Retarget | Checksum: 17a514e67
+
+Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.02 . Memory (MB): peak = 1818.617 ; gain = 0.000 ; free physical = 771 ; free virtual = 15063
+
+Phase 2 Constant Propagation
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Opt 31-10] Eliminated 0 cells.
+Phase 2 Constant Propagation | Checksum: 17a514e67
+
+Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:00.02 . Memory (MB): peak = 1818.617 ; gain = 0.000 ; free physical = 771 ; free virtual = 15063
+
+Phase 3 Sweep
+INFO: [Opt 31-12] Eliminated 26 unconnected nets.
+INFO: [Opt 31-11] Eliminated 0 unconnected cells.
+Phase 3 Sweep | Checksum: 1b8208892
+
+Time (s): cpu = 00:00:00.05 ; elapsed = 00:00:00.04 . Memory (MB): peak = 1818.617 ; gain = 0.000 ; free physical = 771 ; free virtual = 15063
+
+Starting Connectivity Check Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1818.617 ; gain = 0.000 ; free physical = 771 ; free virtual = 15063
+Ending Logic Optimization Task | Checksum: 1b8208892
+
+Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.04 . Memory (MB): peak = 1818.617 ; gain = 0.000 ; free physical = 771 ; free virtual = 15063
+Implement Debug Cores | Checksum: 80e958de
+Logic Optimization | Checksum: 80e958de
+
+Starting Power Optimization Task
+INFO: [Pwropt 34-132] Skipping clock gating for clocks with a period < 3.12 ns.
+Ending Power Optimization Task | Checksum: 1b8208892
+
+Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.02 . Memory (MB): peak = 1818.617 ; gain = 0.000 ; free physical = 771 ; free virtual = 15063
+INFO: [Common 17-83] Releasing license: Implementation
+26 Infos, 43 Warnings, 41 Critical Warnings and 0 Errors encountered.
+opt_design completed successfully
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Coretcl 2-168] The results of DRC are in file /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/impl_1/square1_drc_opted.rpt.
+INFO: [#UNDEF] Cannot write hardware definition file as there are no IPI block design hardware handoff files present
+Command: place_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-1223] The version limit for your license is '2016.07' and will expire in -62 days. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+Running DRC as a precondition to command place_design
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+
+Starting Placer Task
+INFO: [Place 30-611] Multithreading enabled for place_design using a maximum of 8 CPUs
+
+Phase 1 Placer Runtime Estimator
+Phase 1 Placer Runtime Estimator | Checksum: dcd0d5b3
+
+Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.03 . Memory (MB): peak = 1850.641 ; gain = 0.000 ; free physical = 755 ; free virtual = 15047
+
+Phase 2 Placer Initialization
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1850.641 ; gain = 0.000 ; free physical = 755 ; free virtual = 15047
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1850.641 ; gain = 0.000 ; free physical = 755 ; free virtual = 15047
+
+Phase 2.1 IO Placement/ Clock Placement/ Build Placer Device
+
+Phase 2.1.1 Pre-Place Cells
+Phase 2.1.1 Pre-Place Cells | Checksum: 00000000
+
+Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.07 . Memory (MB): peak = 1850.641 ; gain = 0.000 ; free physical = 755 ; free virtual = 15047
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Phase 2.1.2 IO & Clk Clean Up
+Phase 2.1.2 IO & Clk Clean Up | Checksum: 00000000
+
+Time (s): cpu = 00:00:00.78 ; elapsed = 00:00:00.49 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+
+Phase 2.1.3 Implementation Feasibility check On IDelay
+Phase 2.1.3 Implementation Feasibility check On IDelay | Checksum: 00000000
+
+Time (s): cpu = 00:00:00.79 ; elapsed = 00:00:00.49 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+
+Phase 2.1.4 Commit IO Placement
+Phase 2.1.4 Commit IO Placement | Checksum: 87fe2923
+
+Time (s): cpu = 00:00:00.79 ; elapsed = 00:00:00.49 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+Phase 2.1 IO Placement/ Clock Placement/ Build Placer Device | Checksum: cb117fbc
+
+Time (s): cpu = 00:00:00.79 ; elapsed = 00:00:00.50 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+
+Phase 2.2 Build Placer Netlist Model
+
+Phase 2.2.1 Place Init Design
+Phase 2.2.1 Place Init Design | Checksum: 135d016ec
+
+Time (s): cpu = 00:00:00.81 ; elapsed = 00:00:00.51 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+Phase 2.2 Build Placer Netlist Model | Checksum: 135d016ec
+
+Time (s): cpu = 00:00:00.81 ; elapsed = 00:00:00.52 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+
+Phase 2.3 Constrain Clocks/Macros
+
+Phase 2.3.1 Constrain Global/Regional Clocks
+Phase 2.3.1 Constrain Global/Regional Clocks | Checksum: 135d016ec
+
+Time (s): cpu = 00:00:00.81 ; elapsed = 00:00:00.52 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+Phase 2.3 Constrain Clocks/Macros | Checksum: 135d016ec
+
+Time (s): cpu = 00:00:00.81 ; elapsed = 00:00:00.52 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+Phase 2 Placer Initialization | Checksum: 135d016ec
+
+Time (s): cpu = 00:00:00.82 ; elapsed = 00:00:00.52 . Memory (MB): peak = 1898.656 ; gain = 48.016 ; free physical = 747 ; free virtual = 15039
+
+Phase 3 Global Placement
+Phase 3 Global Placement | Checksum: d2191761
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:00.91 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 741 ; free virtual = 15033
+
+Phase 4 Detail Placement
+
+Phase 4.1 Commit Multi Column Macros
+Phase 4.1 Commit Multi Column Macros | Checksum: d2191761
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:00.91 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 741 ; free virtual = 15033
+
+Phase 4.2 Commit Most Macros & LUTRAMs
+Phase 4.2 Commit Most Macros & LUTRAMs | Checksum: a573837d
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:00.93 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 741 ; free virtual = 15034
+
+Phase 4.3 Area Swap Optimization
+Phase 4.3 Area Swap Optimization | Checksum: a1af2867
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:00.93 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 741 ; free virtual = 15034
+
+Phase 4.4 Small Shape Detail Placement
+
+Phase 4.4.1 Commit Small Macros & Core Logic
+
+Phase 4.4.1.1 Commit Slice Clusters
+Phase 4.4.1.1 Commit Slice Clusters | Checksum: 13485391a
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+Phase 4.4.1 Commit Small Macros & Core Logic | Checksum: 13485391a
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 4.4.2 Clock Restriction Legalization for Leaf Columns
+Phase 4.4.2 Clock Restriction Legalization for Leaf Columns | Checksum: 13485391a
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 4.4.3 Clock Restriction Legalization for Non-Clock Pins
+Phase 4.4.3 Clock Restriction Legalization for Non-Clock Pins | Checksum: 13485391a
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+Phase 4.4 Small Shape Detail Placement | Checksum: 13485391a
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 4.5 Re-assign LUT pins
+Phase 4.5 Re-assign LUT pins | Checksum: 13485391a
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+Phase 4 Detail Placement | Checksum: 13485391a
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 5 Post Placement Optimization and Clean-Up
+
+Phase 5.1 PCOPT Shape updates
+Phase 5.1 PCOPT Shape updates | Checksum: 21593d88d
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 5.2 Post Commit Optimization
+Phase 5.2 Post Commit Optimization | Checksum: 21593d88d
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 5.3 Sweep Clock Roots: Post-Placement
+Phase 5.3 Sweep Clock Roots: Post-Placement | Checksum: 21593d88d
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 5.4 Post Placement Cleanup
+Phase 5.4 Post Placement Cleanup | Checksum: 21593d88d
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 5.5 Placer Reporting
+Phase 5.5 Placer Reporting | Checksum: 21593d88d
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+
+Phase 5.6 Final Placement Cleanup
+Phase 5.6 Final Placement Cleanup | Checksum: 26a241657
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+Phase 5 Post Placement Optimization and Clean-Up | Checksum: 26a241657
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+Ending Placer Task | Checksum: 19f1d2994
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:01 . Memory (MB): peak = 1959.672 ; gain = 109.031 ; free physical = 736 ; free virtual = 15029
+INFO: [Common 17-83] Releasing license: Implementation
+40 Infos, 43 Warnings, 41 Critical Warnings and 0 Errors encountered.
+place_design completed successfully
+Writing placer database...
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Write XDEF Complete: Time (s): cpu = 00:00:00.09 ; elapsed = 00:00:00.20 . Memory (MB): peak = 1959.672 ; gain = 0.000 ; free physical = 732 ; free virtual = 15028
+report_io: Time (s): cpu = 00:00:00.10 ; elapsed = 00:00:00.16 . Memory (MB): peak = 1959.672 ; gain = 0.000 ; free physical = 733 ; free virtual = 15026
+report_utilization: Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:00.10 . Memory (MB): peak = 1959.672 ; gain = 0.000 ; free physical = 733 ; free virtual = 15026
+report_control_sets: Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.07 . Memory (MB): peak = 1959.672 ; gain = 0.000 ; free physical = 732 ; free virtual = 15025
+Command: route_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-1223] The version limit for your license is '2016.07' and will expire in -62 days. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+Running DRC as a precondition to command route_design
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+
+
+Starting Routing Task
+INFO: [Route 35-254] Multithreading enabled for route_design using a maximum of 8 CPUs
+
+Phase 1 Build RT Design
+Phase 1 Build RT Design | Checksum: 16dd5de2c
+
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:17 . Memory (MB): peak = 1974.316 ; gain = 14.645 ; free physical = 616 ; free virtual = 14909
+
+Phase 2 Router Initialization
+INFO: [Route 35-64] No timing constraints were detected. The router will operate in resource-optimization mode.
+
+Phase 2.1 Pre Route Cleanup
+Phase 2.1 Pre Route Cleanup | Checksum: 16dd5de2c
+
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:17 . Memory (MB): peak = 1980.305 ; gain = 20.633 ; free physical = 587 ; free virtual = 14880
+ Number of Nodes with overlaps = 0
+Phase 2 Router Initialization | Checksum: 148af3b0d
+
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 573 ; free virtual = 14866
+
+Phase 3 Initial Routing
+Phase 3 Initial Routing | Checksum: 19c1d5f7b
+
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 573 ; free virtual = 14866
+
+Phase 4 Rip-up And Reroute
+
+Phase 4.1 Global Iteration 0
+ Number of Nodes with overlaps = 24
+ Number of Nodes with overlaps = 0
+Phase 4.1 Global Iteration 0 | Checksum: 13894f59b
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+Phase 4 Rip-up And Reroute | Checksum: 13894f59b
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+
+Phase 5 Delay and Skew Optimization
+Phase 5 Delay and Skew Optimization | Checksum: 13894f59b
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+
+Phase 6 Post Hold Fix
+Phase 6 Post Hold Fix | Checksum: 13894f59b
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+
+Phase 7 Route finalize
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 0.0527597 %
+  Global Horizontal Routing Utilization  = 0.0496112 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 0
+  Number of Unrouted Nets             = 0
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Congestion Report
+North Dir 1x1 Area, Max Cong = 15.3153%, No Congested Regions.
+South Dir 1x1 Area, Max Cong = 24.3243%, No Congested Regions.
+East Dir 1x1 Area, Max Cong = 22.0588%, No Congested Regions.
+West Dir 1x1 Area, Max Cong = 27.9412%, No Congested Regions.
+Phase 7 Route finalize | Checksum: 13894f59b
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+
+Phase 8 Verifying routed nets
+
+ Verification completed successfully
+Phase 8 Verifying routed nets | Checksum: 13894f59b
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+
+Phase 9 Depositing Routes
+Phase 9 Depositing Routes | Checksum: 1ab0b9ebb
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+INFO: [Route 35-16] Router Completed Successfully
+
+Time (s): cpu = 00:00:21 ; elapsed = 00:00:17 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+
+Routing Is Done.
+INFO: [Common 17-83] Releasing license: Implementation
+49 Infos, 43 Warnings, 41 Critical Warnings and 0 Errors encountered.
+route_design completed successfully
+route_design: Time (s): cpu = 00:00:22 ; elapsed = 00:00:18 . Memory (MB): peak = 1994.359 ; gain = 34.688 ; free physical = 571 ; free virtual = 14865
+Writing placer database...
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Write XDEF Complete: Time (s): cpu = 00:00:00.09 ; elapsed = 00:00:00.20 . Memory (MB): peak = 1994.359 ; gain = 0.000 ; free physical = 560 ; free virtual = 14857
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Coretcl 2-168] The results of DRC are in file /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/impl_1/square1_drc_routed.rpt.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 8 CPUs
+WARNING: [Timing 38-313] There are no user specified timing constraints. Timing constraints are needed for proper timing analysis.
+WARNING: [Power 33-232] No user defined clocks were found in the design!
+Resolution: Please specify clocks using create_clock/create_generated_clock for sequential elements. For pure combinatorial circuits, please specify a virtual clock, otherwise the vectorless estimation might be inaccurate
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+INFO: [Common 17-206] Exiting Vivado at Sat Oct  1 16:55:58 2016...

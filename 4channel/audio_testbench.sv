@@ -23,6 +23,23 @@ module audio_testbench_sv (
 
     //logic clk_100;
     //logic BTNC; 
+    
+    //clock generator
+    logic clk_8;
+    logic clk_256;
+    
+    clock_generator clock_generator_i
+        (.clk_8(clk_8),
+         .clk_256(clk_256),
+         .clk_100_output(output_clk_100),
+         .clk_100_input(clk_100),
+         .reset(reset)); 
+         
+    clock_divider clock_generate(
+        .clock_256(clk_8),
+        .clock_128(clk_4), //clock 256 just divides the input clock by 2-> bad naming
+        .reset(reset));
+        
 
     //audio codec
     logic        clk_100_buffered;
@@ -97,8 +114,8 @@ module audio_testbench_sv (
     .sample_clk_48k(sample_clk_48k));
     
     noise n(
-        .system_clock(clk_100),
-        .clock_512(clk_100),
+        .system_clock(clk_8),
+        .clock_256(clk_256),
         .reset(BTNC),
         .NR40(NRx0),
         .NR41(NRx1),
@@ -108,8 +125,8 @@ module audio_testbench_sv (
         .output_wave(channel_4));
 
     wave w(
-        .system_clock(clk_100),
-        .clock_512(clk_100),
+        .system_clock(clk_8),
+        .clock_256(clk_256),
         .reset(BTNC),
         .NR30(NRx0),
         .NR31(NRx1),
@@ -127,8 +144,8 @@ module audio_testbench_sv (
         .output_wave(channel_3));
     
     square2 sq2(
-            .system_clock(clk_100),
-            .clock_512(clk_100),
+            .system_clock(clk_8),
+            .clock_256(clk_256),
             .reset(BTNC),
             .NR20(NRx0),
             .NR21(NR21),
@@ -138,8 +155,8 @@ module audio_testbench_sv (
             .output_wave(channel_2));
     
     square1 sq1(
-        .system_clock(clk_100),
-        .clock_512(clk_100),
+        .system_clock(clk_4),
+        .clock_256(clk_256),
         .reset(BTNC),
         .NR10,
         .NR11(NR11),
@@ -164,7 +181,7 @@ module audio_testbench_sv (
     //inputs for square1 channel
     assign NR10 = 8'b11111111;
     assign NR11 = 8'b10111111;
-    assign NR14 = 8'b00000011;
+    assign NR14 = 8'b00000111;
     assign NR13 = 8'b11111111;
 
     
@@ -183,7 +200,7 @@ module audio_testbench_sv (
     assign NRx3 = 0;
     assign NRx4 = 0;
     
-    always_ff @(posedge clk_100) begin
+    always_ff @(posedge output_clk_100) begin
         hphone_valid <= 0;
         hphone_l <= 0;
         hphone_r <= 0;
@@ -225,7 +242,7 @@ module audio_testbench_sv (
 
     BUFG BUFG_inst(
         .O (clk_100_buffered),
-        .I (clk_100)
+        .I (output_clk_100)
         );
 
   /**initial begin

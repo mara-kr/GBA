@@ -1,0 +1,979 @@
+#-----------------------------------------------------------
+# Vivado v2015.2 (64-bit)
+# SW Build 1266856 on Fri Jun 26 16:35:25 MDT 2015
+# IP Build 1264090 on Wed Jun 24 14:22:01 MDT 2015
+# Start of session at: Wed Oct  5 18:33:35 2016
+# Process ID: 29037
+# Log file: /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/synth_1/audio_testbench_sv.vds
+# Journal file: /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source audio_testbench_sv.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/afs/ece/support/xilinx/xilinx.release/Vivado/data/ip'.
+Command: synth_design -top audio_testbench_sv -part xc7z020clg484-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-1223] The version limit for your license is '2016.07' and will expire in -66 days. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1071.820 ; gain = 162.520 ; free physical = 10896 ; free virtual = 22165
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'audio_testbench_sv' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:2]
+INFO: [Synth 8-638] synthesizing module 'clock_generator' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/hdl/clock_generator.v:13]
+INFO: [Synth 8-638] synthesizing module 'clock_generator_clk_wiz_0_0' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0.v:71]
+INFO: [Synth 8-638] synthesizing module 'clock_generator_clk_wiz_0_0_clk_wiz' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0_clk_wiz.v:69]
+INFO: [Synth 8-638] synthesizing module 'IBUF' [/afs/ece/support/xilinx/xilinx.release/Vivado/scripts/rt/data/unisim_comp.v:10256]
+	Parameter CAPACITANCE bound to: DONT_CARE - type: string 
+	Parameter IBUF_DELAY_VALUE bound to: 0 - type: string 
+	Parameter IBUF_LOW_PWR bound to: TRUE - type: string 
+	Parameter IFD_DELAY_VALUE bound to: AUTO - type: string 
+	Parameter IOSTANDARD bound to: DEFAULT - type: string 
+INFO: [Synth 8-256] done synthesizing module 'IBUF' (1#1) [/afs/ece/support/xilinx/xilinx.release/Vivado/scripts/rt/data/unisim_comp.v:10256]
+INFO: [Synth 8-638] synthesizing module 'MMCME2_ADV' [/afs/ece/support/xilinx/xilinx.release/Vivado/scripts/rt/data/unisim_comp.v:15999]
+	Parameter BANDWIDTH bound to: OPTIMIZED - type: string 
+	Parameter CLKFBOUT_MULT_F bound to: 8.000000 - type: float 
+	Parameter CLKFBOUT_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKFBOUT_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKIN1_PERIOD bound to: 10.000000 - type: float 
+	Parameter CLKIN2_PERIOD bound to: 0.000000 - type: float 
+	Parameter CLKOUT0_DIVIDE_F bound to: 3.125000 - type: float 
+	Parameter CLKOUT0_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT0_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT0_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT1_DIVIDE bound to: 95 - type: integer 
+	Parameter CLKOUT1_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT1_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT1_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT2_DIVIDE bound to: 8 - type: integer 
+	Parameter CLKOUT2_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT2_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT2_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT3_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT3_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT3_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT3_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT4_CASCADE bound to: FALSE - type: string 
+	Parameter CLKOUT4_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT4_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT4_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT4_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT5_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT5_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT5_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT5_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT6_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT6_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT6_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT6_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter COMPENSATION bound to: ZHOLD - type: string 
+	Parameter DIVCLK_DIVIDE bound to: 1 - type: integer 
+	Parameter IS_CLKINSEL_INVERTED bound to: 1'b0 
+	Parameter IS_PSEN_INVERTED bound to: 1'b0 
+	Parameter IS_PSINCDEC_INVERTED bound to: 1'b0 
+	Parameter IS_PWRDWN_INVERTED bound to: 1'b0 
+	Parameter IS_RST_INVERTED bound to: 1'b0 
+	Parameter REF_JITTER1 bound to: 0.010000 - type: float 
+	Parameter REF_JITTER2 bound to: 0.010000 - type: float 
+	Parameter SS_EN bound to: FALSE - type: string 
+	Parameter SS_MODE bound to: CENTER_HIGH - type: string 
+	Parameter SS_MOD_PERIOD bound to: 10000 - type: integer 
+	Parameter STARTUP_WAIT bound to: FALSE - type: string 
+INFO: [Synth 8-256] done synthesizing module 'MMCME2_ADV' (2#1) [/afs/ece/support/xilinx/xilinx.release/Vivado/scripts/rt/data/unisim_comp.v:15999]
+INFO: [Synth 8-638] synthesizing module 'BUFG' [/afs/ece/support/xilinx/xilinx.release/Vivado/scripts/rt/data/unisim_comp.v:607]
+INFO: [Synth 8-256] done synthesizing module 'BUFG' (3#1) [/afs/ece/support/xilinx/xilinx.release/Vivado/scripts/rt/data/unisim_comp.v:607]
+INFO: [Synth 8-256] done synthesizing module 'clock_generator_clk_wiz_0_0_clk_wiz' (4#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0_clk_wiz.v:69]
+INFO: [Synth 8-256] done synthesizing module 'clock_generator_clk_wiz_0_0' (5#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0.v:71]
+INFO: [Synth 8-256] done synthesizing module 'clock_generator' (6#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/hdl/clock_generator.v:13]
+INFO: [Synth 8-638] synthesizing module 'clock_divider' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/clock_divider.sv:4]
+INFO: [Synth 8-256] done synthesizing module 'clock_divider' (7#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/clock_divider.sv:4]
+WARNING: [Synth 8-350] instance 'clock_generate' of module 'clock_divider' requires 4 connections, but only 3 given [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:38]
+INFO: [Synth 8-638] synthesizing module 'audio_top' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/audio_top.vhd:74]
+INFO: [Synth 8-3491] module 'clocking' declared at '/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/clocking.vhd:30' bound to instance 'i_clocking' of component 'clocking' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/audio_top.vhd:124]
+INFO: [Synth 8-638] synthesizing module 'clocking' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/clocking.vhd:42]
+	Parameter CAPACITANCE bound to: DONT_CARE - type: string 
+	Parameter IBUF_DELAY_VALUE bound to: 0 - type: string 
+	Parameter IBUF_LOW_PWR bound to: 1 - type: bool 
+	Parameter IOSTANDARD bound to: DEFAULT - type: string 
+INFO: [Synth 8-113] binding component instance 'clkin1_buf' to cell 'IBUFG' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/clocking.vhd:57]
+	Parameter BANDWIDTH bound to: OPTIMIZED - type: string 
+	Parameter CLKFBOUT_MULT_F bound to: 49.500000 - type: float 
+	Parameter CLKFBOUT_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKFBOUT_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKIN1_PERIOD bound to: 10.000000 - type: float 
+	Parameter CLKIN2_PERIOD bound to: 0.000000 - type: float 
+	Parameter CLKOUT0_DIVIDE_F bound to: 20.625000 - type: float 
+	Parameter CLKOUT0_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT0_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT0_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT1_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT1_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT1_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT1_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT2_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT2_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT2_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT2_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT3_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT3_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT3_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT3_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT4_CASCADE bound to: 0 - type: bool 
+	Parameter CLKOUT4_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT4_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT4_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT4_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT5_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT5_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT5_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT5_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter CLKOUT6_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT6_DUTY_CYCLE bound to: 0.500000 - type: float 
+	Parameter CLKOUT6_PHASE bound to: 0.000000 - type: float 
+	Parameter CLKOUT6_USE_FINE_PS bound to: 0 - type: bool 
+	Parameter COMPENSATION bound to: INTERNAL - type: string 
+	Parameter DIVCLK_DIVIDE bound to: 5 - type: integer 
+	Parameter IS_CLKINSEL_INVERTED bound to: 1'b0 
+	Parameter IS_PSEN_INVERTED bound to: 1'b0 
+	Parameter IS_PSINCDEC_INVERTED bound to: 1'b0 
+	Parameter IS_PWRDWN_INVERTED bound to: 1'b0 
+	Parameter IS_RST_INVERTED bound to: 1'b0 
+	Parameter REF_JITTER1 bound to: 0.010000 - type: float 
+	Parameter REF_JITTER2 bound to: 0.000000 - type: float 
+	Parameter SS_EN bound to: FALSE - type: string 
+	Parameter SS_MODE bound to: CENTER_HIGH - type: string 
+	Parameter SS_MOD_PERIOD bound to: 10000 - type: integer 
+	Parameter STARTUP_WAIT bound to: 0 - type: bool 
+INFO: [Synth 8-113] binding component instance 'mmcm_adv_inst' to cell 'MMCME2_ADV' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/clocking.vhd:68]
+INFO: [Synth 8-113] binding component instance 'clkout1_buf' to cell 'BUFG' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/clocking.vhd:130]
+INFO: [Synth 8-256] done synthesizing module 'clocking' (8#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/clocking.vhd:42]
+INFO: [Synth 8-3491] module 'adau1761_izedboard' declared at '/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_izedboard.vhd:26' bound to instance 'Inst_adau1761_izedboard' of component 'adau1761_izedboard' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/audio_top.vhd:131]
+INFO: [Synth 8-638] synthesizing module 'adau1761_izedboard' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_izedboard.vhd:47]
+	Parameter DRIVE bound to: 12 - type: integer 
+	Parameter IBUF_LOW_PWR bound to: 1 - type: bool 
+	Parameter IOSTANDARD bound to: DEFAULT - type: string 
+	Parameter SLEW bound to: SLOW - type: string 
+INFO: [Synth 8-113] binding component instance 'i_i2s_sda_obuf' to cell 'IOBUF' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_izedboard.vhd:132]
+INFO: [Synth 8-3491] module 'i2c' declared at '/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:9' bound to instance 'Inst_i2c' of component 'i2c' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_izedboard.vhd:140]
+INFO: [Synth 8-638] synthesizing module 'i2c' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:19]
+INFO: [Synth 8-3491] module 'adau1761_configuraiton_data' declared at '/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_configuraiton_data.vhd:13' bound to instance 'Inst_adau1761_configuraiton_data' of component 'adau1761_configuraiton_data' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:56]
+INFO: [Synth 8-638] synthesizing module 'adau1761_configuraiton_data' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_configuraiton_data.vhd:19]
+INFO: [Synth 8-256] done synthesizing module 'adau1761_configuraiton_data' (9#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_configuraiton_data.vhd:19]
+	Parameter clk_divide bound to: 8'b01111000 
+INFO: [Synth 8-3491] module 'i3c2' declared at '/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i3c2.vhd:18' bound to instance 'Inst_i3c2' of component 'i3c2' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+INFO: [Synth 8-638] synthesizing module 'i3c2' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i3c2.vhd:38]
+	Parameter clk_divide bound to: 8'b01111000 
+INFO: [Synth 8-256] done synthesizing module 'i3c2' (10#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i3c2.vhd:38]
+INFO: [Synth 8-256] done synthesizing module 'i2c' (11#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:19]
+INFO: [Synth 8-3491] module 'ADAU1761_interface' declared at '/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/ADAU1761_interface.vhd:11' bound to instance 'i_ADAU1761_interface' of component 'ADAU1761_interface' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_izedboard.vhd:150]
+INFO: [Synth 8-638] synthesizing module 'ADAU1761_interface' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/ADAU1761_interface.vhd:16]
+INFO: [Synth 8-256] done synthesizing module 'ADAU1761_interface' (12#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/ADAU1761_interface.vhd:16]
+INFO: [Synth 8-3491] module 'i2s_data_interface' declared at '/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2s_data_interface.vhd:13' bound to instance 'Inst_i2s_data_interface' of component 'i2s_data_interface' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_izedboard.vhd:155]
+INFO: [Synth 8-638] synthesizing module 'i2s_data_interface' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2s_data_interface.vhd:26]
+INFO: [Synth 8-256] done synthesizing module 'i2s_data_interface' (13#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2s_data_interface.vhd:26]
+INFO: [Synth 8-256] done synthesizing module 'adau1761_izedboard' (14#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/adau1761_izedboard.vhd:47]
+INFO: [Synth 8-256] done synthesizing module 'audio_top' (15#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/audio_top.vhd:74]
+INFO: [Synth 8-638] synthesizing module 'noise' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:92]
+INFO: [Synth 8-638] synthesizing module 'noise_channel' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/noise_channel.sv:2]
+INFO: [Synth 8-638] synthesizing module 'frequency_timer' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/frequency_timer.sv:2]
+INFO: [Synth 8-256] done synthesizing module 'frequency_timer' (16#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/frequency_timer.sv:2]
+INFO: [Synth 8-256] done synthesizing module 'noise_channel' (17#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/noise_channel.sv:2]
+INFO: [Synth 8-638] synthesizing module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/length_counter.sv:8]
+INFO: [Synth 8-256] done synthesizing module 'length_counter' (18#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/length_counter.sv:8]
+WARNING: [Synth 8-689] width (24) of port connection 'input_wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:112]
+WARNING: [Synth 8-689] width (24) of port connection 'wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:112]
+INFO: [Synth 8-638] synthesizing module 'volume_envelope' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/volume_envelope.sv:7]
+INFO: [Synth 8-256] done synthesizing module 'volume_envelope' (19#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/volume_envelope.sv:7]
+INFO: [Synth 8-256] done synthesizing module 'noise' (20#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:92]
+INFO: [Synth 8-638] synthesizing module 'wave' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:60]
+INFO: [Synth 8-638] synthesizing module 'wave_channel' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/wave_channel.sv:3]
+INFO: [Synth 8-256] done synthesizing module 'wave_channel' (21#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/wave_channel.sv:3]
+WARNING: [Synth 8-689] width (24) of port connection 'input_wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:88]
+WARNING: [Synth 8-689] width (24) of port connection 'wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:88]
+INFO: [Synth 8-256] done synthesizing module 'wave' (22#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:60]
+INFO: [Synth 8-638] synthesizing module 'square2' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:35]
+INFO: [Synth 8-638] synthesizing module 'square_wave' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/square_wave.sv:2]
+INFO: [Synth 8-256] done synthesizing module 'square_wave' (23#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/square_wave.sv:2]
+WARNING: [Synth 8-689] width (24) of port connection 'input_wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:55]
+WARNING: [Synth 8-689] width (24) of port connection 'wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:55]
+INFO: [Synth 8-256] done synthesizing module 'square2' (24#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:35]
+INFO: [Synth 8-638] synthesizing module 'square1' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:5]
+INFO: [Synth 8-638] synthesizing module 'frequency_sweep' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/frequency_sweep.sv:2]
+INFO: [Synth 8-256] done synthesizing module 'frequency_sweep' (25#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/frequency_sweep.sv:2]
+WARNING: [Synth 8-689] width (24) of port connection 'input_wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:29]
+WARNING: [Synth 8-689] width (24) of port connection 'wave' does not match port width (28) of module 'length_counter' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:29]
+INFO: [Synth 8-256] done synthesizing module 'square1' (26#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/sound_channel.sv:5]
+WARNING: [Synth 8-689] width (24) of port connection 'output_wave' does not match port width (28) of module 'square1' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:166]
+INFO: [Synth 8-4471] merging register 'hphone_l_reg[23:0]' into 'hphone_r_reg[23:0]' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:105]
+WARNING: [Synth 8-3848] Net reset in module/entity audio_testbench_sv does not have driver. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:36]
+INFO: [Synth 8-256] done synthesizing module 'audio_testbench_sv' (27#1) [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:2]
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW4
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW5
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW6
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW7
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1108.109 ; gain = 198.809 ; free physical = 10857 ; free virtual = 22127
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[15] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[14] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[13] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[12] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[11] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[10] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[9] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[8] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[7] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[6] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[5] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[4] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[3] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin Inst_i3c2:inputs[2] to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i2c.vhd:62]
+WARNING: [Synth 8-3295] tying undriven pin clock_generator_i:reset to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:31]
+WARNING: [Synth 8-3295] tying undriven pin clock_generate:reset to constant 0 [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/audio_testbench.sv:38]
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1108.109 ; gain = 198.809 ; free physical = 10857 ; free virtual = 22127
+---------------------------------------------------------------------------------
+INFO: [Netlist 29-17] Analyzing 5 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Device 21-403] Loading part xc7z020clg484-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+WARNING: [Constraints 18-549] Could not create 'IBUF_LOW_PWR' constraint because cell 'top/i_clocking/clkin1_buf' is not directly connected to top level port. 'IBUF_LOW_PWR' is ignored by Vivado but preserved inside the database.
+Resolution: It is recommended to apply the I/O constraint directly to the top level port instead of applying the constraint to the cell connected to the port.
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0_board.xdc] for cell 'clock_generator_i/clk_wiz_0/inst'
+Finished Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0_board.xdc] for cell 'clock_generator_i/clk_wiz_0/inst'
+Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0.xdc] for cell 'clock_generator_i/clk_wiz_0/inst'
+Finished Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0.xdc] for cell 'clock_generator_i/clk_wiz_0/inst'
+INFO: [Timing 38-2] Deriving generated clocks
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.srcs/sources_1/bd/clock_generator/ip/clock_generator_clk_wiz_0_0/clock_generator_clk_wiz_0_0.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/audio_testbench_sv_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/audio_testbench_sv_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc]
+WARNING: [Constraints 18-619] A clock with name 'clk_100' already exists, overwriting the previous clock with the same name. [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc:2]
+Finished Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/constraints/zed_audio.xdc]
+Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/synth_1/dont_touch.xdc]
+Finished Parsing XDC File [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/synth_1/dont_touch.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/synth_1/dont_touch.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/audio_testbench_sv_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/audio_testbench_sv_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 2 instances were transformed.
+  IBUFG => IBUF: 1 instances
+  IOBUF => IOBUF (IBUF, OBUFT): 1 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 1467.805 ; gain = 0.000 ; free physical = 10583 ; free virtual = 21853
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10581 ; free virtual = 21852
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg484-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10581 ; free virtual = 21852
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property DONT_TOUCH = true for clock_generator_i/clk_wiz_0/inst. (constraint file  /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/lab2/lab2.runs/synth_1/dont_touch.xdc, line 13).
+Applied set_property DONT_TOUCH = true for clock_generator_i. (constraint file  auto generated constraint, line ).
+Applied set_property DONT_TOUCH = true for clock_generator_i/clk_wiz_0. (constraint file  auto generated constraint, line ).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10581 ; free virtual = 21852
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4471] merging register 'debug_scl_reg' into 'i2c_scl_reg' [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/zedboard_audio-master/hdl/i3c2.vhd:129]
+INFO: [Synth 8-5544] ROM "i2c_started" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "i2c_scl" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "i2c_scl" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "i2c_sda_t" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "i2c_sda_t" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "state" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "state" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "state" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "bitcount" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "i2c_bits_left" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "new_sample" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "sr_in" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "i2s_d_out" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "counter" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-3537] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the inputs of the operator [/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/4channel/frequency_sweep.sv:31]
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10581 ; free virtual = 21851
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 1     
+	   2 Input     13 Bit       Adders := 7     
+	   3 Input     12 Bit       Adders := 1     
+	   2 Input     10 Bit       Adders := 1     
+	   2 Input      8 Bit       Adders := 1     
+	   2 Input      7 Bit       Adders := 1     
+	   2 Input      6 Bit       Adders := 9     
+	   2 Input      5 Bit       Adders := 3     
+	   2 Input      4 Bit       Adders := 1     
+	   2 Input      3 Bit       Adders := 11    
++---XORs : 
+	   2 Input      1 Bit         XORs := 2     
++---Registers : 
+	              127 Bit    Registers := 1     
+	               64 Bit    Registers := 1     
+	               24 Bit    Registers := 9     
+	               16 Bit    Registers := 2     
+	               15 Bit    Registers := 1     
+	               13 Bit    Registers := 8     
+	               11 Bit    Registers := 1     
+	               10 Bit    Registers := 2     
+	                9 Bit    Registers := 2     
+	                8 Bit    Registers := 13    
+	                7 Bit    Registers := 1     
+	                6 Bit    Registers := 5     
+	                5 Bit    Registers := 4     
+	                4 Bit    Registers := 5     
+	                3 Bit    Registers := 11    
+	                1 Bit    Registers := 37    
++---ROMs : 
+	                              ROMs := 1     
++---Muxes : 
+	   2 Input     64 Bit        Muxes := 1     
+	   2 Input     28 Bit        Muxes := 4     
+	   2 Input     24 Bit        Muxes := 2     
+	  21 Input     16 Bit        Muxes := 1     
+	   2 Input     16 Bit        Muxes := 2     
+	   6 Input     16 Bit        Muxes := 1     
+	  13 Input     16 Bit        Muxes := 1     
+	   2 Input     15 Bit        Muxes := 6     
+	   2 Input     13 Bit        Muxes := 4     
+	   2 Input     12 Bit        Muxes := 1     
+	   2 Input     10 Bit        Muxes := 2     
+	   6 Input     10 Bit        Muxes := 1     
+	  13 Input     10 Bit        Muxes := 1     
+	   2 Input      9 Bit        Muxes := 1     
+	   6 Input      9 Bit        Muxes := 1     
+	  13 Input      9 Bit        Muxes := 1     
+	   6 Input      8 Bit        Muxes := 1     
+	   2 Input      8 Bit        Muxes := 5     
+	   8 Input      7 Bit        Muxes := 1     
+	   2 Input      6 Bit        Muxes := 9     
+	   5 Input      6 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 6     
+	   2 Input      4 Bit        Muxes := 17    
+	   4 Input      4 Bit        Muxes := 1     
+	   7 Input      4 Bit        Muxes := 1     
+	   6 Input      4 Bit        Muxes := 2     
+	  13 Input      4 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 10    
+	   4 Input      3 Bit        Muxes := 3     
+	   2 Input      2 Bit        Muxes := 7     
+	  13 Input      1 Bit        Muxes := 6     
+	  19 Input      1 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 55    
+	   6 Input      1 Bit        Muxes := 16    
+	  14 Input      1 Bit        Muxes := 1     
+	   7 Input      1 Bit        Muxes := 1     
+	   5 Input      1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module audio_testbench_sv 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
++---Registers : 
+	               24 Bit    Registers := 1     
+	                6 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      6 Bit        Muxes := 1     
+	   5 Input      6 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 1     
+	   5 Input      1 Bit        Muxes := 1     
+Module clock_divider 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      3 Bit       Adders := 1     
++---Registers : 
+	                3 Bit    Registers := 1     
+Module adau1761_configuraiton_data 
+Detailed RTL Component Info : 
++---Registers : 
+	                9 Bit    Registers := 1     
++---ROMs : 
+	                              ROMs := 1     
+Module i3c2 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 1     
+	   2 Input     10 Bit       Adders := 1     
+	   2 Input      8 Bit       Adders := 1     
+	   2 Input      4 Bit       Adders := 1     
++---XORs : 
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	               16 Bit    Registers := 2     
+	               10 Bit    Registers := 1     
+	                9 Bit    Registers := 1     
+	                8 Bit    Registers := 2     
+	                5 Bit    Registers := 1     
+	                4 Bit    Registers := 2     
+	                1 Bit    Registers := 8     
++---Muxes : 
+	  21 Input     16 Bit        Muxes := 1     
+	   2 Input     16 Bit        Muxes := 2     
+	   6 Input     16 Bit        Muxes := 1     
+	  13 Input     16 Bit        Muxes := 1     
+	   2 Input     10 Bit        Muxes := 2     
+	   6 Input     10 Bit        Muxes := 1     
+	  13 Input     10 Bit        Muxes := 1     
+	   2 Input      9 Bit        Muxes := 1     
+	   6 Input      9 Bit        Muxes := 1     
+	  13 Input      9 Bit        Muxes := 1     
+	   6 Input      8 Bit        Muxes := 1     
+	   2 Input      8 Bit        Muxes := 1     
+	   2 Input      4 Bit        Muxes := 8     
+	   4 Input      4 Bit        Muxes := 1     
+	   7 Input      4 Bit        Muxes := 1     
+	   6 Input      4 Bit        Muxes := 2     
+	  13 Input      4 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 1     
+	  13 Input      1 Bit        Muxes := 6     
+	  19 Input      1 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 23    
+	   6 Input      1 Bit        Muxes := 16    
+	  14 Input      1 Bit        Muxes := 1     
+	   7 Input      1 Bit        Muxes := 1     
+Module ADAU1761_interface 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 1     
+Module i2s_data_interface 
+Detailed RTL Component Info : 
++---Registers : 
+	              127 Bit    Registers := 1     
+	               64 Bit    Registers := 1     
+	               24 Bit    Registers := 2     
+	               10 Bit    Registers := 1     
+	                1 Bit    Registers := 4     
++---Muxes : 
+	   2 Input     64 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 4     
+Module audio_top 
+Detailed RTL Component Info : 
++---Registers : 
+	               24 Bit    Registers := 4     
+	                1 Bit    Registers := 9     
+Module frequency_timer 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     13 Bit       Adders := 1     
++---Registers : 
+	               13 Bit    Registers := 2     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     13 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 1     
+Module noise_channel 
+Detailed RTL Component Info : 
++---XORs : 
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	               15 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     15 Bit        Muxes := 6     
+	   8 Input      7 Bit        Muxes := 1     
+Module length_counter 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 2     
++---Registers : 
+	                8 Bit    Registers := 1     
+	                6 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     28 Bit        Muxes := 1     
+	   2 Input      6 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 2     
+Module volume_envelope 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      5 Bit       Adders := 1     
+	   2 Input      3 Bit       Adders := 1     
++---Registers : 
+	                8 Bit    Registers := 1     
+	                5 Bit    Registers := 1     
+	                4 Bit    Registers := 1     
+	                3 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      5 Bit        Muxes := 2     
+	   2 Input      4 Bit        Muxes := 3     
+	   2 Input      3 Bit        Muxes := 2     
+	   2 Input      2 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 4     
+Module wave_channel 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     13 Bit       Adders := 1     
+	   2 Input      7 Bit       Adders := 1     
++---Registers : 
+	                7 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      3 Bit        Muxes := 1     
+	   4 Input      3 Bit        Muxes := 1     
+Module square_wave 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     13 Bit       Adders := 1     
+	   2 Input      3 Bit       Adders := 1     
++---Registers : 
+	               24 Bit    Registers := 1     
+	                3 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     24 Bit        Muxes := 1     
+	   4 Input      3 Bit        Muxes := 1     
+Module frequency_sweep 
+Detailed RTL Component Info : 
++---Adders : 
+	   3 Input     12 Bit       Adders := 1     
+	   2 Input      3 Bit       Adders := 1     
++---Registers : 
+	               11 Bit    Registers := 1     
+	                8 Bit    Registers := 4     
+	                3 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     12 Bit        Muxes := 1     
+	   2 Input      8 Bit        Muxes := 4     
+	   2 Input      3 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10581 ; free virtual = 21851
+---------------------------------------------------------------------------------
+Start Cross Boundary Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5546] ROM "Inst_adau1761_izedboard/Inst_i2c/Inst_i3c2/i2c_scl" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "Inst_adau1761_izedboard/Inst_i2c/Inst_i3c2/bitcount" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "Inst_adau1761_izedboard/Inst_i2c/Inst_i3c2/i2c_scl" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "Inst_adau1761_izedboard/Inst_i2c/Inst_i3c2/state" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "Inst_adau1761_izedboard/Inst_i2c/Inst_i3c2/state" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "Inst_adau1761_izedboard/Inst_i2c/Inst_i3c2/i2c_sda_t" won't be mapped to RAM because it is too sparse
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW4
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW5
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW6
+WARNING: [Synth 8-3331] design audio_testbench_sv has unconnected port SW7
+---------------------------------------------------------------------------------
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:16 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10581 ; free virtual = 21851
+---------------------------------------------------------------------------------
+Finished Parallel Reinference  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:16 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10581 ; free virtual = 21851
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+ROM:
++----------------------------+------------+---------------+----------------+
+|Module Name                 | RTL Object | Depth x Width | Implemented As | 
++----------------------------+------------+---------------+----------------+
+|adau1761_configuraiton_data | extrom     | 1024x9        | Block RAM      | 
+|audio_top                   | extrom     | 1024x9        | Block RAM      | 
++----------------------------+------------+---------------+----------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\sq1/sw/wave_reg[19] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\sq2/sw1/wave_reg[19] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\sq1/sw/ft/frequency_timer_period_old_reg[1] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq1/fs/NR14_old_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\sq1/fs/NR14_old_reg[5] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\n/nc3/ft/frequency_timer_period_old_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\n/nc3/ft/frequency_timer_period_old_reg[12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\n/lc3/old_NRx1_reg[7] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\n/lc3/old_NRx1_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\n/nc3/old_step7_reg )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq1/sw/wave_reg[22] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq2/sw1/wave_reg[22] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\w/vw2/position_counter0_inferred /\w/vw2/position_counter_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\w/vw2/position_counter0_inferred /\w/vw2/position_counter_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/hphone_l_freeze_100_reg[17] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[17] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[18] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[19] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[20] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[22] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[23] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[24] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[25] )
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2c/Inst_i3c2/i2c_doing_read_reg ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[25] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[24] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[23] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[22] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[21] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[20] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[19] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[18] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[17] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[16] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[15] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[14] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[13] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[12] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[11] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[10] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[9] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[8] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[7] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[6] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[5] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[4] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[3] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[2] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[1] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_out_reg[0] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/i2s_d_in_last_reg ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[126] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[125] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[124] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[123] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[122] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[121] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[120] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[119] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[118] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[117] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[116] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[115] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[114] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[113] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[112] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[111] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[110] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[109] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[108] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[107] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[106] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[105] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[104] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[103] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[102] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[101] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[100] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[99] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[98] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[97] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[96] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[95] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[94] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[93] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[92] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[91] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[90] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[89] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[88] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[87] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[86] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[85] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[84] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[83] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[82] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[81] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[80] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[79] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[78] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[77] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[76] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[75] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[74] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[73] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[72] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[71] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[70] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[69] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[68] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[67] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[66] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[65] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[64] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[63] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[62] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[61] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[60] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[59] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[58] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[57] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[56] ) is unused and will be removed from module audio_testbench_sv.
+WARNING: [Synth 8-3332] Sequential element (\top/Inst_adau1761_izedboard/Inst_i2s_data_interface/sr_in_reg[55] ) is unused and will be removed from module audio_testbench_sv.
+INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Start Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Area Optimization : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10577 ; free virtual = 21848
+---------------------------------------------------------------------------------
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10577 ; free virtual = 21848
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10577 ; free virtual = 21848
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-565] redefining clock 'clk_100'
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:23 ; elapsed = 00:00:25 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:23 ; elapsed = 00:00:25 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\w/lc2/counter_reg[3] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\w/lc2/counter_reg[5] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\w/lc2/counter_reg[4] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\w/lc2/counter_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\w/lc2/counter_reg[0] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\n/lc3/counter_reg[3] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\n/lc3/counter_reg[5] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\n/lc3/counter_reg[4] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\n/lc3/counter_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\n/lc3/counter_reg[0] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq1/lc/counter_reg[3] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq1/lc/counter_reg[5] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq1/lc/counter_reg[4] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq1/lc/counter_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\sq1/lc/counter_reg[0] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq2/lc1/counter_reg[3] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq2/lc1/counter_reg[5] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq2/lc1/counter_reg[4] )
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\sq2/lc1/counter_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\sq2/lc1/counter_reg[0] )
+INFO: [Synth 8-4480] The timing for the instance \top/Inst_adau1761_izedboard/Inst_i2c/Inst_adau1761_configuraiton_data/data_reg  (implemented as a block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Static Shift Register:
++-------------------+-----------------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|Module Name        | RTL Name                                                              | Length | Width | Reset Signal | Pull out first Reg | Pull out last Reg | SRL16E | SRLC32E | 
++-------------------+-----------------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|audio_testbench_sv | top/Inst_adau1761_izedboard/Inst_i2s_data_interface/bclk_delay_reg[1] | 9      | 1     | NO           | YES                | YES               | 1      | 0       | 
+|audio_testbench_sv | top/sample_clk_48k_d3_48_reg                                          | 3      | 1     | NO           | NO                 | YES               | 1      | 0       | 
+|audio_testbench_sv | n/nc3/LFSR_reg[1]                                                     | 13     | 1     | YES          | NO                 | NO                | 1      | 0       | 
++-------------------+-----------------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----------+------+
+|      |Cell       |Count |
++------+-----------+------+
+|1     |BUFG       |     6|
+|2     |CARRY4     |    21|
+|3     |LUT1       |    81|
+|4     |LUT2       |    29|
+|5     |LUT3       |    49|
+|6     |LUT4       |    94|
+|7     |LUT5       |    41|
+|8     |LUT6       |    79|
+|9     |MMCME2_ADV |     2|
+|10    |RAMB18E1   |     1|
+|11    |SRL16E     |     3|
+|12    |FDCE       |    82|
+|13    |FDPE       |     6|
+|14    |FDRE       |   165|
+|15    |FDSE       |     8|
+|16    |IBUF       |     8|
+|17    |IBUFG      |     1|
+|18    |IOBUF      |     1|
+|19    |OBUF       |     5|
++------+-----------+------+
+
+Report Instance Areas: 
++------+-----------------------------------------+------------------------------------+------+
+|      |Instance                                 |Module                              |Cells |
++------+-----------------------------------------+------------------------------------+------+
+|1     |top                                      |                                    |   682|
+|2     |  clock_generator_i                      |clock_generator                     |     6|
+|3     |    clk_wiz_0                            |clock_generator_clk_wiz_0_0         |     6|
+|4     |      inst                               |clock_generator_clk_wiz_0_0_clk_wiz |     6|
+|5     |  clock_generate                         |clock_divider                       |     4|
+|6     |  n                                      |noise                               |    65|
+|7     |    nc3                                  |noise_channel                       |    65|
+|8     |      ft                                 |frequency_timer_4                   |    45|
+|9     |  sq1                                    |square1                             |   135|
+|10    |    cd                                   |clock_divider_1                     |     4|
+|11    |    fs                                   |frequency_sweep                     |    74|
+|12    |    sw                                   |square_wave_2                       |    57|
+|13    |      ft                                 |frequency_timer_3                   |    48|
+|14    |  sq2                                    |square2                             |    53|
+|15    |    sw1                                  |square_wave                         |    53|
+|16    |      ft                                 |frequency_timer_0                   |    45|
+|17    |  top                                    |audio_top                           |   330|
+|18    |    Inst_adau1761_izedboard              |adau1761_izedboard                  |   293|
+|19    |      Inst_i2c                           |i2c                                 |   226|
+|20    |        Inst_adau1761_configuraiton_data |adau1761_configuraiton_data         |    45|
+|21    |        Inst_i3c2                        |i3c2                                |   181|
+|22    |      Inst_i2s_data_interface            |i2s_data_interface                  |    64|
+|23    |      i_ADAU1761_interface               |ADAU1761_interface                  |     2|
+|24    |    i_clocking                           |clocking                            |     3|
+|25    |  w                                      |wave                                |    59|
+|26    |    vw2                                  |wave_channel                        |    59|
+|27    |      ft                                 |frequency_timer                     |    45|
++------+-----------------------------------------+------------------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 560 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1467.805 ; gain = 82.289 ; free physical = 10563 ; free virtual = 21833
+Synthesis Optimization Complete : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1467.805 ; gain = 558.504 ; free physical = 10563 ; free virtual = 21833
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 34 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+WARNING: [Opt 31-32] Removing redundant IBUF since it is not being driven by a top-level port. top/i_clocking/clkin1_buf 
+Resolution: The tool has removed redundant IBUF. To resolve this warning, check for redundant IBUF in the input design.
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 1 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+171 Infos, 139 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 1467.805 ; gain = 449.984 ; free physical = 10562 ; free virtual = 21833
+report_utilization: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.09 . Memory (MB): peak = 1499.824 ; gain = 0.000 ; free physical = 10561 ; free virtual = 21832
+INFO: [Common 17-206] Exiting Vivado at Wed Oct  5 18:34:06 2016...
