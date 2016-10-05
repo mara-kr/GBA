@@ -47,7 +47,7 @@ module core_tb;
     integer cyc_count;
     /* So the simulation stops */
     initial begin
-        #500 $finish;
+        #84 $finish;
     end
 
     always_ff @(posedge clk) begin
