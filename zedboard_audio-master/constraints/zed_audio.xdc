@@ -1,8 +1,8 @@
 # timing constraints
 create_clock -period 10.000 -name clk_100 [get_ports clk_100]
 
-set_false_path -from [get_clocks zed_audio_clk_48M] -to [get_clocks clk_100]
-set_false_path -from [get_clocks clk_100] -to [get_clocks zed_audio_clk_48M]
+set_false_path -from [get_clocks zed_audio_clk_48M] -to [get_clocks clk_out3_clock_generator_clk_wiz_0_0]
+set_false_path -from [get_clocks clk_out3_clock_generator_clk_wiz_0_0] -to [get_clocks zed_audio_clk_48M]
 
 
 # 100 mhz clock

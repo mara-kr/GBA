@@ -1,0 +1,18 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  "audio_testbench_sv_func_impl.v"
+sv xil_defaultlib  "../../../../../4channel/frequency_timer.sv"
+sv xil_defaultlib  "../../../../../4channel/wave_channel.sv"
+sv xil_defaultlib  "../../../../../4channel/noise_channel.sv"
+sv xil_defaultlib  "../../../../../4channel/volume_envelope.sv"
+sv xil_defaultlib  "../../../../../4channel/square_wave.sv"
+sv xil_defaultlib  "../../../../../4channel/length_counter.sv"
+sv xil_defaultlib  "../../../../../4channel/frequency_sweep.sv"
+sv xil_defaultlib  "../../../../../4channel/clock_divider.sv"
+sv xil_defaultlib  "../../../../../4channel/sound_channel.sv"
+sv xil_defaultlib  "../../../../../4channel/audio_testbench.sv"
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

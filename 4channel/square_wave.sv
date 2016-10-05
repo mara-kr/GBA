@@ -16,7 +16,7 @@ module square_wave (
     logic frequency_timer_clock;
 
     assign frequency = {NRx4[2:0], NRx3[7:0]};
-    assign frequency_timer_period = (2048-frequency)*4;
+    assign frequency_timer_period = (2048-frequency) << 2;
     assign duty_cycle = NRx1 [7:6];
 
     frequency_timer ft(system_clock, reset, frequency_timer_period, frequency_timer_clock);
