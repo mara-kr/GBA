@@ -1675,7 +1675,6 @@ WrEn_Int <= '1' when (((IDR_SingleCycleDPI and ExecuteInst)or DPIRegSh_St)and no
                      (BaseRegUdate_St='1' and ABORT='0') or --  Base register update for load/store
                      (LDR_St2='1' and DAbtStored='0')or                 -- LDR
 					 (LDM_St2='1' and DAbtStored='0' and LSAbtOccurred='0')or	-- LDM
-					 (IDR_ThBLFP='1' and CPSRTFlag='1' and ExecuteInst='1')or -- Thumb BL support added (the first part)
 					 SWP_St2='1' -- SWP/SWPB
 					 else '0';
 
@@ -1991,8 +1990,8 @@ if nRESET='0' then                -- Reset
     BLink <= '0';
 elsif CLK='1' and CLK'event then  -- Clock
  if CLKEN='1' then                -- Clock enable
-    BLink <= (not BLink and ((IDR_BL or (IDR_ThBLSP and CPSRTFlag)) and ExecuteInst))or -- Thumb BL support added(the second part of instruction)
-	         (BLink and not Branch_St2);
+    BLink <= (not BLink and IDR_BL and ExecuteInst) or -- Thumb BL support added(the second part of instruction)
+             (BLink and not Branch_St2);
  end if;
 end if;
 end process;
