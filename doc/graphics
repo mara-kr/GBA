@@ -1,0 +1,243 @@
+################# GBA Graphics Overview ################
+#
+#TODO Special Effects, blending registers
+#
+1) Background Types
+    -Text Background
+        -8x8 tiles (Tile bitmaps stored at addr set in BG*CNT register)
+        -Background corner set with BG*HOFS & BG*VOFS (regs [8:0] sets offset)
+        -Pixel data stored as palette index
+            -8-bit: Palette at 0x05000000, 256x15 bit color entry
+            -4-bit: (0x05000000 + Map index[3:0])->16x16 color palettes (32B)
+
+    -Rotate/Scale Background (R/S background)
+        -Tile based - same as text
+        -Only use 8-bit palette (256x16b color @ 0x05000000)
+        -Set X/Y scaling & shearing with registers
+
+    -Bitmap Background
+        -Pixel data at locations in memory, colors or offsets into palette
+        -Specifics depend on Video Mode, can be rotated/scaled
+
+    -4 Backgrounds (0-3), type depends on Video Mode
+    -Color format: Red[4:0], Green[9:5], Blue[15-10]
+
+2) Background Map Entry
+    -[9:0] Tile number (index into Tile memory - set by BG*CNT)
+    -[10] Set to flip tile horizontally
+    -[11] Set to flip tile vertically
+    -[15:12] Palette number
+
+
+3) Background Registers
+    REG_DISPCNT: Display control
+        [2:0]   Video Mode
+        [3]     Game boy Color mode (RO)
+        [4]     Bitmap starting addr control (modes 3-5)
+    ****[5]     Force controller processing during hblank
+        [6]     VRAM sprides use 1D (1) or 2D (0)
+                1D - tiles stored sequentially in memory
+                2D - each row stored 32x64B from start of last row
+                1D Mapping => [5,6,7,8;9,10,11,12;13,14,15,16;17,18,19,20]
+                2D Mapping => [5,6,7,8;37,38,39,40;69,70,71,72;101,102,103,104]
+        [7]     Force blank display (1)
+        [8]     BG0 enable
+        [9]     BG1 enable
+        [10]    BG2 enable
+        [11]    BG3 enable
+        [12]    OAM (sprites) enable
+        [13]    Window 0 enable
+        [14]    Window 1 enable
+        [15]    Sprite window enable
+
+    REG_DISPSTAT: Display stats
+        [0]     0 during VDraw, 1 during VBlank
+        [1]     0 during HDraw, 1 during HBlank
+        [2]     Vcount triggered status (1 when interrupt from [5] is triggered)
+        [3]     Enable interrupt at start of VBlank
+        [4]     Enable interrupt at start of HBlank
+        [5]     Enable interrupt when VCount trigger reached
+        [15:8]  Vcount trigger number
+
+    REG_VCOUNT (Read-Only) (0x04000006)
+        Stores current Y location of LCD (incremented on each line)
+
+
+
+    REG_BG*CNT: Background control
+        [1:0]   Priority (0 is high)
+        [2:3]   Starting addr of tile data (addr = 0x06000000 + This*0x4000)
+        [5:4]   Set to 0
+        [6]     Mosiac effect on (1) or off (0)
+        [7]     Color palette type (1->8-bit, 0->4bit - see Text BG)
+        [12:8]  Starting addr of tile map (addr = 0x06000000 + This*0x800)
+        [13]    Display Area Overflow (Transparent (0) or Wraparound (1)
+                Only for BG2,BG3
+        [15:14] Tile map size:
+                00: 256x256 (text), 128x128 (R/S)
+                01: 512x256 (text), 256x256 (R/S)
+                10: 256x512 (text), 512x512 (R/S)
+                11: 512x512 (text), 1024x1024 (R/S)
+
+    REG_BG*HOFS & REG_BG*VOFS: Horizontal/Vertical scroll coordinate (WO)
+        [0:9]   Scroll value (pixels)
+
+    REG_BG*PA: BG* Read Source Pixel X increment (WO) - BG2,BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Scale background (rel. to upper-left) in X by 1/value
+
+    REG_BG*PB: BG* Write Dest Pixel X Increment (WO) - BG2, BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Shear X coords over y ({1,-1} => sheared {left,right} going down screen
+
+    REG_BG*PC: BG* Read Source Pixel Y Increment (WO) - BG2, BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Shear Y coords over X ({1,-1} => sheared {up,down} to the right)
+
+    REG_BG*PD: BG* Write Dest Pixel Y Increment (WO) - BG2, BG3
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Scale background in y direction by 1/value
+
+    REG_BG{2,3}{X,Y}: X/Y Coordinate for BG* Rotational Background (WO)
+        [0:7]   Fraction
+        [14:8]  Integer
+        [15]    Sign
+        Define location of (0,0) pixel
+
+
+
+    REG_WIN*H: Window X coordinates (WO)
+        [7:0]   Right edge coordinate
+        [15:8]  Left edge coordinate
+
+    REG_WIN*V: Window Y oordinates (WO)
+        [7:0]   Bottom edge of window
+        15:8]   Top edge of window
+
+    REG_WININ: Inside window settings
+        [5:0]   {Blends, Sprites, BG3, BG2, BG1, BG0} inside win0
+        [14:8]  {Blends, Sprites, BG3, BG2, BG1, BG0} inside win1
+
+    REG_WINOUT: Outside window & sprite window
+        [5:0]   {Blends, Sprites, BG3, BG2, BG1, BG0} outside
+        [14:8]  {Blends, Sprites, BG3, BG2, BG1, BG0} in sprite window (OBJ)
+
+
+
+    REG_MOSAIC: Mosaic control
+        [3:0]   BG X size
+        [7:4]   BG Y size
+        [11:8]  Sprite X size
+        [15:12] Sprite Y size
+
+    REG_BLDMOD TODO
+
+    REG_COLEV TODO
+
+    REG_COLEY TODO
+
+4) Video Modes (6 total)
+    -Mode 0: BG0-BG3 are text backgrounds
+    -Mode 1: BG0-BG1 are text backgrounds, BG2 is R/S, BG3 unused
+    -Mode 2: BG2-BG3 are R/S backgrounds
+    -Mode 3: 16b bitmapped, non-palette 240x160. Map @ 0x06000000, 0x12C00B
+    -Mode 4: 8b bitmapped 240x160, palette @ 0x05000000 w/ 256x16b colors
+    -Mode 5: 16b bitmapped 160x128, can use 2 frame-buffers (unlike Mode 3)
+
+
+5) OAM (sprites) - 128 64x64 pixel sprites, start @ 0x07000000, 8B entries
+    Bytes 0,1 (Attribute 0)
+        [7:0]   Y coordinate of sprite (upper-left for regular, center for R/S)
+        [8]     Rotation/Scaling on/off
+        [9]     Single size (0) or Double size (1) specified
+        [11:10] 00: normal
+                01: semi-transparent
+                10: Obj window
+                11: Illegal
+        [12]    Enable mosaic
+        [13]    256 color (1) or 16 color (0)
+        [15:14] Size, with [15:14] of attribute 1
+
+    Bytes 2,3 (Attribute 1)
+        [8:0]   X coordinate of sprite (upper-left for regular, center for R/S)
+        [11:9]  Unused
+        [12]    Flip horizontal (1)
+        [13]    Flip vertical (1)
+        [15:14] Size, with [15:14] of attribute 0. As {Attr 0, Attr 1}:
+                0000: 8x8                   1000: 8x16
+                0001: 16x16                 1001: 8x32
+                0010: 32x32                 1010: 16x32
+                0011: 64x64                 1011: 32x64
+                0100: 16x8                  1100-1111: Unused
+                0101: 32x8
+                0110: 32x16
+                0111: 64x32
+
+    Bytes 4,5 (Attribute 2)
+        [9:0]   Tile number - indexes tile data area (32B per index)
+        [11:10] Priority
+        [15:12] Palette number (for 16 color palettes)
+
+    Bytes 6,7 (Attribute 3): Rotation & Scaling
+        Spread across 4 sequential sprites (starting w/ sprite 0)
+        Sprite 0: PA (DX)  - scale sprite in x direction by 1/VAL
+        Sprite 1: PB (DMX) - Shears X coordinates of sprite over y
+                             1  => Sheared left going down
+                             -1 => Sheared right going down
+        Sprite 2: PC (DY)  - Sheares Y coordinates over X
+                             1  => Sheared upwards to right
+                             -1 => Sheared downwards to right
+        Sprite 3: PD (DMY) - Scales image in y direction by 1/VAL
+        [7:0]   Fraction
+        [14:8]  Integer
+        [15]    Sign bit
+
+    Tile Data starts @ 0x06010000, tiles are 8x8 pixels, use 2nd palette
+        256 color - index into 256 color palette (1B/pixel)
+        16 color - Attr2[15:12] indexes 16 color palettes
+
+    Bitmapped modes - GBA cuts away avail sprite tile data for BG data
+                      Can only use sprites 512+
+
+
+6) Windowing
+    Divide screen into windows (WIN0, WIN1, WINOUT, OBJ)
+    OBJ    - Area defined by visible region of objects on the screen
+    WINOUT - Area outside other windows
+    Everything in WIN0 has priority in WIN1, WIN0/WIN1 have priority over others
+    BG/OBJ off in DISPCNT => Off in windows
+    If (Left edge > Right edge): Window drawn outside (to left & to right)
+    If (Top > Bottom): Window drawn outside (to top & to bottom)
+
+    Windows registers define what is in each window/outside  sprite windows
+
+
+
+7) Mosaic
+    Ex. Setting X-Size to 5 => pixels 0-5 are colorized as pixel 0,
+                               pixels 6-11 are coorized as pixel 6, etc.
+
+8) Special Effects #TODO
+
+
+8) Priority
+    From the "front", the priority ordering is as follows:
+        Sprite with priority 0
+        BG     with priority 0
+        Sprite with priority 1
+        BG     with priority 1
+        Sprite with priority 2
+        BG     with priority 2
+        Sprite with priority 3
+        BG     with priority 3
+        Backdrop
+
+    If multiple backgrounds have the same priority, BG0 wins, then BG1, etc.
