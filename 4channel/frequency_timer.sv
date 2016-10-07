@@ -2,13 +2,13 @@
 module frequency_timer (
     input logic clock, 
     input logic reset,
-    input logic [12:0]frequency_timer_period, 
+    input logic [16:0]frequency_timer_period, 
     output logic frequency_timer_clock);
     
-    logic [12:0] counter;
+    logic [16:0] counter;
     logic update_regs;
     
-    logic [12:0]frequency_timer_period_old;
+    logic [16:0]frequency_timer_period_old;
 
     assign update_regs = (frequency_timer_period != frequency_timer_period_old)
                          ? 1 : 0;
@@ -18,13 +18,13 @@ module frequency_timer (
             frequency_timer_clock <= 0;
             frequency_timer_clock <= 0;
         end
-        else if(counter == 0 || update_regs) begin
-            counter <= frequency_timer_period;
+        else if(counter == (frequency_timer_period - 1'b1) || update_regs) begin
+            counter <= 0;
             frequency_timer_clock <= ~frequency_timer_clock;
 
         end
         else begin
-            counter <= counter -1;
+            counter <= counter + 1;
         end
         frequency_timer_period_old <= frequency_timer_period;
     end
