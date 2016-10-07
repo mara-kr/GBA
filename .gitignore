@@ -16,6 +16,19 @@ simv.daidir/*
 
 *.bak
 *.log
+vivado*
+lab2/*
+*webtalk*
+*/csrc/
+*/DVEfiles/
+*/simv*
+*.vpd
+audio_test/
+audio_test_hdl/
+test/
+zedboard_audio-master/hdl/64/
+
+
 
 Desktop.ini
 
