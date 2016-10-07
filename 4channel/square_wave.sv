@@ -11,12 +11,12 @@ module square_wave (
     logic [2:0] num_cycles;
     logic [3:0] max_cycles_high;
     logic [1:0] duty_cycle;
-    logic [12:0] frequency_timer_period;
+    logic [16:0] frequency_timer_period;
     logic [10:0]frequency;
     logic frequency_timer_clock;
 
     assign frequency = {NRx4[2:0], NRx3[7:0]};
-    assign frequency_timer_period = (2048-frequency) << 2;
+    assign frequency_timer_period = (2048-frequency)*48;
     assign duty_cycle = NRx1 [7:6];
 
     frequency_timer ft(system_clock, reset, frequency_timer_period, frequency_timer_clock);
