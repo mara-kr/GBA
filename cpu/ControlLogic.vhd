@@ -1629,7 +1629,8 @@ ExceptionVectorSel <= ExceptFC;  -- First cycle of exception handling
 -- TBD  '0'- ARM(+4) / '1'- Thumb(+2)
 PCIncStep  <= CPSRTFlag or (IDR_BX and (not CPSRTFlag));
 -- TBD  '0'- ARM(+4) or STM/LDM / '1'- Thumb(+2)
-AdrIncStep <= (CPSRTFlag or (IDR_BX and (not CPSRTFlag))) and
+AdrIncStep <= ((CPSRTFlag and (not IDR_BX or Branch_St1 or Branch_St2)) or
+              (IDR_BX and (not CPSRTFlag))) and
               (not STM_St) and (not nLDM_St0);
 
 -- Switch ADDR register to the input of PC
