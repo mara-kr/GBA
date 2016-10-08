@@ -1630,7 +1630,7 @@ ExceptionVectorSel <= ExceptFC;  -- First cycle of exception handling
 PCIncStep  <= CPSRTFlag or (IDR_BX and (not CPSRTFlag));
 -- TBD  '0'- ARM(+4) or STM/LDM / '1'- Thumb(+2)
 AdrIncStep <= (CPSRTFlag or (IDR_BX and (not CPSRTFlag))) and
-              (not IDR_STM) and (not IDR_LDM);
+              (not STM_St) and (not nLDM_St0);
 
 -- Switch ADDR register to the input of PC
 AdrToPCSel <=  ExceptFC or -- First cycle of interrupt entering
@@ -2445,15 +2445,15 @@ begin
 if nRESET='0' then
     LastAddr <= (others => '0');
 elsif CLK='1' and CLK'event then
-    if CLKEN='1' then
+    if CLKEN='1' and StagnatePipeline_Int='0' then
         LastAddr <= Addr;
     end if;
 end if;
 end process;
 
 DataAddrLow <= LastAddr(1 downto 0) when (BRANCH_ST1='1' or BRANCH_ST2='1') else
-              "00" when (IDR_LDR='1' or IDR_LDRT='1') else
-               LastAddr(1) & '0' when (IDR_LDRH='1' or IDR_LDRSH='1') else
+              "00" when ((IDR_LDR='1' or IDR_LDRT='1') and (LDR_St1='1')) else
+               LastAddr(1) & '0' when ((IDR_LDRH='1' or IDR_LDRSH='1') and (LDR_St1='0')) else
                LastAddr(1 downto 0);
 
 end RTL;
