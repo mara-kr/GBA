@@ -53,6 +53,7 @@ endmodule: volume_envelope
  
 /*module volume_envelope_test ();
     logic clock;
+    logic reset;
     logic [7:0] NRx2;
     logic [3:0] volume;
 
@@ -61,13 +62,15 @@ endmodule: volume_envelope
     logic [2:0] num_steps;
     assign NRx2 = {initial_value, increase, num_steps};
 
-    volume_envelope dut(clock, NRx2, volume);
+    volume_envelope dut(clock, reset, NRx2, volume);
 
     initial begin
         $monitor("clock = %b, initial_value = %d, increase = %b, num_steps= %d, volume=%d update_regs = %b NRx2=%b old_NRx2=%b calc_volume=%d old_volume=%d", 
                 clock, initial_value, increase, num_steps, volume, dut.update_regs, NRx2, dut.old_NRx2, dut.calc_volume_level, dut.old_volume_level);
                 
         clock = 0;
+        reset = 1;
+        #1 reset=  0;
         initial_value = 4'd0;
         increase = 1'b0;
         num_steps = 3'd0;
@@ -97,4 +100,4 @@ endmodule: volume_envelope
     always    
          #1 clock = !clock;
 
-endmodule: volume_envelope_test;*/
+endmodule: volume_envelope_test; */
