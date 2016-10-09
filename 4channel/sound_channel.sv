@@ -1,6 +1,6 @@
 module square1 (
     input logic system_clock,
-    input logic clock_512,
+    input logic clock_256,
     input logic reset,
     input logic [7:0] NR10,
     input logic [7:0] NR11,
@@ -9,7 +9,6 @@ module square1 (
     input logic [7:0] NR14,
     output logic [27: 0]output_wave); 
 
-    logic clock_256;
     logic clock_128;
     logic clock_64;
     logic enable_square_wave;
@@ -19,12 +18,12 @@ module square1 (
     logic [7:0] internal_NR13;
     logic [7:0] internal_NR14;
     
-    assign internal_NR13 = NR13;
-    assign internal_NR14 = NR14;
+    //assign internal_NR13 = NR13;
+    //assign internal_NR14 = NR14;
 
     assign output_wave = (length_wave); //?  length_wave + volume_level : 0;
-    clock_divider cd(clock_512, reset, clock_256,  clock_128, clock_64);
-    //frequency_sweep fs(clock_128, reset, NR10, NR13, NR14, internal_NR13, internal_NR14, enable_square_wave);
+    clock_divider cd(clock_256, reset,  clock_128, clock_64);
+    frequency_sweep fs(clock_128, reset, NR10, NR13, NR14, internal_NR13, internal_NR14, enable_square_wave);
     square_wave sw(system_clock, reset, NR11, internal_NR13, internal_NR14, square_wave);
     length_counter lc(clock_256, reset, square_wave, NR11, NR14, length_wave);
     volume_envelope ve(clock_64, reset, NR12, volume_level);
@@ -34,7 +33,7 @@ endmodule: square1
 
 module square2 (
     input logic system_clock,
-    input logic clock_512,
+    input logic clock_256,
     input logic reset,
     input logic [7:0] NR20,
     input logic [7:0] NR21,
@@ -43,7 +42,6 @@ module square2 (
     input logic [7:0] NR24,
     output logic [23:0] output_wave);
 
-    logic clock_256;
     logic clock_128;
     logic clock_64;
     logic [23:0] square_wave;
@@ -51,7 +49,7 @@ module square2 (
     logic [3:0] volume_level;
 
     assign output_wave = (length_wave); //?  length_wave + volume_level : 0;
-    clock_divider cd1(clock_512, reset, clock_256,  clock_128, clock_64);
+    clock_divider cd1(clock_256, reset, clock_128, clock_64);
     square_wave sw1(system_clock, reset, NR21, NR23, NR24, square_wave);
     length_counter lc1(clock_256, reset, square_wave, NR21, NR24, length_wave);
     volume_envelope ve1(clock_64, reset, NR22, volume_level);
@@ -60,7 +58,7 @@ endmodule: square2
 
 module wave (
     input logic system_clock,
-    input logic clock_512,
+    input logic clock_256,
     input logic reset,
     input logic [7:0] NR30,
     input logic [7:0] NR31,
@@ -77,13 +75,12 @@ module wave (
     input logic [15:0] addr_0x9E,
     output logic [23:0] output_wave);
 
-    logic clock_256;
     logic clock_128;
     logic clock_64;
     logic [23:0] predefined_wave;
     logic [3:0] volume_level;
 
-    clock_divider cd2(clock_512, reset, clock_256,  clock_128, clock_64);
+    clock_divider cd2(clock_256, reset, clock_128, clock_64);
     wave_channel vw2(system_clock, reset, NR32, NR33, NR34,
                 addr_0x90, addr_0x92, addr_0x94,
                 addr_0x96, addr_0x98, addr_0x9A, addr_0x9C, addr_0x9E, predefined_wave);
@@ -93,7 +90,7 @@ endmodule: wave
 
 module noise (
     input logic system_clock,
-    input logic clock_512,
+    input logic clock_256,
     input logic reset,
     input logic [7:0] NR40,
     input logic [7:0] NR41,
@@ -102,7 +99,6 @@ module noise (
     input logic [7:0] NR44,
     output logic [23:0] output_wave);
 
-    logic clock_256;
     logic clock_128;
     logic clock_64;
     logic [23:0] noise_wave;
@@ -110,7 +106,7 @@ module noise (
     logic [3:0] volume_level;
 
     assign output_wave = length_wave; //+ volume_level;
-    clock_divider cd3(clock_512, reset, clock_256,  clock_128, clock_64);
+    clock_divider cd3(clock_256, reset, clock_128, clock_64);
     noise_channel nc3(system_clock, reset, NR43, noise_wave);
     length_counter lc3(clock_256, reset, noise_wave, NR41, NR44, length_wave);
     volume_envelope ve3(clock_64, reset, NR42, volume_level);

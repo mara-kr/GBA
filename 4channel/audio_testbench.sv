@@ -1,6 +1,6 @@
 module audio_testbench_sv (
-    input logic clk_100,
-    input logic BTNC,
+    //input logic clk_100,
+    //input logic BTNC,
     output logic AC_ADR0,
     output logic AC_ADR1,
     output logic AC_GPIO0,
@@ -22,7 +22,21 @@ module audio_testbench_sv (
 
     logic clk_100;
     logic BTNC; 
+    
+    logic clk_100_output;
+    logic clk_256_output;
 
+
+    clk_wiz_0 clock_generate
+   (
+   // Clock in ports
+    .clk_in1(clk_100),      // input clk_in1
+    // Clock out ports
+    .clk_out1(clk_100_output),     // output clk_out1
+    .clk_out2(clk_256_output),     // output clk_out2
+    // Status and control signals
+    .reset(BTNC));       // input reset
+    
     //audio codec
     logic        clk_100_buffered;
     logic [5:0]  counter_saw_tooth;
@@ -97,7 +111,7 @@ module audio_testbench_sv (
     
     noise n(
         .system_clock(clk_100),
-        .clock_512(clk_100),
+        .clock_256(clk_256_output),
         .reset(BTNC),
         .NR40(NRx0),
         .NR41(NRx1),
@@ -108,7 +122,7 @@ module audio_testbench_sv (
 
     wave w(
         .system_clock(clk_100),
-        .clock_512(clk_100),
+        .clock_256(clk_256_output),
         .reset(BTNC),
         .NR30(NRx0),
         .NR31(NRx1),
@@ -127,7 +141,7 @@ module audio_testbench_sv (
     
     square2 sq2(
             .system_clock(clk_100),
-            .clock_512(clk_100),
+            .clock_256(clk_256_output),
             .reset(BTNC),
             .NR20(NRx0),
             .NR21(NR21),
@@ -138,9 +152,9 @@ module audio_testbench_sv (
     
     square1 sq1(
         .system_clock(clk_100),
-        .clock_512(clk_100),
+        .clock_256(clk_256_output),
         .reset(BTNC),
-        .NR10,
+        .NR10(NR10),
         .NR11(NR11),
         .NR12(NRx2),
         .NR13(NR13),
@@ -161,7 +175,7 @@ module audio_testbench_sv (
     assign addr_0x9E = {4'd14, 4'd15, 4'd12, 4'd13};
     
     //inputs for square1 channel
-    assign NR10 = 8'b11111111;
+    assign NR10 = 8'b00010111; //shift(increase) every 7.8 ms, 7 steps 
     assign NR11 = 8'b11111111; //75% duty cycle
     assign NR14 = 8'b00000000;
     assign NR13 = 8'b00000000;
@@ -227,12 +241,12 @@ module audio_testbench_sv (
         .I (clk_100)
         );
 
-  /**initial begin
+  initial begin
             clk_100 <= 0;
             #8 BTNC <= 1;
             #2 BTNC <= 0;
         end
         always            #1 clk_100 = !clk_100;
-*/
+
  
 endmodule: audio_testbench_sv
