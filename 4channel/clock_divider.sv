@@ -1,17 +1,15 @@
 module clock_divider (
-    input logic clock_512,
+    input logic clock_256,
     input logic reset,
-    output logic clock_256,
     output logic clock_128,
     output logic clock_64);
 
     logic [2:0] counter;
 
-    always_ff @(posedge clock_512, posedge reset) begin
+    always_ff @(posedge clock_256, posedge reset) begin
         if (reset) counter <= 0;
         else counter <= counter + 1;
 
-        clock_256 <= counter[0];
         clock_128 <= counter[1];
         clock_64 <= counter[2];
     end
