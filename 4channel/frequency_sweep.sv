@@ -85,7 +85,7 @@ endmodule: frequency_sweep
 //This is a cursory test to make sure things are changing
 //didn't want to deal with the inout port
 
-module frequency_sweep_test();
+/**module frequency_sweep_test();
     logic clock;
     logic reset;
     logic [7:0] NR10;
@@ -117,5 +117,5 @@ module frequency_sweep_test();
     always
         #1 clock = !clock;
 
-endmodule: frequency_sweep_test
+endmodule: frequency_sweep_test*/
 
