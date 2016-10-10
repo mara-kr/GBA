@@ -8,10 +8,10 @@
 module length_counter (
     input logic clock_256,
     input logic reset,
-    input logic [27:0] input_wave,
+    input logic [23:0] input_wave,
     input logic [7:0] NRx1, 
     input logic [7:0] NRx4,
-    output logic [27:0] wave);
+    output logic [23:0] wave);
 
     logic internal_enable;
     logic initialization_flag;
@@ -28,7 +28,7 @@ module length_counter (
     //1: counter
     assign sound_length_counter = NRx4[6];
     assign internal_enable = (counter) ? 1'b1 : 1'b0;
-    assign wave = (internal_enable) ? input_wave : 27'b0;
+    assign wave = (internal_enable) ? input_wave : 23'b0;
 
     assign update_regs = (old_NRx1 != NRx1) ? 1'b1 : 1'b0;
     assign update_sound_length_counter = (old_sound_length_counter != sound_length_counter) ? 

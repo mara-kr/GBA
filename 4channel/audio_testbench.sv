@@ -1,6 +1,6 @@
 module audio_testbench_sv (
-    //input logic clk_100,
-    //input logic BTNC,
+    input logic clk_100,
+    input logic BTNC,
     output logic AC_ADR0,
     output logic AC_ADR1,
     output logic AC_GPIO0,
@@ -18,11 +18,11 @@ module audio_testbench_sv (
     input  logic SW5,
     input  logic SW6,
     input  logic SW7);
-
-
-    logic clk_100;
-    logic BTNC; 
     
+    
+    //logic clk_100;
+    //logic BTNC;
+
     logic clk_100_output;
     logic clk_256_output;
 
@@ -73,10 +73,24 @@ module audio_testbench_sv (
     wire [7:0] NR14;
     logic [23:0] channel_1;
 
-    
     //noise channel
     logic [7:0] NR43;
     logic [23:0] channel_4;
+    
+    //mixed channel
+    logic [7:0] NR50;
+    logic [7:0] NR51;
+    logic [7:0] NR52;
+    logic [23:0] mixed_left;
+    logic [23:0] mixed_right;
+    logic pause_c1;
+    logic pause_c2;
+    logic pause_c3;
+    logic pause_c4;
+    logic reset_c1;
+    logic reset_c2;
+    logic reset_c3;
+    logic reset_c4;
     
     //generic registers- for testing keep the same for all channels
     logic [7:0] NRx0;
@@ -112,7 +126,7 @@ module audio_testbench_sv (
     noise n(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
-        .reset(BTNC),
+        .reset((BTNC || reset_c4)),
         .NR40(NRx0),
         .NR41(NRx1),
         .NR42(NRx2),
@@ -123,7 +137,7 @@ module audio_testbench_sv (
     wave w(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
-        .reset(BTNC),
+        .reset((BTNC || reset_c3)),
         .NR30(NRx0),
         .NR31(NRx1),
         .NR32(NRx2),
@@ -142,7 +156,7 @@ module audio_testbench_sv (
     square2 sq2(
             .system_clock(clk_100),
             .clock_256(clk_256_output),
-            .reset(BTNC),
+            .reset((BTNC || reset_c2)),
             .NR20(NRx0),
             .NR21(NR21),
             .NR22(NRx2),
@@ -153,7 +167,7 @@ module audio_testbench_sv (
     square1 sq1(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
-        .reset(BTNC),
+        .reset(BTNC || reset_c1),
         .NR10(NR10),
         .NR11(NR11),
         .NR12(NRx2),
@@ -178,7 +192,7 @@ module audio_testbench_sv (
     assign NR10 = 8'b00010111; //shift(increase) every 7.8 ms, 7 steps 
     assign NR11 = 8'b11111111; //75% duty cycle
     assign NR14 = 8'b00000000;
-    assign NR13 = 8'b00000000;
+    assign NR13 = 8'b11111111; //72 Hz
 
     
     //inputs for square2 channel -- this is for 50% duty cycle
@@ -196,6 +210,37 @@ module audio_testbench_sv (
     assign NRx3 = 0;
     assign NRx4 = 0;
     
+    //set master control for mixer
+    assign NR50 = 8'b11111111; //set full volume for left and right
+    assign NR51 = 8'b11110000; //set all sounds on left, off right
+    assign NR52 = 8'b11111111; //turn on all sounds 
+    mixer m(.system_clock(clk_100),
+            .reset(BTNC),
+            .channel1(channel_1),
+            .channel2(channel_2),
+            .channel3(channel_3),
+            .channel4(channel_4),
+            .pause_channel_1(pause_c1),
+            .pause_channel_2(pause_c2),
+            .pause_channel_3(pause_c3),
+            .pause_channel_4(pause_c4),
+            .NR50(NR50),
+            .NR51(NR51),
+            .NR52(NR52),
+            .output_wave_left(mixed_left),
+            .output_wave_right(mixed_right)); //used to reset the system
+    power p(
+        .clock(clk_100),
+        .NR52(NR52),
+        .pause_channel1(pause_c1),
+        .pause_channel2(pause_c2),
+        .pause_channel3(pause_c3),
+        .pause_channel4(pause_c4),
+        .reset_channel1(reset_c1),
+        .reset_channel2(reset_c2),
+        .reset_channel3(reset_c3),
+        .reset_channel4(reset_c4));
+    
     always_ff @(posedge clk_100) begin
         hphone_valid <= 0;
         hphone_l <= 0;
@@ -205,27 +250,32 @@ module audio_testbench_sv (
             counter_saw_tooth <= 0;
         end
         if (new_sample == 1) begin
-            case ({SW3, SW2, SW1, SW0})  
-                4'b0001: begin
+            case ({SW4, SW3, SW2, SW1, SW0})  
+                5'b00001: begin
                     hphone_valid <= 1'b1;
                     hphone_r <= {channel_1};
                     hphone_l <= {channel_1};
                 end 
-                4'b0010: begin
+                5'b00010: begin
                     hphone_valid <= 1'b1;
                     hphone_r <= {channel_2};
                     hphone_l <= {channel_2};
                 end 
-                4'b0100: begin
+                5'b00100: begin
                     hphone_valid <= 1'b1;
                     hphone_r <= {channel_3};
                     hphone_l <= {channel_3};
                 end 
-                4'b1000: begin
+                5'b01000: begin
                     hphone_valid <= 1'b1;
                     hphone_r <= {channel_4};
                     hphone_l <= {channel_4};
-                end 
+                end
+                5'b10000: begin
+                    hphone_valid <= 1'b1;
+                    hphone_r <= {mixed_right};
+                    hphone_l <= {mixed_left};
+                end
                 default begin 
                     counter_saw_tooth <= counter_saw_tooth + 1;
                     hphone_valid <= 1'b1;
@@ -241,12 +291,12 @@ module audio_testbench_sv (
         .I (clk_100)
         );
 
-  initial begin
+  /**initial begin
             clk_100 <= 0;
             #8 BTNC <= 1;
             #2 BTNC <= 0;
         end
         always            #1 clk_100 = !clk_100;
-
+*/
  
 endmodule: audio_testbench_sv
