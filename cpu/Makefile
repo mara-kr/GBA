@@ -6,11 +6,11 @@ BUILD_DIR=$(WORK_DIR)/build
 
 VCS_REG_FILE=$(BUILD_DIR)/vcs_reg_out.txt
 
-#BIOS_FILE=$(WORK_DIR)/gba_bios.hex
-BIOS_FILE=$(WORK_DIR)/roms/pixels.hex
+BIOS_FILE=$(WORK_DIR)/gba_bios.hex
+#BIOS_FILE=$(WORK_DIR)/roms/pixels.hex
 ROM_FILE=$(WORK_DIR)/roms/pixels.hex
-QEMU_REG_FILE=$(WORK_DIR)/test_files/pixels.regs
-#QEMU_REG_FILE=$(WORK_DIR)/test_files/bios.regs
+#QEMU_REG_FILE=$(WORK_DIR)/test_files/pixels.regs
+QEMU_REG_FILE=$(WORK_DIR)/test_files/bios.regs
 BUS_LOG_FILE=$(WORK_DIR)/BusLog.txt
 
 VCS=vcs -debug -q
