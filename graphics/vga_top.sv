@@ -1,10 +1,10 @@
 `default_nettype none
-/** VGA module for graphics pipeline
+/** VGA module for graphics pipeline - reads out of double buffer
+ * and outputs to Zedboard VGA interface
  *
  *  NOTE: clk_wiz_0 should take the Zedboard's 100Mhz clock
  *        and output a 50.330Mhz clock.
  *
- *  TODO: Add interface for double buffering
  */
 
 // For 16.78Mhz clock, 240x160:
@@ -30,7 +30,13 @@
 `define VDISP_END (`VDISP_START + `VDISP_LINES)
 
 `define NUM_ROWS 480
-`define NUM_COLS 320
+`define NUM_COLS 640
+
+`define GBA_ROWS 160
+`define GBA_COLS 240
+`define GBA_COLS_WIDTH 8
+
+`define GBA_PIXELS (`GBA_ROWS * `GBA_COLS)
 
 module vga_counter
     #(parameter WIDTH = 8,
@@ -56,11 +62,12 @@ module vga_rangecheck
 endmodule: vga_rangecheck
 
 // Track columns by cycle, track rows by line (numbers are smaller)
+// TODO Output index (row*width + col) instead of Row,col
 module vga
    (input  logic clock, reset,
-    output logic HS, VS,
     output logic [8:0] row,
-    output logic [9:0] col);
+    output logic [9:0] col,
+    output logic HS, VS);
 
     logic [10:0] h_cycles, v_lines;
     logic row_end, HS_L, VS_L;
@@ -75,10 +82,57 @@ module vga
 
     vga_rangecheck #(11, 0, `HPW_CYCLES) hsync (h_cycles, HS_L);
     vga_rangecheck #(11, 0, `VPW_LINES) vsync (v_lines, VS_L);
+
 endmodule: vga
+
+// TODO Make VGA color be data when addr is in range, and black otherwise
+// TODO Addr should be VGA index + 1
+module vga_top(
+    input  logic clock, reset,
+    input  logic [14:0] data,
+    output logic [16:0] addr,
+    output logic [3:0] VGA_R, VGA_G, VGA_B,
+    output logic VGA_HS, VGA_VS);
+
+    logic [8:0] row;
+    logic [9:0] col;
+    logic [16:0] curr_addr;
+
+    // Ignore LSB of color from graphics since we only have 4 bits
+    assign VGA_R = (curr_addr < `GBA_PIXELS) ? data[14:11] : 4'h0;
+    assign VGA_G = (curr_addr < `GBA_PIXELS) ? data[9:6] : 4'h0;
+    assign VGA_B = (curr_addr < `GBA_PIXELS) ? data[4:1] : 4'h0;
+
+    // Synchronous reads, don't make out of bounds accesses
+    assign addr = (curr_addr < `GBA_PIXELS-1) ? curr_addr + 1 : 17'd0;
+
+    vga vga (.clock, .reset, .HS(VGA_HS), .VS(VGA_VS), .row, .col);
+    addr_calc calc (.clock, .reset, .row, .col, .addr(curr_addr));
+
+endmodule: vga_top
+
+module addr_calc(
+    input  logic clock, reset,
+    input  logic [8:0] row,
+    input  logic [9:0] col,
+    output logic [16:0] addr);
+
+    logic [16:0] rows_idx;
+
+    // Vivado IP core to interact with DSP blocks
+    MULT_MACRO #(.WIDTH_A(9), .WIDTH_B(`GBA_COLS_WIDTH), .LATENCY(0))
+       mult (.P(rows_idx), .A(row), .B(`GBA_COLS), .CE(1'b1), .CLK(clock),
+             .RST(reset));
+
+    assign addr = rows_idx + col;
+
+endmodule: addr_calc
+
+
 
 // If SW0 high, display horizontal test pattern, otherwise display
 // standard vertical test pattern
+/*
 module vga_top_testpattern (
     input  logic GCLK, BTND,
     input  logic [7:0] SW,
@@ -126,6 +180,6 @@ module vga_top_testpattern (
     vga_rangecheck #(9, 9'd300, 9'd360) rb2 (row, r_blue[2]);
     vga_rangecheck #(9, 9'd420, 9'd480) rb3 (row, r_blue[3]);
 
-
     assign LD = SW;
 endmodule: vga_top_testpattern
+*/
