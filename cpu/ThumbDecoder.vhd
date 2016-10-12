@@ -40,8 +40,6 @@ constant CThBLFP   : std_logic_vector(4 downto 0) := "11110";    -- First part o
 constant CThBLSP   : std_logic_vector(4 downto 0) := "11111";    -- Second part of Thumb BL
 
 begin
-ThBLFP <= '0';
-ThBLSP <= '0';
 
 HalfWordForDecode <= InstForDecode(15 downto 0) when HalfWordAddress='0' else
 					 InstForDecode(31 downto 16);
@@ -64,6 +62,8 @@ end process;
 -- Naming based on ARM ISA
 ThDcdComb:process(HalfWordForDecode)
 begin
+    ThBLFP <= '0';
+    ThBLSP <= '0';
     ThBLFP_Reg_EN <= '0';
     -- Move Instructions
     if (HalfWordForDecode(15 downto 11)="00100") then           -- MOV1
@@ -340,11 +340,13 @@ begin
     elsif (HalfWordForDecode(15 downto 13)="111") then         -- BL
         if (HalfWordForDecode(12 downto 11)="10") then
             ThBLFP_Reg_EN <= '1';
+            --ThBLFP <= '1';
             DecoderOut(31 downto 28) <= "1110";
             DecoderOut(27 downto 24) <= "0000";
             DecoderOut(23 downto 11) <= "0000000000000";
             DecoderOut(10 downto 0) <= "00000000000";
         else -- HalfWordForDecode(12:11)="11"
+            --ThBLSP <= '1';
             DecoderOut(31 downto 28) <= "1110";
             DecoderOut(27 downto 24) <= "1011";
             DecoderOut(23) <= ThBLFP_Reg(10);
@@ -538,14 +540,14 @@ begin
         DecoderOut(23 downto 8) <= "0000000000000000";
         DecoderOut(7 downto 0) <= HalfWordForDecode(7 downto 0);
     else
-        DecoderOut <= (others => '0');
+        DecoderOut <= (others => 'X');
 
     end if;
 end process;
 
 -- Outputs
-ThBLFP <= ThBLFP_Int;
-ThBLSP <= ThBLSP_Int;
+--ThBLFP <= ThBLFP_Int;
+--ThBLSP <= ThBLSP_Int;
 
 end RTL;
 

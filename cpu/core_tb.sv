@@ -47,7 +47,7 @@ module core_tb;
     integer cyc_count;
     /* So the simulation stops */
     initial begin
-        #1900 $finish;
+        #2000 $finish;
     end
 
     always_ff @(posedge clk) begin
@@ -121,6 +121,7 @@ module sim_memory
         pak_ram (.clk, .rst_n, .pause, .wdata, .rdata, .addr, .byte_we);
 
     /* ROMs */
+    // Pak 1-3 should map to the same memory
     rom_memory #(`PAK_ROM_1_START, `PAK_ROM_1_SIZE, "GBA_CPU_ROM_FILE")
         pak1_rom (.clk, .rst_n, .addr, .rdata);
 
