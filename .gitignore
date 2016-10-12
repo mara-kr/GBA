@@ -3,7 +3,8 @@
 *~
 *.swp
 ucli.key
-
+.restartSimSession.tcl.old
+.synopsys_dve_rebuild.tcl
 
 *.bak
 *.log
