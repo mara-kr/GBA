@@ -60,12 +60,15 @@ end process;
 
 -- Combinatorial process
 -- Naming based on ARM ISA
+--ThBLFP_Int <= '1' when HalfWordForDecode(15 downto 11)=CThBLFP else '0';
+--ThBLSP_Int <= '1' when HalfWordForDecode(15 downto 11)=CThBLSP else '0';
+
 ThDcdComb:process(HalfWordForDecode)
 begin
-    ThBLFP <= '0';
-    ThBLSP <= '0';
-    ThBLFP_Reg_EN <= '0';
     -- Move Instructions
+    ThBLFP_Int <= '0';
+    ThBLSP_Int <= '0';
+    ThBLFP_Reg_EN <= '0';
     if (HalfWordForDecode(15 downto 11)="00100") then           -- MOV1
         DecoderOut(31 downto 28) <= "1110";
         DecoderOut(27 downto 20) <= "00111011";
@@ -546,8 +549,8 @@ begin
 end process;
 
 -- Outputs
---ThBLFP <= ThBLFP_Int;
---ThBLSP <= ThBLSP_Int;
+ThBLFP <= ThBLFP_Int;
+ThBLSP <= ThBLSP_Int;
 
 end RTL;
 

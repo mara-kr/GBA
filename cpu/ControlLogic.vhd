@@ -639,7 +639,6 @@ signal	ClrBitZero_Reg       : std_logic := '0';
 signal  ClrBitOne_Reg        : std_logic := '0';
 signal	SetBitZero_Reg       : std_logic := '0';
 
-
 begin
 
 -- *******************************************************************************************
@@ -1581,7 +1580,7 @@ case StagnatePipeline_Int is
 	-- Clears bits[1..0] during address phase of LDM/STM/STR !!! TBD
    ClrBitZero_Reg <= IDC_STR or IDC_STM or IDC_LDM;
    ClrBitOne_Reg <= IDC_STR or IDC_STM or IDC_LDM;
-   SetBitZero_Reg <= (IDR_ThBLSP and CPSRTFlag and ExecuteInst); -- Thumb BL support added(the second part of instruction)
+   SetBitZero_Reg <= (IDR_BL and CPSRTFlag and ExecuteInst); -- Thumb BL support added(the second part of instruction)
     end if;
 
 	when '1' => null;
@@ -1627,10 +1626,10 @@ ExceptionVectorSel <= ExceptFC;  -- First cycle of exception handling
 
 
 -- TBD  '0'- ARM(+4) / '1'- Thumb(+2)
-PCIncStep  <= CPSRTFlag or (IDR_BX and (not CPSRTFlag));
+PCIncStep  <= (CPSRTFlag or (IDR_BX and RmBitZero and (not CPSRTFlag)));
 -- TBD  '0'- ARM(+4) or STM/LDM / '1'- Thumb(+2)
 AdrIncStep <= ((CPSRTFlag and (not IDR_BX or Branch_St1 or Branch_St2)) or
-              (IDR_BX and (not CPSRTFlag))) and
+              (IDR_BX and RmBitZero and (not CPSRTFlag))) and
               (not STM_St) and (not nLDM_St0);
 
 -- Switch ADDR register to the input of PC
