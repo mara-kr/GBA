@@ -327,100 +327,100 @@ module sign_extender
 endmodule: sign_extender
 
 /* A Kogge-Stone Adder/Subtractor. See wikipedia */
-module ks_add_sub
-  #(parameter WIDTH=32)
-  (output logic [WIDTH-1:0] out, out_and, out_xor,
-   output logic carry_out,
-   input  logic [WIDTH-1:0] in1, in2,
-   input  logic              sub);
+//module ks_add_sub
+//  #(parameter WIDTH=32)
+//  (output logic [WIDTH-1:0] out, out_and, out_xor,
+//   output logic carry_out,
+//   input  logic [WIDTH-1:0] in1, in2,
+//   input  logic              sub);
 
-  logic [WIDTH-1:0] A, B;
-  logic [WIDTH:0] p, g, p_layer1, g_layer1, p_layer2, g_layer2;
-  logic [WIDTH:0] p_layer3, g_layer3, p_layer4, g_layer4;
-  logic [WIDTH:0] p_layer5, g_layer5;
+//  logic [WIDTH-1:0] A, B;
+//  logic [WIDTH:0] p, g, p_layer1, g_layer1, p_layer2, g_layer2;
+//  logic [WIDTH:0] p_layer3, g_layer3, p_layer4, g_layer4;
+//  logic [WIDTH:0] p_layer5, g_layer5;
 
-  assign A = in1;
-  assign B = in2 ^ {WIDTH{sub}};
-  assign p = {A ^ B, 1'b0}; /* Carry Propagate */
-  assign g = {A & B, sub}; /* Carry Generate */
+//  assign A = in1;
+//  assign B = in2 ^ {WIDTH{sub}};
+//  assign p = {A ^ B, 1'b0}; /* Carry Propagate */
+//  assign g = {A & B, sub}; /* Carry Generate */
 
-  assign out_and = g[WIDTH:1];
-  assign out_xor = p[WIDTH:1];
-`ifndef NO_KS
-  assign carry_out = g_layer5[WIDTH-1];
+//  assign out_and = g[WIDTH:1];
+//  assign out_xor = p[WIDTH:1];
+//`ifndef NO_KS
+//  assign carry_out = g_layer5[WIDTH-1];
 
-  genvar i;
-  generate
-    for (i = 0; i <= WIDTH; i++) begin : LAYER_1
-      if (i < 1)
-        assign {p_layer1[i], g_layer1[i]} = {p[i], g[i]};
-      else
-        ks_unit u1 (.p(p_layer1[i]), .g(g_layer1[i]), .pi(p[i]),
-                    .gi(g[i]), .pi_prev(p[i-1]), .gi_prev(g[i-1]));
-    end
-  endgenerate
+//  genvar i;
+//  generate
+//    for (i = 0; i <= WIDTH; i++) begin : LAYER_1
+//      if (i < 1)
+//        assign {p_layer1[i], g_layer1[i]} = {p[i], g[i]};
+//      else
+//        ks_unit u1 (.p(p_layer1[i]), .g(g_layer1[i]), .pi(p[i]),
+//                    .gi(g[i]), .pi_prev(p[i-1]), .gi_prev(g[i-1]));
+//    end
+//  endgenerate
 
-  generate
-    for (i = 0; i <= WIDTH; i++) begin : LAYER_2
-      if (i < 2)
-        assign {p_layer2[i], g_layer2[i]} = {p_layer1[i], g_layer1[i]};
-      else
-        ks_unit u2 (.p(p_layer2[i]), .g(g_layer2[i]), .pi(p_layer1[i]),
-                    .gi(g_layer1[i]),
-                    .pi_prev(p_layer1[i-2]), .gi_prev(g_layer1[i-2]));
-    end
-  endgenerate
+//  generate
+//    for (i = 0; i <= WIDTH; i++) begin : LAYER_2
+//      if (i < 2)
+//        assign {p_layer2[i], g_layer2[i]} = {p_layer1[i], g_layer1[i]};
+//      else
+//        ks_unit u2 (.p(p_layer2[i]), .g(g_layer2[i]), .pi(p_layer1[i]),
+//                    .gi(g_layer1[i]),
+//                    .pi_prev(p_layer1[i-2]), .gi_prev(g_layer1[i-2]));
+//    end
+//  endgenerate
 
-  generate
-    for (i = 0; i <= WIDTH; i++) begin : LAYER_3
-      if (i < 4)
-        assign {p_layer3[i], g_layer3[i]} = {p_layer2[i], g_layer2[i]};
-      else
-        ks_unit u3 (.p(p_layer3[i]), .g(g_layer3[i]), .pi(p_layer2[i]),
-                    .gi(g_layer2[i]),
-                    .pi_prev(p_layer2[i-4]), .gi_prev(g_layer2[i-4]));
-    end
-  endgenerate
+//  generate
+//    for (i = 0; i <= WIDTH; i++) begin : LAYER_3
+//      if (i < 4)
+//        assign {p_layer3[i], g_layer3[i]} = {p_layer2[i], g_layer2[i]};
+//      else
+//        ks_unit u3 (.p(p_layer3[i]), .g(g_layer3[i]), .pi(p_layer2[i]),
+//                    .gi(g_layer2[i]),
+//                    .pi_prev(p_layer2[i-4]), .gi_prev(g_layer2[i-4]));
+//    end
+//  endgenerate
 
-  generate
-    for (i = 0; i <= WIDTH; i++) begin : LAYER_4
-      if (i < 8)
-        assign {p_layer4[i], g_layer4[i]} = {p_layer3[i], g_layer3[i]};
-      else
-        ks_unit u4 (.p(p_layer4[i]), .g(g_layer4[i]), .pi(p_layer3[i]),
-                    .gi(g_layer3[i]),
-                    .pi_prev(p_layer3[i-8]), .gi_prev(g_layer3[i-8]));
-    end
-  endgenerate
+//  generate
+//    for (i = 0; i <= WIDTH; i++) begin : LAYER_4
+//      if (i < 8)
+//        assign {p_layer4[i], g_layer4[i]} = {p_layer3[i], g_layer3[i]};
+//      else
+//        ks_unit u4 (.p(p_layer4[i]), .g(g_layer4[i]), .pi(p_layer3[i]),
+//                    .gi(g_layer3[i]),
+//                    .pi_prev(p_layer3[i-8]), .gi_prev(g_layer3[i-8]));
+//    end
+//  endgenerate
 
-  generate
-    for (i = 0; i <= WIDTH; i++) begin : LAYER_5
-      if (i < 16)
-        assign {p_layer5[i], g_layer5[i]} = {p_layer4[i], g_layer4[i]};
-      else
-        ks_unit u5 (.p(p_layer5[i]), .g(g_layer5[i]), .pi(p_layer4[i]),
-                    .gi(g_layer4[i]),
-                    .pi_prev(p_layer4[i-16]), .gi_prev(g_layer4[i-16]));
-    end
-  endgenerate
+//  generate
+//    for (i = 0; i <= WIDTH; i++) begin : LAYER_5
+//      if (i < 16)
+//        assign {p_layer5[i], g_layer5[i]} = {p_layer4[i], g_layer4[i]};
+//      else
+//        ks_unit u5 (.p(p_layer5[i]), .g(g_layer5[i]), .pi(p_layer4[i]),
+//                    .gi(g_layer4[i]),
+//                    .pi_prev(p_layer4[i-16]), .gi_prev(g_layer4[i-16]));
+//    end
+//  endgenerate
 
-  generate
-    for (i = 0; i < WIDTH; i++) begin: OUTPUT
-      assign out[i] =  p[i+1] ^ g_layer5[i];
-    end
-  endgenerate
-`else
-  assign {carry_out, out} = (sub) ? in1 - in2 : in1 + in2;
-`endif
+//  generate
+//    for (i = 0; i < WIDTH; i++) begin: OUTPUT
+//      assign out[i] =  p[i+1] ^ g_layer5[i];
+//    end
+//  endgenerate
+//`else
+//  assign {carry_out, out} = (sub) ? in1 - in2 : in1 + in2;
+//`endif
 
-endmodule: ks_add_sub
+//endmodule: ks_add_sub
 
-module ks_unit
-  (output logic p, g,
-   input  logic pi, gi, pi_prev, gi_prev);
+//module ks_unit
+//  (output logic p, g,
+//   input  logic pi, gi, pi_prev, gi_prev);
 
-  assign p = pi & pi_prev;
-  assign g = (pi & gi_prev) | gi;
+//  assign p = pi & pi_prev;
+//  assign g = (pi & gi_prev) | gi;
 
-endmodule: ks_unit
+//endmodule: ks_unit
 

@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 
 module dma_fsm
   (input  logic start, mem_wait, dma_repeat, preempted, enable, xferDone, genIRQ,
@@ -431,3 +431,82 @@ module dma_top
                 .clk, .rst_b);
 
 endmodule: dma_top
+
+module dma_tb ();
+
+   logic [15:0] controlL0, controlH0;
+   logic [15:0] srcAddrL0, srcAddrH0;
+   logic [15:0] destAddrL0, destAddrH0;
+
+   logic [15:0] controlL1, controlH1;
+   logic [15:0] srcAddrL1, srcAddrH1;
+   logic [15:0] destAddrL1, destAddrH1;
+
+   logic [15:0] controlL2, controlH2;
+   logic [15:0] srcAddrL2, srcAddrH2;
+   logic [15:0] destAddrL2, destAddrH2;
+
+   logic [15:0] controlL3, controlH3;
+   logic [15:0] srcAddrL3, srcAddrH3;
+   logic [15:0] destAddrL3, destAddrH3;
+
+   logic [15:0] vcount, hcount;
+   logic        sound_req;
+
+   logic        mem_wait;
+
+   tri   [31:0] addr;
+   tri   [31:0] rdata, wdata;
+   tri   [1:0]  size;
+   tri          wen;
+
+   logic [3:0]  disable_dma;
+   logic        active;
+   logic        irq;
+
+   logic clk, rst_b;
+   
+    dma_top dut (
+        .controlL0, .controlH0,
+        .srcAddrL0, .srcAddrH0,
+        .destAddrL0, .destAddrH0,
+        .controlL1, .controlH1,
+        .srcAddrL1, .srcAddrH1,
+        .destAddrL1, .destAddrH1,
+        .controlL2, .controlH2,
+        .srcAddrL2, .srcAddrH2,
+        .destAddrL2, .destAddrH2,
+        .controlL3, .controlH3,
+        .srcAddrL3, .srcAddrH3,
+        .destAddrL3, .destAddrH3,
+        .vcount, .hcount, .sound_req, .mem_wait,
+        .addr, .rdata, .wdata,
+        .size,.wen, .disable_dma,
+        .active,.irq, .clk, .rst_b);
+            
+    dist_mem_gen_0 your_instance_name (
+          .a(addr),      // input wire [15 : 0] a
+          .d(wdata),      // input wire [31 : 0] d
+          .clk(clk),  // input wire clk
+          .we(wen),    // input wire we
+          .spo(rdata)  // output wire [31 : 0] spo
+        );
+         
+    initial begin
+        clk <= 0;
+        rst_b<=0;
+        #2 rst_b <=1;
+        #2 
+        srcAddrL0 <= 16'b0000_0000_0000_1111;
+        destAddrL0 <= 16'b0000_0000_1111_0000;
+        controlL0 <= 16'b0000_0000_0000_0011;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, incr source and dest after transfer
+        controlH0 <= 16'b1100_1000_0000_0000;
+                                      
+     end
+     
+    always 
+        #1 clk= !clk;
+        
+endmodule: dma_tb
