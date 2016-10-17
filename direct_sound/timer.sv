@@ -1,6 +1,8 @@
 `default_nettype none
 //Assumptions: processor can only update the timer setting (TMxCNT_L) when 
 // the timer is paused when the timer is running it will internally update its setting
+
+//TODO: add count_up timing option
 module timer (
     input logic clock_16,
     input logic reset,
