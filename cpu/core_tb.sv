@@ -44,11 +44,22 @@ module core_tb;
         forever #1 clk <= ~clk;
     end
 
-    integer cyc_count;
+    integer cyc_count, inst_count;
+    logic [31:0] inst_pc;
+    logic inst_ex;
     /* So the simulation stops */
     initial begin
-        #2000 $finish;
+        #20000 $finish;
+        //#200 $finish;
     end
+
+    assign inst_pc = (DUT.ThDC_ThumbDecoderEn) ?
+                      DUT.RegFile_Inst.RegFileAOut[15] - 4 :
+                      DUT.RegFile_Inst.RegFileAOut[15] - 8;
+
+    assign inst_ex = ~DUT.ControlLogic_Inst.Branch_St1 &&
+                     ~DUT.ControlLogic_Inst.Branch_St2 &&
+                     ~DUT.IPDR_StagnatePipeline;
 
     always_ff @(posedge clk) begin
         if (rst_n) begin
@@ -69,15 +80,26 @@ module core_tb;
             $display("lr\t\t%h", DUT.RegFile_Inst.RegFileAOut[14]);
             $display("pc\t\t%h", DUT.RegFile_Inst.RegFileAOut[15]);
             $display("cpsr\t%h\n", DUT.PSR_Inst.CPSR);
+            /*
+            if (inst_ex)
+                $display("Inst #:\t%d\nPC:\t%h\nInst:\t%h\n\n",
+                              inst_count, inst_pc,
+                              DUT.ControlLogic_Inst.InstForDecodeLatched);
+                              */
         end
     end
 
     /* Clock cycle counter */
     always_ff @(posedge clk, negedge rst_n) begin
-        if (~rst_n)
+        if (~rst_n) begin
             cyc_count <= 0;
-        else
+            inst_count <= 0;
+        end else begin
             cyc_count <= cyc_count + 1;
+            if (inst_ex)
+                inst_count <= inst_count + 1;
+
+        end
     end
 
 endmodule: core_tb

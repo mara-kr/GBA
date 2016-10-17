@@ -3,36 +3,44 @@
     System ROM :        0x00000000-0x00003FFF (16kB),  32-bit port
                         BIOS (executable, not readable)
                         Reads will give instruction after inst. used to read
+                        BRAM
 
     Extern Work RAM:    0x02000000-0x0203FFFF (256kB), 16-bit port, 2-wait
                         Mirrored every 0x40000 from 0x02000000-0x02FFFFFF
                         Game Data/Code (usually THUMB code)
+                        DRAM
 
     Intern Work RAM:    0x03000000-0x03007FFF (32kB),  32-bit port
                         Mirrored every 0x8000 from 0x03000000 to 0x03FFFFFF
                         Game Data/Code - Fastest (usually ARM code)
+                        BRAM
 
     IO RAM:             0x04000000-0x040003FF (1kB), 2x32-bit port
                         0x04000800 mirrored every 0x10000, 0x04000000-0x04FFFFFF
                         MMIO Registers
+                        BRAM
 
     Palette RAM:        0x05000000-0x050003FF (1kB),   16-bit port
                         Mirrored every 0x400 from 0x05000000-0x05FFFFFF
                         Specified 16b color for palette modes
                         BG palette @ 0x05000000, Sprite palette @ 0x05000200
+                        BRAM
 
     VRAM:               0x06000000-0x06017FFF (96kB),  16-bit port
                         0x06010000-0x06017FFF mirrored on 0x06018000-0x0601FFFF
                         0x06000000-0x06020000 mirrored every 0x20000 in
                             0x06000000-0x06FFFFFFF
                         Frame buffer/tile {data,maps} in bitmapped/{text,R/S}
+                        BRAM
 
     OAM:                0x07000000-0x070003FF (1kB),   32-bit port
                         Mirrored every 0x400 from 0x07000000-0x07FFFFFF
                         Object Attribute Memory (Sprite data)
+                        BRAM
 
     Game Pak ROM        0x08000000-Cartridge size,     16-bit port, Wait State 0
                         Execution starts at instruction 0x08000000
+                        DRAM
 
     Game Pak ROM Img 1  0x0A000000-Cartridge size,     16-bit port, Wait State 1
                         Mirror of Game Pak Rom (different speed)
@@ -42,6 +50,7 @@
 
     Game Pak SRAM       0x0E000000-0x0E00FFFF (max 64kB), 8-bit port
                         SRAM/Flash ROM for saving game data
+                        BRAM
 
     Cartridge Size can be up to 32MB
 
