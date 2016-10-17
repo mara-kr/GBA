@@ -1,4 +1,4 @@
-module mixer ( input logic system_clock,
+module 4ch_mixer ( input logic system_clock,
                input logic reset,
                input logic [23:0] channel1,
                input logic [23:0] channel2,
@@ -70,5 +70,5 @@ module mixer ( input logic system_clock,
                     end
                 end
 
-endmodule: mixer
+endmodule: 4ch_mixer
 
