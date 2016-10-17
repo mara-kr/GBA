@@ -214,7 +214,7 @@ module audio_testbench_sv (
     assign NR50 = 8'b11111111; //set full volume for left and right
     assign NR51 = 8'b11110000; //set all sounds on left, off right
     assign NR52 = 8'b11111111; //turn on all sounds 
-    mixer m(.system_clock(clk_100),
+    4ch_mixer m(.system_clock(clk_100),
             .reset(BTNC),
             .channel1(channel_1),
             .channel2(channel_2),
