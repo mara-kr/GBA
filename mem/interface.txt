@@ -8,4 +8,4 @@ VRAM      - 16
 GamePak   - 16, variable wait
 
 
-Use True Dual Ported, 32-bit address interface, reset pins on both
+BRAM: Use True Dual Ported, 32-bit address interface, reset pins on both

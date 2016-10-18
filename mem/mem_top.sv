@@ -1,3 +1,5 @@
+// TODO Test BRAM
+
 module mem_top(
     input  logic clock, reset,
 
@@ -15,6 +17,28 @@ module mem_top(
     output logic        gfx_pause,
 
     );
+
+    /* Single cycle latency for writes */
+    logic [31:0] bus_addr_lat1, bus_mem_addr;
+    logic        bus_write_lat1;
+
+    // Could add more pauses for memory regions, this is needed
+    // because of the CPU's write format
+    assign bus_pause = bus_write_lat1;
+    // Use delayed memory address on writes
+    assign bus_mem_addr = (bus_write_lat1) ? bus_addr_lat1 :
+                                             bus_addr;
+
+    // Registers to delay write signals
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) begin
+            bus_addr_lat1 <= 32'd0;
+            bus_write_lat1 <= 1'b0;
+        end else begin
+            bus_addr_lat1 <= bus_addr;
+            bus_write_lat1 <= bus_write;
+        end
+    end
 
     logic [31:0] bus_system_addr, bus_system_rdata, gfx_system_addr;
     logic [31:0] gfx_system_rdata;
@@ -42,19 +66,19 @@ module mem_top(
 
     logic  [3:0] bus_we;
 
-    mem_decoder decoder (.addr(bus_addr), .size(bus_size), .write(bus_write),
-                         .byte_we(bus_we));
+    mem_decoder decoder (.addr(bus_addr), .size(bus_size),
+                         .write(bus_write_lat1), .byte_we(bus_we));
 
-    assign bus_system_addr = bus_addr;
+    assign bus_system_addr = bus_mem_addr;
     assign gfx_system_addr = gfx_addr;
-    assign bus_intern_addr = bus_addr - `INTERN_RAM_START;
-    assign gfx_intern_addr = bus_addr - `INTERN_RAM_START;
-    assign bus_vram_addr = bus_addr - `VRAM_START;
-    assign gfx_vram_addr = bus_addr - `VRAM_START;
-    assign bus_pallete_addr = bus_addr - `PALLET_RAM_START;
-    assign gfx_pallete_addr = bus_addr - `PALLET_RAM_START;
-    assign bus_oam_addr = bus_addr - `OAM_START;
-    assign gfx_oam_addr = bus_addr - `OAM_START;
+    assign bus_intern_addr = bus_mem_addr - `INTERN_RAM_START;
+    assign gfx_intern_addr = gfx_addr - `INTERN_RAM_START;
+    assign bus_vram_addr = bus_mem_addr - `VRAM_START;
+    assign gfx_vram_addr = gfx_addr - `VRAM_START;
+    assign bus_pallete_addr = bus_mem_addr - `PALLET_RAM_START;
+    assign gfx_pallete_addr = gfx_addr - `PALLET_RAM_START;
+    assign bus_oam_addr = bus_mem_addr - `OAM_START;
+    assign gfx_oam_addr = gfx_addr - `OAM_START;
 
     /* Add reset, so that resets go through */
     assign bus_system_valid = (bus_system_addr < `SYSTEM_ROM_SIZE) | reset;
