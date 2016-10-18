@@ -1,0 +1,146 @@
+module mem_top(
+    input  logic clock, reset,
+
+    /* Signals for CPU/DMA Bus */
+    input  logic [31:0] bus_addr, bus_wdata,
+    output logic [31:0] bus_rdata,
+    input  logic  [1:0] bus_size,
+    output logic        bus_pause,
+    input  logic        bus_write,
+
+    /* Signals for graphics Bus */
+    input  logic [31:0] gfx_addr,
+    output logic [31:0] gfx_data,
+    input  logic  [1:0] gfx_size,
+    output logic        gfx_pause,
+
+    );
+
+    logic [31:0] bus_system_addr, bus_system_rdata, gfx_system_addr;
+    logic [31:0] gfx_system_rdata;
+    logic        bus_system_valid, gfx_system_valid;
+
+    logic [31:0] bus_intern_addr, bus_intern_rdata; gfx_intern_addr;
+    logic [31:0] gfx_intern_rdata;
+    logic  [3:0] bus_intern_we;
+    logic        bus_intern_valid, gfx_intern_valid;
+
+    logic [31:0] bus_vram_addr, bus_vram_rdata, gfx_vram_addr;
+    logic [31:0] gfx_vram_rdata;
+    logic  [3:0] bus_vram_we;
+    logic        bus_vram_valid, gfx_vram_valid;
+
+    logic [31:0] bus_pallete_addr, bus_pallete_rdata, gfx_pallete_addr;
+    logic [31:0] gfx_pallete_rdata;
+    logic  [3:0] bus_pallete_we;
+    logic        bus_pallete_valid, gfx_pallete_valid;
+
+    logic [31:0] bus_oam_addr, bus_oam_rdata, gfx_oam_addr;
+    logic [31:0] gfx_oam_rdata;
+    logic  [3:0] bus_oam_we;
+    logic        bus_oam_valid, gfx_oam_valid;
+
+    logic  [3:0] bus_we;
+
+    mem_decoder decoder (.addr(bus_addr), .size(bus_size), .write(bus_write),
+                         .byte_we(bus_we));
+
+    assign bus_system_addr = bus_addr;
+    assign gfx_system_addr = gfx_addr;
+    assign bus_intern_addr = bus_addr - `INTERN_RAM_START;
+    assign gfx_intern_addr = bus_addr - `INTERN_RAM_START;
+    assign bus_vram_addr = bus_addr - `VRAM_START;
+    assign gfx_vram_addr = bus_addr - `VRAM_START;
+    assign bus_pallete_addr = bus_addr - `PALLET_RAM_START;
+    assign gfx_pallete_addr = bus_addr - `PALLET_RAM_START;
+    assign bus_oam_addr = bus_addr - `OAM_START;
+    assign gfx_oam_addr = bus_addr - `OAM_START;
+
+    /* Add reset, so that resets go through */
+    assign bus_system_valid = (bus_system_addr < `SYSTEM_ROM_SIZE) | reset;
+    assign gfx_system_valid = (gfx_system_addr < `SYSTEM_ROM_SIZE) | reset;
+    assign bus_intern_valid = (bus_intern_addr < `INTERN_ROM_SIZE) | reset;
+    assign gfx_intern_valid = (gfx_intern_addr < `INTERN_ROM_SIZE) | reset;
+    assign bus_vram_valid = (bus_vram_addr < `VRAM_SIZE) | reset;
+    assign gfx_vram_valid = (gfx_vram_addr < `VRAM_SIZE) | reset;
+    assign bus_pallete_valid = (bus_pallete_addr < `PALLET_SIZE) | reset;
+    assign gfx_pallete_valid = (gfx_pallete_addr < `PALLET_SIZE) | reset;
+    assign bus_oam_valid = (bus_oam_addr < `OAM_SIZE) | reset;
+    assign gfx_oam_valid = (gfx_oam_addr < `OAM_SIZE) | reset;
+
+
+    /* When enable is deasserted, no write/read/reset is performed */
+    system_rom sys   (.clka(clock), .rsta(reset), .ena(bus_system_valid),
+                      .wea(bus_we), .addra(bus_system_addr),
+                      .douta(bus_system_rdata), .dina(bus_wdata),
+
+                      .clkb(clock), .rstb(reset), .enb(gfx_system_valid),
+                      .web(4'd0), .addrb(gfx_system_addr),
+                      .doutb(gfx_system_rdata));
+
+    InternRAM intern (.clka(clock), .rsta(reset), .ena(bus_intern_valid),
+                      .wea(bus_we), .addra(bus_intern_addr),
+                      .douta(bus_intern_rdata), .dina(bus_wdata),
+
+                      .clkb(clock), .rstb(reset), .enb(gfx_intern_valid),
+                      .web(4'd0), .addrb(gfx_intern_addr),
+                      .doutb(gfx_intern_rdata), .dinb(32'b0));
+
+    vram vram_mem    (.clka(clock), .rsta(reset), .ena(bus_vram_valid),
+                      .wea(bus_we), .addra(bus_vram_addr),
+                      .douta(bus_vram_rdata), .dina(bus_wdata),
+
+                      .clkb(clock), .rstb(reset), .enb(gfx_vram_valid),
+                      .web(4'd0), .addrb(gfx_vram_addr),
+                      .doutb(gfx_vram_rdata), .dinb(32'b0));
+
+    palette_ram pall (.clka(clock), .rsta(reset), .ena(bus_pallete_valid),
+                      .wea(bus_we), .addra(bus_palette_addr),
+                      .douta(bus_palette_rdata), .dina(bus_wdata),
+
+                      .clkb(clock), .rstb(reset), .enb(gfx_pallete_valid),
+                      .web(4'd0), .addrb(gfx_palette_addr),
+                      .doutb(gfx_palette_rdata), .dinb(32'b0));
+
+    oam oam_mem      (.clka(clock), .rsta(reset), .ena(bus_oam_valid),
+                      .wea(bus_we), .addra(bus_oam_addr),
+                      .douta(bus_palette_rdata), .dina(bus_wdata),
+
+                      .clkb(clock), .rstb(reset), .enb(gfx_oam_valid),
+                      .web(4'd0), .addrb(gfx_palette_addr),
+                      .doutb(gfx_palette_rdata), .dinb(32'b0));
+
+
+
+endmodule: mem_top
+
+/* Setup byte write enables for memory (assumes that CPU deals with
+ * endianness!) */
+module mem_decoder
+    (input  logic [31:0] addr,
+     input  logic [1:0]  size,
+     input  logic        write,
+     output logic [3:0]  byte_we);
+
+     always_comb begin
+         byte_we = 4'd0;
+         if (write) begin
+             byte_we[3] = (addr[1:0] == 2'd3 && size == `MEM_SIZE_BYTE) ||
+                          (addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
+
+             byte_we[2] = (addr[1:0] == 2'd2 && size == `MEM_SIZE_BYTE) ||
+                          (addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
+
+             byte_we[1] = (addr[1:0] == 2'd1 && size == `MEM_SIZE_BYTE) ||
+                          (~addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
+
+             byte_we[0] = (addr[1:0] == 2'd0 && size == `MEM_SIZE_BYTE) ||
+                          (~addr[1] && size == `MEM_SIZE_HALF) ||
+                          (size == `MEM_SIZE_WORD);
+         end
+     end
+
+endmodule: mem_decoder

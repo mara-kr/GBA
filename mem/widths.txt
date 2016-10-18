@@ -1,0 +1,11 @@
+SystemROM - 32
+InternRAM - 32
+OAM       - 32
+IO        - 32
+ExternRAM - 16, 2 wait
+Palette   - 16
+VRAM      - 16
+GamePak   - 16, variable wait
+
+
+Use True Dual Ported, 32-bit address interface, reset pins on both
