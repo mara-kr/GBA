@@ -1,5 +1,5 @@
 /* Signal definitions for ARM7TDMI-S Core test */
-import "DPI-C" function string getenv(input string env_name);
+//import "DPI-C" function string getenv(input string env_name);
 
 /* Uncomment for logging */
 `define BUS_LOG_EN

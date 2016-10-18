@@ -1,5 +1,7 @@
 // TODO Test BRAM
 
+`include "core_tb_defines.vh"
+
 module mem_top(
     input  logic clock, reset,
 
@@ -14,7 +16,7 @@ module mem_top(
     input  logic [31:0] gfx_addr,
     output logic [31:0] gfx_data,
     input  logic  [1:0] gfx_size,
-    output logic        gfx_pause,
+    output logic        gfx_pause
 
     );
 
@@ -44,7 +46,7 @@ module mem_top(
     logic [31:0] gfx_system_rdata;
     logic        bus_system_valid, gfx_system_valid;
 
-    logic [31:0] bus_intern_addr, bus_intern_rdata; gfx_intern_addr;
+    logic [31:0] bus_intern_addr, bus_intern_rdata, gfx_intern_addr;
     logic [31:0] gfx_intern_rdata;
     logic  [3:0] bus_intern_we;
     logic        bus_intern_valid, gfx_intern_valid;
@@ -83,23 +85,23 @@ module mem_top(
     /* Add reset, so that resets go through */
     assign bus_system_valid = (bus_system_addr < `SYSTEM_ROM_SIZE) | reset;
     assign gfx_system_valid = (gfx_system_addr < `SYSTEM_ROM_SIZE) | reset;
-    assign bus_intern_valid = (bus_intern_addr < `INTERN_ROM_SIZE) | reset;
-    assign gfx_intern_valid = (gfx_intern_addr < `INTERN_ROM_SIZE) | reset;
+    assign bus_intern_valid = (bus_intern_addr < `INTERN_RAM_SIZE) | reset;
+    assign gfx_intern_valid = (gfx_intern_addr < `INTERN_RAM_SIZE) | reset;
     assign bus_vram_valid = (bus_vram_addr < `VRAM_SIZE) | reset;
     assign gfx_vram_valid = (gfx_vram_addr < `VRAM_SIZE) | reset;
-    assign bus_pallete_valid = (bus_pallete_addr < `PALLET_SIZE) | reset;
-    assign gfx_pallete_valid = (gfx_pallete_addr < `PALLET_SIZE) | reset;
+    assign bus_pallete_valid = (bus_pallete_addr < `PALLET_RAM_SIZE) | reset;
+    assign gfx_pallete_valid = (gfx_pallete_addr < `PALLET_RAM_SIZE) | reset;
     assign bus_oam_valid = (bus_oam_addr < `OAM_SIZE) | reset;
     assign gfx_oam_valid = (gfx_oam_addr < `OAM_SIZE) | reset;
 
 
     /* When enable is deasserted, no write/read/reset is performed */
     system_rom sys   (.clka(clock), .rsta(reset), .ena(bus_system_valid),
-                      .wea(bus_we), .addra(bus_system_addr),
-                      .douta(bus_system_rdata), .dina(bus_wdata),
+                      .addra(bus_system_addr),
+                      .douta(bus_system_rdata),
 
                       .clkb(clock), .rstb(reset), .enb(gfx_system_valid),
-                      .web(4'd0), .addrb(gfx_system_addr),
+                      .addrb(gfx_system_addr),
                       .doutb(gfx_system_rdata));
 
     InternRAM intern (.clka(clock), .rsta(reset), .ena(bus_intern_valid),
