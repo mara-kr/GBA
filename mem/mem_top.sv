@@ -1,4 +1,5 @@
 // TODO Test BRAM
+`default_nettype none
 
 `include "core_tb_defines.vh"
 
@@ -27,6 +28,7 @@ module mem_top(
     // Could add more pauses for memory regions, this is needed
     // because of the CPU's write format
     assign bus_pause = bus_write_lat1;
+    assign gfx_pause = 1'b0;
     // Use delayed memory address on writes
     assign bus_mem_addr = (bus_write_lat1) ? bus_addr_lat1 :
                                              bus_addr;
@@ -121,23 +123,50 @@ module mem_top(
                       .doutb(gfx_vram_rdata), .dinb(32'b0));
 
     palette_ram pall (.clka(clock), .rsta(reset), .ena(bus_pallete_valid),
-                      .wea(bus_we), .addra(bus_palette_addr),
-                      .douta(bus_palette_rdata), .dina(bus_wdata),
+                      .wea(bus_we), .addra(bus_pallete_addr),
+                      .douta(bus_pallete_rdata), .dina(bus_wdata),
 
                       .clkb(clock), .rstb(reset), .enb(gfx_pallete_valid),
-                      .web(4'd0), .addrb(gfx_palette_addr),
-                      .doutb(gfx_palette_rdata), .dinb(32'b0));
+                      .web(4'd0), .addrb(gfx_pallete_addr),
+                      .doutb(gfx_pallete_rdata), .dinb(32'b0));
 
-    oam oam_mem      (.clka(clock), .rsta(reset), .ena(bus_oam_valid),
+    OAM oam_mem      (.clka(clock), .rsta(reset), .ena(bus_oam_valid),
                       .wea(bus_we), .addra(bus_oam_addr),
-                      .douta(bus_palette_rdata), .dina(bus_wdata),
+                      .douta(bus_oam_rdata), .dina(bus_wdata),
 
                       .clkb(clock), .rstb(reset), .enb(gfx_oam_valid),
-                      .web(4'd0), .addrb(gfx_palette_addr),
-                      .doutb(gfx_palette_rdata), .dinb(32'b0));
+                      .web(4'd0), .addrb(gfx_pallete_addr),
+                      .doutb(gfx_oam_rdata), .dinb(32'b0));
 
+    always_comb begin
+        if (bus_system_valid)
+            bus_rdata = bus_system_rdata;
+        else if (bus_intern_valid)
+            bus_rdata = bus_intern_rdata;
+        else if (bus_vram_valid)
+            bus_rdata = bus_vram_rdata;
+        else if (bus_pallete_valid)
+            bus_rdata = bus_pallete_rdata;
+        else if (bus_oam_valid)
+            bus_rdata = bus_oam_rdata;
+        else
+            bus_rdata = 32'hffffffff;
+    end
 
-
+    always_comb begin
+        if (gfx_system_valid)
+            gfx_data = gfx_system_rdata;
+        else if (gfx_intern_valid)
+            gfx_data = gfx_intern_rdata;
+        else if (gfx_vram_valid)
+            gfx_data = gfx_vram_rdata;
+        else if (gfx_pallete_valid)
+            gfx_data = gfx_pallete_rdata;
+        else if (gfx_oam_valid)
+            gfx_data = gfx_oam_rdata;
+        else
+            gfx_data = 32'hffffffff;
+    end
 endmodule: mem_top
 
 /* Setup byte write enables for memory (assumes that CPU deals with
