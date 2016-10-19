@@ -100,6 +100,7 @@ module mem_test_CI (
     end
 
 endmodule: mem_test_CI
+
 /*
 module sim_top;
     logic GCLK, BTND;
