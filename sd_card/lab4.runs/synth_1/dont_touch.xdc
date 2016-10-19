@@ -18,12 +18,6 @@ set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_
 # IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xci
 set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_rst_processing_system7_0_50M_0 || ORIG_REF_NAME==zynq_interrupt_system_rst_processing_system7_0_50M_0}]
 
-# IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_ZedboardOLED_0_0/zynq_interrupt_system_ZedboardOLED_0_0.xci
-set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_ZedboardOLED_0_0 || ORIG_REF_NAME==zynq_interrupt_system_ZedboardOLED_0_0}]
-
-# IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_ZedboardOLED_0_0/src/charLib/charLib.xci
-set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==charLib || ORIG_REF_NAME==charLib}]
-
 # IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_xbar_0/zynq_interrupt_system_xbar_0.xci
 set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_xbar_0 || ORIG_REF_NAME==zynq_interrupt_system_xbar_0}]
 
@@ -33,8 +27,20 @@ set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_
 # IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_xlconcat_0_0/zynq_interrupt_system_xlconcat_0_0.xci
 set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_xlconcat_0_0 || ORIG_REF_NAME==zynq_interrupt_system_xlconcat_0_0}]
 
+# IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_bram_ctrl_0_0/zynq_interrupt_system_axi_bram_ctrl_0_0.xci
+set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_axi_bram_ctrl_0_0 || ORIG_REF_NAME==zynq_interrupt_system_axi_bram_ctrl_0_0}]
+
+# IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_bram_ctrl_0_bram_0/zynq_interrupt_system_axi_bram_ctrl_0_bram_0.xci
+set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_axi_bram_ctrl_0_bram_0 || ORIG_REF_NAME==zynq_interrupt_system_axi_bram_ctrl_0_bram_0}]
+
 # IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_0/zynq_interrupt_system_auto_pc_0.xci
 set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_auto_pc_0 || ORIG_REF_NAME==zynq_interrupt_system_auto_pc_0}]
+
+# IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_1/zynq_interrupt_system_auto_pc_1.xci
+set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_auto_pc_1 || ORIG_REF_NAME==zynq_interrupt_system_auto_pc_1}]
+
+# IP: bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_2/zynq_interrupt_system_auto_pc_2.xci
+set_property DONT_TOUCH TRUE [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_auto_pc_2 || ORIG_REF_NAME==zynq_interrupt_system_auto_pc_2}]
 
 # XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc
 set_property DONT_TOUCH TRUE [get_cells [split [join [get_cells -hier -filter {REF_NAME==zynq_interrupt_system_processing_system7_0_0 || ORIG_REF_NAME==zynq_interrupt_system_processing_system7_0_0}] {/inst }]/inst ]]
@@ -55,8 +61,6 @@ set_property DONT_TOUCH TRUE [get_cells [split [join [get_cells -hier -filter {R
 
 # XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0_ooc.xdc
 
-# XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_ZedboardOLED_0_0/src/charLib/charLib_ooc.xdc
-
 # XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_xbar_0/zynq_interrupt_system_xbar_0_ooc.xdc
 
 # XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xdc
@@ -64,6 +68,14 @@ set_property DONT_TOUCH TRUE [get_cells [split [join [get_cells -hier -filter {R
 
 # XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0_ooc.xdc
 
+# XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_bram_ctrl_0_0/zynq_interrupt_system_axi_bram_ctrl_0_0_ooc.xdc
+
+# XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_bram_ctrl_0_bram_0/zynq_interrupt_system_axi_bram_ctrl_0_bram_0_ooc.xdc
+
 # XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_0/zynq_interrupt_system_auto_pc_0_ooc.xdc
+
+# XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_1/zynq_interrupt_system_auto_pc_1_ooc.xdc
+
+# XDC: bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_2/zynq_interrupt_system_auto_pc_2_ooc.xdc
 
 # XDC: bd/zynq_interrupt_system/zynq_interrupt_system_ooc.xdc

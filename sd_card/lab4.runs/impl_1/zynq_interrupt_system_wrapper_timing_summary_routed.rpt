@@ -1,7 +1,7 @@
 Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2015.2 (lin64) Build 1266856 Fri Jun 26 16:35:25 MDT 2015
-| Date         : Mon Oct 17 19:34:03 2016
+| Date         : Tue Oct 18 14:56:46 2016
 | Host         : magnum.andrew.cmu.edu running 64-bit Red Hat Enterprise Linux Server release 7.2 (Maipo)
 | Command      : report_timing_summary -warn_on_violation -max_paths 10 -file zynq_interrupt_system_wrapper_timing_summary_routed.rpt -rpx zynq_interrupt_system_wrapper_timing_summary_routed.rpx
 | Design       : zynq_interrupt_system_wrapper
@@ -79,7 +79,7 @@ Table of Contents
 
 6. checking no_output_delay
 ---------------------------
- There are 6 ports with no output delay specified. (HIGH)
+ There are 0 ports with no output delay specified.
 
  There are 0 ports with no output delay but user has a false path constraint
 
@@ -124,7 +124,7 @@ Table of Contents
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-      8.243        0.000                      0                 6416        0.014        0.000                      0                 6416        9.020        0.000                       0                  2526  
+     11.619        0.000                      0                 3295        0.019        0.000                      0                 3295        9.020        0.000                       0                  1522  
 
 
 All user specified timing constraints are met.
@@ -147,7 +147,7 @@ clk_fpga_0  {0.000 10.000}     20.000          50.000
 
 Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
 -----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-clk_fpga_0          8.243        0.000                      0                 6416        0.014        0.000                      0                 6416        9.020        0.000                       0                  2526  
+clk_fpga_0         11.619        0.000                      0                 3295        0.019        0.000                      0                 3295        9.020        0.000                       0                  1522  
 
 
 ------------------------------------------------------------------------------------------------
@@ -178,27 +178,27 @@ Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing 
 From Clock:  clk_fpga_0
   To Clock:  clk_fpga_0
 
-Setup :            0  Failing Endpoints,  Worst Slack        8.243ns,  Total Violation        0.000ns
-Hold  :            0  Failing Endpoints,  Worst Slack        0.014ns,  Total Violation        0.000ns
+Setup :            0  Failing Endpoints,  Worst Slack       11.619ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.019ns,  Total Violation        0.000ns
 PW    :            0  Failing Endpoints,  Worst Slack        9.020ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
 
 
 Max Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             8.243ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.619ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][9][1]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[0]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.991ns  (logic 1.570ns (14.284%)  route 9.421ns (85.716%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.035ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.821ns = ( 22.821 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.153ns  (logic 0.642ns (8.975%)  route 6.511ns (91.025%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.402ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.653ns = ( 22.653 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -213,24 +213,14 @@ Slack (MET) :             8.243ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.860    13.976    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X41Y120        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][9][1]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.549    10.337    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/wrap_burst_total_reg[0]
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[0]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -238,30 +228,30 @@ Slack (MET) :             8.243ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.642    22.821    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X41Y120        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][9][1]/C
-                         clock pessimism              0.129    22.950    
-                         clock uncertainty           -0.302    22.648    
-    SLICE_X41Y120        FDRE (Setup_fdre_C_R)       -0.429    22.219    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][9][1]
+                         net (fo=1522, routed)        1.474    22.653    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/s_axi_aclk
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[0]/C
+                         clock pessimism              0.129    22.782    
+                         clock uncertainty           -0.302    22.480    
+    SLICE_X32Y86         FDRE (Setup_fdre_C_R)       -0.524    21.956    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[0]
   -------------------------------------------------------------------
-                         required time                         22.219    
-                         arrival time                         -13.976    
+                         required time                         21.956    
+                         arrival time                         -10.337    
   -------------------------------------------------------------------
-                         slack                                  8.243    
+                         slack                                 11.619    
 
-Slack (MET) :             8.305ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.619ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][15][6]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[10]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.841ns  (logic 1.570ns (14.482%)  route 9.271ns (85.518%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.028ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.828ns = ( 22.828 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.153ns  (logic 0.642ns (8.975%)  route 6.511ns (91.025%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.402ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.653ns = ( 22.653 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -276,24 +266,14 @@ Slack (MET) :             8.305ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.709    13.826    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X34Y114        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][15][6]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.549    10.337    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/wrap_burst_total_reg[0]
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[10]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -301,30 +281,30 @@ Slack (MET) :             8.305ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.649    22.828    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X34Y114        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][15][6]/C
-                         clock pessimism              0.129    22.957    
-                         clock uncertainty           -0.302    22.655    
-    SLICE_X34Y114        FDRE (Setup_fdre_C_R)       -0.524    22.131    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][15][6]
+                         net (fo=1522, routed)        1.474    22.653    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/s_axi_aclk
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[10]/C
+                         clock pessimism              0.129    22.782    
+                         clock uncertainty           -0.302    22.480    
+    SLICE_X32Y86         FDRE (Setup_fdre_C_R)       -0.524    21.956    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[10]
   -------------------------------------------------------------------
-                         required time                         22.131    
-                         arrival time                         -13.826    
+                         required time                         21.956    
+                         arrival time                         -10.337    
   -------------------------------------------------------------------
-                         slack                                  8.305    
+                         slack                                 11.619    
 
-Slack (MET) :             8.305ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.619ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][6]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[12]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.841ns  (logic 1.570ns (14.482%)  route 9.271ns (85.518%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.028ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.828ns = ( 22.828 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.153ns  (logic 0.642ns (8.975%)  route 6.511ns (91.025%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.402ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.653ns = ( 22.653 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -339,24 +319,14 @@ Slack (MET) :             8.305ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.709    13.826    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X34Y114        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][6]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.549    10.337    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/wrap_burst_total_reg[0]
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[12]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -364,30 +334,30 @@ Slack (MET) :             8.305ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.649    22.828    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X34Y114        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][6]/C
-                         clock pessimism              0.129    22.957    
-                         clock uncertainty           -0.302    22.655    
-    SLICE_X34Y114        FDRE (Setup_fdre_C_R)       -0.524    22.131    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][6]
+                         net (fo=1522, routed)        1.474    22.653    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/s_axi_aclk
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[12]/C
+                         clock pessimism              0.129    22.782    
+                         clock uncertainty           -0.302    22.480    
+    SLICE_X32Y86         FDRE (Setup_fdre_C_R)       -0.524    21.956    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[12]
   -------------------------------------------------------------------
-                         required time                         22.131    
-                         arrival time                         -13.826    
+                         required time                         21.956    
+                         arrival time                         -10.337    
   -------------------------------------------------------------------
-                         slack                                  8.305    
+                         slack                                 11.619    
 
-Slack (MET) :             8.305ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.619ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][15][6]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[1]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.841ns  (logic 1.570ns (14.482%)  route 9.271ns (85.518%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.028ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.828ns = ( 22.828 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.153ns  (logic 0.642ns (8.975%)  route 6.511ns (91.025%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.402ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.653ns = ( 22.653 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -402,24 +372,14 @@ Slack (MET) :             8.305ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.709    13.826    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X34Y114        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][15][6]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.549    10.337    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/wrap_burst_total_reg[0]
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[1]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -427,30 +387,30 @@ Slack (MET) :             8.305ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.649    22.828    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X34Y114        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][15][6]/C
-                         clock pessimism              0.129    22.957    
-                         clock uncertainty           -0.302    22.655    
-    SLICE_X34Y114        FDRE (Setup_fdre_C_R)       -0.524    22.131    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][15][6]
+                         net (fo=1522, routed)        1.474    22.653    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/s_axi_aclk
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[1]/C
+                         clock pessimism              0.129    22.782    
+                         clock uncertainty           -0.302    22.480    
+    SLICE_X32Y86         FDRE (Setup_fdre_C_R)       -0.524    21.956    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[1]
   -------------------------------------------------------------------
-                         required time                         22.131    
-                         arrival time                         -13.826    
+                         required time                         21.956    
+                         arrival time                         -10.337    
   -------------------------------------------------------------------
-                         slack                                  8.305    
+                         slack                                 11.619    
 
-Slack (MET) :             8.372ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.619ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][3][1]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[23]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.767ns  (logic 1.570ns (14.581%)  route 9.197ns (85.419%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.035ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.821ns = ( 22.821 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.153ns  (logic 0.642ns (8.975%)  route 6.511ns (91.025%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.402ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.653ns = ( 22.653 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -465,24 +425,14 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.636    13.752    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][3][1]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.549    10.337    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/wrap_burst_total_reg[0]
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[23]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -490,30 +440,30 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.642    22.821    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][3][1]/C
-                         clock pessimism              0.129    22.950    
-                         clock uncertainty           -0.302    22.648    
-    SLICE_X42Y119        FDRE (Setup_fdre_C_R)       -0.524    22.124    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][3][1]
+                         net (fo=1522, routed)        1.474    22.653    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/s_axi_aclk
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[23]/C
+                         clock pessimism              0.129    22.782    
+                         clock uncertainty           -0.302    22.480    
+    SLICE_X32Y86         FDRE (Setup_fdre_C_R)       -0.524    21.956    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[23]
   -------------------------------------------------------------------
-                         required time                         22.124    
-                         arrival time                         -13.752    
+                         required time                         21.956    
+                         arrival time                         -10.337    
   -------------------------------------------------------------------
-                         slack                                  8.372    
+                         slack                                 11.619    
 
-Slack (MET) :             8.372ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.619ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][0][1]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[8]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.767ns  (logic 1.570ns (14.581%)  route 9.197ns (85.419%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.035ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.821ns = ( 22.821 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.153ns  (logic 0.642ns (8.975%)  route 6.511ns (91.025%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.402ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.653ns = ( 22.653 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -528,24 +478,14 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.636    13.752    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][0][1]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.549    10.337    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/wrap_burst_total_reg[0]
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[8]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -553,30 +493,30 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.642    22.821    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][0][1]/C
-                         clock pessimism              0.129    22.950    
-                         clock uncertainty           -0.302    22.648    
-    SLICE_X42Y119        FDRE (Setup_fdre_C_R)       -0.524    22.124    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][0][1]
+                         net (fo=1522, routed)        1.474    22.653    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/s_axi_aclk
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[8]/C
+                         clock pessimism              0.129    22.782    
+                         clock uncertainty           -0.302    22.480    
+    SLICE_X32Y86         FDRE (Setup_fdre_C_R)       -0.524    21.956    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[8]
   -------------------------------------------------------------------
-                         required time                         22.124    
-                         arrival time                         -13.752    
+                         required time                         21.956    
+                         arrival time                         -10.337    
   -------------------------------------------------------------------
-                         slack                                  8.372    
+                         slack                                 11.619    
 
-Slack (MET) :             8.372ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.619ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][8][1]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[9]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.767ns  (logic 1.570ns (14.581%)  route 9.197ns (85.419%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.035ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.821ns = ( 22.821 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.153ns  (logic 0.642ns (8.975%)  route 6.511ns (91.025%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.402ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.653ns = ( 22.653 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -591,24 +531,14 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.636    13.752    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][8][1]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.549    10.337    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/wrap_burst_total_reg[0]
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[9]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -616,30 +546,30 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.642    22.821    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][8][1]/C
-                         clock pessimism              0.129    22.950    
-                         clock uncertainty           -0.302    22.648    
-    SLICE_X42Y119        FDRE (Setup_fdre_C_R)       -0.524    22.124    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][8][1]
+                         net (fo=1522, routed)        1.474    22.653    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/s_axi_aclk
+    SLICE_X32Y86         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[9]/C
+                         clock pessimism              0.129    22.782    
+                         clock uncertainty           -0.302    22.480    
+    SLICE_X32Y86         FDRE (Setup_fdre_C_R)       -0.524    21.956    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/GEN_RDATA_NO_ECC.rd_skid_buf_reg[9]
   -------------------------------------------------------------------
-                         required time                         22.124    
-                         arrival time                         -13.752    
+                         required time                         21.956    
+                         arrival time                         -10.337    
   -------------------------------------------------------------------
-                         slack                                  8.372    
+                         slack                                 11.619    
 
-Slack (MET) :             8.372ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.676ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][2][1]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/GEN_ARB.I_SNG_PORT/aw_active_reg/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.767ns  (logic 1.570ns (14.581%)  route 9.197ns (85.419%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.035ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.821ns = ( 22.821 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.098ns  (logic 0.642ns (9.045%)  route 6.456ns (90.955%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.399ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.656ns = ( 22.656 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -654,24 +584,14 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.636    13.752    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][2][1]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.495    10.282    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/GEN_ARB.I_SNG_PORT/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]
+    SLICE_X36Y90         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/GEN_ARB.I_SNG_PORT/aw_active_reg/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -679,30 +599,30 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.642    22.821    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][2][1]/C
-                         clock pessimism              0.129    22.950    
-                         clock uncertainty           -0.302    22.648    
-    SLICE_X42Y119        FDRE (Setup_fdre_C_R)       -0.524    22.124    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][2][1]
+                         net (fo=1522, routed)        1.477    22.656    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/GEN_ARB.I_SNG_PORT/s_axi_aclk
+    SLICE_X36Y90         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/GEN_ARB.I_SNG_PORT/aw_active_reg/C
+                         clock pessimism              0.129    22.785    
+                         clock uncertainty           -0.302    22.483    
+    SLICE_X36Y90         FDRE (Setup_fdre_C_R)       -0.524    21.959    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/GEN_ARB.I_SNG_PORT/aw_active_reg
   -------------------------------------------------------------------
-                         required time                         22.124    
-                         arrival time                         -13.752    
+                         required time                         21.959    
+                         arrival time                         -10.282    
   -------------------------------------------------------------------
-                         slack                                  8.372    
+                         slack                                 11.676    
 
-Slack (MET) :             8.372ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.676ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][3][1]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[0]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.767ns  (logic 1.570ns (14.581%)  route 9.197ns (85.419%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.035ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.821ns = ( 22.821 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.098ns  (logic 0.642ns (9.045%)  route 6.456ns (90.955%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.399ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.656ns = ( 22.656 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -717,24 +637,14 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.636    13.752    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][3][1]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.495    10.282    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]
+    SLICE_X36Y90         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[0]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -742,30 +652,30 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.642    22.821    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][3][1]/C
-                         clock pessimism              0.129    22.950    
-                         clock uncertainty           -0.302    22.648    
-    SLICE_X42Y119        FDRE (Setup_fdre_C_R)       -0.524    22.124    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][3][1]
+                         net (fo=1522, routed)        1.477    22.656    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/s_axi_aclk
+    SLICE_X36Y90         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[0]/C
+                         clock pessimism              0.129    22.785    
+                         clock uncertainty           -0.302    22.483    
+    SLICE_X36Y90         FDRE (Setup_fdre_C_R)       -0.524    21.959    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[0]
   -------------------------------------------------------------------
-                         required time                         22.124    
-                         arrival time                         -13.752    
+                         required time                         21.959    
+                         arrival time                         -10.282    
   -------------------------------------------------------------------
-                         slack                                  8.372    
+                         slack                                 11.676    
 
-Slack (MET) :             8.372ns  (required time - arrival time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+Slack (MET) :             11.676ns  (required time - arrival time)
+  Source:                 zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][2][1]/R
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[1]/R
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (clk_fpga_0 rise@20.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        10.767ns  (logic 1.570ns (14.581%)  route 9.197ns (85.419%))
-  Logic Levels:           6  (LUT3=1 LUT5=1 LUT6=4)
-  Clock Path Skew:        -0.035ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.821ns = ( 22.821 - 20.000 ) 
-    Source Clock Delay      (SCD):    2.985ns
+  Data Path Delay:        7.098ns  (logic 0.642ns (9.045%)  route 6.456ns (90.955%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        -0.399ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.656ns = ( 22.656 - 20.000 ) 
+    Source Clock Delay      (SCD):    3.184ns
     Clock Pessimism Removal (CPR):    0.129ns
   Clock Uncertainty:      0.302ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
@@ -780,24 +690,14 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.193     1.193    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     1.294 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.691     2.985    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X55Y75         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/C
+                         net (fo=1522, routed)        1.890     3.184    zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/slowest_sync_clk
+    SLICE_X30Y108        FDRE                                         r  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X55Y75         FDRE (Prop_fdre_C_Q)         0.419     3.404 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state_reg[97]/Q
-                         net (fo=44, routed)          2.290     5.694    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_state[97]
-    SLICE_X39Y71         LUT3 (Prop_lut3_I2_O)        0.328     6.022 f  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8/O
-                         net (fo=8, routed)           1.189     7.210    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/temp_vdd_i_8_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I2_O)        0.327     7.537 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35/O
-                         net (fo=1, routed)           0.433     7.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_35_n_0
-    SLICE_X37Y68         LUT6 (Prop_lut6_I0_O)        0.124     8.094 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25/O
-                         net (fo=1, routed)           0.516     8.610    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_25_n_0
-    SLICE_X39Y69         LUT6 (Prop_lut6_I5_O)        0.124     8.734 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10/O
-                         net (fo=1, routed)           0.406     9.141    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_10_n_0
-    SLICE_X39Y70         LUT6 (Prop_lut6_I0_O)        0.124     9.265 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4/O
-                         net (fo=3, routed)           0.728     9.993    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_4_n_0
-    SLICE_X39Y76         LUT5 (Prop_lut5_I1_O)        0.124    10.117 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1/O
-                         net (fo=448, routed)         3.636    13.752    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen[3][0][7]_i_1_n_0
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][2][1]/R
+    SLICE_X30Y108        FDRE (Prop_fdre_C_Q)         0.518     3.702 f  zynq_interrupt_system_i/rst_processing_system7_0_50M/U0/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]/Q
+                         net (fo=28, routed)          3.962     7.664    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/s_axi_aresetn
+    SLICE_X29Y85         LUT1 (Prop_lut1_I0_O)        0.124     7.788 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_RD_CHNL/I_WRAP_BRST/bram_rst_a_INST_0/O
+                         net (fo=102, routed)         2.495    10.282    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/ACTIVE_LOW_PR_OUT_DFF[0].peripheral_aresetn_reg[0]
+    SLICE_X36Y90         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[1]/R
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -805,16 +705,16 @@ Slack (MET) :             8.372ns  (required time - arrival time)
     PS7_X0Y0             PS7                          0.000    20.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           1.088    21.088    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    21.179 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        1.642    22.821    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X42Y119        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][2][1]/C
-                         clock pessimism              0.129    22.950    
-                         clock uncertainty           -0.302    22.648    
-    SLICE_X42Y119        FDRE (Setup_fdre_C_R)       -0.524    22.124    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][2][1]
+                         net (fo=1522, routed)        1.477    22.656    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/s_axi_aclk
+    SLICE_X36Y90         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[1]/C
+                         clock pessimism              0.129    22.785    
+                         clock uncertainty           -0.302    22.483    
+    SLICE_X36Y90         FDRE (Setup_fdre_C_R)       -0.524    21.959    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/bvalid_cnt_reg[1]
   -------------------------------------------------------------------
-                         required time                         22.124    
-                         arrival time                         -13.752    
+                         required time                         21.959    
+                         arrival time                         -10.282    
   -------------------------------------------------------------------
-                         slack                                  8.372    
+                         slack                                 11.676    
 
 
 
@@ -822,109 +722,19 @@ Slack (MET) :             8.372ns  (required time - arrival time)
 
 Min Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             0.014ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15_reg[13]/C
+Slack (MET) :             0.019ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.ar_channel_0/cmd_translator_0/s_axburst_eq0_reg/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][5]/D
-                            (rising edge-triggered cell FDSE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/r_rlast_r_reg/D
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.351ns  (logic 0.141ns (40.165%)  route 0.210ns (59.835%))
-  Logic Levels:           0  
-  Clock Path Skew:        0.261ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.273ns
-    Source Clock Delay      (SCD):    0.973ns
-    Clock Pessimism Removal (CPR):    0.039ns
-
-    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
-  -------------------------------------------------------------------    -------------------
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.637     0.973    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X49Y103        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15_reg[13]/C
-  -------------------------------------------------------------------    -------------------
-    SLICE_X49Y103        FDRE (Prop_fdre_C_Q)         0.141     1.114 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15_reg[13]/Q
-                         net (fo=2, routed)           0.210     1.324    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15[13]
-    SLICE_X53Y101        FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][5]/D
-  -------------------------------------------------------------------    -------------------
-
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.907     1.273    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X53Y101        FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][5]/C
-                         clock pessimism             -0.039     1.234    
-    SLICE_X53Y101        FDSE (Hold_fdse_C_D)         0.076     1.310    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][5]
-  -------------------------------------------------------------------
-                         required time                         -1.310    
-                         arrival time                           1.324    
-  -------------------------------------------------------------------
-                         slack                                  0.014    
-
-Slack (MET) :             0.014ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg11_reg[13]/C
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][13][5]/D
-                            (rising edge-triggered cell FDSE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Path Group:             clk_fpga_0
-  Path Type:              Hold (Min at Fast Process Corner)
-  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.350ns  (logic 0.141ns (40.270%)  route 0.209ns (59.730%))
-  Logic Levels:           0  
-  Clock Path Skew:        0.261ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.273ns
-    Source Clock Delay      (SCD):    0.973ns
-    Clock Pessimism Removal (CPR):    0.039ns
-
-    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
-  -------------------------------------------------------------------    -------------------
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.637     0.973    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X48Y103        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg11_reg[13]/C
-  -------------------------------------------------------------------    -------------------
-    SLICE_X48Y103        FDRE (Prop_fdre_C_Q)         0.141     1.114 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg11_reg[13]/Q
-                         net (fo=2, routed)           0.209     1.323    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg11[13]
-    SLICE_X53Y101        FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][13][5]/D
-  -------------------------------------------------------------------    -------------------
-
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.907     1.273    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X53Y101        FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][13][5]/C
-                         clock pessimism             -0.039     1.234    
-    SLICE_X53Y101        FDSE (Hold_fdse_C_D)         0.075     1.309    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][13][5]
-  -------------------------------------------------------------------
-                         required time                         -1.309    
-                         arrival time                           1.323    
-  -------------------------------------------------------------------
-                         slack                                  0.014    
-
-Slack (MET) :             0.030ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg5_reg[13]/C
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][5][5]/D
-                            (rising edge-triggered cell FDSE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Path Group:             clk_fpga_0
-  Path Type:              Hold (Min at Fast Process Corner)
-  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.360ns  (logic 0.141ns (39.122%)  route 0.219ns (60.878%))
-  Logic Levels:           0  
-  Clock Path Skew:        0.260ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.186ns
-    Source Clock Delay      (SCD):    0.891ns
+  Data Path Delay:        0.443ns  (logic 0.186ns (42.002%)  route 0.257ns (57.998%))
+  Logic Levels:           1  (LUT3=1)
+  Clock Path Skew:        0.349ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.277ns
+    Source Clock Delay      (SCD):    0.893ns
     Clock Pessimism Removal (CPR):    0.035ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
@@ -934,57 +744,14 @@ Slack (MET) :             0.030ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.555     0.891    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X48Y95         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg5_reg[13]/C
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.ar_channel_0/cmd_translator_0/aclk
+    SLICE_X43Y98         FDRE                                         r  zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.ar_channel_0/cmd_translator_0/s_axburst_eq0_reg/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X48Y95         FDRE (Prop_fdre_C_Q)         0.141     1.032 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg5_reg[13]/Q
-                         net (fo=2, routed)           0.219     1.251    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg5[13]
-    SLICE_X51Y96         FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][5][5]/D
-  -------------------------------------------------------------------    -------------------
-
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.820     1.186    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X51Y96         FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][5][5]/C
-                         clock pessimism             -0.035     1.151    
-    SLICE_X51Y96         FDSE (Hold_fdse_C_D)         0.070     1.221    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][5][5]
-  -------------------------------------------------------------------
-                         required time                         -1.221    
-                         arrival time                           1.251    
-  -------------------------------------------------------------------
-                         slack                                  0.030    
-
-Slack (MET) :             0.036ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg7_reg[13]/C
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][5]/D
-                            (rising edge-triggered cell FDSE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Path Group:             clk_fpga_0
-  Path Type:              Hold (Min at Fast Process Corner)
-  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.344ns  (logic 0.141ns (41.020%)  route 0.203ns (58.980%))
-  Logic Levels:           0  
-  Clock Path Skew:        0.260ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.273ns
-    Source Clock Delay      (SCD):    0.974ns
-    Clock Pessimism Removal (CPR):    0.039ns
-
-    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
-  -------------------------------------------------------------------    -------------------
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.638     0.974    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X49Y102        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg7_reg[13]/C
-  -------------------------------------------------------------------    -------------------
-    SLICE_X49Y102        FDRE (Prop_fdre_C_Q)         0.141     1.115 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg7_reg[13]/Q
-                         net (fo=2, routed)           0.203     1.318    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg7[13]
-    SLICE_X53Y101        FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][5]/D
+    SLICE_X43Y98         FDRE (Prop_fdre_C_Q)         0.141     1.034 f  zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.ar_channel_0/cmd_translator_0/s_axburst_eq0_reg/Q
+                         net (fo=2, routed)           0.087     1.121    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.ar_channel_0/cmd_translator_0/s_axburst_eq0
+    SLICE_X42Y98         LUT3 (Prop_lut3_I0_O)        0.045     1.166 r  zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.ar_channel_0/cmd_translator_0/r_rlast_r_i_1/O
+                         net (fo=1, routed)           0.170     1.335    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/r_rlast
+    SLICE_X40Y100        FDRE                                         r  zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/r_rlast_r_reg/D
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -992,75 +759,30 @@ Slack (MET) :             0.036ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.907     1.273    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X53Y101        FDSE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][5]/C
-                         clock pessimism             -0.039     1.234    
-    SLICE_X53Y101        FDSE (Hold_fdse_C_D)         0.047     1.281    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[1][13][5]
+                         net (fo=1522, routed)        0.911     1.277    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/aclk
+    SLICE_X40Y100        FDRE                                         r  zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/r_rlast_r_reg/C
+                         clock pessimism             -0.035     1.242    
+    SLICE_X40Y100        FDRE (Hold_fdre_C_D)         0.075     1.317    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/r_rlast_r_reg
   -------------------------------------------------------------------
-                         required time                         -1.281    
-                         arrival time                           1.318    
+                         required time                         -1.317    
+                         arrival time                           1.335    
   -------------------------------------------------------------------
-                         slack                                  0.036    
+                         slack                                  0.019    
 
-Slack (MET) :             0.039ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg9_reg[24]/C
+Slack (MET) :             0.058ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_gpio_0/U0/AXI_LITE_IPIF_I/I_SLAVE_ATTACHMENT/s_axi_rdata_i_reg[4]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][7][0]/D
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Path Group:             clk_fpga_0
-  Path Type:              Hold (Min at Fast Process Corner)
-  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.377ns  (logic 0.141ns (37.427%)  route 0.236ns (62.573%))
-  Logic Levels:           0  
-  Clock Path Skew:        0.259ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.271ns
-    Source Clock Delay      (SCD):    0.973ns
-    Clock Pessimism Removal (CPR):    0.039ns
-
-    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
-  -------------------------------------------------------------------    -------------------
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.637     0.973    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X45Y109        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg9_reg[24]/C
-  -------------------------------------------------------------------    -------------------
-    SLICE_X45Y109        FDRE (Prop_fdre_C_Q)         0.141     1.114 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg9_reg[24]/Q
-                         net (fo=2, routed)           0.236     1.350    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg9[24]
-    SLICE_X51Y109        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][7][0]/D
-  -------------------------------------------------------------------    -------------------
-
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.905     1.271    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X51Y109        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][7][0]/C
-                         clock pessimism             -0.039     1.232    
-    SLICE_X51Y109        FDRE (Hold_fdre_C_D)         0.078     1.310    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][7][0]
-  -------------------------------------------------------------------
-                         required time                         -1.310    
-                         arrival time                           1.350    
-  -------------------------------------------------------------------
-                         slack                                  0.039    
-
-Slack (MET) :             0.042ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/processing_system7_0_axi_periph/xbar/inst/gen_sasd.crossbar_sasd_0/reg_slice_r/m_payload_i_reg[29]/C
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][26]_srl32/D
+  Destination:            zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][4]_srl32/D
                             (rising edge-triggered cell SRLC32E clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.241ns  (logic 0.141ns (58.505%)  route 0.100ns (41.495%))
+  Data Path Delay:        0.275ns  (logic 0.141ns (51.279%)  route 0.134ns (48.721%))
   Logic Levels:           0  
-  Clock Path Skew:        0.016ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.190ns
-    Source Clock Delay      (SCD):    0.892ns
-    Clock Pessimism Removal (CPR):    0.282ns
+  Clock Path Skew:        0.034ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.186ns
+    Source Clock Delay      (SCD):    0.888ns
+    Clock Pessimism Removal (CPR):    0.264ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
   -------------------------------------------------------------------    -------------------
@@ -1069,12 +791,12 @@ Slack (MET) :             0.042ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.556     0.892    zynq_interrupt_system_i/processing_system7_0_axi_periph/xbar/inst/gen_sasd.crossbar_sasd_0/reg_slice_r/aclk
-    SLICE_X39Y95         FDRE                                         r  zynq_interrupt_system_i/processing_system7_0_axi_periph/xbar/inst/gen_sasd.crossbar_sasd_0/reg_slice_r/m_payload_i_reg[29]/C
+                         net (fo=1522, routed)        0.552     0.888    zynq_interrupt_system_i/axi_gpio_0/U0/AXI_LITE_IPIF_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X37Y86         FDRE                                         r  zynq_interrupt_system_i/axi_gpio_0/U0/AXI_LITE_IPIF_I/I_SLAVE_ATTACHMENT/s_axi_rdata_i_reg[4]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X39Y95         FDRE (Prop_fdre_C_Q)         0.141     1.033 r  zynq_interrupt_system_i/processing_system7_0_axi_periph/xbar/inst/gen_sasd.crossbar_sasd_0/reg_slice_r/m_payload_i_reg[29]/Q
-                         net (fo=1, routed)           0.100     1.133    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/in[26]
-    SLICE_X36Y94         SRLC32E                                      r  zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][26]_srl32/D
+    SLICE_X37Y86         FDRE (Prop_fdre_C_Q)         0.141     1.029 r  zynq_interrupt_system_i/axi_gpio_0/U0/AXI_LITE_IPIF_I/I_SLAVE_ATTACHMENT/s_axi_rdata_i_reg[4]/Q
+                         net (fo=1, routed)           0.134     1.163    zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/in[4]
+    SLICE_X34Y86         SRLC32E                                      r  zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][4]_srl32/D
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -1082,31 +804,31 @@ Slack (MET) :             0.042ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.824     1.190    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/aclk
-    SLICE_X36Y94         SRLC32E                                      r  zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][26]_srl32/CLK
-                         clock pessimism             -0.282     0.908    
-    SLICE_X36Y94         SRLC32E (Hold_srlc32e_CLK_D)
-                                                      0.183     1.091    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][26]_srl32
+                         net (fo=1522, routed)        0.820     1.186    zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/aclk
+    SLICE_X34Y86         SRLC32E                                      r  zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][4]_srl32/CLK
+                         clock pessimism             -0.264     0.922    
+    SLICE_X34Y86         SRLC32E (Hold_srlc32e_CLK_D)
+                                                      0.183     1.105    zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][4]_srl32
   -------------------------------------------------------------------
-                         required time                         -1.091    
-                         arrival time                           1.133    
+                         required time                         -1.105    
+                         arrival time                           1.163    
   -------------------------------------------------------------------
-                         slack                                  0.042    
+                         slack                                  0.058    
 
-Slack (MET) :             0.045ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15_reg[8]/C
+Slack (MET) :             0.059ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/GEN_WRDATA[20].bram_wrdata_int_reg[20]/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][0]/D
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/DEVICE_7SERIES.WITH_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.TDP_SP36_NO_ECC_ATTR.ram/DIADI[4]
+                            (rising edge-triggered cell RAMB36E1 clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.378ns  (logic 0.141ns (37.317%)  route 0.237ns (62.683%))
+  Data Path Delay:        0.413ns  (logic 0.164ns (39.746%)  route 0.249ns (60.254%))
   Logic Levels:           0  
-  Clock Path Skew:        0.258ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.267ns
-    Source Clock Delay      (SCD):    0.970ns
-    Clock Pessimism Removal (CPR):    0.039ns
+  Clock Path Skew:        0.057ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.233ns
+    Source Clock Delay      (SCD):    0.895ns
+    Clock Pessimism Removal (CPR):    0.281ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
   -------------------------------------------------------------------    -------------------
@@ -1115,57 +837,12 @@ Slack (MET) :             0.045ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.634     0.970    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X47Y113        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15_reg[8]/C
+                         net (fo=1522, routed)        0.559     0.895    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/s_axi_aclk
+    SLICE_X32Y98         FDRE                                         r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/GEN_WRDATA[20].bram_wrdata_int_reg[20]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X47Y113        FDRE (Prop_fdre_C_Q)         0.141     1.111 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15_reg[8]/Q
-                         net (fo=2, routed)           0.237     1.348    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg15[8]
-    SLICE_X51Y113        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][0]/D
-  -------------------------------------------------------------------    -------------------
-
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.901     1.267    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X51Y113        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][0]/C
-                         clock pessimism             -0.039     1.228    
-    SLICE_X51Y113        FDRE (Hold_fdre_C_D)         0.075     1.303    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[3][13][0]
-  -------------------------------------------------------------------
-                         required time                         -1.303    
-                         arrival time                           1.348    
-  -------------------------------------------------------------------
-                         slack                                  0.045    
-
-Slack (MET) :             0.054ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg1_reg[23]/C
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][6][7]/D
-                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Path Group:             clk_fpga_0
-  Path Type:              Hold (Min at Fast Process Corner)
-  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.385ns  (logic 0.164ns (42.583%)  route 0.221ns (57.417%))
-  Logic Levels:           0  
-  Clock Path Skew:        0.265ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.270ns
-    Source Clock Delay      (SCD):    0.966ns
-    Clock Pessimism Removal (CPR):    0.039ns
-
-    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
-  -------------------------------------------------------------------    -------------------
-                         (clock clk_fpga_0 rise edge)
-                                                      0.000     0.000 r  
-    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
-                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
-    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.630     0.966    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X50Y115        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg1_reg[23]/C
-  -------------------------------------------------------------------    -------------------
-    SLICE_X50Y115        FDRE (Prop_fdre_C_Q)         0.164     1.130 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg1_reg[23]/Q
-                         net (fo=2, routed)           0.221     1.351    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg1[23]
-    SLICE_X48Y115        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][6][7]/D
+    SLICE_X32Y98         FDRE (Prop_fdre_C_Q)         0.164     1.059 r  zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/I_WR_CHNL/GEN_WRDATA[20].bram_wrdata_int_reg[20]/Q
+                         net (fo=1, routed)           0.249     1.307    zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/dina[4]
+    RAMB36_X2Y18         RAMB36E1                                     r  zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/DEVICE_7SERIES.WITH_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.TDP_SP36_NO_ECC_ATTR.ram/DIADI[4]
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -1173,29 +850,30 @@ Slack (MET) :             0.054ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.904     1.270    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X48Y115        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][6][7]/C
-                         clock pessimism             -0.039     1.231    
-    SLICE_X48Y115        FDRE (Hold_fdre_C_D)         0.066     1.297    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[0][6][7]
+                         net (fo=1522, routed)        0.867     1.233    zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/clka
+    RAMB36_X2Y18         RAMB36E1                                     r  zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/DEVICE_7SERIES.WITH_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.TDP_SP36_NO_ECC_ATTR.ram/CLKARDCLK
+                         clock pessimism             -0.281     0.952    
+    RAMB36_X2Y18         RAMB36E1 (Hold_ramb36e1_CLKARDCLK_DIADI[4])
+                                                      0.296     1.248    zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/DEVICE_7SERIES.WITH_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.TDP_SP36_NO_ECC_ATTR.ram
   -------------------------------------------------------------------
-                         required time                         -1.297    
-                         arrival time                           1.351    
+                         required time                         -1.248    
+                         arrival time                           1.307    
   -------------------------------------------------------------------
-                         slack                                  0.054    
+                         slack                                  0.059    
 
-Slack (MET) :             0.055ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg8_reg[2]/C
+Slack (MET) :             0.080ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][0][2]/D
+  Destination:            zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[0].ce_out_i_reg[0]/CE
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.298ns  (logic 0.141ns (47.246%)  route 0.157ns (52.754%))
+  Data Path Delay:        0.338ns  (logic 0.148ns (43.756%)  route 0.190ns (56.244%))
   Logic Levels:           0  
-  Clock Path Skew:        0.181ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.187ns
-    Source Clock Delay      (SCD):    0.971ns
+  Clock Path Skew:        0.350ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.278ns
+    Source Clock Delay      (SCD):    0.893ns
     Clock Pessimism Removal (CPR):    0.035ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
@@ -1205,12 +883,12 @@ Slack (MET) :             0.055ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.635     0.971    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X51Y101        FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg8_reg[2]/C
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X36Y99         FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X51Y101        FDRE (Prop_fdre_C_Q)         0.141     1.112 r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg8_reg[2]/Q
-                         net (fo=2, routed)           0.157     1.269    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/slv_reg8[2]
-    SLICE_X50Y99         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][0][2]/D
+    SLICE_X36Y99         FDRE (Prop_fdre_C_Q)         0.148     1.041 r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/Q
+                         net (fo=15, routed)          0.190     1.231    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/Q
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[0].ce_out_i_reg[0]/CE
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -1218,29 +896,29 @@ Slack (MET) :             0.055ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.821     1.187    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/s00_axi_aclk
-    SLICE_X50Y99         FDRE                                         r  zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][0][2]/C
-                         clock pessimism             -0.035     1.152    
-    SLICE_X50Y99         FDRE (Hold_fdre_C_D)         0.063     1.215    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/current_screen_reg[2][0][2]
+                         net (fo=1522, routed)        0.912     1.278    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/s_axi_aclk
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[0].ce_out_i_reg[0]/C
+                         clock pessimism             -0.035     1.243    
+    SLICE_X35Y100        FDRE (Hold_fdre_C_CE)       -0.092     1.151    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[0].ce_out_i_reg[0]
   -------------------------------------------------------------------
-                         required time                         -1.215    
-                         arrival time                           1.269    
+                         required time                         -1.151    
+                         arrival time                           1.231    
   -------------------------------------------------------------------
-                         slack                                  0.055    
+                         slack                                  0.080    
 
-Slack (MET) :             0.057ns  (arrival time - required time)
-  Source:                 zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/skid_buffer_reg[52]/C
+Slack (MET) :             0.080ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/m_payload_i_reg[52]/D
+  Destination:            zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[1].ce_out_i_reg[1]/CE
                             (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             clk_fpga_0
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
-  Data Path Delay:        0.530ns  (logic 0.246ns (46.454%)  route 0.284ns (53.546%))
-  Logic Levels:           1  (LUT3=1)
-  Clock Path Skew:        0.351ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    1.296ns
-    Source Clock Delay      (SCD):    0.910ns
+  Data Path Delay:        0.338ns  (logic 0.148ns (43.756%)  route 0.190ns (56.244%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.350ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.278ns
+    Source Clock Delay      (SCD):    0.893ns
     Clock Pessimism Removal (CPR):    0.035ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
@@ -1250,14 +928,12 @@ Slack (MET) :             0.057ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.574     0.910    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/aclk
-    SLICE_X26Y99         FDRE                                         r  zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/skid_buffer_reg[52]/C
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X36Y99         FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X26Y99         FDRE (Prop_fdre_C_Q)         0.148     1.058 r  zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/skid_buffer_reg[52]/Q
-                         net (fo=1, routed)           0.284     1.341    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/skid_buffer_reg_n_0_[52]
-    SLICE_X26Y100        LUT3 (Prop_lut3_I2_O)        0.098     1.439 r  zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/m_payload_i[52]_i_1/O
-                         net (fo=1, routed)           0.000     1.439    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/skid_buffer[52]
-    SLICE_X26Y100        FDRE                                         r  zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/m_payload_i_reg[52]/D
+    SLICE_X36Y99         FDRE (Prop_fdre_C_Q)         0.148     1.041 r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/Q
+                         net (fo=15, routed)          0.190     1.231    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/Q
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[1].ce_out_i_reg[1]/CE
   -------------------------------------------------------------------    -------------------
 
                          (clock clk_fpga_0 rise edge)
@@ -1265,15 +941,240 @@ Slack (MET) :             0.057ns  (arrival time - required time)
     PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
                          net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
-                         net (fo=2526, routed)        0.930     1.296    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/aclk
-    SLICE_X26Y100        FDRE                                         r  zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/m_payload_i_reg[52]/C
-                         clock pessimism             -0.035     1.261    
-    SLICE_X26Y100        FDRE (Hold_fdre_C_D)         0.121     1.382    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/SI_REG/aw_pipe/m_payload_i_reg[52]
+                         net (fo=1522, routed)        0.912     1.278    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/s_axi_aclk
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[1].ce_out_i_reg[1]/C
+                         clock pessimism             -0.035     1.243    
+    SLICE_X35Y100        FDRE (Hold_fdre_C_CE)       -0.092     1.151    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[1].ce_out_i_reg[1]
   -------------------------------------------------------------------
-                         required time                         -1.382    
-                         arrival time                           1.439    
+                         required time                         -1.151    
+                         arrival time                           1.231    
   -------------------------------------------------------------------
-                         slack                                  0.057    
+                         slack                                  0.080    
+
+Slack (MET) :             0.080ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[2].ce_out_i_reg[2]/CE
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        0.338ns  (logic 0.148ns (43.756%)  route 0.190ns (56.244%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.350ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.278ns
+    Source Clock Delay      (SCD):    0.893ns
+    Clock Pessimism Removal (CPR):    0.035ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X36Y99         FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y99         FDRE (Prop_fdre_C_Q)         0.148     1.041 r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/Q
+                         net (fo=15, routed)          0.190     1.231    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/Q
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[2].ce_out_i_reg[2]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.912     1.278    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/s_axi_aclk
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[2].ce_out_i_reg[2]/C
+                         clock pessimism             -0.035     1.243    
+    SLICE_X35Y100        FDRE (Hold_fdre_C_CE)       -0.092     1.151    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[2].ce_out_i_reg[2]
+  -------------------------------------------------------------------
+                         required time                         -1.151    
+                         arrival time                           1.231    
+  -------------------------------------------------------------------
+                         slack                                  0.080    
+
+Slack (MET) :             0.080ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[4].ce_out_i_reg[4]/CE
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        0.338ns  (logic 0.148ns (43.756%)  route 0.190ns (56.244%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.350ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.278ns
+    Source Clock Delay      (SCD):    0.893ns
+    Clock Pessimism Removal (CPR):    0.035ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X36Y99         FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y99         FDRE (Prop_fdre_C_Q)         0.148     1.041 r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/Q
+                         net (fo=15, routed)          0.190     1.231    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/Q
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[4].ce_out_i_reg[4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.912     1.278    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/s_axi_aclk
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[4].ce_out_i_reg[4]/C
+                         clock pessimism             -0.035     1.243    
+    SLICE_X35Y100        FDRE (Hold_fdre_C_CE)       -0.092     1.151    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[4].ce_out_i_reg[4]
+  -------------------------------------------------------------------
+                         required time                         -1.151    
+                         arrival time                           1.231    
+  -------------------------------------------------------------------
+                         slack                                  0.080    
+
+Slack (MET) :             0.080ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[5].ce_out_i_reg[5]/CE
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        0.338ns  (logic 0.148ns (43.756%)  route 0.190ns (56.244%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.350ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.278ns
+    Source Clock Delay      (SCD):    0.893ns
+    Clock Pessimism Removal (CPR):    0.035ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X36Y99         FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y99         FDRE (Prop_fdre_C_Q)         0.148     1.041 r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/Q
+                         net (fo=15, routed)          0.190     1.231    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/Q
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[5].ce_out_i_reg[5]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.912     1.278    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/s_axi_aclk
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[5].ce_out_i_reg[5]/C
+                         clock pessimism             -0.035     1.243    
+    SLICE_X35Y100        FDRE (Hold_fdre_C_CE)       -0.092     1.151    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[5].ce_out_i_reg[5]
+  -------------------------------------------------------------------
+                         required time                         -1.151    
+                         arrival time                           1.231    
+  -------------------------------------------------------------------
+                         slack                                  0.080    
+
+Slack (MET) :             0.080ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[6].ce_out_i_reg[6]/CE
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        0.338ns  (logic 0.148ns (43.756%)  route 0.190ns (56.244%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.350ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.278ns
+    Source Clock Delay      (SCD):    0.893ns
+    Clock Pessimism Removal (CPR):    0.035ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X36Y99         FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y99         FDRE (Prop_fdre_C_Q)         0.148     1.041 r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/Q
+                         net (fo=15, routed)          0.190     1.231    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/Q
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[6].ce_out_i_reg[6]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.912     1.278    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/s_axi_aclk
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[6].ce_out_i_reg[6]/C
+                         clock pessimism             -0.035     1.243    
+    SLICE_X35Y100        FDRE (Hold_fdre_C_CE)       -0.092     1.151    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[6].ce_out_i_reg[6]
+  -------------------------------------------------------------------
+                         required time                         -1.151    
+                         arrival time                           1.231    
+  -------------------------------------------------------------------
+                         slack                                  0.080    
+
+Slack (MET) :             0.080ns  (arrival time - required time)
+  Source:                 zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[7].ce_out_i_reg[7]/CE
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        0.338ns  (logic 0.148ns (43.756%)  route 0.190ns (56.244%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.350ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.278ns
+    Source Clock Delay      (SCD):    0.893ns
+    Clock Pessimism Removal (CPR):    0.035ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.310     0.310    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.336 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.557     0.893    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/s_axi_aclk
+    SLICE_X36Y99         FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y99         FDRE (Prop_fdre_C_Q)         0.148     1.041 r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/start2_reg/Q
+                         net (fo=15, routed)          0.190     1.231    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/Q
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[7].ce_out_i_reg[7]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  
+    PS7_X0Y0             PS7                          0.000     0.000 r  zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.337     0.337    zynq_interrupt_system_i/processing_system7_0/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     0.366 r  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=1522, routed)        0.912     1.278    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/s_axi_aclk
+    SLICE_X35Y100        FDRE                                         r  zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[7].ce_out_i_reg[7]/C
+                         clock pessimism             -0.035     1.243    
+    SLICE_X35Y100        FDRE (Hold_fdre_C_CE)       -0.092     1.151    zynq_interrupt_system_i/axi_timer_0/U0/AXI4_LITE_I/I_SLAVE_ATTACHMENT/I_DECODER/GEN_BKEND_CE_REGISTERS[7].ce_out_i_reg[7]
+  -------------------------------------------------------------------
+                         required time                         -1.151    
+                         arrival time                           1.231    
+  -------------------------------------------------------------------
+                         slack                                  0.080    
 
 
 
@@ -1287,36 +1188,36 @@ Period(ns):         20.000
 Sources:            { zynq_interrupt_system_i/processing_system7_0/inst/PS7_i/FCLKCLK[0] }
 
 Check Type        Corner  Lib Pin             Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location        Pin
-Min Period        n/a     RAMB18E1/CLKARDCLK  n/a            2.576         20.000      17.424     RAMB18_X2Y30    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/CHAR_LIB_COMP/U0/inst_blk_mem_gen/gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[0].ram.r/prim_init.ram/DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM18.ram/CLKARDCLK
-Min Period        n/a     RAMB18E1/CLKBWRCLK  n/a            2.576         20.000      17.424     RAMB18_X2Y30    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/CHAR_LIB_COMP/U0/inst_blk_mem_gen/gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[0].ram.r/prim_init.ram/DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM18.ram/CLKBWRCLK
+Min Period        n/a     RAMB36E1/CLKARDCLK  n/a            2.576         20.000      17.424     RAMB36_X2Y17    zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[0].ram.r/prim_noinit.ram/DEVICE_7SERIES.WITH_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.TDP_SP36_NO_ECC_ATTR.ram/CLKARDCLK
+Min Period        n/a     RAMB36E1/CLKARDCLK  n/a            2.576         20.000      17.424     RAMB36_X2Y18    zynq_interrupt_system_i/axi_bram_ctrl_0_bram/U0/inst_blk_mem_gen/gnative_mem_map_bmg.native_mem_map_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/DEVICE_7SERIES.WITH_BMM_INFO.TRUE_DP.SIMPLE_PRIM36.TDP_SP36_NO_ECC_ATTR.ram/CLKARDCLK
 Min Period        n/a     BUFG/I              n/a            2.155         20.000      17.845     BUFGCTRL_X0Y16  zynq_interrupt_system_i/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/I
-Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X52Y80    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/DELAY_COMP/clk_counter_reg[0]/C
-Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X52Y81    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/DELAY_COMP/clk_counter_reg[10]/C
-Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X52Y81    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/DELAY_COMP/clk_counter_reg[11]/C
-Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X52Y82    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/DELAY_COMP/clk_counter_reg[12]/C
-Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X52Y82    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/DELAY_COMP/clk_counter_reg[13]/C
-Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X52Y82    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/DELAY_COMP/clk_counter_reg[14]/C
-Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X52Y82    zynq_interrupt_system_i/ZedboardOLED_0/inst/ZedboardOLED_v1_0_S00_AXI_inst/DELAY_COMP/clk_counter_reg[15]/C
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y92    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][13]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X38Y91    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][15]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y92    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][16]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X38Y91    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][18]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X38Y91    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][19]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][20]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][21]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][25]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][29]_srl32/CLK
-Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][30]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][20]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][21]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][25]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][29]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][30]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][31]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][32]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][33]_srl32/CLK
-High Pulse Width  Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y90    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][0]_srl32/CLK
-High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y90    zynq_interrupt_system_i/processing_system7_0_axi_periph/s00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][0]_srl32/CLK
+Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X30Y82    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/ADDR_SNG_PORT.bram_addr_int_reg[10]/C
+Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X31Y84    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/ADDR_SNG_PORT.bram_addr_int_reg[11]/C
+Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X28Y84    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/ADDR_SNG_PORT.bram_addr_int_reg[12]/C
+Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X28Y82    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/ADDR_SNG_PORT.bram_addr_int_reg[2]/C
+Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X28Y82    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/ADDR_SNG_PORT.bram_addr_int_reg[3]/C
+Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X28Y82    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/ADDR_SNG_PORT.bram_addr_int_reg[4]/C
+Min Period        n/a     FDRE/C              n/a            1.000         20.000      19.000     SLICE_X28Y83    zynq_interrupt_system_i/axi_bram_ctrl_0/U0/gext_inst.abcv4_0_ext_inst/GEN_AXI4.I_FULL_AXI/ADDR_SNG_PORT.bram_addr_int_reg[5]/C
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y91    zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][27]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y91    zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][31]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y91    zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][32]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X36Y91    zynq_interrupt_system_i/processing_system7_0_axi_periph/m00_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][33]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][0]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][11]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][12]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][13]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][1]_srl32/CLK
+Low Pulse Width   Slow    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][2]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][0]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X32Y96    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][10]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][11]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][12]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y95    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][13]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X32Y96    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][14]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X32Y96    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][15]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y99    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][16]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][1]_srl32/CLK
+High Pulse Width  Fast    SRLC32E/CLK         n/a            0.980         10.000      9.020      SLICE_X34Y93    zynq_interrupt_system_i/processing_system7_0_axi_periph/m02_couplers/auto_pc/inst/gen_axilite.gen_b2s_conv.axilite_b2s/RD.r_channel_0/rd_data_fifo_0/memory_reg[31][2]_srl32/CLK
 
 
 

@@ -1,8 +1,8 @@
 //Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
-//Tool Version: Vivado v.2015.2 (win64) Build 1266856 Fri Jun 26 16:35:25 MDT 2015
-//Date        : Fri Aug 21 09:44:46 2015
-//Host        : ALALJAA-D running 64-bit Service Pack 1  (build 7601)
+//Tool Version: Vivado v.2015.2 (lin64) Build 1266856 Fri Jun 26 16:35:25 MDT 2015
+//Date        : Tue Oct 18 14:49:42 2016
+//Host        : magnum.andrew.cmu.edu running 64-bit Red Hat Enterprise Linux Server release 7.2 (Maipo)
 //Command     : generate_target zynq_interrupt_system_wrapper.bd
 //Design      : zynq_interrupt_system_wrapper
 //Purpose     : IP block netlist
@@ -10,8 +10,7 @@
 `timescale 1 ps / 1 ps
 
 module zynq_interrupt_system_wrapper
-   (DC,
-    DDR_addr,
+   (DDR_addr,
     DDR_ba,
     DDR_cas_n,
     DDR_ck_n,
@@ -32,13 +31,7 @@ module zynq_interrupt_system_wrapper
     FIXED_IO_ps_clk,
     FIXED_IO_ps_porb,
     FIXED_IO_ps_srstb,
-    RES,
-    SCLK,
-    SDIN,
-    VBAT,
-    VDD,
     btns_5bits_tri_i);
-  output DC;
   inout [14:0]DDR_addr;
   inout [2:0]DDR_ba;
   inout DDR_cas_n;
@@ -60,14 +53,8 @@ module zynq_interrupt_system_wrapper
   inout FIXED_IO_ps_clk;
   inout FIXED_IO_ps_porb;
   inout FIXED_IO_ps_srstb;
-  output RES;
-  output SCLK;
-  output SDIN;
-  output VBAT;
-  output VDD;
   input [4:0]btns_5bits_tri_i;
 
-  wire DC;
   wire [14:0]DDR_addr;
   wire [2:0]DDR_ba;
   wire DDR_cas_n;
@@ -89,16 +76,10 @@ module zynq_interrupt_system_wrapper
   wire FIXED_IO_ps_clk;
   wire FIXED_IO_ps_porb;
   wire FIXED_IO_ps_srstb;
-  wire RES;
-  wire SCLK;
-  wire SDIN;
-  wire VBAT;
-  wire VDD;
   wire [4:0]btns_5bits_tri_i;
 
   zynq_interrupt_system zynq_interrupt_system_i
-       (.DC(DC),
-        .DDR_addr(DDR_addr),
+       (.DDR_addr(DDR_addr),
         .DDR_ba(DDR_ba),
         .DDR_cas_n(DDR_cas_n),
         .DDR_ck_n(DDR_ck_n),
@@ -119,10 +100,5 @@ module zynq_interrupt_system_wrapper
         .FIXED_IO_ps_clk(FIXED_IO_ps_clk),
         .FIXED_IO_ps_porb(FIXED_IO_ps_porb),
         .FIXED_IO_ps_srstb(FIXED_IO_ps_srstb),
-        .RES(RES),
-        .SCLK(SCLK),
-        .SDIN(SDIN),
-        .VBAT(VBAT),
-        .VDD(VDD),
         .btns_5bits_tri_i(btns_5bits_tri_i));
 endmodule

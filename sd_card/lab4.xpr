@@ -25,31 +25,29 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_processing_system7_0_axi_periph_0/zynq_interrupt_system_processing_system7_0_axi_periph_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_ZedboardOLED_0_0/zynq_interrupt_system_ZedboardOLED_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_xbar_0/zynq_interrupt_system_xbar_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="hdl/zynq_interrupt_system.v"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_xlconcat_0_0/zynq_interrupt_system_xlconcat_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_auto_pc_0/zynq_interrupt_system_auto_pc_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="zynq_interrupt_system.bmm"/>
         <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="zynq_interrupt_system_ooc.xdc"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_xlconcat_0_0/zynq_interrupt_system_xlconcat_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="hdl/zynq_interrupt_system.v"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_xbar_0/zynq_interrupt_system_xbar_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_processing_system7_0_axi_periph_0/zynq_interrupt_system_processing_system7_0_axi_periph_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_axi_bram_ctrl_0_0/zynq_interrupt_system_axi_bram_ctrl_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="hw_handoff/zynq_interrupt_system.hwh"/>
-        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="hw_handoff/zynq_interrupt_system_bd.tcl"/>
         <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="hdl/zynq_interrupt_system.hwdef"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="hw_handoff/zynq_interrupt_system_bd.tcl"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_auto_pc_1/zynq_interrupt_system_auto_pc_1.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_auto_pc_0/zynq_interrupt_system_auto_pc_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_axi_bram_ctrl_0_bram_0/zynq_interrupt_system_axi_bram_ctrl_0_bram_0.xci"/>
+        <CompFileExtendedInfo CompFileName="zynq_interrupt_system.bd" FileRelPathName="ip/zynq_interrupt_system_auto_pc_2/zynq_interrupt_system_auto_pc_2.xci"/>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/zynq_interrupt_system/hdl/zynq_interrupt_system_wrapper.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_ZedboardOLED_0_0/src/charLib/charLib.coe">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>

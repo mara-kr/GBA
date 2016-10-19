@@ -16,7 +16,6 @@ set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
 set_property board_part em.avnet.com:zed:part0:1.3 [current_project]
 set_property ip_repo_paths /afs/ece.cmu.edu/usr/ryanovsk/oled_embeddedcentric [current_project]
-add_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_ZedboardOLED_0_0/src/charLib/charLib.coe
 add_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bd
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0_board.xdc]
@@ -25,11 +24,14 @@ set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/r
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0_board.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0_ooc.xdc]
-set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_ZedboardOLED_0_0/src/charLib/charLib_ooc.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_xbar_0/zynq_interrupt_system_xbar_0_ooc.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_bram_ctrl_0_0/zynq_interrupt_system_axi_bram_ctrl_0_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_bram_ctrl_0_bram_0/zynq_interrupt_system_axi_bram_ctrl_0_bram_0_ooc.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_0/zynq_interrupt_system_auto_pc_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_1/zynq_interrupt_system_auto_pc_1_ooc.xdc]
+set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_auto_pc_2/zynq_interrupt_system_auto_pc_2_ooc.xdc]
 set_property used_in_implementation false [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system_ooc.xdc]
 set_property is_locked true [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bd]
 

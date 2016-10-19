@@ -60,6 +60,9 @@ set rc [catch {
 } [current_project]
   set_property ip_output_repo /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.cache/ip [current_project]
   add_files -quiet /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.runs/synth_1/zynq_interrupt_system_wrapper.dcp
+  add_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm
+  set_property SCOPED_TO_REF zynq_interrupt_system [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm]
+  set_property SCOPED_TO_CELLS {} [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm]
   read_xdc -ref zynq_interrupt_system_processing_system7_0_0 -cells inst /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc
   set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc]
   read_xdc -prop_thru_buffers -ref zynq_interrupt_system_axi_gpio_0_0 -cells U0 /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0_board.xdc
@@ -139,6 +142,8 @@ if {$rc} {
 start_step write_bitstream
 set rc [catch {
   create_msg_db write_bitstream.pb
+  catch { write_mem_info -force zynq_interrupt_system_wrapper.mmi }
+  catch { write_bmm -force zynq_interrupt_system_wrapper_bd.bmm }
   write_bitstream -force zynq_interrupt_system_wrapper.bit 
   catch { write_sysdef -hwdef zynq_interrupt_system_wrapper.hwdef -bitfile zynq_interrupt_system_wrapper.bit -meminfo zynq_interrupt_system_wrapper.mmi -ltxfile debug_nets.ltx -file zynq_interrupt_system_wrapper.sysdef }
   close_msg_db -file write_bitstream.pb

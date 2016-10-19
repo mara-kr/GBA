@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.xilinx.sdk.tcf.debug.LaunchConfigurationType">
+<stringAttribute key="com.xilinx.sdk.gdb.launch.DataFiles" value=""/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.ui.exec.script" value="false"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.ui.exec.script.location" value=""/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uiapplication.path" value="Debug/read_data.elf"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uidebug.type" value="STANDALONE_DEBUG"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uienable.crosstrigger" value="false"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uifpga.device" value="Auto Detect"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uihw.bit.file" value="zynq_interrupt_system_wrapper.bit"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uihw.init.tcl" value="ps7_init.tcl"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uihw_platform.name" value="zynq_interrupt_system_wrapper_hw_platform_1"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uimonitor" value="false"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uiproc.appl.map" value="{&quot;ps7_cortexa9_0&quot;:{&quot;xilinx.tcf.application&quot;:&quot;Debug/read_data.elf&quot;,&quot;xilinx.tcf.datafiles&quot;:&quot;&quot;,&quot;xilinx.tcf.no_download&quot;:false,&quot;xilinx.tcf.project&quot;:&quot;read_data&quot;,&quot;xilinx.tcf.reset&quot;:true,&quot;xilinx.tcf.stop_at_entry&quot;:false}}"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uiprogram.fpga" value="true"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uiproject.name" value="read_data"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uips.device" value="Auto Detect"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uips7.init" value="true"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uips7.post" value="true"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.apu" value="false"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.clear.rpu" value="false"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.lock.step" value="false"/>
+<booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.system" value="true"/>
+<stringAttribute key="com.xilinx.sdk.tcf.debug.uitarget.peer" value="Local"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/read_data"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+</launchConfiguration>
