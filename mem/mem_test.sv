@@ -23,10 +23,10 @@ module mem_test_CI (
     logic [31:0] addrs [14:0];
     logic [31:0] datas [14:0];
     logic [3:0] count, count_next;
-    logic       en, fail;
+    logic       en, clr, fail;
 
     assign addrs = {32'h0000_0000, 32'h0000_1234, 32'h0000_3FFF,
-                    32'h0300_0000, 32'h0300_1234, 32'h0200_7FFF,
+                    32'h0300_0000, 32'h0300_1234, 32'h0300_7FFF,
                     32'h0500_0000, 32'h0500_0042, 32'h0500_03FF,
                     32'h0600_0000, 32'h0600_1234, 32'h0601_7FFF,
                     32'h0700_0000, 32'h0700_0042, 32'h0700_03FF};
@@ -41,7 +41,13 @@ module mem_test_CI (
     assign gfx_size = `MEM_SIZE_WORD;
     assign gfx_addr = 32'd0;
     assign cs_next = (~bus_pause) ? ns : cs;
-    assign count_next = (~bus_pause & en) ? (count + 4'd1) : count;
+    always_comb begin
+        count_next = count;
+        if (~bus_pause) begin
+            if (clr) count_next = 4'd0;
+            else if (en) count_next = count + 4'd1;
+        end
+    end
 
     always_ff @(posedge GCLK, posedge BTND) begin
         if (BTND) begin
@@ -70,6 +76,7 @@ module mem_test_CI (
         bus_write = 1'b0;
         en = 1'b0;
         fail = 1'b0;
+        clr = 1'b0;
         case (cs)
             WADDR: begin
                 bus_write = 1'b1;
@@ -77,7 +84,8 @@ module mem_test_CI (
             end
             WDATA: begin
                 en = 1'b1;
-                ns = (count == 4'hf) ? RADDR : WADDR;
+                ns = (count == 4'he) ? RADDR : WADDR;
+                clr = (count == 4'he) ? 1'b1 : 1'b0;
             end
             RADDR: begin
                 ns = RDATA;
@@ -85,9 +93,30 @@ module mem_test_CI (
             RDATA: begin
                 en = 1'b1;
                 fail = (bus_rdata != datas[count]) & (count > 4'd2);
-                ns = (count == 4'hf) ? WADDR : RADDR;
+                ns = (count == 4'he) ? WADDR : RADDR;
+                clr = (count == 4'he) ? 1'b1 : 1'b0;
             end
         endcase
     end
 
 endmodule: mem_test_CI
+/*
+module sim_top;
+    logic GCLK, BTND;
+    logic [7:0] LD;
+
+    mem_test_CI dut (.*);
+
+    initial begin
+        BTND = 1'b0;
+        GCLK = 1'b0;
+        #1 BTND <= 1'b1;
+        #1 BTND <= 1'b0;
+        forever #1 GCLK <= ~GCLK;
+    end
+
+    initial begin
+        #300 $finish;
+    end
+endmodule: sim_top
+*/
