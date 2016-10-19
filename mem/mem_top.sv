@@ -1,6 +1,5 @@
 // TODO Test BRAM
 `default_nettype none
-
 `include "core_tb_defines.vh"
 
 module mem_top(
@@ -23,6 +22,7 @@ module mem_top(
 
     /* Single cycle latency for writes */
     logic [31:0] bus_addr_lat1, bus_mem_addr;
+    logic  [1:0] bus_size_lat1;
     logic        bus_write_lat1;
 
     // Could add more pauses for memory regions, this is needed
@@ -30,17 +30,19 @@ module mem_top(
     assign bus_pause = bus_write_lat1;
     assign gfx_pause = 1'b0;
     // Use delayed memory address on writes
-    assign bus_mem_addr = (bus_write_lat1) ? bus_addr_lat1 :
-                                             bus_addr;
+    assign bus_mem_addr = (bus_write_lat1) ? {2'b0, bus_addr_lat1[31:2]} :
+                                             {2'b0, bus_addr[31:2]};
 
     // Registers to delay write signals
     always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
             bus_addr_lat1 <= 32'd0;
             bus_write_lat1 <= 1'b0;
+            bus_size_lat1 <= 2'b0;
         end else begin
             bus_addr_lat1 <= bus_addr;
             bus_write_lat1 <= bus_write;
+            bus_size_lat1 <= bus_size;
         end
     end
 
@@ -70,7 +72,7 @@ module mem_top(
 
     logic  [3:0] bus_we;
 
-    mem_decoder decoder (.addr(bus_addr), .size(bus_size),
+    mem_decoder decoder (.addr(bus_addr_lat1), .size(bus_size_lat1),
                          .write(bus_write_lat1), .byte_we(bus_we));
 
     assign bus_system_addr = bus_mem_addr;
@@ -98,6 +100,7 @@ module mem_top(
 
 
     /* When enable is deasserted, no write/read/reset is performed */
+
     system_rom sys   (.clka(clock), .rsta(reset), .ena(bus_system_valid),
                       .addra(bus_system_addr),
                       .douta(bus_system_rdata),
@@ -137,6 +140,7 @@ module mem_top(
                       .clkb(clock), .rstb(reset), .enb(gfx_oam_valid),
                       .web(4'd0), .addrb(gfx_pallete_addr),
                       .doutb(gfx_oam_rdata), .dinb(32'b0));
+
 
     always_comb begin
         if (bus_system_valid)

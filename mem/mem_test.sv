@@ -12,7 +12,7 @@ module mem_test_CI (
     logic [31:0] gfx_addr, gfx_data;
     logic  [1:0] gfx_size;
     logic        gfx_pause;
-    
+
     logic [7:0] LD_next;
 
     mem_top mem (.clock(GCLK), .reset(BTND), .bus_wdata, .bus_rdata,
@@ -42,7 +42,7 @@ module mem_test_CI (
     assign gfx_addr = 32'd0;
     assign cs_next = (~bus_pause) ? ns : cs;
     assign count_next = (~bus_pause & en) ? (count + 4'd1) : count;
-    
+
     always_ff @(posedge GCLK, posedge BTND) begin
         if (BTND) begin
             count <= 4'd0;
@@ -50,11 +50,11 @@ module mem_test_CI (
         end else begin
             count <= count_next;
             cs <= cs_next;
-        end 
+        end
     end
-    
+
    assign LD_next = (fail) ? 8'hf0 : LD;
-   
+
     always_ff @(posedge GCLK, posedge BTND) begin
         if (BTND) begin
             LD <= 8'hff;
@@ -65,7 +65,7 @@ module mem_test_CI (
 
     assign bus_wdata = datas[count];
     assign bus_addr = addrs[count];
-    
+
     always_comb begin
         bus_write = 1'b0;
         en = 1'b0;
@@ -85,7 +85,7 @@ module mem_test_CI (
             RDATA: begin
                 en = 1'b1;
                 fail = (bus_rdata != datas[count]) & (count > 4'd2);
-                ns = (count = 4'hf) ? WADDR : RADDR;
+                ns = (count == 4'hf) ? WADDR : RADDR;
             end
         endcase
     end
