@@ -19,7 +19,7 @@ module mem_test_CI (
                  .bus_addr, .bus_size, .bus_pause, .bus_write,
                  .gfx_addr, .gfx_data, .gfx_size, .gfx_pause);
 
-    enum logic [1:0] {WADDR, WDATA, RADDR, RDATA} cs, ns, cs_next;
+    enum logic [1:0] {WADDR, WDATA, READ} cs, ns, cs_next;
     logic [31:0] addrs [14:0];
     logic [31:0] datas [14:0];
     logic [3:0] count, count_next;
@@ -41,7 +41,7 @@ module mem_test_CI (
     assign gfx_size = `MEM_SIZE_WORD;
     assign gfx_addr = 32'd0;
     assign cs_next = (~bus_pause) ? ns : cs;
-    
+
     always_comb begin
         count_next = count;
         if (~bus_pause) begin
@@ -72,12 +72,15 @@ module mem_test_CI (
 
     assign bus_wdata = datas[count];
     assign bus_addr = addrs[count];
+    logic [31:0] bus_rdata_old;
+    assign bus_rdata_old = datas[count-1];
 
     always_comb begin
         bus_write = 1'b0;
         en = 1'b0;
         fail = 1'b0;
         clr = 1'b0;
+        ns = WADDR;
         case (cs)
             WADDR: begin
                 bus_write = 1'b1;
@@ -85,17 +88,14 @@ module mem_test_CI (
             end
             WDATA: begin
                 en = 1'b1;
-                ns = (count == 4'he) ? RADDR : WADDR;
-                clr = (count == 4'he) ? 1'b1 : 1'b0;
+                ns = (count == 4'he) ? READ : WADDR;
+                clr = (count == 4'he);
             end
-            RADDR: begin
-                ns = RDATA;
-            end
-            RDATA: begin
+            READ: begin
+                ns = (count == 4'hf) ? WADDR : READ;
                 en = 1'b1;
-                fail = (bus_rdata != bus_wdata) & (count > 4'd2);
-                ns = (count == 4'he) ? WADDR : RADDR;
-                clr = (count == 4'he) ? 1'b1 : 1'b0;
+                fail = (bus_rdata != bus_rdata_old) & (count > 4'd3);
+                clr = (count == 4'hf);
             end
         endcase
     end
