@@ -1,6 +1,8 @@
 `default_nettype none
 `include "core_tb_defines.vh"
 
+`define NUM_TESTS 12
+
 module mem_test_CI (
     input  logic GCLK, BTND,
     output logic [7:0] LD);
@@ -20,22 +22,20 @@ module mem_test_CI (
                  .gfx_addr, .gfx_data, .gfx_size, .gfx_pause);
 
     enum logic [1:0] {WADDR, WDATA, READ} cs, ns, cs_next;
-    logic [31:0] addrs [14:0];
-    logic [31:0] datas [14:0];
+    logic [31:0] addrs [`NUM_TESTS-1:0];
+    logic [31:0] datas [`NUM_TESTS-1:0];
     logic [3:0] count, count_next;
     logic       en, clr, fail;
 
     assign addrs = {32'h0700_0000, 32'h0500_0042, 32'h0700_03FF,
                     32'h0600_0000, 32'h0300_1234, 32'h0601_7FFF,
                     32'h0500_0000, 32'h0700_0042, 32'h0500_03FF,
-                    32'h0300_0000, 32'h0600_1234, 32'h0300_7FFF,
-                    32'h0000_0000, 32'h0000_1234, 32'h0000_3FFF};
+                    32'h0300_0000, 32'h0600_1234, 32'h0300_7FFF};
 
     assign datas = {32'hdead_beef, 32'hcafe_f00d, 32'hcafe_bebe,
                     32'hbeef_bebe, 32'hbeef_f00d, 32'hdead_bebe,
                     32'hdead_f00d, 32'hba5e_ba11, 32'hcab0_05e5,
-                    32'hc0ff_ee55, 32'he5ce_ca1d, 32'h5ece_de00,
-                    32'hdef1_ec7e, 32'hdea1_10c8, 32'hca11_ab1e};
+                    32'hc0ff_ee55, 32'he5ce_ca1d, 32'h5ece_de00};
 
     assign bus_size = `MEM_SIZE_WORD;
     assign gfx_size = `MEM_SIZE_WORD;
@@ -72,8 +72,11 @@ module mem_test_CI (
 
     assign bus_wdata = datas[count];
     assign bus_addr = addrs[count];
+
     logic [31:0] bus_rdata_old;
-    assign bus_rdata_old = datas[count-1];
+    register #(32) bus_data (.clock(GCLK), .reset(BTND), .clr(1'b0),
+                             .en(en & ~bus_pause),
+                             .D(bus_wdata), .Q(bus_rdata_old));
 
     always_comb begin
         bus_write = 1'b0;
@@ -88,14 +91,14 @@ module mem_test_CI (
             end
             WDATA: begin
                 en = 1'b1;
-                ns = (count == 4'he) ? READ : WADDR;
-                clr = (count == 4'he);
+                ns = (count == `NUM_TESTS-1) ? READ : WADDR;
+                clr = (count == `NUM_TESTS-1);
             end
             READ: begin
-                ns = (count == 4'hf) ? WADDR : READ;
                 en = 1'b1;
-                fail = (bus_rdata != bus_rdata_old) & (count > 4'd3);
-                clr = (count == 4'hf);
+                fail = (bus_rdata != bus_rdata_old) & (count > 4'd0);
+                ns = (count == `NUM_TESTS) ? WADDR : READ;
+                clr = (count == `NUM_TESTS);
             end
         endcase
     end
