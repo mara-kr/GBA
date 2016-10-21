@@ -25,11 +25,11 @@ module mem_test_CI (
     logic [3:0] count, count_next;
     logic       en, clr, fail;
 
-    assign addrs = {32'h0000_0000, 32'h0000_1234, 32'h0000_3FFF,
-                    32'h0300_0000, 32'h0300_1234, 32'h0300_7FFF,
-                    32'h0500_0000, 32'h0500_0042, 32'h0500_03FF,
+    assign addrs = {32'h0700_0000, 32'h0700_0042, 32'h0700_03FF,
                     32'h0600_0000, 32'h0600_1234, 32'h0601_7FFF,
-                    32'h0700_0000, 32'h0700_0042, 32'h0700_03FF};
+                    32'h0500_0000, 32'h0500_0042, 32'h0500_03FF,
+                    32'h0300_0000, 32'h0300_1234, 32'h0300_7FFF,
+                    32'h0000_0000, 32'h0000_1234, 32'h0000_3FFF};
 
     assign datas = {32'hdead_beef, 32'hcafe_f00d, 32'hcafe_bebe,
                     32'hbeef_bebe, 32'hbeef_f00d, 32'hdead_bebe,
@@ -41,6 +41,7 @@ module mem_test_CI (
     assign gfx_size = `MEM_SIZE_WORD;
     assign gfx_addr = 32'd0;
     assign cs_next = (~bus_pause) ? ns : cs;
+    
     always_comb begin
         count_next = count;
         if (~bus_pause) begin
@@ -92,7 +93,7 @@ module mem_test_CI (
             end
             RDATA: begin
                 en = 1'b1;
-                fail = (bus_rdata != datas[count]) & (count > 4'd2);
+                fail = (bus_rdata != bus_wdata) & (count > 4'd2);
                 ns = (count == 4'he) ? WADDR : RADDR;
                 clr = (count == 4'he) ? 1'b1 : 1'b0;
             end

@@ -96,47 +96,52 @@ module mem_top(
     assign gfx_pallete_valid = (gfx_pallete_addr <= `PALLET_RAM_SIZE) | reset;
     assign bus_oam_valid = (bus_oam_addr <= `OAM_SIZE) | reset;
     assign gfx_oam_valid = (gfx_oam_addr <= `OAM_SIZE) | reset;
+    
+    assign bus_intern_we = (bus_intern_valid) ? bus_we : 4'd0;
+    assign bus_vram_we = (bus_vram_valid) ? bus_we : 4'd0;
+    assign bus_pallete_we = (bus_pallete_valid) ? bus_we : 4'd0;
+    assign bus_oam_we = (bus_oam_valid) ? bus_we : 4'd0;    
 
 
     // When enable is deasserted, no write/read/reset is performed
     // Data width set to 32bits, so addresses are aligned
-    system_rom sys   (.clka(clock), .rsta(reset), .ena(bus_system_valid),
+    system_rom sys   (.clka(clock), .rsta(reset),
                       .addra({2'b0, bus_system_addr[31:2]}),
                       .douta(bus_system_rdata),
 
-                      .clkb(clock), .rstb(reset), .enb(gfx_system_valid),
+                      .clkb(clock), .rstb(reset),
                       .addrb({2'b0, gfx_system_addr[31:2]}),
                       .doutb(gfx_system_rdata));
 
-    InternRAM intern (.clka(clock), .rsta(reset), .ena(bus_intern_valid),
-                      .wea(bus_we), .addra({2'b0, bus_intern_addr[31:2]}),
+    InternRAM intern (.clka(clock), .rsta(reset),
+                      .wea(bus_intern_we), .addra({2'b0, bus_intern_addr[31:2]}),
                       .douta(bus_intern_rdata), .dina(bus_wdata),
 
-                      .clkb(clock), .rstb(reset), .enb(gfx_intern_valid),
+                      .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb({2'b0, gfx_intern_addr[31:2]}),
                       .doutb(gfx_intern_rdata), .dinb(32'b0));
 
-    vram vram_mem    (.clka(clock), .rsta(reset), .ena(bus_vram_valid),
-                      .wea(bus_we), .addra({2'b0, bus_vram_addr[31:2]}),
+    vram vram_mem    (.clka(clock), .rsta(reset),
+                      .wea(bus_vram_we), .addra({2'b0, bus_vram_addr[31:2]}),
                       .douta(bus_vram_rdata), .dina(bus_wdata),
 
-                      .clkb(clock), .rstb(reset), .enb(gfx_vram_valid),
+                      .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb({2'b0, gfx_vram_addr[31:2]}),
                       .doutb(gfx_vram_rdata), .dinb(32'b0));
 
-    palette_ram pall (.clka(clock), .rsta(reset), .ena(bus_pallete_valid),
-                      .wea(bus_we), .addra({2'b0, bus_pallete_addr[31:2]}),
+    palette_ram pall (.clka(clock), .rsta(reset),
+                      .wea(bus_pallete_we), .addra({2'b0, bus_pallete_addr[31:2]}),
                       .douta(bus_pallete_rdata), .dina(bus_wdata),
 
-                      .clkb(clock), .rstb(reset), .enb(gfx_pallete_valid),
+                      .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb({2'b0, gfx_pallete_addr[31:2]}),
                       .doutb(gfx_pallete_rdata), .dinb(32'b0));
 
-    OAM oam_mem      (.clka(clock), .rsta(reset), .ena(bus_oam_valid),
-                      .wea(bus_we), .addra({2'b0, bus_oam_addr[31:2]}),
+    OAM oam_mem      (.clka(clock), .rsta(reset),
+                      .wea(bus_oam_we), .addra({2'b0, bus_oam_addr[31:2]}),
                       .douta(bus_oam_rdata), .dina(bus_wdata),
 
-                      .clkb(clock), .rstb(reset), .enb(gfx_oam_valid),
+                      .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb({2'b0, gfx_pallete_addr[31:2]}),
                       .doutb(gfx_oam_rdata), .dinb(32'b0));
 
