@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="impl_1" LaunchPart="xc7z020clg484-1" LaunchTime="1477414140">
+  <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
+  <File Type="RDI-RDI" Name="mem_test_CI.vdi"/>
+  <File Type="BG-DRC" Name="mem_test_CI.drc"/>
+  <File Type="BG-BGN" Name="mem_test_CI.bgn"/>
+  <File Type="BITSTR-SYSDEF" Name="mem_test_CI.sysdef"/>
+  <File Type="BITSTR-MMI" Name="mem_test_CI.mmi"/>
+  <File Type="BITSTR-BMM" Name="mem_test_CI_bd.bmm"/>
+  <File Type="BITSTR-NKY" Name="mem_test_CI.nky"/>
+  <File Type="BITSTR-RBT" Name="mem_test_CI.rbt"/>
+  <File Type="BITSTR-MSK" Name="mem_test_CI.msk"/>
+  <File Type="BG-BIN" Name="mem_test_CI.bin"/>
+  <File Type="BG-BIT" Name="mem_test_CI.bit"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="mem_test_CI_timing_summary_postroute_physopted.rpx"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING" Name="mem_test_CI_timing_summary_postroute_physopted.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-DCP" Name="mem_test_CI_postroute_physopt.dcp"/>
+  <File Type="ROUTE-CLK" Name="mem_test_CI_clock_utilization_routed.rpt"/>
+  <File Type="ROUTE-SIMILARITY" Name="mem_test_CI_incremental_reuse_routed.rpt"/>
+  <File Type="ROUTE-TIMING-RPX" Name="mem_test_CI_timing_summary_routed.rpx"/>
+  <File Type="ROUTE-TIMING-PB" Name="mem_test_CI_timing_summary_routed.pb"/>
+  <File Type="ROUTE-TIMINGSUMMARY" Name="mem_test_CI_timing_summary_routed.rpt"/>
+  <File Type="ROUTE-STATUS-PB" Name="mem_test_CI_route_status.pb"/>
+  <File Type="ROUTE-STATUS" Name="mem_test_CI_route_status.rpt"/>
+  <File Type="ROUTE-PWR-SUM" Name="mem_test_CI_power_summary_routed.pb"/>
+  <File Type="ROUTE-PWR" Name="mem_test_CI_power_routed.rpt"/>
+  <File Type="ROUTE-DRC-PB" Name="mem_test_CI_drc_routed.pb"/>
+  <File Type="ROUTE-DRC" Name="mem_test_CI_drc_routed.rpt"/>
+  <File Type="ROUTE-DCP" Name="mem_test_CI_routed.dcp"/>
+  <File Type="PHYSOPT-DRC" Name="mem_test_CI_drc_physopted.rpt"/>
+  <File Type="PHYSOPT-DCP" Name="mem_test_CI_physopt.dcp"/>
+  <File Type="POSTPLACE-PWROPT-DCP" Name="mem_test_CI_postplace_pwropt.dcp"/>
+  <File Type="PLACE-PRE-SIMILARITY" Name="mem_test_CI_incremental_reuse_pre_placed.rpt"/>
+  <File Type="PLACE-SIMILARITY" Name="mem_test_CI_incremental_reuse_placed.rpt"/>
+  <File Type="PLACE-CTRL" Name="mem_test_CI_control_sets_placed.rpt"/>
+  <File Type="PLACE-UTIL-PB" Name="mem_test_CI_utilization_placed.pb"/>
+  <File Type="PLACE-UTIL" Name="mem_test_CI_utilization_placed.rpt"/>
+  <File Type="PLACE-CLK" Name="mem_test_CI_clock_utilization_placed.rpt"/>
+  <File Type="PLACE-IO" Name="mem_test_CI_io_placed.rpt"/>
+  <File Type="PLACE-DCP" Name="mem_test_CI_placed.dcp"/>
+  <File Type="PWROPT-DRC" Name="mem_test_CI_drc_pwropted.rpt"/>
+  <File Type="PWROPT-DCP" Name="mem_test_CI_pwropt.dcp"/>
+  <File Type="OPT-HWDEF" Name="mem_test_CI.hwdef"/>
+  <File Type="OPT-DRC" Name="mem_test_CI_drc_opted.rpt"/>
+  <File Type="OPT-DCP" Name="mem_test_CI_opt.dcp"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="mem_test_CI_timing_summary_postroute_physopted.pb"/>
+  <File Type="PA-TCL" Name="mem_test_CI.tcl"/>
+  <File Type="PA-DCP" Name="mem_test_CI.dcp"/>
+  <File Type="RUN-STRAT" Name="$PDATADIR/runs/impl_1/impl_1.psg"/>
+  <File Type="RUN-SRCS" Name="$PDATADIR/runs/impl_1/sources.xml"/>
+  <File Type="RUN-CONSTRS" Name="$PDATADIR/runs/impl_1/constrs_in.xml"/>
+  <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
+    <Filter Type="Srcs"/>
+    <File Path="$PPRDIR/../../Private/545/GBA/mem/core_tb_defines.vh">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../Private/545/GBA/mem/mem_top.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../Private/545/GBA/mem/mem_test.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/ip/dram_controller/mig_a.prj">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="DesignMode" Val="RTL"/>
+      <Option Name="TopModule" Val="mem_test_CI"/>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
+    <Filter Type="Constrs"/>
+    <File Path="$PPRDIR/../vivado_projects/board_test/zedboard_master_XDC_RevC_D_v3.xdc">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TargetConstrsFile" Val="$PPRDIR/../vivado_projects/board_test/zedboard_master_XDC_RevC_D_v3.xdc"/>
+      <Option Name="ConstrsType" Val="XDC"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+    <Step Id="init_design"/>
+    <Step Id="opt_design"/>
+    <Step Id="power_opt_design"/>
+    <Step Id="place_design"/>
+    <Step Id="post_place_power_opt_design"/>
+    <Step Id="phys_opt_design"/>
+    <Step Id="route_design"/>
+    <Step Id="post_route_phys_opt_design"/>
+    <Step Id="write_bitstream"/>
+  </Strategy>
+  <BlockFileSet Type="BlockSrcs" Name="OAM"/>
+  <BlockFileSet Type="BlockSrcs" Name="palette_ram"/>
+  <BlockFileSet Type="BlockSrcs" Name="system_rom"/>
+  <BlockFileSet Type="BlockSrcs" Name="vram"/>
+  <BlockFileSet Type="BlockSrcs" Name="InternRAM"/>
+</GenRun>

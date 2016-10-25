@@ -1,0 +1,4 @@
+SET_ERROR_CODE 0
+SET_XMDF_PATH ./dram_controller_xmdf.tcl
+SET_PARAMETER component_name dram_controller
+SET_PARAMETER xml_input_file ./dram_controller/mig.prj

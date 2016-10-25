@@ -109,15 +109,13 @@ module mem_top(
                       .douta(bus_system_rdata),
 
                       .clkb(clock), .rstb(reset),
-                      .addrb(32'b0),
-                      .doutb());
+                      .addrb(32'b0), .doutb());
 
     InternRAM intern (.clka(clock), .rsta(reset),
                       .wea(bus_intern_we), .addra({2'b0, bus_intern_addr[31:2]}),
                       .douta(bus_intern_rdata), .dina(bus_wdata),
 
-                      .clkb(clock), .rstb(reset),
-                      .web(4'd0), .addrb(32'b0),
+                      .clkb(clock), .rstb(reset), .web(4'd0), .addrb(32'b0),
                       .doutb(), .dinb(32'b0));
 
     vram vram_mem    (.clka(clock), .rsta(reset),
