@@ -42,7 +42,7 @@ module mem_top(
     );
 
     /* Single cycle latency for writes */
-    logic [31:0] bus_addr_lat1, bus_mem_addr, gfx_addr_lat1;
+    (* mark_debug = "true" *) logic [31:0] bus_addr_lat1, bus_mem_addr, gfx_addr_lat1;
     logic  [1:0] bus_size_lat1;
     logic        bus_write_lat1;
 
@@ -54,39 +54,39 @@ module mem_top(
     assign bus_mem_addr = (bus_write_lat1) ? bus_addr_lat1 : bus_addr;
 
     // Registers to delay write signals
-    register #(32) baddr (.clock, .reset, .en(1'b0), .clr(1'b0),
+    register #(32) baddr (.clock, .reset, .en(1'b1), .clr(1'b0),
                           .D(bus_addr), .Q(bus_addr_lat1));
-    register #(1) bwrite (.clock, .reset, .en(1'b0), .clr(1'b0),
+    register #(1) bwrite (.clock, .reset, .en(1'b1), .clr(1'b0),
                           .D(bus_write), .Q(bus_write_lat1));
-    register #(2) bsize (.clock, .reset, .en(1'b0), .clr(1'b0),
+    register #(2) bsize (.clock, .reset, .en(1'b1), .clr(1'b0),
                          .D(bus_size), .Q(bus_size_lat1));
     // Pauses due to writes, could be extended
-    register #(1) wpause (.clock, .reset, .en(1'b0), .clr(1'b0),
+    register #(1) wpause (.clock, .reset, .en(1'b1), .clr(1'b0),
                          .D(bus_write & ~bus_pause), .Q(bus_pause));
 
     logic [31:0] bus_system_addr, bus_system_rdata, gfx_system_addr;
     logic [31:0] gfx_system_rdata;
-    logic        bus_system_read, gfx_system_read;
+    (* mark_debug = "true" *) logic        bus_system_read, gfx_system_read;
 
     logic [31:0] bus_intern_addr, bus_intern_rdata, gfx_intern_addr;
     logic [31:0] gfx_intern_rdata;
     logic  [3:0] bus_intern_we;
-    logic        bus_intern_read, bus_intern_write, gfx_intern_read;
+    (* mark_debug = "true" *) logic        bus_intern_read, bus_intern_write, gfx_intern_read;
 
     logic [31:0] bus_vram_addr, bus_vram_rdata, gfx_vram_addr;
     logic [31:0] gfx_vram_rdata;
     logic  [3:0] bus_vram_we;
-    logic        bus_vram_read, bus_vram_write, gfx_vram_read;
+    (* mark_debug = "true" *) logic        bus_vram_read, bus_vram_write, gfx_vram_read;
 
     logic [31:0] bus_pallete_addr, bus_pallete_rdata, gfx_pallete_addr;
     logic [31:0] gfx_pallete_rdata;
     logic  [3:0] bus_pallete_we;
-    logic        bus_pallete_read, bus_pallete_write, gfx_pallete_read;
+    (* mark_debug = "true" *) logic        bus_pallete_read, bus_pallete_write, gfx_pallete_read;
 
     logic [31:0] bus_oam_addr, bus_oam_rdata, gfx_oam_addr;
     logic [31:0] gfx_oam_rdata;
     logic  [3:0] bus_oam_we;
-    logic        bus_oam_read, bus_oam_write, gfx_oam_read;
+    (* mark_debug = "true" *) logic        bus_oam_read, bus_oam_write, gfx_oam_read;
 
     logic  [3:0] bus_we;
 
@@ -104,7 +104,7 @@ module mem_top(
     assign bus_oam_addr = bus_mem_addr - `OAM_START;
     assign gfx_oam_addr = gfx_addr - `OAM_START;
 
-    assign bus_system_read = bus_system_addr <= `SYSTEM_ROM_SIZE;
+    assign bus_system_read = bus_addr_lat1 <= `SYSTEM_ROM_SIZE;
     assign gfx_system_read = gfx_system_addr <= `SYSTEM_ROM_SIZE;
 
     assign bus_intern_read = (bus_addr_lat1 - `INTERN_RAM_START) <= `INTERN_RAM_SIZE;
@@ -183,9 +183,10 @@ module mem_top(
         else if (bus_oam_read)
             bus_rdata = bus_oam_rdata;
         else
-            bus_rdata = 32'hffffffff;
+            bus_rdata = 32'hz;
     end
 
+    // TODO should be muxing on addr delayed by 1 cycle
     always_comb begin
         if (gfx_system_read)
             gfx_data = gfx_system_rdata;
@@ -198,7 +199,7 @@ module mem_top(
         else if (gfx_oam_read)
             gfx_data = gfx_oam_rdata;
         else
-            gfx_data = 32'hffffffff;
+            gfx_data = 32'hz;
     end
 endmodule: mem_top
 
@@ -245,7 +246,7 @@ module register
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset) Q <= 0;
-        else Q <= D;
+        else Q <= D_next;
     end
 
 endmodule: register
