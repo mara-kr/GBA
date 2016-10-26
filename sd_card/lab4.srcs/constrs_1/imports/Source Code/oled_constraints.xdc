@@ -10,3 +10,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports SCLK]
 set_property IOSTANDARD LVCMOS33 [get_ports SDIN]
 set_property IOSTANDARD LVCMOS33 [get_ports VBAT]
 set_property IOSTANDARD LVCMOS33 [get_ports VDD]
+
+set_property PACKAGE_PIN P16 [get_ports {btnc_tri_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports btnc_tri_i]

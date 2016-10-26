@@ -3540,9 +3540,6 @@
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.Port_B_Write_Rate" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.Use_RSTB_Pin" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.BRAM_PORTB.MASTER_TYPE" xilinx:valueSource="user"/>
-        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.BRAM_PORTA.MEM_SIZE" xilinx:valueSource="ip_propagated"/>
-        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.BRAM_PORTA.MEM_WIDTH" xilinx:valueSource="ip_propagated"/>
-        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.BRAM_PORTA.MEM_ECC" xilinx:valueSource="user_prop"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.CTRL_ECC_ALGO" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.Write_Width_A" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.Read_Width_A" xilinx:valueSource="propagated"/>
@@ -3550,6 +3547,9 @@
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.Read_Width_B" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.Write_Depth_A" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.MEM_FILE" xilinx:valueSource="ip_propagated"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.BRAM_PORTA.MEM_ECC" xilinx:valueSource="user_prop"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.BRAM_PORTA.MEM_WIDTH" xilinx:valueSource="ip_propagated"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.BRAM_PORTA.MEM_SIZE" xilinx:valueSource="ip_propagated"/>
       </xilinx:configElementInfos>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>

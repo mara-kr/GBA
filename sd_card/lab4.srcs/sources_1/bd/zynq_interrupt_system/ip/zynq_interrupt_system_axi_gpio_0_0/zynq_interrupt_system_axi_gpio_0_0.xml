@@ -440,7 +440,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>3fab6050</spirit:value>
+            <spirit:value>dcea1d1a</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>customizationCRCversion</spirit:name>
@@ -448,7 +448,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>3f54ed81</spirit:value>
+            <spirit:value>7fde4c5b</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRCversion</spirit:name>
@@ -456,7 +456,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 17 04:11:47 UTC 2015</spirit:value>
+            <spirit:value>Mon Aug 17 11:11:46 UTC 2015</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>StaleAtRelink</spirit:name>
@@ -475,7 +475,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>3fab6050</spirit:value>
+            <spirit:value>dcea1d1a</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>customizationCRCversion</spirit:name>
@@ -483,7 +483,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>3f54ed81</spirit:value>
+            <spirit:value>7fde4c5b</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRCversion</spirit:name>
@@ -491,7 +491,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 17 04:32:01 UTC 2015</spirit:value>
+            <spirit:value>Wed Oct 26 16:13:52 UTC 2016</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>StaleAtRelink</spirit:name>
@@ -509,7 +509,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>3fab6050</spirit:value>
+            <spirit:value>dcea1d1a</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>customizationCRCversion</spirit:name>
@@ -517,7 +517,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>3f54ed81</spirit:value>
+            <spirit:value>7fde4c5b</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRCversion</spirit:name>
@@ -525,7 +525,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 17 04:32:01 UTC 2015</spirit:value>
+            <spirit:value>Wed Oct 26 16:13:52 UTC 2016</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>StaleAtRelink</spirit:name>
@@ -982,7 +982,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_GPIO_WIDTH&apos;)) - 1)">4</spirit:left>
+            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_GPIO_WIDTH&apos;)) - 1)">0</spirit:left>
             <spirit:right>0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1009,7 +1009,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_GPIO_WIDTH&apos;)) - 1)">4</spirit:left>
+            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_GPIO_WIDTH&apos;)) - 1)">0</spirit:left>
             <spirit:right>0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1033,7 +1033,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_GPIO_WIDTH&apos;)) - 1)">4</spirit:left>
+            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_GPIO_WIDTH&apos;)) - 1)">0</spirit:left>
             <spirit:right>0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1146,7 +1146,7 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_GPIO_WIDTH</spirit:name>
         <spirit:displayName>GPIO Width</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_GPIO_WIDTH" spirit:minimum="1" spirit:maximum="32">5</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_GPIO_WIDTH" spirit:minimum="1" spirit:maximum="32">1</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_GPIO2_WIDTH</spirit:name>
@@ -1378,12 +1378,12 @@
     <spirit:parameter>
       <spirit:name>C_GPIO_WIDTH</spirit:name>
       <spirit:displayName>GPIO Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_GPIO_WIDTH" spirit:order="1900" spirit:minimum="1" spirit:maximum="32">5</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_GPIO_WIDTH" spirit:order="1900" spirit:minimum="1" spirit:maximum="32">1</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
             <xilinx:presence>optional</xilinx:presence>
-            <xilinx:isEnabled xilinx:resolve="dependent">false</xilinx:isEnabled>
+            <xilinx:isEnabled xilinx:resolve="dependent">true</xilinx:isEnabled>
           </xilinx:enablement>
         </xilinx:parameterInfo>
       </spirit:vendorExtensions>
@@ -1422,7 +1422,7 @@
         <xilinx:parameterInfo>
           <xilinx:enablement>
             <xilinx:presence>optional</xilinx:presence>
-            <xilinx:isEnabled xilinx:resolve="dependent">false</xilinx:isEnabled>
+            <xilinx:isEnabled xilinx:resolve="dependent">true</xilinx:isEnabled>
           </xilinx:enablement>
         </xilinx:parameterInfo>
       </spirit:vendorExtensions>
@@ -1519,7 +1519,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>GPIO_BOARD_INTERFACE</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.GPIO_BOARD_INTERFACE" spirit:choiceRef="choices_4" spirit:order="1001">btns_5bits</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.GPIO_BOARD_INTERFACE" spirit:choiceRef="choices_4" spirit:order="1001">Custom</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -1599,6 +1599,7 @@
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI_ACLK.CLK_DOMAIN" xilinx:valueSource="default_prop"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI.CLK_DOMAIN" xilinx:valueSource="default_prop"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.IP2INTC_IRQ.PortWidth" xilinx:valueSource="default_prop"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.C_GPIO_WIDTH" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI.NUM_READ_OUTSTANDING" xilinx:valueSource="ip_propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI.NUM_WRITE_OUTSTANDING" xilinx:valueSource="ip_propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI.MAX_BURST_LENGTH" xilinx:valueSource="ip_propagated"/>

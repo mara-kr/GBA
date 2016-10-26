@@ -1,4 +1,4 @@
--- (c) Copyright 1995-2015 Xilinx, Inc. All rights reserved.
+-- (c) Copyright 1995-2016 Xilinx, Inc. All rights reserved.
 -- 
 -- This file contains confidential and proprietary information
 -- of Xilinx, Inc. and is protected under U.S. and
@@ -78,7 +78,7 @@ ENTITY zynq_interrupt_system_axi_gpio_0_0 IS
     s_axi_rvalid : OUT STD_LOGIC;
     s_axi_rready : IN STD_LOGIC;
     ip2intc_irpt : OUT STD_LOGIC;
-    gpio_io_i : IN STD_LOGIC_VECTOR(4 DOWNTO 0)
+    gpio_io_i : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
   );
 END zynq_interrupt_system_axi_gpio_0_0;
 
@@ -125,9 +125,9 @@ ARCHITECTURE zynq_interrupt_system_axi_gpio_0_0_arch OF zynq_interrupt_system_ax
       s_axi_rvalid : OUT STD_LOGIC;
       s_axi_rready : IN STD_LOGIC;
       ip2intc_irpt : OUT STD_LOGIC;
-      gpio_io_i : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-      gpio_io_o : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
-      gpio_io_t : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+      gpio_io_i : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+      gpio_io_o : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+      gpio_io_t : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
       gpio2_io_i : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
       gpio2_io_o : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
       gpio2_io_t : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
@@ -138,7 +138,7 @@ ARCHITECTURE zynq_interrupt_system_axi_gpio_0_0_arch OF zynq_interrupt_system_ax
   ATTRIBUTE CHECK_LICENSE_TYPE : STRING;
   ATTRIBUTE CHECK_LICENSE_TYPE OF zynq_interrupt_system_axi_gpio_0_0_arch : ARCHITECTURE IS "zynq_interrupt_system_axi_gpio_0_0,axi_gpio,{}";
   ATTRIBUTE CORE_GENERATION_INFO : STRING;
-  ATTRIBUTE CORE_GENERATION_INFO OF zynq_interrupt_system_axi_gpio_0_0_arch: ARCHITECTURE IS "zynq_interrupt_system_axi_gpio_0_0,axi_gpio,{x_ipProduct=Vivado 2015.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=axi_gpio,x_ipVersion=2.0,x_ipCoreRevision=7,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_S_AXI_ADDR_WIDTH=9,C_S_AXI_DATA_WIDTH=32,C_GPIO_WIDTH=5,C_GPIO2_WIDTH=32,C_ALL_INPUTS=1,C_ALL_INPUTS_2=0,C_ALL_OUTPUTS=0,C_ALL_OUTPUTS_2=0,C_INTERRUPT_PRESENT=1,C_DOUT_DEFAULT=0x00000000,C_TRI_DEFAULT=0xFFFFFFFF,C_IS_DUAL=0,C_DOUT_DEFAULT_2=0x00000000,C_TRI_DEFAULT_2=0xFFFFFFFF}";
+  ATTRIBUTE CORE_GENERATION_INFO OF zynq_interrupt_system_axi_gpio_0_0_arch: ARCHITECTURE IS "zynq_interrupt_system_axi_gpio_0_0,axi_gpio,{x_ipProduct=Vivado 2015.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=axi_gpio,x_ipVersion=2.0,x_ipCoreRevision=7,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_FAMILY=zynq,C_S_AXI_ADDR_WIDTH=9,C_S_AXI_DATA_WIDTH=32,C_GPIO_WIDTH=1,C_GPIO2_WIDTH=32,C_ALL_INPUTS=1,C_ALL_INPUTS_2=0,C_ALL_OUTPUTS=0,C_ALL_OUTPUTS_2=0,C_INTERRUPT_PRESENT=1,C_DOUT_DEFAULT=0x00000000,C_TRI_DEFAULT=0xFFFFFFFF,C_IS_DUAL=0,C_DOUT_DEFAULT_2=0x00000000,C_TRI_DEFAULT_2=0xFFFFFFFF}";
   ATTRIBUTE X_INTERFACE_INFO : STRING;
   ATTRIBUTE X_INTERFACE_INFO OF s_axi_aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 S_AXI_ACLK CLK";
   ATTRIBUTE X_INTERFACE_INFO OF s_axi_aresetn: SIGNAL IS "xilinx.com:signal:reset:1.0 S_AXI_ARESETN RST";
@@ -167,7 +167,7 @@ BEGIN
       C_FAMILY => "zynq",
       C_S_AXI_ADDR_WIDTH => 9,
       C_S_AXI_DATA_WIDTH => 32,
-      C_GPIO_WIDTH => 5,
+      C_GPIO_WIDTH => 1,
       C_GPIO2_WIDTH => 32,
       C_ALL_INPUTS => 1,
       C_ALL_INPUTS_2 => 0,

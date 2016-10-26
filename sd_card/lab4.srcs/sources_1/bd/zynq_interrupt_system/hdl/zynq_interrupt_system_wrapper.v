@@ -1,7 +1,7 @@
 //Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2015.2 (lin64) Build 1266856 Fri Jun 26 16:35:25 MDT 2015
-//Date        : Tue Oct 18 14:49:42 2016
+//Date        : Wed Oct 26 12:13:53 2016
 //Host        : magnum.andrew.cmu.edu running 64-bit Red Hat Enterprise Linux Server release 7.2 (Maipo)
 //Command     : generate_target zynq_interrupt_system_wrapper.bd
 //Design      : zynq_interrupt_system_wrapper
@@ -31,7 +31,7 @@ module zynq_interrupt_system_wrapper
     FIXED_IO_ps_clk,
     FIXED_IO_ps_porb,
     FIXED_IO_ps_srstb,
-    btns_5bits_tri_i);
+    btnc_tri_i);
   inout [14:0]DDR_addr;
   inout [2:0]DDR_ba;
   inout DDR_cas_n;
@@ -53,7 +53,7 @@ module zynq_interrupt_system_wrapper
   inout FIXED_IO_ps_clk;
   inout FIXED_IO_ps_porb;
   inout FIXED_IO_ps_srstb;
-  input [4:0]btns_5bits_tri_i;
+  input [0:0]btnc_tri_i;
 
   wire [14:0]DDR_addr;
   wire [2:0]DDR_ba;
@@ -76,10 +76,11 @@ module zynq_interrupt_system_wrapper
   wire FIXED_IO_ps_clk;
   wire FIXED_IO_ps_porb;
   wire FIXED_IO_ps_srstb;
-  wire [4:0]btns_5bits_tri_i;
+  wire [0:0]btnc_tri_i;
 
   zynq_interrupt_system zynq_interrupt_system_i
-       (.DDR_addr(DDR_addr),
+       (.BTNC_tri_i(btnc_tri_i),
+        .DDR_addr(DDR_addr),
         .DDR_ba(DDR_ba),
         .DDR_cas_n(DDR_cas_n),
         .DDR_ck_n(DDR_ck_n),
@@ -99,6 +100,5 @@ module zynq_interrupt_system_wrapper
         .FIXED_IO_mio(FIXED_IO_mio),
         .FIXED_IO_ps_clk(FIXED_IO_ps_clk),
         .FIXED_IO_ps_porb(FIXED_IO_ps_porb),
-        .FIXED_IO_ps_srstb(FIXED_IO_ps_srstb),
-        .btns_5bits_tri_i(btns_5bits_tri_i));
+        .FIXED_IO_ps_srstb(FIXED_IO_ps_srstb));
 endmodule
