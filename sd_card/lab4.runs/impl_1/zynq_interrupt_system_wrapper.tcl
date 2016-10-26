@@ -52,30 +52,29 @@ set rc [catch {
   create_project -in_memory -part xc7z020clg484-1
   set_property board_part em.avnet.com:zed:part0:1.3 [current_project]
   set_property design_mode GateLvl [current_fileset]
-  set_property webtalk.parent_dir /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.cache/wt [current_project]
-  set_property parent.project_path /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.xpr [current_project]
+  set_property webtalk.parent_dir /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.cache/wt [current_project]
+  set_property parent.project_path /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.xpr [current_project]
   set_property ip_repo_paths {
-  /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.cache/ip
-  /afs/ece.cmu.edu/usr/ryanovsk/oled_embeddedcentric
+  /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.cache/ip
+  /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/oled_embeddedcentric
 } [current_project]
-  set_property ip_output_repo /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.cache/ip [current_project]
-  add_files -quiet /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.runs/synth_1/zynq_interrupt_system_wrapper.dcp
-  add_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm
-  set_property SCOPED_TO_REF zynq_interrupt_system [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm]
-  set_property SCOPED_TO_CELLS {} [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm]
-  read_xdc -ref zynq_interrupt_system_processing_system7_0_0 -cells inst /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc
-  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc]
-  read_xdc -prop_thru_buffers -ref zynq_interrupt_system_axi_gpio_0_0 -cells U0 /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0_board.xdc
-  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0_board.xdc]
-  read_xdc -ref zynq_interrupt_system_axi_gpio_0_0 -cells U0 /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0.xdc
-  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0.xdc]
-  read_xdc -prop_thru_buffers -ref zynq_interrupt_system_rst_processing_system7_0_50M_0 /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0_board.xdc
-  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0_board.xdc]
-  read_xdc -ref zynq_interrupt_system_rst_processing_system7_0_50M_0 /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xdc
-  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xdc]
-  read_xdc -ref zynq_interrupt_system_axi_timer_0_0 /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xdc
-  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xdc]
-  read_xdc {{/afs/ece.cmu.edu/usr/ryanovsk/Downloads/lab7/lab4.srcs/constrs_1/imports/Source Code/oled_constraints.xdc}}
+  set_property ip_output_repo /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.cache/ip [current_project]
+  add_files -quiet /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.runs/synth_1/zynq_interrupt_system_wrapper.dcp
+  add_files /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm
+  set_property SCOPED_TO_REF zynq_interrupt_system [get_files -all /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/zynq_interrupt_system.bmm]
+  read_xdc -ref zynq_interrupt_system_processing_system7_0_0 -cells inst /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc
+  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_processing_system7_0_0/zynq_interrupt_system_processing_system7_0_0.xdc]
+  read_xdc -prop_thru_buffers -ref zynq_interrupt_system_axi_gpio_0_0 -cells U0 /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0_board.xdc
+  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0_board.xdc]
+  read_xdc -ref zynq_interrupt_system_axi_gpio_0_0 -cells U0 /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0.xdc
+  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_gpio_0_0/zynq_interrupt_system_axi_gpio_0_0.xdc]
+  read_xdc -prop_thru_buffers -ref zynq_interrupt_system_rst_processing_system7_0_50M_0 /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0_board.xdc
+  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0_board.xdc]
+  read_xdc -ref zynq_interrupt_system_rst_processing_system7_0_50M_0 /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xdc
+  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_rst_processing_system7_0_50M_0/zynq_interrupt_system_rst_processing_system7_0_50M_0.xdc]
+  read_xdc -ref zynq_interrupt_system_axi_timer_0_0 /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xdc
+  set_property processing_order EARLY [get_files /afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/sources_1/bd/zynq_interrupt_system/ip/zynq_interrupt_system_axi_timer_0_0/zynq_interrupt_system_axi_timer_0_0.xdc]
+  read_xdc {{/afs/ece.cmu.edu/usr/ryanovsk/Private/18545/GBA/sd_card/lab4.srcs/constrs_1/imports/Source Code/oled_constraints.xdc}}
   link_design -top zynq_interrupt_system_wrapper -part xc7z020clg484-1
   close_msg_db -file init_design.pb
 } RESULT]

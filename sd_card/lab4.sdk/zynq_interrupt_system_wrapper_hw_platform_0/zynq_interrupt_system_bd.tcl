@@ -144,9 +144,9 @@ proc create_root_design { parentCell } {
 
 
   # Create interface ports
+  set BTNC [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 BTNC ]
   set DDR [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR ]
   set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
-  set btns_5bits [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 btns_5bits ]
 
   # Create ports
 
@@ -160,7 +160,7 @@ proc create_root_design { parentCell } {
 
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_0 ]
-  set_property -dict [ list CONFIG.C_INTERRUPT_PRESENT {1} CONFIG.GPIO_BOARD_INTERFACE {btns_5bits} CONFIG.USE_BOARD_FLOW {true}  ] $axi_gpio_0
+  set_property -dict [ list CONFIG.C_GPIO_WIDTH {1} CONFIG.C_INTERRUPT_PRESENT {1} CONFIG.GPIO_BOARD_INTERFACE {Custom} CONFIG.USE_BOARD_FLOW {true}  ] $axi_gpio_0
 
   # Create instance: axi_timer_0, and set properties
   set axi_timer_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer:2.0 axi_timer_0 ]
@@ -192,7 +192,7 @@ CONFIG.PCW_UART1_PERIPHERAL_ENABLE {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} \
 
   # Create interface connections
   connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins axi_bram_ctrl_0_bram/BRAM_PORTA]
-  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports btns_5bits] [get_bd_intf_pins axi_gpio_0/GPIO]
+  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports BTNC] [get_bd_intf_pins axi_gpio_0/GPIO]
   connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins processing_system7_0/DDR]
   connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
   connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins processing_system7_0/M_AXI_GP0] [get_bd_intf_pins processing_system7_0_axi_periph/S00_AXI]

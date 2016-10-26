@@ -3,12 +3,12 @@
   <Processor Endianness="Little" InstPath="zynq_interrupt_system_i/processing_system7_0">
     <AddressSpace Name="zynq_interrupt_system_i_processing_system7_0.zynq_interrupt_system_i_axi_bram_ctrl_0" Begin="1073741824" End="1073750015">
       <BusBlock>
-        <BitLane MemType="RAMB32" Placement="X2Y17">
+        <BitLane MemType="RAMB32" Placement="X2Y16">
           <DataWidth MSB="15" LSB="0"/>
           <AddressRange Begin="0" End="2047"/>
           <Parity ON="false" NumBits="0"/>
         </BitLane>
-        <BitLane MemType="RAMB32" Placement="X2Y18">
+        <BitLane MemType="RAMB32" Placement="X2Y17">
           <DataWidth MSB="31" LSB="16"/>
           <AddressRange Begin="0" End="2047"/>
           <Parity ON="false" NumBits="0"/>

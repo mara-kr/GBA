@@ -1,5 +1,5 @@
 content_assist_proposals_background=255,255,255
-content_assist_proposals_foreground=0,0,0
+content_assist_proposals_foreground=49,55,57
 eclipse.preferences.version=1
 fontPropagated=true
 org.eclipse.jdt.internal.ui.navigator.layout=2

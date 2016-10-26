@@ -1,4 +1,3 @@
-activeuserprofiles=ALALJAA-D;Team
 eclipse.preferences.version=1
-org.eclipse.rse.systemtype.local.systemType.defaultUserId=ali_majid.aljaani
-useridperkey=ALALJAA-D.Local\=ali_majid.aljaani;
+org.eclipse.rse.systemtype.local.systemType.defaultUserId=ryanovsk
+useridperkey=magnum.Local\=ryanovsk;

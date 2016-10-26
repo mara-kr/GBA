@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?scdStore version="2"?><scannerInfo id="org.eclipse.cdt.make.core.discoveredScannerInfo">
-<instance id="xilinx.gnu.arm.exe.debug.572544760;xilinx.gnu.arm.exe.debug.572544760.">
+<instance id="xilinx.gnu.arm.exe.debug.46695301;xilinx.gnu.arm.exe.debug.46695301.">
 <collector id="org.eclipse.cdt.make.core.PerProjectSICollector">
 <includePath path="/afs/ece.cmu.edu/support/xilinx/xilinx.release/Vivado-2015.2/SDK/2015.2/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.9.1/include"/>
 <includePath path="/afs/ece.cmu.edu/support/xilinx/xilinx.release/Vivado-2015.2/SDK/2015.2/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.9.1/include-fixed"/>
@@ -363,7 +363,7 @@
 <definedSymbol symbol="__CS_SOURCERYGXX_REV__=31"/>
 </collector>
 </instance>
-<instance id="xilinx.gnu.arm.exe.release.849504051;xilinx.gnu.arm.exe.release.849504051.">
+<instance id="xilinx.gnu.arm.exe.release.8817828;xilinx.gnu.arm.exe.release.8817828.">
 <collector id="org.eclipse.cdt.make.core.PerProjectSICollector">
 <includePath path="/afs/ece.cmu.edu/support/xilinx/xilinx.release/Vivado-2015.2/SDK/2015.2/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.9.1/include"/>
 <includePath path="/afs/ece.cmu.edu/support/xilinx/xilinx.release/Vivado-2015.2/SDK/2015.2/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.9.1/include-fixed"/>
@@ -726,7 +726,7 @@
 <definedSymbol symbol="__CS_SOURCERYGXX_REV__=31"/>
 </collector>
 </instance>
-<instance id="xilinx.gnu.arm.exe.debug.572544760;xilinx.gnu.arm.exe.debug.572544760.;xilinx.gnu.arm.c.toolchain.compiler.debug.13208886;xilinx.gnu.arm.c.compiler.input.2076164215">
+<instance id="xilinx.gnu.arm.exe.debug.46695301;xilinx.gnu.arm.exe.debug.46695301.;xilinx.gnu.arm.c.toolchain.compiler.debug.1964095744;xilinx.gnu.arm.c.compiler.input.147588874">
 <collector id="org.eclipse.cdt.make.core.PerProjectSICollector">
 <includePath path="/afs/ece.cmu.edu/support/xilinx/xilinx.release/Vivado-2015.2/SDK/2015.2/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.9.1/include"/>
 <includePath path="/afs/ece.cmu.edu/support/xilinx/xilinx.release/Vivado-2015.2/SDK/2015.2/gnu/arm/lin/bin/../lib/gcc/arm-xilinx-eabi/4.9.1/include-fixed"/>

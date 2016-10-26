@@ -1,4 +1,4 @@
-src/src.o src/src.d: ../src/src.c \
+src/read_sd.o src/read_sd.d: ../src/read_sd.c \
  ../../read_data_bsp/ps7_cortexa9_0/include/xparameters.h \
  ../../read_data_bsp/ps7_cortexa9_0/include/xparameters_ps.h \
  ../../read_data_bsp/ps7_cortexa9_0/include/xgpio.h \

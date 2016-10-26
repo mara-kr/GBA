@@ -2,20 +2,14 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="Path" key="selection"/>
+		<item value="XGpio_DiscreteRead" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="Path"/>
-			<item value="FS_instance"/>
-			<item value="printf"/>
-			<item value="btn_value"/>
-			<item value="print"/>
-			<item value="Buffer_logger"/>
-			<item value="OLED"/>
-			<item value="write"/>
+			<item value="XGpio_DiscreteRead"/>
+			<item value="read"/>
 		</list>
 		<list key="replacehistory">
 		</list>
@@ -23,8 +17,8 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="287" key="DIALOG_WIDTH"/>
 		<item value="1|Cantarell|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
-		<item value="554" key="DIALOG_HEIGHT"/>
-		<item value="1003" key="DIALOG_X_ORIGIN"/>
-		<item value="362" key="DIALOG_Y_ORIGIN"/>
+		<item value="479" key="DIALOG_HEIGHT"/>
+		<item value="658" key="DIALOG_X_ORIGIN"/>
+		<item value="253" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

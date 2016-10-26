@@ -1,7 +1,7 @@
 Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2015.2 (lin64) Build 1266856 Fri Jun 26 16:35:25 MDT 2015
-| Date         : Tue Oct 18 14:55:48 2016
+| Date         : Wed Oct 26 13:06:03 2016
 | Host         : magnum.andrew.cmu.edu running 64-bit Red Hat Enterprise Linux Server release 7.2 (Maipo)
 | Command      : report_utilization -file zynq_interrupt_system_wrapper_utilization_synth.rpt -pb zynq_interrupt_system_wrapper_utilization_synth.pb
 | Design       : zynq_interrupt_system_wrapper
@@ -30,13 +30,13 @@ Table of Contents
 +----------------------------+------+-------+-----------+-------+
 |          Site Type         | Used | Fixed | Available | Util% |
 +----------------------------+------+-------+-----------+-------+
-| Slice LUTs*                | 1911 |     0 |     53200 |  3.59 |
-|   LUT as Logic             | 1820 |     0 |     53200 |  3.42 |
+| Slice LUTs*                | 1900 |     0 |     53200 |  3.57 |
+|   LUT as Logic             | 1809 |     0 |     53200 |  3.40 |
 |   LUT as Memory            |   91 |     0 |     17400 |  0.52 |
 |     LUT as Distributed RAM |    0 |     0 |           |       |
 |     LUT as Shift Register  |   91 |     0 |           |       |
-| Slice Registers            | 1749 |     0 |    106400 |  1.64 |
-|   Register as Flip Flop    | 1749 |     0 |    106400 |  1.64 |
+| Slice Registers            | 1705 |     0 |    106400 |  1.60 |
+|   Register as Flip Flop    | 1705 |     0 |    106400 |  1.60 |
 |   Register as Latch        |    0 |     0 |    106400 |  0.00 |
 | F7 Muxes                   |    1 |     0 |     26600 | <0.01 |
 | F8 Muxes                   |    0 |     0 |     13300 |  0.00 |
@@ -58,8 +58,8 @@ Table of Contents
 | 0     |          Yes |           - |            - |
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
-| 101   |          Yes |         Set |            - |
-| 1648  |          Yes |       Reset |            - |
+| 97    |          Yes |         Set |            - |
+| 1608  |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -93,7 +93,7 @@ Table of Contents
 +-----------------------------+------+-------+-----------+--------+
 |          Site Type          | Used | Fixed | Available |  Util% |
 +-----------------------------+------+-------+-----------+--------+
-| Bonded IOB                  |    5 |     0 |       200 |   2.50 |
+| Bonded IOB                  |    1 |     0 |       200 |   0.50 |
 | Bonded IPADs                |    0 |     0 |         2 |   0.00 |
 | Bonded IOPADs               |  130 |     0 |       130 | 100.00 |
 | PHY_CONTROL                 |    0 |     0 |         4 |   0.00 |
@@ -149,22 +149,22 @@ Table of Contents
 +----------+------+----------------------+
 | Ref Name | Used |  Functional Category |
 +----------+------+----------------------+
-| FDRE     | 1648 |         Flop & Latch |
-| LUT3     |  623 |                  LUT |
-| LUT6     |  583 |                  LUT |
+| FDRE     | 1608 |         Flop & Latch |
+| LUT3     |  625 |                  LUT |
+| LUT6     |  580 |                  LUT |
 | LUT4     |  319 |                  LUT |
-| LUT5     |  317 |                  LUT |
+| LUT5     |  315 |                  LUT |
 | LUT1     |  200 |                  LUT |
-| LUT2     |  181 |                  LUT |
+| LUT2     |  176 |                  LUT |
 | BIBUF    |  130 |                   IO |
-| FDSE     |  101 |         Flop & Latch |
+| FDSE     |   97 |         Flop & Latch |
 | CARRY4   |   86 |           CarryLogic |
 | SRLC32E  |   70 |   Distributed Memory |
 | SRL16E   |   21 |   Distributed Memory |
-| IBUF     |    5 |                   IO |
 | RAMB36E1 |    2 |         Block Memory |
 | PS7      |    1 | Specialized Resource |
 | MUXF7    |    1 |                MuxFx |
+| IBUF     |    1 |                   IO |
 | BUFG     |    1 |                Clock |
 +----------+------+----------------------+
 

@@ -1,7 +1,7 @@
 Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2015.2 (lin64) Build 1266856 Fri Jun 26 16:35:25 MDT 2015
-| Date             : Tue Oct 18 14:56:47 2016
+| Date             : Wed Oct 26 13:07:02 2016
 | Host             : magnum.andrew.cmu.edu running 64-bit Red Hat Enterprise Linux Server release 7.2 (Maipo)
 | Command          : report_power -file zynq_interrupt_system_wrapper_power_routed.rpt -pb zynq_interrupt_system_wrapper_power_summary_routed.pb
 | Design           : zynq_interrupt_system_wrapper
@@ -50,16 +50,16 @@ Table of Contents
 | On-Chip                 | Power (W) | Used     | Available | Utilization (%) |
 +-------------------------+-----------+----------+-----------+-----------------+
 | Clocks                  |     0.004 |        3 |       --- |             --- |
-| Slice Logic             |     0.002 |     3744 |       --- |             --- |
-|   LUT as Logic          |     0.002 |     1492 |     53200 |            2.80 |
+| Slice Logic             |     0.002 |     3695 |       --- |             --- |
+|   LUT as Logic          |     0.002 |     1485 |     53200 |            2.79 |
 |   CARRY4                |    <0.001 |       80 |     13300 |            0.60 |
-|   Register              |    <0.001 |     1428 |    106400 |            1.34 |
-|   LUT as Shift Register |    <0.001 |       83 |     17400 |            0.48 |
+|   Register              |    <0.001 |     1388 |    106400 |            1.30 |
 |   F7/F8 Muxes           |    <0.001 |        1 |     53200 |           <0.01 |
+|   LUT as Shift Register |    <0.001 |       83 |     17400 |            0.48 |
 |   Others                |     0.000 |      306 |       --- |             --- |
-| Signals                 |     0.002 |     2576 |       --- |             --- |
+| Signals                 |     0.002 |     2534 |       --- |             --- |
 | Block RAM               |    <0.001 |        2 |       140 |            1.43 |
-| I/O                     |    <0.001 |        5 |       200 |            2.50 |
+| I/O                     |    <0.001 |        1 |       200 |            0.50 |
 | PS7                     |     1.528 |        1 |       --- |             --- |
 | Static Power            |     0.154 |          |           |                 |
 | Total                   |     1.691 |          |           |                 |
@@ -74,8 +74,8 @@ Table of Contents
 +-----------+-------------+-----------+-------------+------------+
 | Vccint    |       1.000 |     0.024 |       0.009 |      0.015 |
 | Vccaux    |       1.800 |     0.021 |       0.000 |      0.021 |
-| Vcco33    |       3.300 |     0.000 |       0.000 |      0.000 |
-| Vcco25    |       2.500 |     0.001 |       0.000 |      0.001 |
+| Vcco33    |       3.300 |     0.001 |       0.000 |      0.001 |
+| Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |
 | Vcco18    |       1.800 |     0.001 |       0.000 |      0.001 |
 | Vcco15    |       1.500 |     0.001 |       0.000 |      0.001 |
 | Vcco135   |       1.350 |     0.000 |       0.000 |      0.000 |
