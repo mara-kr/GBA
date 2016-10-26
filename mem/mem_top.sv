@@ -15,7 +15,7 @@
  */
 
 `default_nettype none
-`include "core_tb_defines.vh"
+`include "gba_core_defines.vh"
 
 module mem_top(
     input  logic clock, reset,

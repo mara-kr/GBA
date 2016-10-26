@@ -8,7 +8,7 @@
  * Neil Ryan
  */
 `default_nettype none
-`include "core_tb_defines.vh"
+`include "gba_core_defines.vh"
 
 `define NUM_TESTS 13
 
