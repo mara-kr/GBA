@@ -1,5 +1,0 @@
-../ARMPackage.vhd
-../ClockAndResetGenerator.vhd
-../ALU/ARMALUTestTop.vhd
-../ALU/ALU.vhd
-../ALU/ALUTesterSim.vhd
