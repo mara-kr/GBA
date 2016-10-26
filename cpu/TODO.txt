@@ -1,0 +1,2 @@
+Add DMAActive signal that pauses CPU & sets address/wdata to high impedence
+PAUSE should pause the CPU w/o setting address lines to high impedence
