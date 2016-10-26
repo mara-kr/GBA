@@ -44,14 +44,14 @@ module mem_top(
     assign bus_mem_addr = (bus_write_lat1) ? bus_addr_lat1 : bus_addr;
 
     // Registers to delay write signals
-    register #(32) baddr (.clock, .reset, .en(1'b1), .clr(1'b0),
+    mem_register #(32) baddr (.clock, .reset, .en(1'b1), .clr(1'b0),
                           .D(bus_addr), .Q(bus_addr_lat1));
-    register #(1) bwrite (.clock, .reset, .en(1'b1), .clr(1'b0),
+    mem_register #(1) bwrite (.clock, .reset, .en(1'b1), .clr(1'b0),
                           .D(bus_write), .Q(bus_write_lat1));
-    register #(2) bsize (.clock, .reset, .en(1'b1), .clr(1'b0),
+    mem_register #(2) bsize (.clock, .reset, .en(1'b1), .clr(1'b0),
                          .D(bus_size), .Q(bus_size_lat1));
     // Pauses due to writes, could be extended
-    register #(1) wpause (.clock, .reset, .en(1'b1), .clr(1'b0),
+    mem_register #(1) wpause (.clock, .reset, .en(1'b1), .clr(1'b0),
                          .D(bus_write & ~bus_pause), .Q(bus_pause));
 
     logic [31:0] bus_system_addr, bus_system_rdata;
@@ -191,7 +191,7 @@ module mem_decoder
 
 endmodule: mem_decoder
 
-module register
+module mem_register
     #(parameter WIDTH = 8)
     (input  logic clock, reset,
      output logic [WIDTH-1:0] Q,
@@ -206,4 +206,4 @@ module register
         else Q <= D_next;
     end
 
-endmodule: register
+endmodule: mem_register
