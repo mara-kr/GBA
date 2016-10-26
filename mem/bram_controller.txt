@@ -1,3 +1,5 @@
+Memory region access widths (per GBA spec):
+
 SystemROM - 32
 InternRAM - 32
 OAM       - 32
@@ -7,5 +9,14 @@ Palette   - 16
 VRAM      - 16
 GamePak   - 16, variable wait
 
+BRAM Controller IP Blocks:
+SystemROM: BRAM, Dual Port ROM 32x4096
+InternRAM: BRAM 32x8192
+OAM: BRAM  32x256
+Palette: BRAM 32x256
+VRAM: BRAM 32x24576
 
-BRAM: Use True Dual Ported, 32-bit address interface, reset pins on both
+
+BRAM: True Dual Ported, 32-bit address interface, reset pins on both ports,
+      no output registers, write first operating mode, ports always enabled
+
