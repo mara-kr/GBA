@@ -10,7 +10,7 @@
 `default_nettype none
 `include "gba_core_defines.vh"
 
-`define NUM_TESTS 13
+`define NUM_TESTS 22
 
 module mem_test_CI (
     input  logic GCLK, BTND,
@@ -20,20 +20,27 @@ module mem_test_CI (
     logic  [1:0] bus_size;
     logic        bus_pause, bus_write;
 
-    logic [31:0] gfx_oam_addr, gfx_oam_data, gfx_vram_addr, gfx_vram_data;
-    logic [31:0] gfx_pallete_addr, gfx_pallete_data;
+    logic [31:0] gfx_oam_addr, gfx_oam_data, gfx_vram_A_addr, gfx_vram_A_data;
+    logic [31:0] gfx_vram_B_addr, gfx_vram_B_data;
+    logic [31:0] gfx_vram_C_addr, gfx_vram_C_data;
+    logic [31:0] gfx_palette_obj_addr, gfx_palette_obj_data;
+    logic [31:0] gfx_palette_bg_addr, gfx_palette_bg_data;
 
     logic [7:0] LD_next;
 
     mem_top mem (.clock(GCLK), .reset(BTND), .bus_wdata, .bus_rdata,
                  .bus_addr, .bus_size, .bus_pause, .bus_write,
-                 .gfx_pallete_addr, .gfx_pallete_data,
+                 .gfx_palette_bg_addr, .gfx_palette_bg_data,
+                 .gfx_palette_obj_addr, .gfx_palette_obj_data,
                  .gfx_oam_addr, .gfx_oam_data,
-                 .gfx_vram_addr, .gfx_vram_data);
+                 .gfx_vram_A_addr, .gfx_vram_A_data,
+                 .gfx_vram_B_addr, .gfx_vram_B_data,
+                 .gfx_vram_C_addr, .gfx_vram_C_data
+             );
 
     enum logic {WRITE, READ} cs, ns, cs_next;
-    logic [31:0] addrs [14:0];
-    logic [31:0] datas [14:0];
+    logic [31:0] addrs [23:0];
+    logic [31:0] datas [23:0];
     logic [3:0] count, count_next;
     logic       en, clr, fail;
 
@@ -41,18 +48,28 @@ module mem_test_CI (
                     32'h0600_0000, 32'h0500_0042, 32'h0700_03FF,
                     32'h0500_0000, 32'h0300_1234, 32'h0601_7FFF,
                     32'h0700_0000, 32'h0700_0042, 32'h0500_03FF,
-                    32'h0300_0000, 32'h0600_1234, 32'h0300_7FFF};
+                    32'h0300_0000, 32'h0600_1234, 32'h0300_7FFF,
+                    32'h0500_0250, 32'h0500_01ff, 32'h0600_FFFF,
+                    32'h0601_0000, 32'h0601_3fff, 32'h0601_4000,
+                    32'h0601_4200, 32'h0601_1234, 32'h0500_0200};
 
     assign datas = {32'h0000_0000, 32'h0000_0000, 32'hface_f00d,
                     32'hdead_beef, 32'hcafe_f00d, 32'hcafe_bebe,
                     32'hbeef_bebe, 32'hbeef_f00d, 32'hdead_bebe,
                     32'hdead_f00d, 32'hba5e_ba11, 32'hcab0_05e5,
-                    32'hc0ff_ee55, 32'he5ce_ca1d, 32'h5ece_de00};
+                    32'hc0ff_ee55, 32'he5ce_ca1d, 32'h5ece_de00,
+                    32'hbeef_bebe, 32'hbeef_f00d, 32'hdead_bebe,
+                    32'hdead_f00d, 32'hba5e_ba11, 32'hcab0_05e5,
+                    32'hc0ff_ee55, 32'he5ce_ca1d, 32'h5ece_de00
+                    };
 
     assign bus_size = count[0] ? `MEM_SIZE_WORD : `MEM_SIZE_HALF;
-    assign gfx_pallete_addr = 32'b0;
+    assign gfx_palette_obj_addr = 32'b0;
+    assign gfx_palette_bg_addr = 32'b0;
     assign gfx_oam_addr = 32'b0;
-    assign gfx_vram_addr = 32'b0;
+    assign gfx_vram_A_addr = 32'b0;
+    assign gfx_vram_B_addr = 32'b0;
+    assign gfx_vram_C_addr = 32'b0;
     assign cs_next = (~bus_pause) ? ns : cs;
 
     always_comb begin
