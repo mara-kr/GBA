@@ -14,17 +14,28 @@
 //      228 lines/screen (with blank)
 //      280896 cycles/screen
 //      59.727Hz refresh rate
-
+/*
 `define HSYNC_CYCLES 1611
 `define HDISP_CYCLES 1288
 `define HPW_CYCLES 193
 `define HBP_CYCLES 97
+*/
+`define HSYNC_CYCLES 1600
+`define HDISP_CYCLES 1280
+`define HPW_CYCLES 192
+`define HBP_CYCLES 96
 `define HDISP_START (`HPW_CYCLES + `HBP_CYCLES)
 `define HDISP_END (`HDISP_START + `HDISP_CYCLES)
 
+/*
 `define VSYNC_LINES 521
 `define VDISP_LINES 480
 `define VBP_LINES 29
+`define VPW_LINES 2
+*/
+`define VSYNC_LINES 525
+`define VDISP_LINES 480
+`define VBP_LINES 33
 `define VPW_LINES 2
 `define VDISP_START (`VPW_LINES + `VBP_LINES)
 `define VDISP_END (`VDISP_START + `VDISP_LINES)
@@ -91,12 +102,12 @@ module vga_top(
     input  logic clock, reset,
     input  logic [14:0] data,
     output logic [16:0] addr,
-    output logic [3:0] VGA_R, VGA_G, VGA_B,
+    (* mark_debug = "true" *) output logic [3:0] VGA_R, VGA_G, VGA_B,
     output logic VGA_HS, VGA_VS);
 
-    logic [8:0] row;
-    logic [9:0] col;
-    logic [16:0] curr_addr;
+    (* mark_debug = "true" *) logic [8:0] row;
+    (* mark_debug = "true" *) logic [9:0] col;
+    (* mark_debug = "true" *) logic [16:0] curr_addr;
 
     // Ignore LSB of color from graphics since we only have 4 bits
     assign VGA_R = (curr_addr < `GBA_PIXELS) ? data[14:11] : 4'h0;
@@ -119,10 +130,7 @@ module addr_calc(
 
     logic [16:0] rows_idx;
 
-    // Vivado IP core to interact with DSP blocks
-    MULT_MACRO #(.WIDTH_A(9), .WIDTH_B(`GBA_COLS_WIDTH), .LATENCY(0))
-       mult (.P(rows_idx), .A(row), .B(`GBA_COLS), .CE(1'b1), .CLK(clock),
-             .RST(reset));
+    mult_gen_0 mult (.P(rows_idx), .A(row), .B(`GBA_COLS));
 
     assign addr = rows_idx + col;
 
@@ -132,19 +140,18 @@ endmodule: addr_calc
 
 // If SW0 high, display horizontal test pattern, otherwise display
 // standard vertical test pattern
-/*
 module vga_top_testpattern (
     input  logic GCLK, BTND,
     input  logic [7:0] SW,
     output logic [7:0] LD,
-    output logic VGA_HS, VGA_VS,
-    output logic [3:0] VGA_R, VGA_B, VGA_G);
+    (* mark_debug = "true" *) output logic VGA_HS, VGA_VS,
+    (* mark_debug = "true" *) output logic [3:0] VGA_R, VGA_B, VGA_G);
 
     logic c_red, r_red;
     logic [1:0] c_green, r_green;
     logic [3:0] c_blue, r_blue;
-    logic [8:0] row;
-    logic [9:0] col;
+    (* mark_debug = "true" *) logic [8:0] row;
+    (* mark_debug = "true" *) logic [9:0] col;
 
     logic GBA_CLK;
     clk_wiz_0 clk_wiz (.clk_in1(GCLK), .reset(BTND), .clk_out1(GBA_CLK));
@@ -182,4 +189,3 @@ module vga_top_testpattern (
 
     assign LD = SW;
 endmodule: vga_top_testpattern
-*/
