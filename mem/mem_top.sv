@@ -11,6 +11,19 @@
  * "size" refers to the size of the memory write, and assumes that the
  * data is passed to the memory controller in little endian format.
  *
+ * Vivado IP Core Sizes:
+ *     SystemROM: BRAM, Dual Port ROM 32x4096
+ *     InternRAM: BRAM 32x8192
+ *     OAM: BRAM  32x256
+ *     Palette_bg: BRAM 32x128
+ *     Palette_obj: BRAM 32x128
+ *     VRAM_A: BRAM 32x16384
+ *     VRAM_B: BRAM 32x4096
+ *     VRAM_C: BRAM 32x4096
+ *
+ * BRAM: True Dual Ported, 32-bit address interface, reset pins on both ports,
+ *     no output registers, write first operating mode, ports always enabled
+ *
  * Neil Ryan, <nryan@andrew.cmu.edu>
  */
 
@@ -175,32 +188,32 @@ module mem_top(
                       .doutb(gfx_vram_C_data), .dinb(32'b0));
 
     palette_bg_ram pall_bg (.clka(clock), .rsta(reset),
-                         .wea(bus_palette_bg_we),
-                         .addra({2'b0, bus_palette_bg_addr[31:2]}),
-                         .douta(bus_palette_bg_rdata), .dina(bus_wdata),
+                            .wea(bus_palette_bg_we),
+                            .addra({2'b0, bus_palette_bg_addr[31:2]}),
+                            .douta(bus_palette_bg_rdata), .dina(bus_wdata),
 
-                         .clkb(clock), .rstb(reset),
-                         .web(4'd0),
-                         .addrb({2'b0, gfx_palette_bg_addr[31:2]}),
-                         .doutb(gfx_palette_bg_data), .dinb(32'b0));
+                            .clkb(clock), .rstb(reset),
+                            .web(4'd0),
+                            .addrb({2'b0, gfx_palette_bg_addr[31:2]}),
+                            .doutb(gfx_palette_bg_data), .dinb(32'b0));
 
     palette_obj_ram pall_obj (.clka(clock), .rsta(reset),
-                          .wea(bus_palette_obj_we),
-                          .addra({2'b0, bus_palette_obj_addr[31:2]}),
-                          .douta(bus_palette_obj_rdata), .dina(bus_wdata),
+                              .wea(bus_palette_obj_we),
+                              .addra({2'b0, bus_palette_obj_addr[31:2]}),
+                              .douta(bus_palette_obj_rdata), .dina(bus_wdata),
 
-                          .clkb(clock), .rstb(reset),
-                          .web(4'd0),
-                          .addrb({2'b0, gfx_palette_obj_addr[31:2]}),
-                          .doutb(gfx_palette_obj_data), .dinb(32'b0));
+                              .clkb(clock), .rstb(reset),
+                              .web(4'd0),
+                              .addrb({2'b0, gfx_palette_obj_addr[31:2]}),
+                              .doutb(gfx_palette_obj_data), .dinb(32'b0));
 
-    OAM oam_mem      (.clka(clock), .rsta(reset),
-                      .wea(bus_oam_we), .addra({2'b0, bus_oam_addr[31:2]}),
-                      .douta(bus_oam_rdata), .dina(bus_wdata),
+    OAM oam_mem  (.clka(clock), .rsta(reset),
+                  .wea(bus_oam_we), .addra({2'b0, bus_oam_addr[31:2]}),
+                  .douta(bus_oam_rdata), .dina(bus_wdata),
 
-                      .clkb(clock), .rstb(reset),
-                      .web(4'd0), .addrb({2'b0, gfx_oam_addr[31:2]}),
-                      .doutb(gfx_oam_data), .dinb(32'b0));
+                  .clkb(clock), .rstb(reset),
+                  .web(4'd0), .addrb({2'b0, gfx_oam_addr[31:2]}),
+                  .doutb(gfx_oam_data), .dinb(32'b0));
 
 
     always_comb begin

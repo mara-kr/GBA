@@ -13,15 +13,11 @@ BRAM Controller IP Blocks:
 SystemROM: BRAM, Dual Port ROM 32x4096
 InternRAM: BRAM 32x8192
 OAM: BRAM  32x256
-Palette: BRAM 32x256
 Palette_bg: BRAM 32x128
 Palette_obj: BRAM 32x128
-VRAM: BRAM 32x24576
 VRAM_A: BRAM 32x16384
 VRAM_B: BRAM 32x4096
 VRAM_C: BRAM 32x4096
 
-
 BRAM: True Dual Ported, 32-bit address interface, reset pins on both ports,
       no output registers, write first operating mode, ports always enabled
-
