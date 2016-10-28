@@ -1,6 +1,7 @@
 *.svp
 *.pyc
 *~
+*.swp
 ucli.key
 .restartSimSession.tcl.old
 .synopsys_dve_rebuild.tcl
@@ -10,3 +11,9 @@ ucli.key
 
 Desktop.ini
 
+.vlogansetup.*
+
+cpu/build/*
+cpu/inter.vpd
+cpu/vc_hdrs.h
+cpu/BusLog.txt
