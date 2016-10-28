@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<Runs Version="1" Minor="0">
+	<Run Id="palette_obj_ram_synth_1" LaunchDir="/afs/ece.cmu.edu/usr/nryan/Private/545/GBA/vivado/GBA.runs/palette_obj_ram_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+</Runs>
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="vram_C_synth_1" LaunchPart="xc7z020clg484-1" LaunchTime="1477588156">
+  <File Type="VDS-TIMINGSUMMARY" Name="vram_C_timing_summary_synth.rpt"/>
+  <File Type="RUN-SRCS" Name="$PDATADIR/runs/vram_C_synth_1/sources.xml"/>
+  <File Type="RDS-RDS" Name="vram_C.vds"/>
+  <File Type="RUN-STRAT" Name="$PDATADIR/runs/vram_C_synth_1/vram_C_synth_1.psg"/>
+  <File Type="RDS-PROPCONSTRS" Name="vram_C_drc_synth.rpt"/>
+  <File Type="RDS-UTIL" Name="vram_C_utilization_synth.rpt"/>
+  <File Type="RUN-CONSTRS" Name="$PDATADIR/runs/vram_C_synth_1/constrs_in.xml"/>
+  <File Type="RDS-UTIL-PB" Name="vram_C_utilization_synth.pb"/>
+  <File Type="RDS-DCP" Name="vram_C.dcp"/>
+  <File Type="VDS-TIMING-PB" Name="vram_C_timing_summary_synth.pb"/>
+  <File Type="PA-TCL" Name="vram_C.tcl"/>
+  <FileSet Name="sources" Type="BlockSrcs" RelSrcDir="$PSRCDIR/vram_C">
+    <File Path="$PSRCDIR/sources_1/ip/vram_C/vram_C.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="vram_C"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="BlockSrcs" RelSrcDir="$PSRCDIR/vram_C">
+    <File Path="$PSRCDIR/sources_1/ip/vram_C/vram_C.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopModule" Val="vram_C"/>
+      <Option Name="UseBlackboxStub" Val="1"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+    <Step Id="synth_design"/>
+  </Strategy>
+</GenRun>
