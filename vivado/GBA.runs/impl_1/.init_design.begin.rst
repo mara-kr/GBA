@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<ProcessHandle Version="1" Minor="0">
-    <Process Command=".planAhead." Owner="nryan" Host="ece-gui-003.ece.cmu.edu" Pid="24648">
-    </Process>
-</ProcessHandle>

@@ -10,12 +10,14 @@ module gba_top (
     input  logic [7:0] SW,
     input  logic JA1,
     output logic JA2, JA3,
-    output logic [7:0] LD);
+    output logic [7:0] LD,
+    output logic [3:0] VGA_R, VGA_G, VGA_B,
+    output logic VGA_VS, VGA_HS);
 
 
     logic [15:0] buttons;
 
-    /* Memory signals */
+    // Memory signals
     logic [31:0] bus_addr, bus_wdata, bus_rdata;
     logic  [1:0] bus_size;
     logic        bus_pause, bus_write;
