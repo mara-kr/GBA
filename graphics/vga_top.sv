@@ -25,7 +25,6 @@
 `define HPW_CYCLES 192
 `define HBP_CYCLES 96
 `define HDISP_START (`HPW_CYCLES + `HBP_CYCLES)
-`define HDISP_END (`HDISP_START + `HDISP_CYCLES)
 
 /*
 `define VSYNC_LINES 521
@@ -38,7 +37,6 @@
 `define VBP_LINES 33
 `define VPW_LINES 2
 `define VDISP_START (`VPW_LINES + `VBP_LINES)
-`define VDISP_END (`VDISP_START + `VDISP_LINES)
 
 `define NUM_ROWS 480
 `define NUM_COLS 640
@@ -56,9 +54,17 @@ module vga_counter
      input  logic en,
      output logic [WIDTH-1:0] out);
 
+    (* mark_debug= "true" *) logic [WIDTH-1:0] next_out;
+
+    always_comb begin
+        if(out + 1 == MAX) next_out = {WIDTH{1'b0}};
+        else next_out = out+1;
+    end
+
     always_ff @(posedge clock, posedge reset) begin
-        if (reset || (out + 1 == MAX)) out <= 0;
-        else out <= (en) ? out+1 : out;
+        if (reset)  out <= 0;
+        else if(en) out <= next_out;
+        else        out <= out;
     end
 endmodule: vga_counter
 
@@ -73,7 +79,6 @@ module vga_rangecheck
 endmodule: vga_rangecheck
 
 // Track columns by cycle, track rows by line (numbers are smaller)
-// TODO Output index (row*width + col) instead of Row,col
 module vga
    (input  logic clock, reset,
     output logic [8:0] row,
@@ -84,7 +89,7 @@ module vga
     logic row_end, HS_L, VS_L;
 
     assign col = (h_cycles - `HDISP_START) >> 1;
-    assign row = v_lines - `VPW_LINES - `VBP_LINES;
+    assign row = v_lines - `VDISP_START;
     assign row_end = h_cycles == (`HSYNC_CYCLES - 1);
     assign {HS, VS} = {~HS_L, ~VS_L};
 
@@ -96,6 +101,7 @@ module vga
 
 endmodule: vga
 
+/*
 // TODO Make VGA color be data when addr is in range, and black otherwise
 // TODO Addr should be VGA index + 1
 module vga_top(
@@ -117,10 +123,13 @@ module vga_top(
     // Synchronous reads, don't make out of bounds accesses
     assign addr = (curr_addr < `GBA_PIXELS-1) ? curr_addr + 1 : 17'd0;
 
+
     vga vga (.clock, .reset, .HS(VGA_HS), .VS(VGA_VS), .row, .col);
+    //vga vga (.CLOCK_50(clock), .reset(reset), .HS(VGA_HS), .VS(VGA_VS), .row, .col, .blank());
     addr_calc calc (.clock, .reset, .row, .col, .addr(curr_addr));
 
 endmodule: vga_top
+
 
 module addr_calc(
     input  logic clock, reset,
@@ -129,14 +138,12 @@ module addr_calc(
     output logic [16:0] addr);
 
     logic [16:0] rows_idx;
-
     mult_gen_0 mult (.P(rows_idx), .A(row), .B(`GBA_COLS));
 
     assign addr = rows_idx + col;
 
 endmodule: addr_calc
-
-
+*/
 
 // If SW0 high, display horizontal test pattern, otherwise display
 // standard vertical test pattern
@@ -154,22 +161,44 @@ module vga_top_testpattern (
     (* mark_debug = "true" *) logic [9:0] col;
 
     logic GBA_CLK;
-    clk_wiz_0 clk_wiz (.clk_in1(GCLK), .reset(BTND), .clk_out1(GBA_CLK));
+    logic [1:0] divider;
+
+    // clk_wiz_0 clk_wiz (.clk_in1(GCLK), .reset(BTND), .clk_out1(GBA_CLK));
+    always_ff @(posedge GCLK, posedge BTND) begin
+        if (BTND) divider <= 2'b0;
+        else divider <= divider + 1;
+    end
+    assign GBA_CLK = divider[1];
 
     always_comb begin
-        if (SW[0]) begin
-            VGA_R = r_red ? 4'hF : 4'h0;
-            VGA_G = |r_green ? 4'hF : 4'h0;
-            VGA_B = |r_blue ? 4'hF : 4'h0;
+        // "Random" test pattern"
+        if (SW[1] && (row < (`GBA_ROWS << 1)) && (col < (`GBA_COLS << 1))) begin
+            VGA_R = ((row ^ col[8:0]) + row);
+            VGA_B = ((row ^ col[8:0]));
+            VGA_G = ((row ^ col[8:0]) - row - col[8:0]);
+        end else if (SW[1]) begin
+            VGA_R = 4'd0;
+            VGA_G = 4'd0;
+            VGA_B = 4'd0;
+        end
+        else if (SW[0]) begin
+            VGA_R = r_red ? {3'h7, row[0]} : 4'h0;
+            VGA_G = |r_green ? {3'h7, row[0]} : 4'h0;
+            VGA_B = |r_blue ? {3'h7, row[0]} : 4'h0;
         end else begin
-            VGA_R = c_red ? 4'hF : 4'h0;
-            VGA_G = |c_green ? 4'hF : 4'h0;
-            VGA_B = |c_blue ? 4'hF : 4'h0;
+            if (row < 10'd240) begin
+                VGA_R = c_red ? {3'h7, row[0]} : 4'h0;
+                VGA_G = |c_green ? {3'h7, row[0]} : 4'h0;
+                VGA_B = |c_blue ? {3'h7, row[0]} : 4'h0;
+            end else begin
+                VGA_R = {3'h7, row[0]};
+                VGA_G = {3'h7, row[0]};
+                VGA_B = {3'h7, row[0]};
+            end
         end
     end
 
-    vga vga (.clock(GBA_CLK), .reset(BTND), .HS(VGA_HS), .VS(VGA_VS),
-             .row(row), .col(col));
+    vga vga (.clock(GBA_CLK), .reset(BTND), .HS(VGA_HS), .VS(VGA_VS), .row, .col);
 
     vga_rangecheck #(10, 10'd320, 10'd640) cr  (col, c_red);
     vga_rangecheck #(10, 10'd160, 10'd320) cg0 (col, c_green[0]);
@@ -189,3 +218,27 @@ module vga_top_testpattern (
 
     assign LD = SW;
 endmodule: vga_top_testpattern
+
+/*
+module vga_sim_top;
+    logic clock, reset;
+    logic [7:0] SW, LD;
+    logic VGA_VS, VGA_HS;
+    logic [3:0] VGA_R, VGA_G, VGA_B;
+
+    vga_top_testpattern dut (.GCLK(clock), .BTND(reset), .*);
+
+    initial begin
+        reset = 1'b0;
+        clock = 1'b0;
+        SW = 8'b0;
+        reset <= 1'b1;
+        #1 reset <= 1'b0;
+        forever #1 clock <= ~clock;
+    end
+
+    initial begin
+        #8000000 $finish;
+    end
+endmodule: vga_sim_top
+*/
