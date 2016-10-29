@@ -30,7 +30,7 @@
 `default_nettype none
 `include "gba_core_defines.vh"
 
-module mem_top(
+module mem_top (
     input  logic clock, reset,
 
     /* Signals for CPU/DMA Bus */
@@ -102,6 +102,11 @@ module mem_top(
 
     logic  [3:0] bus_we;
 
+    logic [`NUM_IO_REGS-1:0] [31:0] IO_reg_datas;
+    logic [`NUM_IO_REGS-1:0] [3:0]  IO_reg_we;
+    logic [31:0] bus_io_reg_rdata;
+    logic        bus_io_reg_read
+
     mem_decoder decoder (.addr(bus_addr_lat1), .size(bus_size_lat1),
                          .write(bus_write_lat1), .byte_we(bus_we));
 
@@ -139,6 +144,8 @@ module mem_top(
 
     assign bus_oam_read = (bus_addr_lat1 - `OAM_START) <= `OAM_SIZE;
     assign bus_oam_write = bus_oam_addr <= `OAM_SIZE;
+
+    assign bus_io_reg_read = (bus_addr_lat1 - `IO_REG_RAM_START) <= `IO_REG_RAM_SIZE;
 
     assign bus_intern_we = (bus_intern_write) ? bus_we : 4'd0;
     assign bus_vram_A_we = (bus_vram_A_write) ? bus_we : 4'd0;
@@ -215,6 +222,20 @@ module mem_top(
                   .web(4'd0), .addrb({2'b0, gfx_oam_addr[31:2]}),
                   .doutb(gfx_oam_data), .dinb(32'b0));
 
+    assign bus_io_reg_rdata = (~bus_io_reg_read) ? 32'b0 : 32'bz;
+
+    generate
+        for (genvar i = 0; i < (`IO_REG_RAM_SIZE/4); i++) begin
+            localparam [31:0] reg_addr = `IO_REG_RAM_START + (i*4);
+            localparam addr_match = bus_addr_lat1[31:2] == reg_addr[31:2];
+
+            assign IO_reg_we[i] = (addr_match) ? bus_we : 4'd0;
+            assign bus_io_reg_rdata = (addr_match) ? IO_reg_datas[i] : 32'bz;
+            IO_register IO (.clock, .reset, .wdata(bus_wdata),
+                            .we(IO_reg_we[i]) .rdata(IO_reg_datas[i]));
+        end
+    endgenerate
+
 
     always_comb begin
         if (bus_system_read)
@@ -233,6 +254,8 @@ module mem_top(
             bus_rdata = bus_palette_obj_rdata;
         else if (bus_oam_read)
             bus_rdata = bus_oam_rdata;
+        else if (bus_io_reg_read)
+            bus_rdata = bus_io_reg_rdata;
         else
             bus_rdata = 32'hz;
     end
@@ -286,3 +309,21 @@ module mem_register
     end
 
 endmodule: mem_register
+
+module IO_register
+    (input  logic clock, reset,
+     input  logic [31:0] wdata,
+     input  logic [3:0]  we,
+     output logic [31:0] rdata);
+
+    logic [31:0] data_next;
+    assign data_next[7:0] = (we[0]) ? wdata[7:0] : rdata[7:0];
+    assign data_next[15:8] = (we[0]) ? wdata[15:8] : rdata[15:8];
+    assign data_next[23:16] = (we[0]) ? wdata[23:16] : rdata[23:16];
+    assign data_next[31:24] = (we[0]) ? wdata[31:24] : rdata[31:24];
+
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) rdata <= 32'b0;
+        else rdata <= data_next;
+    end
+endmodule: IO_register
