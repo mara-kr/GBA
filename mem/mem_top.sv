@@ -34,21 +34,28 @@ module mem_top (
     input  logic clock, reset,
 
     /* Signals for CPU/DMA Bus */
-    input  logic [31:0] bus_addr, bus_wdata,
-    output logic [31:0] bus_rdata,
+    (* mark_debug = "true" *) input  logic [31:0] bus_addr,
+    (* mark_debug = "true" *) input  logic [31:0] bus_wdata,
+    (* mark_debug = "true" *) output logic [31:0] bus_rdata,
     input  logic  [1:0] bus_size,
     output logic        bus_pause,
     input  logic        bus_write,
 
-    /* Signals for graphics Bus */
+    // Signals for graphics Bus
     input  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
     input  logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr,
+    input  logic [31:0] gfx_vram_A_addr2,
     output logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
-    output logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data
+    output logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
+    output logic [31:0] gfx_vram_A_data2,
+    
+    // IO registers
+    output logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0]
     );
 
     /* Single cycle latency for writes */
-    logic [31:0] bus_addr_lat1, bus_mem_addr;
+    (* mark_debug = "true" *) logic [31:0] bus_addr_lat1;
+    logic [31:0] bus_mem_addr;
     logic  [1:0] bus_size_lat1;
     logic        bus_write_lat1;
 
@@ -70,42 +77,42 @@ module mem_top (
                          .D(bus_write & ~bus_pause), .Q(bus_pause));
 
     logic [31:0] bus_system_addr, bus_system_rdata;
-    logic        bus_system_read;
+    (* mark_debug = "true" *) logic        bus_system_read;
 
     logic [31:0] bus_intern_addr, bus_intern_rdata;
     logic  [3:0] bus_intern_we;
-    logic        bus_intern_read, bus_intern_write;
+    (* mark_debug = "true" *) logic        bus_intern_read, bus_intern_write;
 
     logic [31:0] bus_vram_A_addr, bus_vram_A_rdata;
     logic  [3:0] bus_vram_A_we;
-    logic        bus_vram_A_read, bus_vram_A_write;
+    (* mark_debug = "true" *) logic        bus_vram_A_read, bus_vram_A_write;
 
     logic [31:0] bus_vram_B_addr, bus_vram_B_rdata;
     logic  [3:0] bus_vram_B_we;
-    logic        bus_vram_B_read, bus_vram_B_write;
+    (* mark_debug = "true" *) logic        bus_vram_B_read, bus_vram_B_write;
 
     logic [31:0] bus_vram_C_addr, bus_vram_C_rdata;
     logic  [3:0] bus_vram_C_we;
-    logic        bus_vram_C_read, bus_vram_C_write;
+    (* mark_debug = "true" *) logic        bus_vram_C_read, bus_vram_C_write;
 
     logic [31:0] bus_palette_bg_addr, bus_palette_bg_rdata;
     logic  [3:0] bus_palette_bg_we;
-    logic        bus_palette_bg_read, bus_palette_bg_write;
+    (* mark_debug = "true" *) logic        bus_palette_bg_read, bus_palette_bg_write;
 
     logic [31:0] bus_palette_obj_addr, bus_palette_obj_rdata;
     logic  [3:0] bus_palette_obj_we;
-    logic        bus_palette_obj_read, bus_palette_obj_write;
+    (* mark_debug = "true" *) logic        bus_palette_obj_read, bus_palette_obj_write;
 
     logic [31:0] bus_oam_addr, bus_oam_rdata;
     logic  [3:0] bus_oam_we;
-    logic        bus_oam_read, bus_oam_write;
+    (* mark_debug = "true" *) logic        bus_oam_read, bus_oam_write;
 
-    logic  [3:0] bus_we;
+    (* mark_debug = "true" *) logic  [3:0] bus_we;
 
-    logic [`NUM_IO_REGS-1:0] [31:0] IO_reg_datas;
-    logic [`NUM_IO_REGS-1:0] [3:0]  IO_reg_we;
-    logic [31:0] bus_io_reg_rdata;
-    logic        bus_io_reg_read
+    logic [3:0]  IO_reg_we [`NUM_IO_REGS-1:0];
+    logic [`NUM_IO_REGS-1:0] IO_reg_en;
+    (* mark_debug = "true" *) tri0 [31:0] bus_io_reg_rdata;
+    (* mark_debug = "true" *) logic        bus_io_reg_read;
 
     mem_decoder decoder (.addr(bus_addr_lat1), .size(bus_size_lat1),
                          .write(bus_write_lat1), .byte_we(bus_we));
@@ -129,7 +136,7 @@ module mem_top (
     assign bus_vram_A_write = bus_vram_A_addr <= `VRAM_A_SIZE;
 
     assign bus_vram_B_read = (bus_addr_lat1 - `VRAM_B_START) <= `VRAM_B_SIZE;
-    assign bus_vram_B_write = bus_vram_A_addr <= `VRAM_B_SIZE;
+    assign bus_vram_B_write = bus_vram_B_addr <= `VRAM_B_SIZE;
 
     assign bus_vram_C_read = (bus_addr_lat1 - `VRAM_C_START) <= `VRAM_C_SIZE;
     assign bus_vram_C_write = bus_vram_C_addr <= `VRAM_C_SIZE;
@@ -178,6 +185,14 @@ module mem_top (
                       .web(4'd0), .addrb({2'b0, gfx_vram_A_addr[31:2]}),
                       .doutb(gfx_vram_A_data), .dinb(32'b0));
 
+    vram_A_2 vram_A_2 (.clka(clock), .rsta(reset),
+                      .wea(bus_vram_A_we), .addra({2'b0, bus_vram_A_addr[31:2]}),
+                      .douta(), .dina(bus_wdata),
+
+                      .clkb(clock), .rstb(reset),
+                      .web(4'd0), .addrb({2'b0, gfx_vram_A_addr2[31:2]}),
+                      .doutb(gfx_vram_A_data2), .dinb(32'b0));
+
     vram_B vram_B    (.clka(clock), .rsta(reset),
                       .wea(bus_vram_B_we), .addra({2'b0, bus_vram_B_addr[31:2]}),
                       .douta(bus_vram_B_rdata), .dina(bus_wdata),
@@ -222,17 +237,16 @@ module mem_top (
                   .web(4'd0), .addrb({2'b0, gfx_oam_addr[31:2]}),
                   .doutb(gfx_oam_data), .dinb(32'b0));
 
-    assign bus_io_reg_rdata = (~bus_io_reg_read) ? 32'b0 : 32'bz;
+    //assign bus_io_reg_rdata = (~bus_io_reg_read) ? 32'b0 : 32'bz;
 
     generate
-        for (genvar i = 0; i < (`IO_REG_RAM_SIZE/4); i++) begin
+        for (genvar i = 0; i < `NUM_IO_REGS; i++) begin
             localparam [31:0] reg_addr = `IO_REG_RAM_START + (i*4);
-            localparam addr_match = bus_addr_lat1[31:2] == reg_addr[31:2];
-
-            assign IO_reg_we[i] = (addr_match) ? bus_we : 4'd0;
-            assign bus_io_reg_rdata = (addr_match) ? IO_reg_datas[i] : 32'bz;
+            assign IO_reg_en[i] = bus_addr_lat1[31:2] == reg_addr[31:2];
+            assign IO_reg_we[i] = (IO_reg_en[i]) ? bus_we : 4'd0;
+            assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
             IO_register IO (.clock, .reset, .wdata(bus_wdata),
-                            .we(IO_reg_we[i]) .rdata(IO_reg_datas[i]));
+                            .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
         end
     endgenerate
 
@@ -318,9 +332,9 @@ module IO_register
 
     logic [31:0] data_next;
     assign data_next[7:0] = (we[0]) ? wdata[7:0] : rdata[7:0];
-    assign data_next[15:8] = (we[0]) ? wdata[15:8] : rdata[15:8];
-    assign data_next[23:16] = (we[0]) ? wdata[23:16] : rdata[23:16];
-    assign data_next[31:24] = (we[0]) ? wdata[31:24] : rdata[31:24];
+    assign data_next[15:8] = (we[1]) ? wdata[15:8] : rdata[15:8];
+    assign data_next[23:16] = (we[2]) ? wdata[23:16] : rdata[23:16];
+    assign data_next[31:24] = (we[3]) ? wdata[31:24] : rdata[31:24];
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset) rdata <= 32'b0;
