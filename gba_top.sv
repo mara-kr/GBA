@@ -40,8 +40,6 @@ module gba_top (
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
-    assign LD = (SW[0]) ? buttons[15:8] : buttons[7:0];
-
     // BRAM memory controller
     mem_top mem (.clock(GCLK), .reset(BTND), .bus_addr, .bus_wdata, .bus_rdata,
                  .bus_size, .bus_pause, .bus_write,
@@ -63,11 +61,11 @@ module gba_top (
                      .data_clock(JA3), .serial_data(JA1), .buttons);
 
     // Controller for debug output on LEDs
-    led_controller (.led_reg0(IO_reg_datas[`LED_REG0_IDX]),
-                    .led_reg1(IO_reg_datas[`LED_REG1_IDX]),
-                    .led_reg2(IO_reg_datas[`LED_REG2_IDX]),
-                    .led_reg3(IO_reg_datas[`LED_REG3_IDX]),
-                    .buttons, .LD, .SW);
+    led_controller led (.led_reg0(IO_reg_datas[`LED_REG0_IDX]),
+                        .led_reg1(IO_reg_datas[`LED_REG1_IDX]),
+                        .led_reg2(IO_reg_datas[`LED_REG2_IDX]),
+                        .led_reg3(IO_reg_datas[`LED_REG3_IDX]),
+                        .buttons, .LD, .SW);
 
 endmodule: gba_top
 

@@ -29,6 +29,7 @@
 
 `default_nettype none
 `include "gba_core_defines.vh"
+`include "gba_mmio_defines.vh"
 
 module mem_top (
     input  logic clock, reset,
@@ -50,7 +51,10 @@ module mem_top (
     output logic [31:0] gfx_vram_A_data2,
 
     // IO registers
-    output logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0]
+    output logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+    
+    // Values for R/O registers
+    input  logic [15:0] buttons, vcount
     );
 
     /* Single cycle latency for writes */
@@ -245,15 +249,16 @@ module mem_top (
             assign IO_reg_en[i] = bus_addr_lat1[31:2] == reg_addr[31:2];
             assign IO_reg_we[i] = (IO_reg_en[i]) ? bus_we : 4'd0;
             if (i == `KEYINPUT_IDX) begin // Read-only for lowest 16 bits
-                IO_register16 (.clock, .reset, .wdata(bus_wdata[31:16]),
-                               .we(IO_reg_we[i][3:2]),
-                               .rdata(IO_reg_datas[i][31:16]));
-                IO_reg_datas[i][15:0] = buttons;
+                IO_register16 key_high (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                        .we(IO_reg_we[i][3:2]),
+                                        .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = buttons;
             end else if (i == `VCOUNT_IDX) begin // Read-only for upper 16 bits
-                IO_register16 (.clock, .reset, .wdata(bus_wdata[15:0]),
+                IO_register16 vcount_low 
+                              (.clock, .reset, .wdata(bus_wdata[15:0]),
                                .we(IO_reg_we[i][1:0]),
                                .rdata(IO_reg_datas[i][15:0]));
-                IO_reg_datas[i][31:16] = vcount;
+                assign IO_reg_datas[i][31:16] = vcount;
             end else begin
                 assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
                 IO_register32 IO (.clock, .reset, .wdata(bus_wdata),

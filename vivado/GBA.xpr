@@ -191,19 +191,6 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0.xml"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0_ooc.xdc"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0.xdc"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0.v"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0_clk_wiz.v"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0.veo"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0_board.xdc"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="doc/clk_wiz_v5_1_changelog.txt"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0_funcsim.vhdl"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0_funcsim.v"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0_stub.vhdl"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0.dcp"/>
-        <CompFileExtendedInfo CompFileName="clk_wiz_0.xci" FileRelPathName="clk_wiz_0_stub.v"/>
       </File>
       <Config>
         <Option Name="TopModule" Val="clk_wiz_0"/>
@@ -217,21 +204,6 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="doc/blk_mem_gen_v8_2_changelog.txt"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2_stub.vhdl"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2_stub.v"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2.dcp"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2_funcsim.vhdl"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2_funcsim.v"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2.veo"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2.xml"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="summary.log"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="sim/vram_A_2.v"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="blk_mem_gen_v8_2/simulation/blk_mem_gen_v8_2.v"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2_vhsyn_rfs.vhd"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="synth/vram_A_2.vhd"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="blk_mem_gen_v8_2/hdl/blk_mem_gen_v8_2.vhd"/>
-        <CompFileExtendedInfo CompFileName="vram_A_2.xci" FileRelPathName="vram_A_2_ooc.xdc"/>
       </File>
       <Config>
         <Option Name="TopModule" Val="vram_A_2"/>
@@ -333,9 +305,7 @@
     </Run>
     <Run Id="vram_A_2_synth_1" Type="Ft3:Synth" SrcSet="vram_A_2" Part="xc7z020clg484-1" ConstrsSet="vram_A_2" Description="Vivado Synthesis Defaults" Dir="$PRUNDIR/vram_A_2_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -483,9 +453,7 @@
     </Run>
     <Run Id="vram_A_2_impl_1" Type="Ft2:EntireDesign" Part="xc7z020clg484-1" ConstrsSet="vram_A_2" Description="Vivado Implementation Defaults" SynthRun="vram_A_2_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015">
-          <Desc>Vivado Implementation Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>

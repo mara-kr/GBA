@@ -1,8 +1,8 @@
 -- Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2015.2 (lin64) Build 1266856 Fri Jun 26 16:35:25 MDT 2015
--- Date        : Sat Oct 29 18:42:32 2016
--- Host        : ares.andrew.local.cmu.edu running 64-bit Red Hat Enterprise Linux Server release 7.2 (Maipo)
+-- Date        : Thu Nov  3 16:50:10 2016
+-- Host        : fuggle.andrew.cmu.edu running 64-bit Red Hat Enterprise Linux Server release 7.2 (Maipo)
 -- Command     : write_vhdl -force -mode synth_stub
 --               /afs/ece.cmu.edu/usr/nryan/Private/545/GBA/vivado/GBA.srcs/sources_1/ip/palette_obj_ram/palette_obj_ram_stub.vhdl
 -- Design      : palette_obj_ram
