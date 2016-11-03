@@ -23,6 +23,7 @@ module controller
      enum logic [2:0] {WAIT, LATCH_PULSE, LATCH_WAIT, CYC_HI, CYC_LO} cs, ns;
 
      logic [`CYC_WIDTH-1:0] cycle_cnt;
+     logic [15:0] buttons_int;
      logic [3:0] button_cyc_cnt;
      logic cycle_clr, button_clr, button_en;
 
@@ -42,8 +43,23 @@ module controller
 
      // Buttons register
      always_ff @(negedge data_clock, posedge reset) begin
-         if (reset) buttons <= 16'd0;
-         else buttons[button_cyc_cnt] <= ~serial_data;
+         if (reset) buttons_int <= 16'd0;
+         else buttons_int[button_cyc_cnt] <= ~serial_data;
+     end
+
+     // Reordering to match GBA spec
+     always_comb begin
+        buttons[0] = buttons_int[7]; // A
+        buttons[1] = buttons_int[15]; // B
+        buttons[2] = buttons_int[1]; // Select
+        buttons[3] = buttons_int[2]; // Start
+        buttons[4] = buttons_int[6]; // Right
+        buttons[5] = buttons_int[5]; // Left
+        buttons[6] = buttons_int[3]; // Up
+        buttons[7] = buttons_int[4]; // Down
+        buttons[8] = buttons_int[10]; // R
+        buttons[9] = buttons_int[9]; // L
+        buttons[15:10] = 6'd1;
      end
 
      always_comb begin

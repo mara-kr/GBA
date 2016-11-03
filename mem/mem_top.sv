@@ -48,7 +48,7 @@ module mem_top (
     output logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
     output logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
     output logic [31:0] gfx_vram_A_data2,
-    
+
     // IO registers
     output logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0]
     );
@@ -244,12 +244,23 @@ module mem_top (
             localparam [31:0] reg_addr = `IO_REG_RAM_START + (i*4);
             assign IO_reg_en[i] = bus_addr_lat1[31:2] == reg_addr[31:2];
             assign IO_reg_we[i] = (IO_reg_en[i]) ? bus_we : 4'd0;
-            assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
-            IO_register IO (.clock, .reset, .wdata(bus_wdata),
-                            .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
+            if (i == `KEYINPUT_IDX) begin // Read-only for lowest 16 bits
+                IO_register16 (.clock, .reset, .wdata(bus_wdata[31:16]),
+                               .we(IO_reg_we[i][3:2]),
+                               .rdata(IO_reg_datas[i][31:16]));
+                IO_reg_datas[i][15:0] = buttons;
+            end else if (i == `VCOUNT_IDX) begin // Read-only for upper 16 bits
+                IO_register16 (.clock, .reset, .wdata(bus_wdata[15:0]),
+                               .we(IO_reg_we[i][1:0]),
+                               .rdata(IO_reg_datas[i][15:0]));
+                IO_reg_datas[i][31:16] = vcount;
+            end else begin
+                assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
+                IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
+                                  .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
+            end
         end
     endgenerate
-
 
     always_comb begin
         if (bus_system_read)
@@ -324,20 +335,40 @@ module mem_register
 
 endmodule: mem_register
 
-module IO_register
+
+module IO_register32
     (input  logic clock, reset,
      input  logic [31:0] wdata,
      input  logic [3:0]  we,
      output logic [31:0] rdata);
 
     logic [31:0] data_next;
+
     assign data_next[7:0] = (we[0]) ? wdata[7:0] : rdata[7:0];
     assign data_next[15:8] = (we[1]) ? wdata[15:8] : rdata[15:8];
     assign data_next[23:16] = (we[2]) ? wdata[23:16] : rdata[23:16];
     assign data_next[31:24] = (we[3]) ? wdata[31:24] : rdata[31:24];
 
     always_ff @(posedge clock, posedge reset) begin
-        if (reset) rdata <= 32'b0;
+        if (reset) rdata <= 0;
         else rdata <= data_next;
     end
-endmodule: IO_register
+endmodule: IO_register32
+
+
+module IO_register16
+    (input  logic clock, reset,
+     input  logic [15:0] wdata,
+     input  logic [1:0]  we,
+     output logic [15:0] rdata);
+
+    logic [15:0] data_next;
+
+    assign data_next[7:0] = (we[0]) ? wdata[7:0] : rdata[7:0];
+    assign data_next[15:8] = (we[1]) ? wdata[15:8] : rdata[15:8];
+
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) rdata <= 0;
+        else rdata <= data_next;
+    end
+endmodule: IO_register16

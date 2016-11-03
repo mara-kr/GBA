@@ -24,6 +24,9 @@ module gba_top (
     // Buttons register output
     logic [15:0] buttons;
 
+    logic [15:0] vcount;
+    assign vcount = 16'd0; // TODO Map to Grapics controller port
+
     // Memory signals
     logic [31:0] bus_addr, bus_wdata, bus_rdata;
     logic  [1:0] bus_size;
@@ -51,7 +54,9 @@ module gba_top (
                  .gfx_palette_obj_data, .gfx_palette_bg_data,
                  .gfx_vram_A_data2,
 
-                 .IO_reg_datas);
+                 .IO_reg_datas,
+
+                 .buttons, .vcount);
 
     // Interface for SNES controller
     controller cont (.clock(GCLK), .reset(BTND), .data_latch(JA2),
