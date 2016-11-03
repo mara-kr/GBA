@@ -6,6 +6,7 @@
  */
 
 `include "gba_core_defines.vh"
+`include "gba_mmio_defines.vh"
 
 module gba_top (
     input  logic  GCLK, BTND,
@@ -16,10 +17,10 @@ module gba_top (
     output logic [3:0] VGA_R, VGA_G, VGA_B,
     output logic VGA_VS, VGA_HS);
 
-    // 16.776 MHz clock for GBA/memory system */
+    // 16.776 MHz clock for GBA/memory system
     logic gba_clk;
     clk_wiz_0 clk0 (.clk_in1(GCLK), .reset(BTND), .gba_clk);
-    
+
     // Buttons register output
     logic [15:0] buttons;
 
@@ -33,10 +34,9 @@ module gba_top (
     logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data;
     logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data;
     logic [31:0] gfx_vram_A_data2;
-    
+
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
-    
-    
+
     assign LD = (SW[0]) ? buttons[15:8] : buttons[7:0];
 
     // BRAM memory controller
@@ -50,11 +50,48 @@ module gba_top (
                  .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
                  .gfx_palette_obj_data, .gfx_palette_bg_data,
                  .gfx_vram_A_data2,
-                 
+
                  .IO_reg_datas);
 
     // Interface for SNES controller
     controller cont (.clock(GCLK), .reset(BTND), .data_latch(JA2),
                      .data_clock(JA3), .serial_data(JA1), .buttons);
 
+    // Controller for debug output on LEDs
+    led_controller (.led_reg0(IO_reg_datas[`LED_REG0_IDX]),
+                    .led_reg1(IO_reg_datas[`LED_REG1_IDX]),
+                    .led_reg2(IO_reg_datas[`LED_REG2_IDX]),
+                    .led_reg3(IO_reg_datas[`LED_REG3_IDX]),
+                    .buttons, .LD, .SW);
+
 endmodule: gba_top
+
+// LED controller for mapping debug output
+module led_controller (
+    input  logic [7:0] SW,
+    input  logic [31:0] led_reg0, led_reg1, led_reg2, led_reg3,
+    input  logic [15:0] buttons,
+    output logic [7:0] LD);
+
+    always_comb begin
+        case (SW)
+            8'h0: LD = led_reg0[7:0];
+            8'h1: LD = led_reg0[15:8];
+            8'h2: LD = led_reg0[23:16];
+            8'h3: LD = led_reg0[31:24];
+            8'h4: LD = led_reg1[7:0];
+            8'h5: LD = led_reg1[15:8];
+            8'h6: LD = led_reg1[23:16];
+            8'h7: LD = led_reg1[31:24];
+            8'h8: LD = led_reg2[7:0];
+            8'h9: LD = led_reg2[15:8];
+            8'hA: LD = led_reg2[23:16];
+            8'hB: LD = led_reg2[31:24];
+            8'hC: LD = led_reg3[7:0];
+            8'hD: LD = led_reg3[15:8];
+            8'hE: LD = led_reg3[23:16];
+            8'hF: LD = led_reg3[31:24];
+            default: LD = (SW[7]) ? buttons[15:8] : buttons [7:0];
+        endcase
+    end
+endmodule: led_controller

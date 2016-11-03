@@ -1,4 +1,8 @@
 /* Signal definitions for ARM7TDMI-S Core test */
+
+`ifndef GBA_CORE_DEFINES_VH
+`define GBA_CORE_DEFINES_VH
+
 //import "DPI-C" function string getenv(input string env_name);
 
 /* Uncomment for logging */
@@ -76,3 +80,5 @@
 `define PAK_ROM_3_START  32'h0C00_0000 // Wait State 2
 `define PAK_ROM_3_END    32'h0DFF_FFFF
 `define PAK_ROM_3_SIZE   (1 << 14)
+
+`endif

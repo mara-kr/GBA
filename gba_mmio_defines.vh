@@ -4,7 +4,8 @@
  * NOTE: Offsets 0x15A-0x199 are unused, in case the system is running
  *       short on LUTs.
  */
-`include "gba_core_defines.vh"
+`ifndef GBA_MMIO_DEFINES_VH
+`define GBA_MMIO_DEFINES_VH
 
 `define DISPCNT_IDX     (32'h000 / 4)
 `define DISPSTAT_IDX    (32'h004 / 4)
@@ -141,3 +142,10 @@
 `define WAITCNT_IDX     (32'h204 / 4)
 `define IME_IDX         (32'h208 / 4)
 
+// Unofficial registers for debug
+`define LED_REG0_IDX     (32'h160 / 4)
+`define LED_REG1_IDX     (32'h164 / 4)
+`define LED_REG2_IDX     (32'h168 / 4)
+`define LED_REG3_IDX     (32'h16C / 4)
+
+`endif
