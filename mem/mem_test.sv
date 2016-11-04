@@ -14,17 +14,16 @@
 `define TEST_HALF
 
 module mem_test_CI (
-    input  logic GCLK,
-    (* mark_debug = "true" *) input  logic BTND,
+    input  logic GCLK, BTND,
     output logic [7:0] LD);
-    
+
     logic clock;
     clk_wiz_0 clk_wiz (.clk_in1(GCLK), .clk_out1(clock), .reset(BTND));
 
-    
-    (* mark_debug = "true" *) logic [31:0] bus_addr, bus_wdata, bus_rdata;
-    (* mark_debug = "true" *) logic  [1:0] bus_size;
-    (* mark_debug = "true" *) logic        bus_pause, bus_write;
+
+    logic [31:0] bus_addr, bus_wdata, bus_rdata;
+    logic  [1:0] bus_size;
+    logic        bus_pause, bus_write;
 
     logic [31:0] gfx_oam_addr, gfx_oam_data, gfx_vram_A_addr, gfx_vram_A_data;
     logic [31:0] gfx_vram_B_addr, gfx_vram_B_data;
@@ -49,9 +48,9 @@ module mem_test_CI (
     enum logic {WRITE, READ} cs, ns, cs_next;
     logic [31:0] addrs [26:0];
     logic [31:0] datas [26:0];
-    (* mark_debug = "true" *) logic [4:0] count;
+    logic [4:0] count;
     logic [4:0] count_next;
-    (* mark_debug = "true" *) logic       en, clr, fail;
+    logic       en, clr, fail;
 
     assign addrs = {32'h0000_0000, 32'h0000_0000, 32'h0700_0225,
                     32'h0400_0423, 32'h0400_0804, 32'h0400_0000,
@@ -117,7 +116,7 @@ module mem_test_CI (
 
     assign bus_wdata = datas[count-1];
     assign bus_addr = addrs[count];
-    (* mark_debug = "true" *) logic top_half, good_top, good_bot;
+    logic top_half, good_top, good_bot;
     assign top_half = addrs[count-1][1];
     assign good_top = (bus_wdata[31:16] == bus_rdata[31:16]) &&
                       (bus_rdata[15:0] == 16'd0);
@@ -163,7 +162,7 @@ endmodule: mem_test_CI
 /*
 module bram_reset
     (input  logic clock, reset,
-     output logic 
+     output logic
 
 module sim_top;
     logic GCLK, BTND;

@@ -35,9 +35,9 @@ module mem_top (
     input  logic clock, reset,
 
     /* Signals for CPU/DMA Bus */
-    (* mark_debug = "true" *) input  logic [31:0] bus_addr,
-    (* mark_debug = "true" *) input  logic [31:0] bus_wdata,
-    (* mark_debug = "true" *) output logic [31:0] bus_rdata,
+    input  logic [31:0] bus_addr,
+    input  logic [31:0] bus_wdata,
+    output logic [31:0] bus_rdata,
     input  logic  [1:0] bus_size,
     output logic        bus_pause,
     input  logic        bus_write,
@@ -52,13 +52,13 @@ module mem_top (
 
     // IO registers
     output logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
-    
+
     // Values for R/O registers
     input  logic [15:0] buttons, vcount
     );
 
     /* Single cycle latency for writes */
-    (* mark_debug = "true" *) logic [31:0] bus_addr_lat1;
+    logic [31:0] bus_addr_lat1;
     logic [31:0] bus_mem_addr;
     logic  [1:0] bus_size_lat1;
     logic        bus_write_lat1;
@@ -81,42 +81,42 @@ module mem_top (
                          .D(bus_write & ~bus_pause), .Q(bus_pause));
 
     logic [31:0] bus_system_addr, bus_system_rdata;
-    (* mark_debug = "true" *) logic        bus_system_read;
+    logic        bus_system_read;
 
     logic [31:0] bus_intern_addr, bus_intern_rdata;
     logic  [3:0] bus_intern_we;
-    (* mark_debug = "true" *) logic        bus_intern_read, bus_intern_write;
+    logic        bus_intern_read, bus_intern_write;
 
     logic [31:0] bus_vram_A_addr, bus_vram_A_rdata;
     logic  [3:0] bus_vram_A_we;
-    (* mark_debug = "true" *) logic        bus_vram_A_read, bus_vram_A_write;
+    logic        bus_vram_A_read, bus_vram_A_write;
 
     logic [31:0] bus_vram_B_addr, bus_vram_B_rdata;
     logic  [3:0] bus_vram_B_we;
-    (* mark_debug = "true" *) logic        bus_vram_B_read, bus_vram_B_write;
+    logic        bus_vram_B_read, bus_vram_B_write;
 
     logic [31:0] bus_vram_C_addr, bus_vram_C_rdata;
     logic  [3:0] bus_vram_C_we;
-    (* mark_debug = "true" *) logic        bus_vram_C_read, bus_vram_C_write;
+    logic        bus_vram_C_read, bus_vram_C_write;
 
     logic [31:0] bus_palette_bg_addr, bus_palette_bg_rdata;
     logic  [3:0] bus_palette_bg_we;
-    (* mark_debug = "true" *) logic        bus_palette_bg_read, bus_palette_bg_write;
+    logic        bus_palette_bg_read, bus_palette_bg_write;
 
     logic [31:0] bus_palette_obj_addr, bus_palette_obj_rdata;
     logic  [3:0] bus_palette_obj_we;
-    (* mark_debug = "true" *) logic        bus_palette_obj_read, bus_palette_obj_write;
+    logic        bus_palette_obj_read, bus_palette_obj_write;
 
     logic [31:0] bus_oam_addr, bus_oam_rdata;
     logic  [3:0] bus_oam_we;
-    (* mark_debug = "true" *) logic        bus_oam_read, bus_oam_write;
+    logic        bus_oam_read, bus_oam_write;
 
-    (* mark_debug = "true" *) logic  [3:0] bus_we;
+    logic  [3:0] bus_we;
 
     logic [3:0]  IO_reg_we [`NUM_IO_REGS-1:0];
     logic [`NUM_IO_REGS-1:0] IO_reg_en;
-    (* mark_debug = "true" *) tri0 [31:0] bus_io_reg_rdata;
-    (* mark_debug = "true" *) logic        bus_io_reg_read;
+    tri0 [31:0] bus_io_reg_rdata;
+    logic        bus_io_reg_read;
 
     mem_decoder decoder (.addr(bus_addr_lat1), .size(bus_size_lat1),
                          .write(bus_write_lat1), .byte_we(bus_we));
@@ -254,7 +254,7 @@ module mem_top (
                                         .rdata(IO_reg_datas[i][31:16]));
                 assign IO_reg_datas[i][15:0] = buttons;
             end else if (i == `VCOUNT_IDX) begin // Read-only for upper 16 bits
-                IO_register16 vcount_low 
+                IO_register16 vcount_low
                               (.clock, .reset, .wdata(bus_wdata[15:0]),
                                .we(IO_reg_we[i][1:0]),
                                .rdata(IO_reg_datas[i][15:0]));
