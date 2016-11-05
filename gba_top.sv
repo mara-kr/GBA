@@ -27,6 +27,12 @@ module gba_top (
     logic [15:0] vcount;
     assign vcount = 16'd0; // TODO Map to Grapics controller port
 
+    // CPU
+    logic        nIRQ, pause, abort;
+
+    // DMA
+    logic        dmaActive
+
     // Memory signals
     logic [31:0] bus_addr, bus_wdata, bus_rdata;
     logic  [1:0] bus_size;
@@ -40,8 +46,13 @@ module gba_top (
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
+    // CPU
+    cpu_top cpu (.clock(gba_clk), .reset(BTND), .nIRQ, .pause, .abort,
+                 .dmaActive, .rdata(bus_rdata), .addr(bus_addr),
+                 .wdata(bus_wdata), .size(bus_size), .write(bus_write));
+
     // BRAM memory controller
-    mem_top mem (.clock(GCLK), .reset(BTND), .bus_addr, .bus_wdata, .bus_rdata,
+    mem_top mem (.clock(gba_clk), .reset(BTND), .bus_addr, .bus_wdata, .bus_rdata,
                  .bus_size, .bus_pause, .bus_write,
 
                  .gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
