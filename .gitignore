@@ -17,3 +17,8 @@ cpu/build/*
 cpu/inter.vpd
 cpu/vc_hdrs.h
 cpu/BusLog.txt
+
+vivado/GBA.runs/*
+vivado/GBA.hw/*
+vivado*
+webtalk.jou
