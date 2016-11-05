@@ -29,26 +29,37 @@
 
 `default_nettype none
 `include "gba_core_defines.vh"
+`include "gba_mmio_defines.vh"
 
-module mem_top(
+module mem_top (
     input  logic clock, reset,
 
     /* Signals for CPU/DMA Bus */
-    input  logic [31:0] bus_addr, bus_wdata,
+    input  logic [31:0] bus_addr,
+    input  logic [31:0] bus_wdata,
     output logic [31:0] bus_rdata,
     input  logic  [1:0] bus_size,
     output logic        bus_pause,
     input  logic        bus_write,
 
-    /* Signals for graphics Bus */
+    // Signals for graphics Bus
     input  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
     input  logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr,
+    input  logic [31:0] gfx_vram_A_addr2,
     output logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
-    output logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data
+    output logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
+    output logic [31:0] gfx_vram_A_data2,
+
+    // IO registers
+    output logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+
+    // Values for R/O registers
+    input  logic [15:0] buttons, vcount
     );
 
     /* Single cycle latency for writes */
-    logic [31:0] bus_addr_lat1, bus_mem_addr;
+    logic [31:0] bus_addr_lat1;
+    logic [31:0] bus_mem_addr;
     logic  [1:0] bus_size_lat1;
     logic        bus_write_lat1;
 
@@ -102,6 +113,11 @@ module mem_top(
 
     logic  [3:0] bus_we;
 
+    logic [3:0]  IO_reg_we [`NUM_IO_REGS-1:0];
+    logic [`NUM_IO_REGS-1:0] IO_reg_en;
+    tri0 [31:0] bus_io_reg_rdata;
+    logic        bus_io_reg_read;
+
     mem_decoder decoder (.addr(bus_addr_lat1), .size(bus_size_lat1),
                          .write(bus_write_lat1), .byte_we(bus_we));
 
@@ -124,7 +140,7 @@ module mem_top(
     assign bus_vram_A_write = bus_vram_A_addr <= `VRAM_A_SIZE;
 
     assign bus_vram_B_read = (bus_addr_lat1 - `VRAM_B_START) <= `VRAM_B_SIZE;
-    assign bus_vram_B_write = bus_vram_A_addr <= `VRAM_B_SIZE;
+    assign bus_vram_B_write = bus_vram_B_addr <= `VRAM_B_SIZE;
 
     assign bus_vram_C_read = (bus_addr_lat1 - `VRAM_C_START) <= `VRAM_C_SIZE;
     assign bus_vram_C_write = bus_vram_C_addr <= `VRAM_C_SIZE;
@@ -139,6 +155,8 @@ module mem_top(
 
     assign bus_oam_read = (bus_addr_lat1 - `OAM_START) <= `OAM_SIZE;
     assign bus_oam_write = bus_oam_addr <= `OAM_SIZE;
+
+    assign bus_io_reg_read = (bus_addr_lat1 - `IO_REG_RAM_START) <= `IO_REG_RAM_SIZE;
 
     assign bus_intern_we = (bus_intern_write) ? bus_we : 4'd0;
     assign bus_vram_A_we = (bus_vram_A_write) ? bus_we : 4'd0;
@@ -170,6 +188,14 @@ module mem_top(
                       .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb({2'b0, gfx_vram_A_addr[31:2]}),
                       .doutb(gfx_vram_A_data), .dinb(32'b0));
+
+    vram_A_2 vram_A_2 (.clka(clock), .rsta(reset),
+                      .wea(bus_vram_A_we), .addra({2'b0, bus_vram_A_addr[31:2]}),
+                      .douta(), .dina(bus_wdata),
+
+                      .clkb(clock), .rstb(reset),
+                      .web(4'd0), .addrb({2'b0, gfx_vram_A_addr2[31:2]}),
+                      .doutb(gfx_vram_A_data2), .dinb(32'b0));
 
     vram_B vram_B    (.clka(clock), .rsta(reset),
                       .wea(bus_vram_B_we), .addra({2'b0, bus_vram_B_addr[31:2]}),
@@ -215,6 +241,31 @@ module mem_top(
                   .web(4'd0), .addrb({2'b0, gfx_oam_addr[31:2]}),
                   .doutb(gfx_oam_data), .dinb(32'b0));
 
+    //assign bus_io_reg_rdata = (~bus_io_reg_read) ? 32'b0 : 32'bz;
+
+    generate
+        for (genvar i = 0; i < `NUM_IO_REGS; i++) begin
+            localparam [31:0] reg_addr = `IO_REG_RAM_START + (i*4);
+            assign IO_reg_en[i] = bus_addr_lat1[31:2] == reg_addr[31:2];
+            assign IO_reg_we[i] = (IO_reg_en[i]) ? bus_we : 4'd0;
+            if (i == `KEYINPUT_IDX) begin // Read-only for lowest 16 bits
+                IO_register16 key_high (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                        .we(IO_reg_we[i][3:2]),
+                                        .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = buttons;
+            end else if (i == `VCOUNT_IDX) begin // Read-only for upper 16 bits
+                IO_register16 vcount_low
+                              (.clock, .reset, .wdata(bus_wdata[15:0]),
+                               .we(IO_reg_we[i][1:0]),
+                               .rdata(IO_reg_datas[i][15:0]));
+                assign IO_reg_datas[i][31:16] = vcount;
+            end else begin
+                assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
+                IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
+                                  .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
+            end
+        end
+    endgenerate
 
     always_comb begin
         if (bus_system_read)
@@ -233,6 +284,8 @@ module mem_top(
             bus_rdata = bus_palette_obj_rdata;
         else if (bus_oam_read)
             bus_rdata = bus_oam_rdata;
+        else if (bus_io_reg_read)
+            bus_rdata = bus_io_reg_rdata;
         else
             bus_rdata = 32'hz;
     end
@@ -286,3 +339,41 @@ module mem_register
     end
 
 endmodule: mem_register
+
+
+module IO_register32
+    (input  logic clock, reset,
+     input  logic [31:0] wdata,
+     input  logic [3:0]  we,
+     output logic [31:0] rdata);
+
+    logic [31:0] data_next;
+
+    assign data_next[7:0] = (we[0]) ? wdata[7:0] : rdata[7:0];
+    assign data_next[15:8] = (we[1]) ? wdata[15:8] : rdata[15:8];
+    assign data_next[23:16] = (we[2]) ? wdata[23:16] : rdata[23:16];
+    assign data_next[31:24] = (we[3]) ? wdata[31:24] : rdata[31:24];
+
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) rdata <= 0;
+        else rdata <= data_next;
+    end
+endmodule: IO_register32
+
+
+module IO_register16
+    (input  logic clock, reset,
+     input  logic [15:0] wdata,
+     input  logic [1:0]  we,
+     output logic [15:0] rdata);
+
+    logic [15:0] data_next;
+
+    assign data_next[7:0] = (we[0]) ? wdata[7:0] : rdata[7:0];
+    assign data_next[15:8] = (we[1]) ? wdata[15:8] : rdata[15:8];
+
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) rdata <= 0;
+        else rdata <= data_next;
+    end
+endmodule: IO_register16
