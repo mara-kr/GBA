@@ -14,28 +14,30 @@
 //      228 lines/screen (with blank)
 //      280896 cycles/screen
 //      59.727Hz refresh rate
+
+`define HSYNC_CYCLES 1596
+`define HDISP_CYCLES 1280
+`define HPW_CYCLES 190
+`define HBP_CYCLES 95
 /*
-`define HSYNC_CYCLES 1611
-`define HDISP_CYCLES 1288
-`define HPW_CYCLES 193
-`define HBP_CYCLES 97
-*/
 `define HSYNC_CYCLES 1600
 `define HDISP_CYCLES 1280
 `define HPW_CYCLES 192
 `define HBP_CYCLES 96
+*/
 `define HDISP_START (`HPW_CYCLES + `HBP_CYCLES)
 
-/*
-`define VSYNC_LINES 521
+
+`define VSYNC_LINES 528
 `define VDISP_LINES 480
-`define VBP_LINES 29
+`define VBP_LINES 36
 `define VPW_LINES 2
-*/
+/*
 `define VSYNC_LINES 525
 `define VDISP_LINES 480
 `define VBP_LINES 33
 `define VPW_LINES 2
+*/
 `define VDISP_START (`VPW_LINES + `VBP_LINES)
 
 `define NUM_ROWS 480
@@ -101,13 +103,12 @@ module vga
 
 endmodule: vga
 
-/*
 // TODO Make VGA color be data when addr is in range, and black otherwise
 // TODO Addr should be VGA index + 1
 module vga_top(
     input  logic clock, reset,
-    input  logic [14:0] data,
-    output logic [16:0] addr,
+    (* mark_debug = "true" *) input  logic [14:0] data,
+    (* mark_debug = "true" *) output logic [16:0] addr,
     (* mark_debug = "true" *) output logic [3:0] VGA_R, VGA_G, VGA_B,
     output logic VGA_HS, VGA_VS);
 
@@ -116,13 +117,14 @@ module vga_top(
     (* mark_debug = "true" *) logic [16:0] curr_addr;
 
     // Ignore LSB of color from graphics since we only have 4 bits
-    assign VGA_R = (curr_addr < `GBA_PIXELS) ? data[14:11] : 4'h0;
-    assign VGA_G = (curr_addr < `GBA_PIXELS) ? data[9:6] : 4'h0;
-    assign VGA_B = (curr_addr < `GBA_PIXELS) ? data[4:1] : 4'h0;
+    logic on_screen;
+    assign on_screen = row[8:1] < `GBA_ROWS && col[9:1] < `GBA_COLS;
+    assign VGA_R = (on_screen) ? data[14:11] : 4'h0;
+    assign VGA_G = (on_screen) ? data[9:6] : 4'h0;
+    assign VGA_B = (on_screen) ? data[4:1] : 4'h0;
 
     // Synchronous reads, don't make out of bounds accesses
-    assign addr = (curr_addr < `GBA_PIXELS-1) ? curr_addr + 1 : 17'd0;
-
+    assign addr = (row[8:1] < `GBA_ROWS && col[9:1] < `GBA_COLS) ? curr_addr : 17'd0;
 
     vga vga (.clock, .reset, .HS(VGA_HS), .VS(VGA_VS), .row, .col);
     //vga vga (.CLOCK_50(clock), .reset(reset), .HS(VGA_HS), .VS(VGA_VS), .row, .col, .blank());
@@ -137,14 +139,40 @@ module addr_calc(
     input  logic [9:0] col,
     output logic [16:0] addr);
 
-    logic [16:0] rows_idx;
-    mult_gen_0 mult (.P(rows_idx), .A(row), .B(`GBA_COLS));
 
-    assign addr = rows_idx + col;
+    logic updateable;
+    vga_counter #(1, 2) update_counter(.clock, .reset, .en(1'b1), .out(updateable));
+
+    (* mark_debug="true" *)logic [16:0] rows_idx, next_row_idx;
+
+    always_ff @(posedge clock, posedge reset)
+        if(reset)
+            rows_idx <= 0;
+        else
+            rows_idx <= next_row_idx;
+
+    //advance to the next row at the end of the current row
+    always_comb begin
+        next_row_idx = rows_idx;
+        if(updateable) begin
+            if(col == `NUM_COLS-1) begin
+                if(row == 9'h1FF) begin
+                    next_row_idx = 0;
+                end
+                else begin
+                    if(row[0]) begin
+                        next_row_idx = rows_idx + `GBA_COLS;
+                    end
+                end
+            end
+        end
+    end
+
+    assign addr = rows_idx + col[9:1];
 
 endmodule: addr_calc
-*/
 
+/*
 // If SW0 high, display horizontal test pattern, otherwise display
 // standard vertical test pattern
 module vga_top_testpattern (
@@ -218,6 +246,7 @@ module vga_top_testpattern (
 
     assign LD = SW;
 endmodule: vga_top_testpattern
+*/
 
 /*
 module vga_sim_top;
