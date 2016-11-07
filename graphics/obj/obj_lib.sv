@@ -28,9 +28,9 @@ endmodule: obj_counter
 module is_transparent (
     output logic        transparent,
     input  logic [15:0] data,
-    input  logic        palette_mode);
+    input  logic        palettemode);
 
-    assign transparent = (palette_mode) ? |data[7:0] : |data[3:0];
+    assign transparent = (palettemode) ? |data[7:0] : |data[3:0];
 endmodule: is_transparent
 
 module within_preimage_checker (
@@ -47,12 +47,12 @@ module obj_data_unit (
     input  logic [10:0] X,
     input  logic  [7:0] addr,
     input  logic  [3:0] palette_no,
-    input  logic        palette_mode);
+    input  logic        palettemode);
 
     logic [7:0] data8;
     assign data8 = (addr[0]) ? data[15:8] : data[7:0];
 
-    assign palette_info = (palette_mode) ? data8 :
+    assign palette_info = (palettemode) ? data8 :
                     (X[0] ? {palette_no, data8[7:4]} : {palette_no, data[3:0]});
 
 endmodule: obj_data_unit

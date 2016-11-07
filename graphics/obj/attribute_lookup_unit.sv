@@ -4,8 +4,8 @@ module attribute_lookup_unit (
     output logic [15:0] A, B, C, D,
     output logic  [6:0] OAMaddr,
     output logic        readOAM, done,
-    input  logic [63:0] OAMdata,
-    input  logic  [4:0] attr_no,
+    input  logic [31:0] OAMdata,
+    input  logic  [4:0] attrno,
     input  logic        loadAttrNo, start);
 
     logic [6:0] reg_out;
@@ -17,17 +17,18 @@ module attribute_lookup_unit (
         else cs <= ns;
     end
 
-    obj_register #(7) addr_reg (.clock, .reset, .q(reg_out), .d(OAMaddr + 1),
+    obj_register #(7) addr_reg (.clock, .reset, .q(reg_out), .d(OAMaddr + 4),
                                 .clear(1'b0), .en(1'b1));
-    assign OAMaddr = (loadAttrNo) ? {attr_no, 2'b0} : reg_out;
+    // Increment to read every other word
+    assign OAMaddr = (loadAttrNo) ? {attrno[3:0], 3'b0} : {reg_out[5:0], 1'b0};
 
-    obj_register #(16) regA (.clock, .reset, .q(A), .d(OAMdata[63:48]),
+    obj_register #(16) regA (.clock, .reset, .q(A), .d(OAMdata[31:16]),
                              .clear(1'b0), .en(writeA));
-    obj_register #(16) regB (.clock, .reset, .q(B), .d(OAMdata[63:48]),
+    obj_register #(16) regB (.clock, .reset, .q(B), .d(OAMdata[31:16]),
                              .clear(1'b0), .en(writeB));
-    obj_register #(16) regC (.clock, .reset, .q(C), .d(OAMdata[63:48]),
+    obj_register #(16) regC (.clock, .reset, .q(C), .d(OAMdata[31:16]),
                              .clear(1'b0), .en(writeC));
-    obj_register #(16) regD (.clock, .reset, .q(D), .d(OAMdata[63:48]),
+    obj_register #(16) regD (.clock, .reset, .q(D), .d(OAMdata[31:16]),
                              .clear(1'b0), .en(writeD));
 
     // State machine
