@@ -1,7 +1,7 @@
 module row_offsetter
   (input logic [6:0] max,
    input logic [6:0] row,
-  output logic offset);
+  output logic [13:0] offset);
 
   always_comb begin
     if(max[6])
@@ -36,7 +36,7 @@ module screen_lookup_unit
   assign yprime = y[9:3] & vmax[9:3];
 
   logic [13:0] row_offset;
-  row_offsetter (.max(hmax), .row(y), .offset(row_offset));
+  row_offsetter (.max(hmax[9:3]), .row(yprime), .offset(row_offset));
 
   logic [13:0] rotation_offset;
   assign rotation_offset = row_offset | {7'b0, xprime};
@@ -45,7 +45,7 @@ module screen_lookup_unit
   assign text_offset = {1'b0, yprime[5], xprime[5], yprime[4:0], xprime[4:0], 1'b0};
 
   logic [13:0] screen_offset;
-  graphics_mux_2_to_1 #(14) offset_mux(.I0(text_offset), .I1(rotation_offset), .S(rotate), .Y(screen_offset));
+  bg_mux_2_to_1 #(14) offset_mux(.i0(text_offset), .i1(rotation_offset), .s(rotate), .y(screen_offset));
 
   assign addr = {screen_base_block_no, 14'b0} | {2'b0, screen_offset};
   //addr calculation assumes 0 <= x <= hmax.

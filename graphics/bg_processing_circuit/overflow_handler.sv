@@ -5,14 +5,14 @@ module overflow_handler
    output logic transparent);
 
   logic h_overflow, v_overflow;
-  graphics_mag_comp #(10) horiz_overflow(.A(x), .B(hmax), .AgtB(h_overflow));
-  graphics_mag_comp #(10) vert_overflow(.A(y), .B(vmax), .AgtB(v_overflow));
+  bg_mag_comp #(10) horiz_overflow(.a(x), .b(hmax), .agtb(h_overflow), .aeqb(), .altb());
+  bg_mag_comp #(10) vert_overflow(.a(y), .b(vmax), .agtb(v_overflow), .aeqb(), .altb());
 
   logic overflow_occurred;
   assign overflow_occured = h_overflow | v_overflow;
 
   logic transparent_overflow;
   assign transparent_overflow = bitmapped | (rotate & ~overflow);
-  graphics_mux_2_to_1 #(1) transparency_mux(.I0(1'b0), .I1(transparent_overflow), .S(overflow_occured), .Y(transparent));
+  bg_mux_2_to_1 #(1) transparency_mux(.i0(1'b0), .i1(transparent_overflow), .s(overflow_occured), .y(transparent));
 
 endmodule: overflow_handler

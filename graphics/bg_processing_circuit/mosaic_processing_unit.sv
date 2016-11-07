@@ -5,8 +5,8 @@ module mosaic_processing_unit
    output logic x, y);
 
    logic [3:0] hmosaic, vmosaic;
-   graphics_2_to_1_mux #(4) hmosaic_mux(.I0(4'b0), .I1(hscale), .S(mosaic), .Y(hmosaic));
-   graphics_2_to_1_mux #(4) vmosaic_mux(.I0(4'b0), .I1(vscale), .S(mosaic), .Y(vmosaic));
+   bg_mux_2_to_1 #(4) hmosaic_mux(.i0(4'b0), .i1(hscale), .s(mosaic), .y(hmosaic));
+   bg_mux_2_to_1 #(4) vmosaic_mux(.i0(4'b0), .i1(vscale), .s(mosaic), .y(vmosaic));
 
    logic [4:0] hmod, vmod;
    assign hmod = {1'b0, hmosaic} + 5'b1;
