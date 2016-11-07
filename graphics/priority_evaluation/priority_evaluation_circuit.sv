@@ -6,15 +6,14 @@ module priority_eval (
     input logic clk,
     input logic clear,
 
-    input logic [15:0] winin,
-    input logic [15:0] winout,
-    input logic [15:0] disp,
-    input logic [15:0] dispcnt,
-    input logic [7:0] vcount,
-    input logic [15:0] win0H,
-    input logic [15:0] win1H,
-    input logic [15:0] win0V,
-    input logic [15:0] win1V,
+    input logic [15:0] WININ,
+    input logic [15:0] WINOUT,
+    input logic [15:0] DISPCNT,
+    input logic [7:0] VCOUNT,
+    input logic [15:0] WIN0H,
+    input logic [15:0] WIN1H,
+    input logic [15:0] WIN0V,
+    input logic [15:0] WIN1V,
 
     //control signals from FSM
     input logic [7:0] col,
@@ -24,6 +23,7 @@ module priority_eval (
     input logic read_data_2,
 
     output logic [31:0] address,
+    output logic addr_is_obj,
     output logic [14:0] color0,
     output logic [14:0] color1,
     output logic [19:0] layer0,
@@ -55,15 +55,15 @@ module priority_eval (
     logic out_valid3;
 
     logic window_obj;
-    logic win0;
-    logic win1;
+    logic WIN0;
+    logic WIN1;
 
     pe_window_detector wd (.objmode(OBJ[14:13]), .X(col),
-                        .Y(vcount), .win0H, .win1H,
-                        .win0V, .win1V, .obj(window_obj),
-                        .win0, .win1);
-    pe_window_masker wm (.obj(window_obj), .win0, .win1, .winin,
-                      .winout, .disp, .mask, .effects, .dispcnt);
+                        .Y(VCOUNT), .WIN0H, .WIN1H,
+                        .WIN0V, .WIN1V, .obj(window_obj),
+                        .WIN0, .WIN1);
+    pe_window_masker wm (.obj(window_obj), .WIN0, .WIN1, .WININ,
+                      .WINOUT, .mask, .effects, .DISPCNT);
 
     pe_register #(20) TOP(.q(top_saved), .d(top_in), .clk(), .clear(), 
                 .enable(replace2 | replace3), .rst_b(1'b1));
@@ -105,6 +105,7 @@ module priority_eval (
 
     assign data_from_PRAM = (address_saved[0]) ? data[31:16] : data[15:0];
     always_comb begin
+        addr_is_obj = layer0[17];
         if (send_address_1 == 1) begin
             address = layer0[7:0];
         end
