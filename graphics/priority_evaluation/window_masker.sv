@@ -4,7 +4,6 @@
     input logic win1,
     input logic [15:0] winin,
     input logic [15:0] winout,
-    input logic [15:0] disp,
     input logic [15:0] dispcnt,
     output logic [4:0] mask,
     output logic [4:0] effects);
