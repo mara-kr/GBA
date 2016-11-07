@@ -1,10 +1,10 @@
 module char_data_lookup
   (input logic [11:0] screendata,
-   input logic [4:0] baseblock,
+   input logic [1:0] baseblock,
    input logic [2:0] x, y,
    input logic rotate,
    input logic palettemode,
-   output logic addr
+   output logic [15:0] addr
   );
 
   logic [9:0] charname;
@@ -26,6 +26,6 @@ module char_data_lookup
   assign two_fifty_six_color_addr = {charname, yprime, xprime};
   bg_mux_2_to_1 #(16) addr_offset_mux(.i0(sixteen_color_addr), .i1(two_fifty_six_color_addr), .s(palettemode), .y(addr_offset));
 
-  assign addr = addr_offset + {baseblock, 10'b0};
+  assign addr = addr_offset + {baseblock, 14'b0};
   
 endmodule: char_data_lookup
