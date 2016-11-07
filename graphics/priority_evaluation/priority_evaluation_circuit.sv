@@ -2,26 +2,33 @@
 module priority_eval (
     input logic[19:0] BG,
     input logic [19:0] OBJ,
+    input logic [31:0] data,
     input logic clk,
     input logic clear,
 
     input logic [15:0] winin,
     input logic [15:0] winout,
     input logic [15:0] disp,
-    input logic [7:0] col,
     input logic [7:0] vcount,
     input logic [7:0] win0H,
     input logic [7:0] win1H,
     input logic [7:0] win0V,
     input logic [7:0] win1V,
 
+    //control signals from FSM
+    input logic [7:0] col,
+    input logic send_address_1,
+    input logic send_address_2,
+    input logic read_data_1,
+    input logic read_data_2,
+
+    output logic [31:0] address,
     output logic [14:0] color0,
     output logic [14:0] color1,
     output logic [19:0] layer0,
     output logic [19:0] layer1,
     output logic [4:0] effects);
 
-    logic [7:0] PRAM_addr;
     logic [7:0] top_in;
     logic [19:0] top_saved;
     logic [7:0] bot_in;
@@ -31,7 +38,7 @@ module priority_eval (
     logic replace_bot;
 
 
-    logic [4:0] mask; //TODO
+    logic [4:0] mask;
     logic replace1;
     logic replace2;
     logic replace3;
@@ -86,6 +93,51 @@ module priority_eval (
                 .select(replace_top));
     pe_mux_2_to_1 #(20) mux6(.out(layer1), .in0(bot_saved), .in1(bot_in), 
                 .select(replace_bot));
+
+    //code send one address a to the PRAM controller at a time
+    logic [7:0] address_saved;
+    logic data_1_is_top;
+    logic [15:0] data_from_PRAM;
+
+    assign data_from_PRAM = (address_saved[0]) ? data[31:16] : data[15:0];
+    always_comb begin
+        if (send_address_1 == 1) begin
+            address = layer0[7:0];
+        end
+        else if (send_address_2 == 1)  begin
+            if (layer0[7:0] == address_saved) begin
+                address = {24'h500000, layer1[7:0]};
+                data_1_is_top=1;
+            end
+            else begin 
+                address = {24'h500000, layer0[7:0]};
+                data_1_is_top=0;
+            end
+        end
+    end
+
+
+    always_ff @(posedge clk) begin
+        address_saved <= address;
+        if (read_data_1) begin
+            color0 <= data_from_PRAM[14:0];
+        end
+        else if (read_data_2) begin
+            if(data_1_is_top) begin
+                color1 <= data_from_PRAM[14:0];
+            end
+            else begin
+                color1 <= color0;
+                color0 <= data_from_PRAM[14:0];
+            end
+        end
+        else begin
+            color0 <= color0;
+            color1 <= color1;
+        end
+    end
+
+
 
 endmodule: priority_eval
 
