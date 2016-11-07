@@ -1,5 +1,5 @@
 module pe_valid (
-    input logic A,
+    input logic [19:0] A,
     input logic [4:0] mask,
     output logic valid);
 

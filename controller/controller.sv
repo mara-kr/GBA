@@ -18,32 +18,48 @@
 module controller
     (output logic        data_latch, data_clock,
      output logic [15:0] buttons,
-     input  logic        serial_data, clock, reset_n);
+     input  logic        serial_data, clock, reset);
 
      enum logic [2:0] {WAIT, LATCH_PULSE, LATCH_WAIT, CYC_HI, CYC_LO} cs, ns;
 
      logic [`CYC_WIDTH-1:0] cycle_cnt;
+     logic [15:0] buttons_int;
      logic [3:0] button_cyc_cnt;
      logic cycle_clr, button_clr, button_en;
 
      controller_counter #(`CYC_WIDTH)
-        cycles (.clock, .reset_n, .enable(1'b1), .clear(cycle_clr),
+        cycles (.clock, .reset, .enable(1'b1), .clear(cycle_clr),
                 .D(cycle_cnt));
 
      controller_counter #(4)
-        button_cycles (.clock, .reset_n, .enable(button_en),
+        button_cycles (.clock, .reset, .enable(button_en),
                        .clear(button_clr), .D(button_cyc_cnt));
 
      // State register
-     always_ff @(posedge clock, negedge reset_n) begin
-         if (~reset_n) cs <= WAIT;
+     always_ff @(posedge clock, posedge reset) begin
+         if (reset) cs <= WAIT;
          else cs <= ns;
      end
 
      // Buttons register
-     always_ff @(negedge data_clock, negedge reset_n) begin
-         if (~reset_n) buttons <= 16'd0;
-         else buttons[button_cyc_cnt] <= ~serial_data;
+     always_ff @(negedge data_clock, posedge reset) begin
+         if (reset) buttons_int <= 16'd0;
+         else buttons_int[button_cyc_cnt] <= ~serial_data;
+     end
+
+     // Reordering to match GBA spec
+     always_comb begin
+        buttons[0] = buttons_int[7]; // A
+        buttons[1] = buttons_int[15]; // B
+        buttons[2] = buttons_int[1]; // Select
+        buttons[3] = buttons_int[2]; // Start
+        buttons[4] = buttons_int[6]; // Right
+        buttons[5] = buttons_int[5]; // Left
+        buttons[6] = buttons_int[3]; // Up
+        buttons[7] = buttons_int[4]; // Down
+        buttons[8] = buttons_int[10]; // R
+        buttons[9] = buttons_int[9]; // L
+        buttons[15:10] = 6'd1;
      end
 
      always_comb begin
@@ -109,10 +125,10 @@ endmodule: controller
 module controller_counter
    #(parameter WIDTH=8)
     (output logic [WIDTH-1:0] D,
-     input  logic clock, reset_n, enable, clear);
+     input  logic clock, reset, enable, clear);
 
-     always_ff @(posedge clock, negedge reset_n) begin
-         if (~reset_n || clear) D <= 0;
+     always_ff @(posedge clock, posedge reset) begin
+         if (reset || clear) D <= 0;
          else if (enable) D <= D + 1;
          else D <= D;
      end
@@ -124,16 +140,16 @@ endmodule: controller_counter
 module controller_tb;
     logic        data_latch, data_clock;
     logic [15:0] buttons;
-    logic        serial_data, clock, reset_n;
+    logic        serial_data, clock, reset;
 
     controller dut (.*);
     initial begin
         $monitor("buttons = %b_%b_%b_%b", buttons[15:12], buttons[11:8],
             buttons[7:4], buttons[3:0]);
         clock = 0;
-        reset_n = 1;
-        #1 reset_n <= 0;
-        #1 reset_n <= 1;
+        reset = 0;
+        #1 reset <= 1;
+        #1 reset <= 0;
         forever #1 clock <= ~clock;
     end
 
