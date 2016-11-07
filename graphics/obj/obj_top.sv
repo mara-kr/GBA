@@ -23,21 +23,27 @@ module obj_top (
     logic        readOAM, done, loadAttrNo, start;
 
     logic  [9:0] objname;
-    logic  [8:0] objx;
+    logic  [8:0] objx, col, col_offset;
     logic  [7:0] objy, OAMaddr_obj, hsize, vsize, OAMaddr_attr;
     logic  [7:0] obj_hsize, obj_vsize;
     logic  [4:0] attrno;
     logic  [3:0] paletteno;
     logic  [1:0] objmode, pri;
     logic        mosaic, rotation, dblsize, hflip, vflip, palettemode;
-    logic        step, startrow;
+    logic        step, stepdot, stepobj, startrow;
+    logic        rot_scale_transparent;
 
     assign hsize = (dblsize) ? {obj_hsize[6:0], 1'b0} : obj_hsize;
     assign vsize = (dblsize) ? {obj_vsize[6:0], 1'b0} : obj_vsize;
 
     assign row = vcount + 1;
-    assign transparent = ~valid;
+    assign col = rotation ? objx + col_offset : objx - hsize[7:1] + col_offset;
+    assign transparent = (col >= 9'd240) || (rot_scale_transparent && rotation);
     assign obj_wdata = {pri, 3'd5, objmode, 5'd1, pinfo};
+    assign VRAM_mem_addr = vram_addr;
+    assign stepobj = step && (col_offset == hsize - 9'b1);
+
+    obj_counter #(9) col_cntr(.q(col_offset), .d(objx), .en(step), .clear(stepobj), .clock, .reset);
 
     obj_lookup_unit olu (.clock, .reset, .objname,.objx, .objy,
                          .OAMaddr(OAMaddr_obj),
@@ -51,7 +57,7 @@ module obj_top (
                                 .attrno, loadAttrNo, .start,
                                 .OAMdata(OAM_memdata));
 
-    row_visible_unit rvu (.visible, .row, .objy, .vsize);
+    row_visible_unit rvu (.visible, .row, .objy, .vsize, .rotation);
 
     within_preimage_checker wpc (.valid, .X, Y, .hsize(obj_hsize),
                                  .vsize(obj_vsize));
@@ -67,9 +73,11 @@ module obj_top (
                                 .transparent, .wcol(), rcol(), .we());
 
     obj_rot_scale_unit orsu (.a(A), .b(B), .c(C), .d(D), .objx, .objy, .hsize, .vsize,
-                             .dblsize, .x(X), .y(Y));
+                             .dblsize, .x(X), .y(Y), .transparent(rot_scale_transparent));
 
+    //TODO buffer addr, x, palettemode, & paletteno with registers
+    //Also buffer row, col, transparent
     obj_data_unit odu (.paletteinfo(pinfo), .X, .palettemode, .addr(vram_addr),
-                       .paletteno, .palettemode, .data(pinfo));
+                       .paletteno, .palettemode, .data(VRAM_mem_data));
 
 endmodule: obj_top

@@ -11,6 +11,7 @@ module bg_processing_circuit
    input logic [15:0] dispcnt,
    input logic [15:0] mosaic, //MOSAIC MMIO register
 
+   output logic [2:0] bgmode,
    output logic [16:0] bg_addr, //Used to lookup palette/color info
    output logic [15:0] bg_screen_addr, //used to lookup screen data
    input logic [15:0] bg_VRAM_data, bg_screen_data, //VRAMA/B and VRAM A data connections
@@ -24,7 +25,6 @@ module bg_processing_circuit
   logic start_row;
   logic new_frame;
   logic frame;
-  logic [2:0] bgmode;
   logic [7:0] vcount, row;
 
   //datapath signals 
