@@ -27,7 +27,7 @@ endmodule: row_offsetter
 module screen_lookup_unit
   (input logic [9:0] hmax, vmax,
    input logic [9:0] x, y,
-   input logic [1:0] screen_base_block_no,
+   input logic [4:0] screen_base_block_no,
    input logic rotate,
    output logic [15:0] addr);
 
@@ -36,7 +36,7 @@ module screen_lookup_unit
   assign yprime = y[9:3] & vmax[9:3];
 
   logic [13:0] row_offset;
-  row_offsetter (.max(hmax[9:3]), .row(yprime), .offset(row_offset));
+  row_offsetter offset(.max(hmax[9:3]), .row(yprime), .offset(row_offset));
 
   logic [13:0] rotation_offset;
   assign rotation_offset = row_offset | {7'b0, xprime};
@@ -47,7 +47,7 @@ module screen_lookup_unit
   logic [13:0] screen_offset;
   bg_mux_2_to_1 #(14) offset_mux(.i0(text_offset), .i1(rotation_offset), .s(rotate), .y(screen_offset));
 
-  assign addr = {screen_base_block_no, 14'b0} | {2'b0, screen_offset};
+  assign addr = {screen_base_block_no, 11'b0} | {2'b0, screen_offset};
   //addr calculation assumes 0 <= x <= hmax.
   //otherwise output is don't care since coordinate overflos the virtual screen
 

@@ -2,7 +2,7 @@ module mosaic_processing_unit
   (input logic [3:0] hscale, vscale,
    input logic mosaic,
    input logic [9:0] row, col,
-   output logic x, y);
+   output logic[9:0]  x, y);
 
    logic [3:0] hmosaic, vmosaic;
    bg_mux_2_to_1 #(4) hmosaic_mux(.i0(4'b0), .i1(hscale), .s(mosaic), .y(hmosaic));
