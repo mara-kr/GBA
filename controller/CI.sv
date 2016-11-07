@@ -21,7 +21,7 @@ module ChipInterface (
 
     controller cont (.data_latch(JA2), .data_clock(JA3),
                      .serial_data(JA1), .buttons, .clock(GCLK),
-                     .reset_n(~BTND));
+                     .reset(BTND));
 
     assign LD = (SW[0]) ? buttons[15:8] : buttons[7:0];
 
