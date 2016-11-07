@@ -8,17 +8,24 @@ module reg_decoder
    input logic [15:0] bg3pa, bg3pb, bg3pc, bg3pd,
    input logic [1:0] bgno,
    input logic [2:0] bgmode,
+   output logic [9:0] hofs, vofs,
    output logic [15:0] dx, dy, dmx, dmy,
    output logic [27:0] bgx, bgy,
    output logic [4:0] screen_base_block_no,
    output logic palettemode,
    output logic overflow,
-   output logic bitmapped,
+   output logic bitmapped, bitmap_color,
    output logic [1:0] char_base_block_no,
-   output logic [9:0] hmax, vmax
+   output logic [9:0] hmax, vmax,
+   output logic [1:0] bg_priority,
+   output logic mosaic, 
+   output logic rotate
   );
 
   logic [15:0] bgcnt, bghofs, bgvofs;
+
+  assign hofs = bghofs[8:0];
+  assign vofs = bgvofs[8:0];
 
   bg_mux_4_to_1 #(16) cnt_mux(.y(bgcnt), .i0(bg0cnt), .i1(bg1cnt), .i2(bg2cnt), .i3(bg3cnt), .s(bgno)); 
   bg_mux_4_to_1 #(16) hofs_mux(.y(bghofs), .i0(bg0hofs), .i1(bg1hofs), .i2(bg2hofs), .i3(bg3hofs), .s(bgno)); 
@@ -37,6 +44,9 @@ module reg_decoder
   assign overflow = bgcnt[13];
   assign char_base_block_no = bgcnt[3:2];
   assign bitmapped = bgmode > 3'd2;
+  assign mosaic = bgcnt[6];
+  assign rotate = (bgmode > 3'd1) || (bgmode[0] && (bgno[1]));
+  assign bitmap_color = (bgmode != 3'd4);
 
   logic [1:0] screen_size;
   assign screen_size = bgcnt[15:14];
