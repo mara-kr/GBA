@@ -60,11 +60,14 @@ endmodule: obj_data_unit
 module row_visible_unit (
     output logic       visible,
     input  logic [7:0] row, objy,
-    input  logic [6:0] vsize);
+    input  logic [6:0] vsize,
+    input  logic       rotation);
 
+    logic [7:0] lowerbound;
     logic [7:0] adjust_objy;
 
-    assign adjust_objy = objy + {1'b0, vsize};
-    assign visible = (row < adjust_objy) & (objy[7] | (objy >= row));
+    assign lowerbound = rotation ? objy - {2'b0, vsize} : objy;
+    assign upperbound = lowerbound + {1'b0, vsize};
+    assign visible = (row < upperbound) & (lowerbound[7] | (lowerbound <= row));
 
 endmodule: row_visible_unit
