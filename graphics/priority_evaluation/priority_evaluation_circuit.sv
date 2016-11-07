@@ -8,7 +8,6 @@ module priority_eval (
 
     input logic [15:0] winin,
     input logic [15:0] winout,
-    input logic [15:0] disp,
     input logic [15:0] dispcnt,
     input logic [7:0] vcount,
     input logic [15:0] win0H,
@@ -63,7 +62,7 @@ module priority_eval (
                         .win0V, .win1V, .obj(window_obj),
                         .win0, .win1);
     pe_window_masker wm (.obj(window_obj), .win0, .win1, .winin,
-                      .winout, .disp, .mask, .effects, .dispcnt);
+                      .winout, .mask, .effects, .dispcnt);
 
     pe_register #(20) TOP(.q(top_saved), .d(top_in), .clk(), .clear(), 
                 .enable(replace2 | replace3), .rst_b(1'b1));
