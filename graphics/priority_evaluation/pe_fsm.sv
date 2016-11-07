@@ -2,7 +2,11 @@ module fsm(
     input logic clock,
     input logic reset,
     output logic clear,
-    output logic [7:0] col);
+    output logic [7:0] col,
+    output logic send_address_1,
+    output logic send_address_2,
+    output logic read_data_1,
+    output logic read_data_2);
 
     logic incr_col;
     logic [1:0] cycle_delay_3;
@@ -12,6 +16,10 @@ module fsm(
     always_comb begin
         clear = 0;
         incr_col = 0;
+        send_address_1 = 0;
+        send_address_2 = 0;
+        read_data_1 = 0;
+        read_data_2 = 0;
         case (cs)
             START: begin
                 clear = 1;
@@ -24,17 +32,21 @@ module fsm(
             end
             P0: begin
                 ns = P1;
+                read_data_2 = 1;
             end
             P1: begin
                 ns = P2;
             end
             P2: begin
                 ns = P3;
+                send_address_1 = 1;
             end
             P3: begin
                 clear = 1;
                 incr_col = 1;
+                send_address_2 = 1;
                 ns = P0;
+                read_data_1 = 1;
             end
         endcase
     end
@@ -77,11 +89,14 @@ endmodule: fsm
     logic reset;
     logic clear;
     logic [7:0] col;
+    logic send_address_1;
+    logic send_address_2;
 
-    fsm dut (clock, reset, clear, col);
+    fsm dut (clock, reset, clear, col, send_address_1, send_address_2);
 
     initial begin
-        $monitor ("clock %b, reset %b, clear %b, col %d, state=%s", clock, reset, clear, col, dut.cs);
+        $monitor ("clock %b, reset %b, clear %b, col %d, send addr1 %b, send addr2 %b, state=%s", 
+            clock, reset, clear, col, send_address_1, send_address_2, dut.cs);
         reset <= 1;
         clock <= 0;
         #2 reset <= 0;
