@@ -103,7 +103,6 @@ module vga
 
 endmodule: vga
 
-
 // TODO Make VGA color be data when addr is in range, and black otherwise
 // TODO Addr should be VGA index + 1
 module vga_top(
@@ -139,18 +138,19 @@ module addr_calc(
     input  logic [8:0] row,
     input  logic [9:0] col,
     output logic [16:0] addr);
-    
+
+
     logic updateable;
     vga_counter #(1, 2) update_counter(.clock, .reset, .en(1'b1), .out(updateable));
 
     (* mark_debug="true" *)logic [16:0] rows_idx, next_row_idx;
-    
+
     always_ff @(posedge clock, posedge reset)
         if(reset)
             rows_idx <= 0;
         else
             rows_idx <= next_row_idx;
-            
+
     //advance to the next row at the end of the current row
     always_comb begin
         next_row_idx = rows_idx;
@@ -158,7 +158,7 @@ module addr_calc(
             if(col == `NUM_COLS-1) begin
                 if(row == 9'h1FF) begin
                     next_row_idx = 0;
-                end            
+                end
                 else begin
                     if(row[0]) begin
                         next_row_idx = rows_idx + `GBA_COLS;
