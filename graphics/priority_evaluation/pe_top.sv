@@ -12,7 +12,12 @@
     input logic [31:0] gfx_palette_bg_data,
     input logic [31:0] gfx_palette_obj_data,
     output logic [31:0] gfx_palette_bg_addr,
-    output logic [31:0] gfx_palette_obj_addr);
+    output logic [31:0] gfx_palette_obj_addr,
+    output logic [14:0] pe_color0,
+    output logic [14:0] pe_color1,
+    output logic [19:0] pe_layer0,
+    output logic [19:0] pe_layer1,
+    output logic [4:0] pe_effects);
     
     logic pe_clear;
     logic [7:0] pe_col;
@@ -22,11 +27,6 @@
     logic pe_read_data_2;
     logic addr_is_obj;
 
-    logic [14:0] pe_color0;
-    logic [14:0] pe_color1;
-    logic [19:0] pe_layer0;
-    logic [19:0] pe_layer1;
-    logic [4:0] pe_effects;
 
     logic [7:0] pe_row;
     logic [31:0] pe_data;
