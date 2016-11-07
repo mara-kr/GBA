@@ -9,11 +9,12 @@ module priority_eval (
     input logic [15:0] winin,
     input logic [15:0] winout,
     input logic [15:0] disp,
+    input logic [15:0] dispcnt,
     input logic [7:0] vcount,
-    input logic [7:0] win0H,
-    input logic [7:0] win1H,
-    input logic [7:0] win0V,
-    input logic [7:0] win1V,
+    input logic [15:0] win0H,
+    input logic [15:0] win1H,
+    input logic [15:0] win0V,
+    input logic [15:0] win1V,
 
     //control signals from FSM
     input logic [7:0] col,
@@ -29,9 +30,9 @@ module priority_eval (
     output logic [19:0] layer1,
     output logic [4:0] effects);
 
-    logic [7:0] top_in;
+    logic [19:0] top_in;
     logic [19:0] top_saved;
-    logic [7:0] bot_in;
+    logic [19:0] bot_in;
     logic [19:0] bot_saved;
 
     logic replace_top;
@@ -42,8 +43,11 @@ module priority_eval (
     logic replace1;
     logic replace2;
     logic replace3;
-    logic out_mux2;
-    logic out_mux3;
+    logic replace4;
+    logic replace5;
+
+    logic [19:0] out_mux2;
+    logic [19:0] out_mux3;
     logic select_mux3;
 
     logic out_valid1;
@@ -51,20 +55,20 @@ module priority_eval (
     logic out_valid3;
 
     logic window_obj;
-    logic [7:0] win0;
-    logic [7:0] win1;
+    logic win0;
+    logic win1;
 
-    window_detector wd (.objmode(OBJ[14:3]), .X(col),
+    pe_window_detector wd (.objmode(OBJ[14:13]), .X(col),
                         .Y(vcount), .win0H, .win1H,
                         .win0V, .win1V, .obj(window_obj),
                         .win0, .win1);
-    window_masker wm (.obj(window_obj), .win0, .win1, .winin,
-                      .winout, .disp, .mask, .effects);
+    pe_window_masker wm (.obj(window_obj), .win0, .win1, .winin,
+                      .winout, .disp, .mask, .effects, .dispcnt);
 
     pe_register #(20) TOP(.q(top_saved), .d(top_in), .clk(), .clear(), 
-                .enable(replace2 | replace3));
+                .enable(replace2 | replace3), .rst_b(1'b1));
     pe_register #(20) BOT(.q(bot_saved), .d(bot_in), .clk(), .clear(), 
-                .enable(replace4 | replcae5));
+                .enable(replace4 | replace5), .rst_b(1'b1));
     priority_comparator priority_comparator1(.inputA(BG), .inputB(OBJ), 
                 .mask(mask), .replace(replace1));
     

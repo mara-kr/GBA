@@ -8,10 +8,10 @@ module priority_comparator (
     logic out_validB;
     logic AgtB;
 
-    valid validA (.A(inputA), .mask(mask), .valid(out_validA));
-    valid validB (.A(inputB), .mask(mask), .valid(out_validB));
+    pe_valid validA (.A(inputA), .mask(mask), .valid(out_validA));
+    pe_valid validB (.A(inputB), .mask(mask), .valid(out_validB));
 
-    pe_mag_comp #(2) (.agtb(AgtB), .a(A[19:17]), .b(B[19:17]));
+    assign AgtB = (inputA[19:17] > inputB[19:17]) ? 1 : 0;
 
     assign replace = out_validA & (AgtB | ~out_validB);
 endmodule: priority_comparator

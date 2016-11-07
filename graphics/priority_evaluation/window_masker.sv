@@ -1,10 +1,11 @@
- module window_masker (
+ module pe_window_masker (
     input logic obj,
     input logic win0,
     input logic win1,
     input logic [15:0] winin,
     input logic [15:0] winout,
     input logic [15:0] disp,
+    input logic [15:0] dispcnt,
     output logic [4:0] mask,
     output logic [4:0] effects);
   
@@ -25,9 +26,9 @@
     pe_mux_4_to_1 #(5) mux4(.in0(5'h1F), .in1(winout[12:8]), .in2(5'b0), 
                     .in3(5'b0), .out(in_mask4), .select({dispcnt[15],obj}));
 
-    pe_mux_2_to_1 #(5) mux5(.in0(5'h1F), .in1(wionut[4:0]), 
+    pe_mux_2_to_1 #(5) mux5(.in0(5'h1F), .in1(winout[4:0]), 
                     .out(in_mask5), .select(~(win0 | win1)));
 
     assign mask = dispcnt[12:8] & in_mask2 & in_mask3 & in_mask4 & in_mask5;
     
-endmodule: window_masker
+endmodule: pe_window_masker
