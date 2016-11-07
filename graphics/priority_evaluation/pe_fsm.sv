@@ -1,4 +1,4 @@
-module fsm(
+module pe_fsm(
     input logic clock,
     input logic reset,
     output logic clear,
@@ -80,7 +80,7 @@ module fsm(
         end
     end
 
-endmodule: fsm
+endmodule: pe_fsm
 
 
 /**module fsm_tb ();
