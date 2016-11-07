@@ -23,6 +23,7 @@ module priority_eval (
     input logic read_data_2,
 
     output logic [31:0] address,
+    output logic addr_is_obj,
     output logic [14:0] color0,
     output logic [14:0] color1,
     output logic [19:0] layer0,
@@ -104,6 +105,7 @@ module priority_eval (
 
     assign data_from_PRAM = (address_saved[0]) ? data[31:16] : data[15:0];
     always_comb begin
+        addr_is_obj = layer0[17];
         if (send_address_1 == 1) begin
             address = layer0[7:0];
         end
