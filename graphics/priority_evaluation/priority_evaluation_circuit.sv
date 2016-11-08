@@ -6,14 +6,14 @@ module priority_eval (
     input logic clk,
     input logic clear,
 
-    input logic [15:0] WININ,
-    input logic [15:0] WINOUT,
-    input logic [15:0] DISPCNT,
-    input logic [7:0] VCOUNT,
-    input logic [15:0] WIN0H,
-    input logic [15:0] WIN1H,
-    input logic [15:0] WIN0V,
-    input logic [15:0] WIN1V,
+    input logic [15:0] winin,
+    input logic [15:0] winout,
+    input logic [15:0] dispcnt,
+    input logic [7:0] vcount,
+    input logic [15:0] win0H,
+    input logic [15:0] win1H,
+    input logic [15:0] win0V,
+    input logic [15:0] win1V,
 
     //control signals from FSM
     input logic [7:0] col,
@@ -55,15 +55,15 @@ module priority_eval (
     logic out_valid3;
 
     logic window_obj;
-    logic WIN0;
-    logic WIN1;
+    logic win0;
+    logic win1;
 
     pe_window_detector wd (.objmode(OBJ[14:13]), .X(col),
-                        .Y(VCOUNT), .WIN0H, .WIN1H,
-                        .WIN0V, .WIN1V, .obj(window_obj),
-                        .WIN0, .WIN1);
-    pe_window_masker wm (.obj(window_obj), .WIN0, .WIN1, .WININ,
-                      .WINOUT, .mask, .effects, .DISPCNT);
+                        .Y(vcount), .win0H, .win1H,
+                        .win0V, .win1V, .obj(window_obj),
+                        .win0, .win1);
+    pe_window_masker wm (.obj(window_obj), .win0, .win1, .winin,
+                      .winout, .mask, .effects, .dispcnt);
 
     pe_register #(20) TOP(.q(top_saved), .d(top_in), .clk(), .clear(), 
                 .enable(replace2 | replace3), .rst_b(1'b1));
