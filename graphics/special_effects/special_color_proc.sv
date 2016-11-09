@@ -1,16 +1,16 @@
 module special_color_proc (
     input logic [19:0] layer0,
-    input logic [13:0] bldcnt,
+    input logic [15:0] bldcnt,
     input logic [4:0] effects,
     input logic [19:0] layer1,
-    input logic [15:0] color0,
-    input logic [15:0] color1,
+    input logic [14:0] color0,
+    input logic [14:0] color1,
     input logic [15:0] bldalpha,
     input logic [15:0] bldy,
     output logic[15:0]  color);
 
-    logic [2:0] effects_bit_layer_0;
-    logic [2:0] effects_bit_layer_1;
+    logic [2:0] effects_bit_lay_0;
+    logic [2:0] effects_bit_lay_1;
     logic match1;
     logic match2;
     logic select_color;
@@ -21,7 +21,6 @@ module special_color_proc (
     
     //which bit of effects to look at
     assign effects_bit_lay_0 = (layer0[17]) ? 3'd4 : {1'b0, layer0[9:8]};
-    assign effects_bit_lay_1 = (layer1[17]) ? 3'd4 : {1'b0, layer1[9:8]};
 
     match_target mt1(.layer(layer0), .targets(bldcnt[5:0]), .match(match1));
     match_target mt2(.layer(layer1), .targets(bldcnt[13:8]), .match(match2));

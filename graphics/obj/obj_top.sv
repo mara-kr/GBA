@@ -3,10 +3,12 @@
 module obj_top (
     input  logic        clock, reset,
 
-    output logic [31:0] OAM_mem_addr, VRAM_mem_addr,
+    output logic [31:0] OAM_mem_addr, 
+    output logic [14:0] VRAM_mem_addr,
     output logic [19:0] obj_packet,
-    input  logic [31:0] OAM_mem_data, VRAM_mem_data,
-    input  logic [31:0] dispcnt,
+    input  logic [31:0] OAM_mem_data, 
+    input  logic [15:0] VRAM_mem_data,
+    input  logic [15:0] dispcnt,
     input  logic  [7:0] vcount, hcount, //vcount is current row being displayed, hcount is column being output by BG
     input  logic  [2:0] bgmode
 
@@ -171,7 +173,7 @@ module obj_top (
                              .row, .col(col[7:0]));
 
     obj_data_unit odu (.palette_info(pinfo), .X, .palettemode(palettemode_PIPELINE), .addr(vram_addr_PIPELINE),
-                       .paletteno(paletteno_PIPELINE), .data(VRAM_mem_data));
+                       .paletteno(paletteno_PIPELINE), .data({16'b0, VRAM_mem_data}));
 
     //pipeline registers
     obj_pipeline #(15) addr_reg(.q(vram_addr_PIPELINE), .d(vram_addr), .clock, .reset);

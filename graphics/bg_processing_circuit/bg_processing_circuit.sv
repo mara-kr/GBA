@@ -17,7 +17,7 @@ module bg_processing_circuit
    output logic [15:0] bg_screen_addr, //used to lookup screen data
    input logic [15:0] bg_VRAM_data, bg_screen_data, //VRAMA/B and VRAM A data connections
 
-   output logic [19:0] bg_data, //stage output
+   output logic [19:0] bg_packet, //stage output
 
    input clock, rst_b
   );
@@ -133,13 +133,13 @@ module bg_processing_circuit
                                 .bitmapped, .rotate, .overflow, .transparent);
 
   //mux on x input shown on diagram is redundant, both inputs are identical
-  data_formatter formatter(.data(bg_data[14:0]), .x(x_OUTPUT),
+  data_formatter formatter(.data(bg_packet[14:0]), .x(x_OUTPUT),
                            .paletteno(paletteno_OUTPUT),
                            .palettemode(palettemode_OUTPUT),
                            .transparent(transparent_OUTPUT),
                            .bitmapped(bitmapped_OUTPUT), .bgno(bgno_OUTPUT),
                            .bg_priority(bg_priority_OUTPUT),
-                           .bgused(bgused_OUTPUT), .formatted(bg_data));
+                           .bgused(bgused_OUTPUT), .formatted(bg_packet));
 
   //Here be registers.
   bg_pipeline #(3) x_int(.q(x_INTERMEDIATE), .d(x[2:0]), .clock);
@@ -172,8 +172,8 @@ module bg_processing_circuit
   bg_pipeline #(2) bgno_int(.q(bgno_INTERMEDIATE), .d(bgno), .clock);
   bg_pipeline #(2) bgno_out(.q(bgno_OUTPUT), .d(bgno_INTERMEDIATE), .clock);
 
-  bg_pipeline #(8) col_int(.q(col_INTERMEDIATE), .d(col), .clock);
-  bg_pipeline #(8) col_out(.q(col_OUTPUT), .d(col_INTERMEDIATE), .clock);
+  bg_pipeline #(9) col_int(.q(col_INTERMEDIATE), .d(col), .clock);
+  bg_pipeline #(9) col_out(.q(col_OUTPUT), .d(col_INTERMEDIATE), .clock);
 
 endmodule: bg_processing_circuit
 
