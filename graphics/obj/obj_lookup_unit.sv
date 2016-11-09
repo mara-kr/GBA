@@ -3,7 +3,8 @@ module obj_lookup_unit (
     input  logic        clock, reset,
     output logic  [9:0] objname,
     output logic  [8:0] objx,
-    output logic  [7:0] objy, OAMaddr, hsize, vsize,
+    output logic  [7:0] objy, OAMaddr,
+    output logic  [6:0] hsize, vsize,
     output logic  [4:0] attrno,
     output logic  [3:0] paletteno,
     output logic  [1:0] objmode, pri,
@@ -31,7 +32,7 @@ module obj_lookup_unit (
     obj_size_lookup osl (.hsize(hsize_d), .vsize(vsize_d),
                          .size(OAMdata[31:30]), .shape(OAMdata[15:14]));
 
-    obj_counter #(6) adr
+    obj_counter #(8) adr
         (.clock, .reset, .q(addr), .en(step | step_lat1), .clear(startrow));
 
     obj_register #(2) om (.clock, .reset, .q(objmode), .d(OAMdata[11:10]),
@@ -82,24 +83,24 @@ module obj_lookup_unit (
 endmodule: obj_lookup_unit
 
 module obj_size_lookup (
-    output logic [7:0] hsize, vsize,
+    output logic [6:0] hsize, vsize,
     input  logic [1:0] size, shape);
 
     always_comb begin
         case({shape, size})
-            {2'd0, 2'd0}: {hsize, vsize} = {8'd8, 8'd8};
-            {2'd0, 2'd1}: {hsize, vsize} = {8'd16, 8'd16};
-            {2'd0, 2'd2}: {hsize, vsize} = {8'd32, 8'd32};
-            {2'd0, 2'd3}: {hsize, vsize} = {8'd64, 8'd64};
-            {2'd1, 2'd0}: {hsize, vsize} = {8'd16, 8'd8};
-            {2'd1, 2'd1}: {hsize, vsize} = {8'd32, 8'd8};
-            {2'd1, 2'd2}: {hsize, vsize} = {8'd32, 8'd16};
-            {2'd1, 2'd3}: {hsize, vsize} = {8'd64, 8'd32};
-            {2'd2, 2'd0}: {hsize, vsize} = {8'd8, 8'd16};
-            {2'd2, 2'd1}: {hsize, vsize} = {8'd8, 8'd32};
-            {2'd2, 2'd2}: {hsize, vsize} = {8'd16, 8'd32};
-            {2'd2, 2'd3}: {hsize, vsize} = {8'd32, 8'd64};
-            default: {hsize, vsize} = {8'd0, 8'd0};
+            {2'd0, 2'd0}: {hsize, vsize} = {7'd8, 7'd8};
+            {2'd0, 2'd1}: {hsize, vsize} = {7'd16, 7'd16};
+            {2'd0, 2'd2}: {hsize, vsize} = {7'd32, 7'd32};
+            {2'd0, 2'd3}: {hsize, vsize} = {7'd64, 7'd64};
+            {2'd1, 2'd0}: {hsize, vsize} = {7'd16, 7'd8};
+            {2'd1, 2'd1}: {hsize, vsize} = {7'd32, 7'd8};
+            {2'd1, 2'd2}: {hsize, vsize} = {7'd32, 7'd16};
+            {2'd1, 2'd3}: {hsize, vsize} = {7'd64, 7'd32};
+            {2'd2, 2'd0}: {hsize, vsize} = {7'd8, 7'd16};
+            {2'd2, 2'd1}: {hsize, vsize} = {7'd8, 7'd32};
+            {2'd2, 2'd2}: {hsize, vsize} = {7'd16, 7'd32};
+            {2'd2, 2'd3}: {hsize, vsize} = {7'd32, 7'd64};
+            default: {hsize, vsize} = {7'd0, 7'd0};
         endcase
     end
 endmodule: obj_size_lookup
