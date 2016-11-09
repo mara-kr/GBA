@@ -11,7 +11,7 @@ module vram_controller
    input logic [31:0] graphics_VRAM_B_data,
    input logic [31:0] graphics_VRAM_C_data,
    input logic [31:0] graphics_VRAM_A_data2,
-   input logic [2:0] bg_mode,
+   input logic [2:0] bgmode,
    input logic clock
   );
 
@@ -22,10 +22,10 @@ module vram_controller
   always_comb begin
     graphics_VRAM_A_addr = bg_addr[15:0];
     graphics_VRAM_C_addr = obj_addr[13:0];
-    graphics_VRAM_B_addr = bg_mode > 2 ? bg_addr[13:0] : obj_addr[13:0];
+    graphics_VRAM_B_addr = bgmode > 2 ? bg_addr[13:0] : obj_addr[13:0];
     graphics_VRAM_A_addr2 = bg_screen_addr;
     
-    if(bg_mode > 2) begin
+    if(bgmode > 2) begin
       obj_data = saved_obj_addr[1] ? graphics_VRAM_C_data[31:16] : graphics_VRAM_C_data[15:0];
       if(saved_bg_addr[16]) begin
         bg_data = saved_bg_addr[1] ? graphics_VRAM_B_data[31:16] : graphics_VRAM_B_data[15:0];
