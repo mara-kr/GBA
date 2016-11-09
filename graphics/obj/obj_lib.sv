@@ -25,6 +25,28 @@ module obj_counter #(parameter WIDTH = 8) (
     end
 endmodule: obj_counter
 
+module obj_pipeline #(parameter WIDTH = 1) (
+    input  logic clock, reset,
+    input  logic [WIDTH-1:0] d,
+    output logic [WIDTH-1:0] q);
+
+    always_ff @(posedge clock, posedge reset)
+        if(reset)
+            q <= 0;
+        else
+            q <= d;
+
+endmodule: obj_pipeline
+
+module obj_mux_2_to_1 #(parameter WIDTH = 6) (
+    input  logic [WIDTH-1:0] i0, i1,
+    input  logic s,
+    output logic [WIDTH-1:0] y);
+
+    assign y = s ? i1 : i0;
+
+endmodule: obj_mux_2_to_1
+
 module is_transparent (
     output logic        transparent,
     input  logic [15:0] data,
@@ -35,39 +57,48 @@ endmodule: is_transparent
 
 module within_preimage_checker (
     output logic        valid,
-    input  logic [10:0] X, Y, hsize, vsize);
+    input  logic [5:0] X, Y, 
+    input  logic [6:0] hsize, vsize);
 
-    assign valid = (X < hsize) & (Y < vsize);
+    assign valid = ({1'b0, X} < hsize) & ({1'b0, Y} < vsize);
 
 endmodule: within_preimage_checker
 
 module obj_data_unit (
     output logic  [7:0] palette_info,
-    input  logic [15:0] data,
-    input  logic [10:0] X,
-    input  logic  [7:0] addr,
-    input  logic  [3:0] palette_no,
+    input  logic [31:0] data,
+    input  logic [5:0] X,
+    input  logic  [14:0] addr,
+    input  logic  [3:0] paletteno,
     input  logic        palettemode);
 
     logic [7:0] data8;
-    assign data8 = (addr[0]) ? data[15:8] : data[7:0];
+    
+    always_comb begin
+        case(addr[1:0])
+            2'b00: data8 = data[7:0];
+            2'b01: data8 = data[15:8];
+            2'b10: data8 = data[23:16];
+            2'b11: data8 = data[31:24];
+        endcase
+    end
 
     assign palette_info = (palettemode) ? data8 :
-                    (X[0] ? {palette_no, data8[7:4]} : {palette_no, data[3:0]});
+                    (X[0] ? {paletteno, data8[7:4]} : {paletteno, data[3:0]});
 
 endmodule: obj_data_unit
 
 module row_visible_unit (
     output logic       visible,
     input  logic [7:0] row, objy,
-    input  logic [6:0] vsize,
+    input  logic [7:0] vsize,
     input  logic       rotation);
 
-    logic [7:0] lowerbound;
+    logic [7:0] lowerbound, upperbound;
     logic [7:0] adjust_objy;
 
-    assign lowerbound = rotation ? objy - {2'b0, vsize} : objy;
-    assign upperbound = lowerbound + {1'b0, vsize};
+    assign lowerbound = rotation ? objy - vsize : objy;
+    assign upperbound = lowerbound + vsize;
     assign visible = (row < upperbound) & (lowerbound[7] | (lowerbound <= row));
 
 endmodule: row_visible_unit

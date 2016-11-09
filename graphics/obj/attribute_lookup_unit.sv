@@ -2,14 +2,15 @@
 module attribute_lookup_unit (
     input  logic        clock, reset,
     output logic [15:0] A, B, C, D,
-    output logic  [6:0] OAMaddr,
+    output logic  [7:0] OAMaddr,
     output logic        readOAM, done,
     input  logic [31:0] OAMdata,
     input  logic  [4:0] attrno,
-    input  logic        loadAttrNo, start);
+    input  logic        start);
 
-    logic [6:0] reg_out;
+    logic [7:0] reg_out;
     logic       writeA, writeB, writeC, writeD;
+    logic       loadAttrNo;
     enum logic [2:0] {IDLE, WRITE_A, WRITE_B, WRITE_C, WRITE_D, FINISH} cs, ns;
 
     always_ff @(posedge clock, posedge reset) begin
@@ -17,10 +18,10 @@ module attribute_lookup_unit (
         else cs <= ns;
     end
 
-    obj_register #(7) addr_reg (.clock, .reset, .q(reg_out), .d(OAMaddr + 4),
+    obj_register #(8) addr_reg (.clock, .reset, .q(reg_out), .d(OAMaddr + 8'd4),
                                 .clear(1'b0), .en(1'b1));
     // Increment to read every other word
-    assign OAMaddr = (loadAttrNo) ? {attrno[3:0], 3'b0} : {reg_out[5:0], 1'b0};
+    assign OAMaddr = (loadAttrNo) ? {attrno[4:0], 3'b0} : reg_out[7:0];
 
     obj_register #(16) regA (.clock, .reset, .q(A), .d(OAMdata[31:16]),
                              .clear(1'b0), .en(writeA));

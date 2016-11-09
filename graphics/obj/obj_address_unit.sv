@@ -2,7 +2,7 @@
 module obj_address_unit (
     output logic [14:0] addr,
     input  logic  [9:0] objname,
-    input  logic  [3:0] bg_mode,
+    input  logic  [2:0] bgmode,
     input  logic        palettemode,
     input  logic        oam_mode,
     input  logic  [5:0] x, y,
@@ -16,7 +16,7 @@ module obj_address_unit (
 
     obj_pri_encoder pri_enc (.pri, .val(adj_size));
 
-    assign data_offset = {objname[9] | bg_mode | (bg_mode[1] & bg_mode[0]),
+    assign data_offset = {objname[9] | bgmode | (bgmode[1] & bgmode[0]),
                           objname[8:1], objname[0] & (~palettemode | oam_mode),
                           5'b0};
     assign adj_x = (palettemode) ? x : {1'b0, x[5:1]};

@@ -11,6 +11,7 @@ module bg_processing_circuit
    input logic [15:0] dispcnt,
    input logic [15:0] mosaic, //MOSAIC MMIO register
 
+   output logic [7:0] hcount, //BG processing circuit will tell OBJ circuit which column to output to 
    output logic [2:0] bgmode,
    output logic [16:0] bg_addr, //Used to lookup palette/color info
    output logic [15:0] bg_screen_addr, //used to lookup screen data
@@ -28,7 +29,7 @@ module bg_processing_circuit
   logic [7:0] vcount, row;
 
   //datapath signals 
-  logic [8:0] col;
+  logic [8:0] col, col_INTERMEDIATE, col_OUTPUT;
   logic [1:0] bgno, bgno_INTERMEDIATE, bgno_OUTPUT;
 
   logic [15:0] dx, dmx, dy, dmy;
@@ -69,6 +70,7 @@ module bg_processing_circuit
 
   //control logic
   assign bgmode = dispcnt[2:0];
+  assign hcount = col_OUTPUT[7:0];
 
   assign start_row = (col == 9'd307) & (&bgno);
   assign new_frame = start_row && (vcount == 8'd227);
@@ -169,6 +171,9 @@ module bg_processing_circuit
 
   bg_pipeline #(2) bgno_int(.q(bgno_INTERMEDIATE), .d(bgno), .clock);
   bg_pipeline #(2) bgno_out(.q(bgno_OUTPUT), .d(bgno_INTERMEDIATE), .clock);
+
+  bg_pipeline #(8) col_int(.q(col_INTERMEDIATE), .d(col), .clock);
+  bg_pipeline #(8) col_out(.q(col_OUTPUT), .d(col_INTERMEDIATE), .clock);
 
 endmodule: bg_processing_circuit
 
