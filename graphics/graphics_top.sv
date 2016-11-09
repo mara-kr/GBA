@@ -100,12 +100,16 @@ module graphics_top(
     logic [19:0] pe_layer1;
     logic [4:0] pe_effects;
     logic [19:0] bg;
+    logic [19:0] obj;
 
     logic [16:0] bg_addr;
+    logic [14:0] obj_addr;
+    logic [15:0] obj_data;
     logic [15:0] bg_screen_addr;
     logic [15:0] bg_VRAM_data;
     logic [15:0] bg_screen_data;
     logic [2:0] bgmode;
+    logic [7:0] hcount;
 
     //Background
     bg_processing_circuit bg_circ(
@@ -120,31 +124,39 @@ module graphics_top(
         .bg2pb, .bg2pc, .bg2pd,
         .bg3pa, .bg3pb, .bg3pc, .bg3pd,
         .dispcnt, .mosaic,
+        .hcount,
         .bgmode, .bg_addr,
         .bg_screen_addr, 
         .bg_VRAM_data, .bg_screen_data,
-        .bg_data(bg),
+        .bg_packet(bg),
         .clock, .rst_b(~reset));
 
     vram_controller vram(.bg_addr, .bg_screen_addr, .obj_addr,
-        .bg_data, .obj_data, .bg_screen_data,
-        .graphics_VRAM_A_addr(gfx_vram_A_addr),
-        .graphics_VRAM_B_addr(gfx_vram_B_addr),
-        .graphics_VRAM_C_addr(gfx_vram_C_addr),
-        .graphics_VRAM_A_addr2(gfx_vram_A_addr2),
+        .bg_data(bg_VRAM_data), .obj_data, .bg_screen_data,
+        //address is 16 bits
+        .graphics_VRAM_A_addr(gfx_vram_A_addr[15:0]),
+        .graphics_VRAM_B_addr(gfx_vram_B_addr[13:0]),
+        .graphics_VRAM_C_addr(gfx_vram_C_addr[13:0]),
+        .graphics_VRAM_A_addr2(gfx_vram_A_addr2[15:0]),
         .graphics_VRAM_A_data(gfx_vram_A_data),
         .graphics_VRAM_B_data(gfx_vram_B_data),
         .graphics_VRAM_C_data(gfx_vram_C_data),
         .graphics_VRAM_A_data2(gfx_vram_A_data2),
-        .bg_mode,
+        .bgmode,
         .clock);
 
     //Object
+    obj_top obj_circ(.clock, .reset,
+        .OAM_mem_addr(gfx_oam_addr), .VRAM_mem_addr(obj_addr),
+        .obj_packet(obj),
+        .OAM_mem_data(gfx_oam_data), .VRAM_mem_data(obj_data),
+        .vcount(vcount + 8'b1), .hcount,
+        .dispcnt, .bgmode);
     //row is 3 ahead of VCOUNT
     //Priority Evaluation
     pe_top pe( 
         .clock, .reset,
-        .BG(bg), .OBJ,
+        .BG(bg), .OBJ(obj),
         .winin, .winout,.dispcnt,
         .win0H, .win1H, .win0V, .win1V,
         .vcount,
