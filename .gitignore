@@ -13,6 +13,11 @@ simv.daidir/*
 *.swp
 .__afs*
 
+csrc/*
+simv.daidir/*
+*.swp
+.__afs*
+
 
 *.bak
 *.log

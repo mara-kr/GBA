@@ -63,7 +63,6 @@ module audio_top (
     logic [7:0] NR41, NR42, NR43, NR44;
     logic [23:0] channel_4;
 
-   
     //mixed channel
     logic [7:0] NR50, NR51,  NR52;
     logic [23:0] ch4_mixed_l;
@@ -284,3 +283,4 @@ module audio_top (
 endmodule: audio_top
 
 `default_nettype wire
+
