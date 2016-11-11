@@ -1,3 +1,7 @@
+`default_nettype none
+`include "../gba_mmio_defines.vh"
+`include "../gba_core_defines.vh"
+
 module audio_top (
     input logic clk_100,
     input logic reset,
@@ -74,40 +78,40 @@ module audio_top (
     logic reset_c4;
     
 
-    assign NR10 = IO_reg_datas[SOUND1_CNT_L_IDX][7:0];
-    assign NR11 = IO_reg_datas[SOUND1_CNT_H_IDX][23:16];
-    assign NR12 = IO_reg_datas[SOUND1_CNT_H_IDX][31:24];
-    assign NR13 = IO_reg_datas[SOUND1_CNT_X_IDX][7:0];
-    assign NR14 = IO_reg_datas[SOUND1_CNT_X_IDX][15:8];
+    assign NR10 = IO_reg_datas[`SOUND1CNT_L_IDX][7:0];
+    assign NR11 = IO_reg_datas[`SOUND1CNT_H_IDX][23:16];
+    assign NR12 = IO_reg_datas[`SOUND1CNT_H_IDX][31:24];
+    assign NR13 = IO_reg_datas[`SOUND1CNT_X_IDX][7:0];
+    assign NR14 = IO_reg_datas[`SOUND1CNT_X_IDX][15:8];
 
-    assign NR21 = IO_reg_datas[SOUND2_CNT_L_IDX][7:0];
-    assign NR22 = IO_reg_datas[SOUND2_CNT_L_IDX][15:8];
-    assign NR23 = IO_reg_datas[SOUND2_CNT_H_IDX][7:0];
-    assign NR24 = IO_reg_datas[SOUND2_CNT_H_IDX][15:8];
+    assign NR21 = IO_reg_datas[`SOUND2CNT_L_IDX][7:0];
+    assign NR22 = IO_reg_datas[`SOUND2CNT_L_IDX][15:8];
+    assign NR23 = IO_reg_datas[`SOUND2CNT_H_IDX][7:0];
+    assign NR24 = IO_reg_datas[`SOUND2CNT_H_IDX][15:8];
 
-    assign NR30 = IO_reg_datas[SOUND3_CNT_L_IDX][7:0];
-    assign NR31 = IO_reg_datas[SOUND3_CNT_H_IDX][23:16];
-    assign NR32 = IO_reg_datas[SOUND3_CNT_H_IDX][31:24];
-    assign NR33 = IO_reg_datas[SOUND3_CNT_X_IDX][7:0];
-    assign NR34 = IO_reg_datas[SOUND3_CNT_X_IDX][15:8];
+    assign NR30 = IO_reg_datas[`SOUND3CNT_L_IDX][7:0];
+    assign NR31 = IO_reg_datas[`SOUND3CNT_H_IDX][23:16];
+    assign NR32 = IO_reg_datas[`SOUND3CNT_H_IDX][31:24];
+    assign NR33 = IO_reg_datas[`SOUND3CNT_X_IDX][7:0];
+    assign NR34 = IO_reg_datas[`SOUND3CNT_X_IDX][15:8];
 
-    assign addr_0x90 = IO_reg_datas[WAVE_RAM0_L][15:0];
-    assign addr_0x92 = IO_reg_datas[WAVE_RAM0_H][31:16];
-    assign addr_0x94 = IO_reg_datas[WAVE_RAM1_L][15:0];
-    assign addr_0x96 = IO_reg_datas[WAVE_RAM1_H][31:16];
-    assign addr_0x98 = IO_reg_datas[WAVE_RAM2_L][15:0];
-    assign addr_0x9A = IO_reg_datas[WAVE_RAM2_H][13:16];
-    assign addr_0x9C = IO_reg_datas[WAVE_RAM3_L][15:0];
-    assign addr_0x9E = IO_reg_datas[WAVE_RAM3_H][31:16];
+    assign addr_0x90 = IO_reg_datas[`WAVE_RAM0_L_IDX][15:0];
+    assign addr_0x92 = IO_reg_datas[`WAVE_RAM0_H_IDX][31:16];
+    assign addr_0x94 = IO_reg_datas[`WAVE_RAM1_L_IDX][15:0];
+    assign addr_0x96 = IO_reg_datas[`WAVE_RAM1_H_IDX][31:16];
+    assign addr_0x98 = IO_reg_datas[`WAVE_RAM2_L_IDX][15:0];
+    assign addr_0x9A = IO_reg_datas[`WAVE_RAM2_H_IDX][13:16];
+    assign addr_0x9C = IO_reg_datas[`WAVE_RAM3_L_IDX][15:0];
+    assign addr_0x9E = IO_reg_datas[`WAVE_RAM3_H_IDX][31:16];
     
-    assign NR41 = IO_reg_datas[SOUND4_CNT_L_IDX][7:0];
-    assign NR42 = IO_reg_datas[SOUND4_CNT_L_IDX][15:8];
-    assign NR43 = IO_reg_datas[SOUND4_CNT_H_IDX][7:0];
-    assign NR44 = IO_reg_datas[SOUND4_CNT_H_IDX][15:8];
+    assign NR41 = IO_reg_datas[`SOUND4CNT_L_IDX][7:0];
+    assign NR42 = IO_reg_datas[`SOUND4CNT_L_IDX][15:8];
+    assign NR43 = IO_reg_datas[`SOUND4CNT_H_IDX][7:0];
+    assign NR44 = IO_reg_datas[`SOUND4CNT_H_IDX][15:8];
 
-    assign NR50 = IO_reg_datas[SOUND_CNT_L_IDX][7:0];
-    assign NR51 = IO_reg_datas[SOUND_CNT_L_IDX][15:8];
-    assign NR52 = IO_reg_datas[SOUND_CNT_X_IDX][7:0];
+    assign NR50 = IO_reg_datas[`SOUNDCNT_L_IDX][7:0];
+    assign NR51 = IO_reg_datas[`SOUNDCNT_L_IDX][15:8];
+    assign NR52 = IO_reg_datas[`SOUNDCNT_X_IDX][7:0];
 
     audio_top top(
     .clk_100(clk_100_buffered),
@@ -206,6 +210,7 @@ module audio_top (
             hphone_r <= {mixed_right};
             hphone_l <= {mixed_left};
         end
+    end
 
     BUFG BUFG_inst(
         .O (clk_100_buffered),
@@ -213,4 +218,6 @@ module audio_top (
         );
 
  
-endmodule: audio_testbench_sv
+endmodule: audio_top
+
+`default_nettype wire
