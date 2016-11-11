@@ -63,11 +63,11 @@ module audio_top (
     logic [7:0] NR41, NR42, NR43, NR44;
     logic [23:0] channel_4;
 
-    
+   
     //mixed channel
     logic [7:0] NR50, NR51,  NR52;
-    logic [23:0] mixed_left;
-    logic [23:0] mixed_right;
+    logic [23:0] ch4_mixed_l;
+    logic [23:0] ch4_mixed_r;
     logic pause_c1;
     logic pause_c2;
     logic pause_c3;
@@ -77,7 +77,25 @@ module audio_top (
     logic reset_c3;
     logic reset_c4;
     
+     //direct sound
+    logic [15:0] FIFO_A_L;
+    logic [15:0] FIFO_A_H;
+    logic [15:0] FIFO_B_L;
+    logic [15:0] FIFO_B_H;
+    logic [15:0] TM0_CNT_L;
+    logic [15:0] TM1_CNT_L;
 
+    //final mixer
+    logic [23:0] direct_A;
+    logic [23:0] direct_B;
+    logic [15:0] SOUND_CNT_H;
+    logic timer_numA;
+    logic timer_numB;
+    logic reset_directA;
+    logic reset_directB;
+    logic [23:0] output_wave_r;
+    logic [23:0] output_wave_l;
+    
     assign NR10 = IO_reg_datas[`SOUND1CNT_L_IDX][7:0];
     assign NR11 = IO_reg_datas[`SOUND1CNT_H_IDX][23:16];
     assign NR12 = IO_reg_datas[`SOUND1CNT_H_IDX][31:24];
@@ -112,6 +130,11 @@ module audio_top (
     assign NR50 = IO_reg_datas[`SOUNDCNT_L_IDX][7:0];
     assign NR51 = IO_reg_datas[`SOUNDCNT_L_IDX][15:8];
     assign NR52 = IO_reg_datas[`SOUNDCNT_X_IDX][7:0];
+
+    assign FIFO_A_L = IO_reg_datas[`FIFO_A_L][15:0];
+    assign FIFO_A_H = IO_reg_datas[`FIFO_A_H][31:16];
+    assign FIFO_B_L = IO_reg_datas[`FIFO_B_L][15:0];
+    assign FIFO_B_H = IO_reg_datas[`FIFO_B_H][31:16];
 
     audio_top top(
     .clk_100(clk_100_buffered),
@@ -161,11 +184,11 @@ module audio_top (
         .output_wave(channel_3));
     
     square2 sq2(
-            .system_clock(clk_100),
-            .clock_256(clk_256_output),
-            .reset((reset || reset_c2)),
-            .NR20, .NR21, .NR22, .NR23,
-            .NR24, .output_wave(channel_2));
+        .system_clock(clk_100),
+        .clock_256(clk_256_output),
+        .reset((reset || reset_c2)),
+        .NR20, .NR21, .NR22, .NR23,
+        .NR24, .output_wave(channel_2));
     
     square1 sq1(
         .system_clock(clk_100),
@@ -174,19 +197,59 @@ module audio_top (
         .NR10, .NR11, .NR12, .NR13,
         .NR14, .output_wave(channel_1));
     
-   ch4_mixer m(.system_clock(clk_100),
-       .reset,
-       .channel1(channel_1),
-       .channel2(channel_2),
-       .channel3(channel_3),
-       .channel4(channel_4),
-       .pause_channel_1(pause_c1),
-       .pause_channel_2(pause_c2),
-       .pause_channel_3(pause_c3),
-       .pause_channel_4(pause_c4),
-       .NR50, .NR51, .NR52,
-       .output_wave_left(mixed_left),
-       .output_wave_right(mixed_right)); //used to reset the system
+    ch4_mixer m(.system_clock(clk_100),
+        .reset,
+        .channel1(channel_1),
+        .channel2(channel_2),
+        .channel3(channel_3),
+        .channel4(channel_4),
+        .pause_channel_1(pause_c1),
+        .pause_channel_2(pause_c2),
+        .pause_channel_3(pause_c3),
+        .pause_channel_4(pause_c4),
+        .NR50, .NR51, .NR52,
+        .output_wave_left(ch4_mixed_l),
+        .output_wave_right(ch4_mixed_r)); //used to reset the system
+
+    /* variables for direct sound*/
+
+
+    direct_sound dsA(
+        .clock(clk_100),
+        .reset(reset),
+        .FIFO_L(FIFO_A_L),
+        .FIFO_H(FIFO_A_H),
+        .TM0_CNT_L,
+        .TM1_CNT_L,
+        .timer_num(timer_numA),
+        .sequencer_reset (reset_directA), 
+        .waveout(direct_A));
+
+    direct_sound dsB(
+        .clock(clk_100),
+        .reset(reset),
+        .FIFO_L(FIFO_B_L),
+        .FIFO_H(FIFO_B_H),
+        .TM0_CNT_L,
+        .TM1_CNT_L,
+        .timer_num(timer_numB),
+        .sequencer_reset(reset_directB), 
+        .waveout(direct_B));
+
+    ds_mixer (
+        .clock(clk_100),
+        .reset,
+        .direct_A,
+        .direct_B,
+        .channel4_l(ch4_mixed_l),
+        .channel4_r(ch4_mixed_r),
+        .sound_cnt_h(SOUND_CNT_H),
+        .timer_numA,
+        .timer_numB,
+        .reset_directA,
+        .reset_directB,
+        .output_wave_r,
+        .output_wave_l);
 
     power p(
         .clock(clk_100),
@@ -207,8 +270,8 @@ module audio_top (
 
         if (new_sample == 1) begin
             hphone_valid <= 1'b1;
-            hphone_r <= {mixed_right};
-            hphone_l <= {mixed_left};
+            hphone_r <= {output_wave_r};
+            hphone_l <= {output_wave_l};
         end
     end
 
