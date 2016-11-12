@@ -22,7 +22,11 @@ entity ThumbDecoder is port(
 end ThumbDecoder;
 
 architecture RTL of ThumbDecoder is
+attribute mark_debug : string;
+
 signal HalfWordForDecode : std_logic_vector(15 downto 0) := (others => '0');
+attribute mark_debug of HalfWordForDecode : signal is "true";
+
 signal DecoderOut        : std_logic_vector(31 downto 0) := (others => '0');
 
 signal ThBLFP_Int : std_logic := '0'; -- The first part of Thumb branch with link instruction
@@ -69,6 +73,7 @@ begin
     ThBLFP_Int <= '0';
     ThBLSP_Int <= '0';
     ThBLFP_Reg_EN <= '0';
+    DecoderOut(31 downto 0) <= (others => '0');
     if (HalfWordForDecode(15 downto 11)="00100") then           -- MOV1
         DecoderOut(31 downto 28) <= "1110";
         DecoderOut(27 downto 20) <= "00111011";
@@ -376,6 +381,7 @@ begin
         --DecoderOut(21) <= '0' when HalfWordForDecode(HalfWordForDecode(10 downto 8))='1'
         --                      else '1';
         -- Send help, I am lost
+        DecoderOut(21) <= '1';
         DecoderOut(20) <= '1';
         DecoderOut(19 downto 16) <= '0' & HalfWordForDecode(10 downto 8);
         DecoderOut(15 downto 8) <= "00000000";

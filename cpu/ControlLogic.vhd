@@ -199,11 +199,16 @@ entity ControlLogic is port(
 end ControlLogic;
 
 architecture RTL of ControlLogic is
+attribute mark_debug : string;
+attribute mark_debug of InstForDecode : signal is "true";
+
 
 signal LastAddr     : std_logic_vector(31 downto 0);
 
 -- Saved value of InstForDecode input(valid for the whole time of instruction execution)
 signal InstForDecodeLatched  : std_logic_vector(InstForDecode'range) := (others =>'0');
+attribute mark_debug of InstForDecodeLatched : signal is "true";
+
 -- Saved abort flag
 signal IFAbtStored : std_logic := '0';
 
@@ -293,6 +298,7 @@ signal IDC_B     : std_logic := '0';
 signal IDC_BL    : std_logic := '0';
 signal IDC_BX    : std_logic := '0';
 
+
 -- Load
 signal IDC_LDR   : std_logic := '0';
 signal IDC_LDRT  : std_logic := '0';
@@ -366,8 +372,11 @@ signal IDR_MRS     : std_logic := '0';
 
 -- Branch
 signal IDR_B     : std_logic := '0';
+attribute mark_debug of IDR_B : signal is "true";
 signal IDR_BL    : std_logic := '0';
 signal IDR_BX    : std_logic := '0';
+attribute mark_debug of IDR_BX : signal is "true";
+
 
 -- Load
 signal IDR_LDR   : std_logic := '0';
@@ -540,7 +549,9 @@ signal SWP_St3 : std_logic := '0';
 -- Branch (3 cycle)
 signal nBranch_St0 : std_logic := '0';
 signal Branch_St1  : std_logic := '0';
+attribute mark_debug of Branch_St1 : signal is "true";
 signal Branch_St2  : std_logic := '0';
+attribute mark_debug of Branch_St2 : signal is "true";
 
 signal BLink       : std_logic := '0'; -- Link indicator for branch with link
 
@@ -577,9 +588,13 @@ signal NewTFlag  : std_logic := '0';
 
 -- Pipeline stagnation
 signal StagnatePipeline_Int : std_logic := '0';
+attribute mark_debug of StagnatePipeline_Int : signal is "true";
+
 
 -- StagnatePipeline signal delayed by one clock cycle
 signal StagnatePipelineDel_Int : std_logic := '0';
+attribute mark_debug of StagnatePipelineDel_Int : signal is "true";
+
 
 -- First instruction fetch after reset
 signal FirstInstFetch_Int : std_logic := '0';
@@ -1628,8 +1643,9 @@ ExceptionVectorSel <= ExceptFC;  -- First cycle of exception handling
 -- TBD  '0'- ARM(+4) / '1'- Thumb(+2)
 PCIncStep  <= (CPSRTFlag or (IDR_BX and RmBitZero and (not CPSRTFlag)));
 -- TBD  '0'- ARM(+4) or STM/LDM / '1'- Thumb(+2)
-AdrIncStep <= ((CPSRTFlag and (not IDR_BX or Branch_St1 or Branch_St2)) or
-              (IDR_BX and RmBitZero and (not CPSRTFlag))) and
+AdrIncStep <= ((CPSRTFlag and (not (IDR_BX and (not RmBitZero) and -- THUMB & ~(Transfer to ARM)
+                                    (not Branch_St1) and (not Branch_St2)))) or
+              (IDR_BX and RmBitZero)) and                            -- Transfer to THUMB
               (not STM_St) and (not nLDM_St0);
 
 -- Switch ADDR register to the input of PC

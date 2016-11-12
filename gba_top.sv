@@ -9,7 +9,8 @@
 `include "gba_mmio_defines.vh"
 
 module gba_top (
-    input  logic  GCLK, BTND,
+    input  logic  GCLK, 
+    (* mark_debug = "true" *) input  logic  BTND,
     input  logic [7:0] SW,
     input  logic JA1,
     output logic JA2, JA3,
@@ -19,7 +20,7 @@ module gba_top (
 
     // 16.776 MHz clock for GBA/memory system
     logic gba_clk;
-    clk_wiz_0 clk0 (.clk_in1(GCLK), .reset(BTND), .gba_clk);
+    clk_wiz_0 clk0 (.clk_in1(GCLK), .gba_clk);
 
     // Buttons register output
     logic [15:0] buttons;
@@ -28,15 +29,15 @@ module gba_top (
     assign vcount = 16'd0; // TODO Map to Grapics controller port
 
     // CPU
-    logic        nIRQ, pause, abort;
+    logic        nIRQ, abort;
 
     // DMA
-    logic        dmaActive
+    logic        dmaActive;
 
     // Memory signals
-    logic [31:0] bus_addr, bus_wdata, bus_rdata;
-    logic  [1:0] bus_size;
-    logic        bus_pause, bus_write;
+    (* mark_debug = "true" *) logic [31:0] bus_addr, bus_wdata, bus_rdata;
+    (* mark_debug = "true" *) logic  [1:0] bus_size;
+    (* mark_debug = "true" *) logic        bus_pause, bus_write;
     logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr;
     logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr;
     logic [31:0] gfx_vram_A_addr2;
@@ -46,8 +47,20 @@ module gba_top (
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
+    assign dmaActive = 1'b0;
+    assign nIRQ = 1'b1;
+    assign abort = 1'b0;
+    assign gfx_vram_A_addr = 32'b0;
+    assign gfx_vram_A_addr2 = 32'b0;
+    assign gfx_vram_B_addr = 32'b0;
+    assign gfx_vram_C_addr = 32'b0;
+    assign gfx_oam_addr = 32'b0;
+    assign gfx_palette_bg_addr = 32'b0;
+    assign gfx_palette_obj_addr = 32'b0;
+    
     // CPU
-    cpu_top cpu (.clock(gba_clk), .reset(BTND), .nIRQ, .pause, .abort,
+    cpu_top cpu (.clock(gba_clk), .reset(BTND), .nIRQ, .pause(bus_pause), 
+                 .abort,
                  .dmaActive, .rdata(bus_rdata), .addr(bus_addr),
                  .wdata(bus_wdata), .size(bus_size), .write(bus_write));
 

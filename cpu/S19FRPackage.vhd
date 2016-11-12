@@ -22,7 +22,8 @@ if Number=1 then
      if Temp>=Number then  
       return i; 
      end if; 
-end loop; 
+end loop;
+return 0; 
 end if;	 
 end LOG2;	 
  

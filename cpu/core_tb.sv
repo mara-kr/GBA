@@ -49,7 +49,7 @@ module core_tb;
     logic inst_ex;
     /* So the simulation stops */
     initial begin
-        #20000 $finish;
+        #2000000 $finish;
         //#200 $finish;
     end
 

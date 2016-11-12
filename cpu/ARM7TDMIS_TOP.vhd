@@ -508,6 +508,8 @@ component ControlLogic is port(
 					   );
 end component;
 
+attribute mark_debug : string;
+
 -- Control signals
 signal CLKEN        : std_logic := '0';
 
@@ -543,15 +545,23 @@ signal	Shifter_ShCFlagEn  : std_logic := '0';
 
 -- Register file signals
 signal RegFile_ABusOut        : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of RegFile_ABusOut : signal is "true";
 signal RegFile_BBusOut        : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of RegFile_BBusOut : signal is "true";
 signal RegFile_ABusRdAdr      : std_logic_vector(3 downto 0) := (others => '0');
+attribute mark_debug of RegFile_ABusRdAdr : signal is "true";
 signal RegFile_BBusRdAdr      : std_logic_vector(3 downto 0) := (others => '0');
+attribute mark_debug of RegFile_BBusRdAdr : signal is "true";
 signal RegFile_WriteAdr       : std_logic_vector(3 downto 0) := (others => '0');
 signal RegFile_WrEn	  	      : std_logic := '0';
 signal RegFile_PCIn           : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of RegFile_PCIn : signal is "true";
 signal RegFile_PCOut          : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of RegFile_PCOut : signal is "true";
 signal RegFile_PCWrEn         : std_logic := '0';
+attribute mark_debug of RegFile_PCWrEn : signal is "true";
 signal RegFile_PCSrcSel       : std_logic := '0';
+attribute mark_debug of RegFile_PCSrcSel : signal is "true";
 signal RegFile_RFMode         : std_logic_vector(4 downto 0) := (others => '0');
 signal RegFile_SaveBaseReg    : std_logic := '0';
 signal RegFile_RestoreBaseReg : std_logic := '0';
@@ -570,6 +580,7 @@ signal Mult_MulResRdy   : std_logic := '0';
 signal PSR_CPSRIn     : std_logic_vector(31 downto 0) := (others => '0');
 signal PSR_CPSRWrEn   : std_logic_vector(31 downto 0) := (others => '0');
 signal PSR_CPSROut    : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of PSR_CPSROut : signal is "true";
 signal PSR_CFlForMul  : std_logic := '0';
 signal PSR_SPSRIn     : std_logic_vector(31 downto 0) := (others => '0');
 signal PSR_SPSRWrMsk  : std_logic_vector(3 downto 0)  := (others => '0');
@@ -580,6 +591,7 @@ alias  PSR_CFlagOut   : std_logic is PSR_CPSROut(29);
 
 -- Instruction pipeline signals
 signal IPDR_InstForDecode       : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of IPDR_InstForDecode : signal is "true";
 signal IPDR_StagnatePipeline    : std_logic := '0';
 signal IPDR_StagnatePipelineDel	: std_logic := '0';
 signal IPRD_FirstInstFetch		: std_logic := '0';
@@ -609,6 +621,7 @@ signal AMI_FromPC		      : std_logic_vector(31 downto 0) := (others => '0');
 signal AMI_ToPC			      : std_logic_vector(31 downto 0) := (others => '0');
 signal AMI_FromALU		      : std_logic_vector(31 downto 0) := (others => '0');
 signal AMI_ExceptionVector    : std_logic_vector(31 downto 0) := (others => '0');
+
 signal AMI_PCInSel		      : std_logic := '0';
 signal AMI_ALUInSel		      : std_logic := '0';
 signal AMI_ExceptionVectorSel : std_logic := '0';
@@ -616,6 +629,13 @@ signal AMI_PCIncStep          : std_logic := '0';
 signal AMI_AdrIncStep		  : std_logic := '0';
 signal AMI_AdrToPCSel		  : std_logic := '0';
 signal AMI_AdrCntEn			  : std_logic := '0';
+attribute mark_debug of AMI_PCInSel : signal is "true";
+attribute mark_debug of AMI_ALUInSel : signal is "true";
+attribute mark_debug of AMI_AdrIncStep : signal is "true";
+attribute mark_debug of AMI_PCIncStep : signal is "true";
+attribute mark_debug of AMI_AdrCntEn : signal is "true";
+
+
 
 -- Data out register signals
 signal DOR_StoreHalfWord : std_logic := '0';
@@ -653,12 +673,15 @@ signal LSAdrGen_SngMltSel	  : std_logic := '0';
 
 -- Bit 0,1 clearer
 signal RBM_DataOut    : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of RBM_DataOut : signal is "true";
 signal RBM_ClrBitZero : std_logic := '0';
 signal RBM_ClrBitOne  : std_logic := '0';
 signal RBM_SetBitZero : std_logic := '0';
 
 -- Thumb decoder signals
 signal ThDC_ThumbDecoderEn   : std_logic := '0';
+attribute mark_debug of ThDC_ThumbDecoderEn : signal is "true";
+
 
 -- Internal copies of some core outputs
 signal ADDR_Int              : std_logic_vector(ADDR'range) := (others => '0');
@@ -933,9 +956,6 @@ ResltBitMask_Inst:component ResltBitMask port map(
 	                                              );
 
 
--- Thumb decoder is implemented
-ThDcdIsImplemented:if CThumbImp generate
-
 ThumbDecoder_Inst:component ThumbDecoder
 	                   port map(
 					   InstForDecode   => IPDR_ToThumbDecoder,
@@ -949,14 +969,6 @@ ThumbDecoder_Inst:component ThumbDecoder
                        CLKEN           => CLKEN
 					       );
 
-end generate;
-
--- Thumb decoder is not implemented
-ThDcdIsNotImplemented:if not CThumbImp generate
-IPDR_FromThumbDecoder <= IPDR_ToThumbDecoder;
-ThDC_ThBLFP <= '0';
-ThDC_ThBLSP <= '0';
-end generate;
 
 -- Control logic
 ControlLogic_Inst:component ControlLogic port map(

@@ -8,6 +8,7 @@ VCS_REG_FILE=$(BUILD_DIR)/vcs_reg_out.txt
 
 BIOS_FILE=$(WORK_DIR)/gba_bios.hex
 #BIOS_FILE=$(WORK_DIR)/roms/pixels.hex
+#BIOS_FILE=$(WORK_DIR)/roms/mem_test.hex
 ROM_FILE=$(WORK_DIR)/roms/pixels.hex
 #QEMU_REG_FILE=$(WORK_DIR)/test_files/pixels.regs
 QEMU_REG_FILE=$(WORK_DIR)/test_files/bios.regs

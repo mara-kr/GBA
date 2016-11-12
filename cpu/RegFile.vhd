@@ -38,9 +38,12 @@ entity RegFile is  generic(DebugMode : boolean := TRUE); -- Debug mode flag
 end RegFile;
 
 architecture RTL of RegFile is
+attribute mark_debug : string;
+
 
 -- User mode registers r0-r15
 type UMRegisterFileType is array(0 to 15) of std_logic_vector(31 downto 0);
+
 signal UMRegisterFile : UMRegisterFileType := (others => x"0000_0000");
 
 -- FIQ mode registers r8-r14
@@ -75,11 +78,35 @@ signal UndefMode : std_logic := '0';
 
 signal SavedBaseReg : std_logic_vector(31 downto 0);
 signal RegsIn       : std_logic_vector(31 downto 0);
+signal lr           : std_logic_vector(31 downto 0);
+signal sp           : std_logic_vector(31 downto 0);
+signal r0           : std_logic_vector(31 downto 0);
+signal r1           : std_logic_vector(31 downto 0);
+signal r2           : std_logic_vector(31 downto 0);
+signal r4           : std_logic_vector(31 downto 0);
+
+attribute mark_debug of lr : signal is "true";
+attribute mark_debug of sp : signal is "true";
+attribute mark_debug of r0 : signal is "true";
+attribute mark_debug of r1 : signal is "true";
+attribute mark_debug of r2 : signal is "true";
+attribute mark_debug of r4 : signal is "true";
+
+
+
 
 -- Individual write enable signals
 --signal IndWrEn : std_logic_vector(15 downto 0) := (others => '0');
 
 begin
+
+lr <= UMRegisterFile(14);
+sp <= UMRegisterFile(13);
+r0 <= UMRegisterFile(0);
+r1 <= UMRegisterFile(1);
+r2 <= UMRegisterFile(2);
+r4 <= UMRegisterFile(4);
+
 
 --IndWriteEnLogic:for i in IndWrEn'range generate
 -- IndWrEn(i)	<= '1' when i=WriteAdr else '0';
@@ -147,6 +174,7 @@ elsif CLK='1' and CLK'event then                  -- Clock
 
 end if;
 end process;
+
 
 -- Program counter logic
 PCSrc <= PCIn when PCSrcSel='0' else DataIn;
