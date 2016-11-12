@@ -3,7 +3,7 @@
 module dma_fsm
   (input  logic start, mem_wait, dma_repeat, preempted, enable, xferDone, genIRQ,
    output logic loadCNT, loadSAD, loadDAD, stepSRC, stepDEST, storeRData,
-   output logic active, write, disable_dma,
+   output logic active, write, disable_dma, set_wdata,
    output logic irq,
    input  logic clk, rst_b);
 
@@ -16,6 +16,7 @@ module dma_fsm
       cs <= ns;
 
   always_comb begin
+    set_wdata = 1'b0;
     loadCNT = 1'b0;
     loadSAD = 1'b0;
     loadDAD = 1'b0;
@@ -83,6 +84,7 @@ module dma_fsm
         end
       end
       WRITE: begin
+        set_wdata = 1'b1;
         if(mem_wait) begin
           ns = WRITE;
           active = 1'b1;
@@ -139,7 +141,7 @@ endmodule: dma_fsm
 module dma_dp
   (input  logic loadCNT, loadSAD, loadDAD,
    input  logic stepSRC, stepDEST, storeRData,
-   input  logic active, write,
+   input  logic active, write, set_wdata,
    input  logic srcGamePak, destGamePak,
 
    output logic xferDone,
@@ -218,7 +220,7 @@ module dma_dp
 
   assign addr = active ? desiredAddr : {32{1'bz}};
   assign wen = active ? write : 1'bz;
-  assign wdata = active ? data : {32{1'bz}};
+  assign wdata = (set_wdata) ? data : {32{1'bz}};
   assign size = active ? {1'b1, xferWord}: {32{1'bz}};
 
   mux_2_to_1 #(32) srcAddrMux (.i0(steppedSAddr), .i1({srcAddrH, srcAddrL}), .s(loadSAD), .y(nextSAddr));
@@ -327,14 +329,15 @@ module dma_unit
   
   logic dma_stop;
   logic start;
+  logic set_wdata;
 
   assign disable_dma = fsm_disable | dma_stop;
 
   dma_start starter(.controlH, .vcount, .hcount, .sound, .sound_req, .start, .dma_stop, .clk, .rst_b);
 
-  dma_fsm fsm(.start, .mem_wait, .dma_repeat(controlH[9]), .preempted, .enable(controlH[15]), .xferDone, .genIRQ(controlH[14]), .loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .disable_dma(fsm_disable), .irq, .clk, .rst_b);
+  dma_fsm fsm(.start, .mem_wait, .dma_repeat(controlH[9]), .preempted, .enable(controlH[15]), .xferDone, .genIRQ(controlH[14]), .loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .disable_dma(fsm_disable), .irq, .clk, .rst_b, .set_wdata);
 
-  dma_dp datapath(.loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .srcGamePak, .destGamePak, .xferDone, .srcAddrL, .srcAddrH, .destAddrL, .destAddrH, .controlL, .controlH, .sound, .rdata, .addr, .wdata, .size, .wen, .clk, .rst_b);
+  dma_dp datapath(.loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .srcGamePak, .destGamePak, .xferDone, .srcAddrL, .srcAddrH, .destAddrL, .destAddrH, .controlL, .controlH, .sound, .rdata, .addr, .wdata, .size, .wen, .clk, .rst_b, .set_wdata);
 
 endmodule: dma_unit
 
@@ -383,7 +386,7 @@ module dma_top
   assign preempts[3] = actives[0] | actives[1] | actives[2];
 
   dma_unit dma0(.controlL(controlL0), .controlH(controlH0),
-                .srcAddrL(srcAddrL0), .srcAddrH(srcAddrH1),
+                .srcAddrL(srcAddrL0), .srcAddrH(srcAddrH0),
                 .destAddrL(destAddrL0), .destAddrH(destAddrH0),
                 .mem_wait, .preempted(preempts[0]),
                 .srcGamePak(1'b0), .destGamePak(1'b0),
@@ -432,7 +435,7 @@ module dma_top
 
 endmodule: dma_top
 
-module dma_tb ();
+/*module dma_tb ();
 
    logic [15:0] controlL0, controlH0;
    logic [15:0] srcAddrL0, srcAddrH0;
@@ -509,4 +512,4 @@ module dma_tb ();
     always 
         #1 clk= !clk;
         
-endmodule: dma_tb
+endmodule: dma_tb*/
