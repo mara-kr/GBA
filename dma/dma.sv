@@ -177,8 +177,10 @@ module dma_dp
   logic reloadDad;
   logic sadEnable;
   logic dadEnable;
+  logic [1:0] size_mem_transfer;
 
   assign xferWord = controlH[10];
+  assign size_mem_transfer = (xferWord) ? 2'b10 : 2'b01;
 
   assign sAddr = {4'b0, srcGamePak & sAddrRaw[27], sAddrRaw[26:0]};
   assign dAddr = {4'b0, destGamePak & dAddrRaw[27], dAddrRaw[26:0]};
@@ -221,7 +223,7 @@ module dma_dp
   assign addr = active ? desiredAddr : {32{1'bz}};
   assign wen = active ? write : 1'bz;
   assign wdata = (set_wdata) ? data : {32{1'bz}};
-  assign size = active ? {1'b1, xferWord}: {32{1'bz}};
+  assign size = active ? (size_mem_transfer): {32{1'bz}};
 
   mux_2_to_1 #(32) srcAddrMux (.i0(steppedSAddr), .i1({srcAddrH, srcAddrL}), .s(loadSAD), .y(nextSAddr));
   mux_2_to_1 #(32) destAddrMux (.i0(steppedDAddr), .i1(targetAddr), .s(loadDAD | (loadCNT & reloadDad)), .y(nextDAddr));
