@@ -1,5 +1,7 @@
 //TODO: when clear is set by SOUNDCNT_H in the mixer, do I clear the entire fifo reg?
 // or just reset position?
+
+`default_nettype none
 module direct_sound (
     input logic clock,
     input logic reset,
@@ -45,7 +47,7 @@ module direct_sound (
 endmodule: direct_sound
 
 
-module direct_sound_test ();
+/*module direct_sound_test ();
     logic clock;
     logic reset;
     logic [15:0] FIFO_L;
@@ -89,5 +91,7 @@ module direct_sound_test ();
     always
         #1 clock = !clock;
 
-endmodule: direct_sound_test;
+endmodule: direct_sound_test;*/
+
+`default_nettype wire
 

@@ -1,3 +1,4 @@
+`default nettype_none
 module audio_testbench_sv (
     input logic clk_100,
     input logic BTNC,
@@ -300,3 +301,5 @@ module audio_testbench_sv (
 */
  
 endmodule: audio_testbench_sv
+
+`default nettype_wire

@@ -1,3 +1,4 @@
+`default_nettype none
 module ch4_mixer ( input logic system_clock,
                input logic reset,
                input logic [23:0] channel1,
@@ -72,3 +73,4 @@ module ch4_mixer ( input logic system_clock,
 
 endmodule: ch4_mixer
 
+`default_nettype wire

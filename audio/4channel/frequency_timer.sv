@@ -10,8 +10,7 @@ module frequency_timer (
     
     logic [16:0]frequency_timer_period_old;
 
-    assign update_regs = (frequency_timer_period != frequency_timer_period_old)
-                         ? 1 : 0;
+    assign update_regs = (frequency_timer_period != frequency_timer_period_old);
     always_ff @(posedge clock, posedge reset) begin
         if(reset) begin
             counter = 0;

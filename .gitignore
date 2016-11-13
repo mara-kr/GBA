@@ -3,10 +3,8 @@
 *~
 *.swp
 ucli.key
-<<<<<<< HEAD
 .restartSimSession.tcl.old
 .synopsys_dve_rebuild.tcl
-=======
 
 csrc/*
 simv.daidir/*
