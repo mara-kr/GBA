@@ -83,6 +83,14 @@ module bg_processing_circuit
   assign hscale = mosaic[3:0];
 
   bg_counter #(1) frame_toggle(.q(frame), .d(), .enable(new_frame), .clear(start_row), .load(1'b0), .up(1'b1), .rst_b, .clk(clock));
+  always_comb begin
+    case(bgno)
+      2'd0: bgused = bgmode < 3'd2;
+      2'd1: bgused = bgmode < 3'd2;
+      2'd2: bgused = 1'b1;
+      2'd3: bgused = ((bgmode == 3'd0) || (bgmode == 3'd2));
+    endcase
+  end
 
   //datapath logic
   bg_counter #(11) col_bgno_counter(.q({col, bgno}), .d(), .enable(1'b1), .clear(start_row), .load(1'b0), .up(1'b1), .rst_b, .clk(clock));
@@ -116,7 +124,7 @@ module bg_processing_circuit
 
   screen_lookup_unit slu(.hmax, .vmax, .x, .y, .screen_base_block_no, .rotate, .addr(bg_screen_addr));
 
-  assign paletteno = bg_screen_data[3:0];
+  assign paletteno = bg_screen_data[15:12];
 
   char_data_lookup cdl(.screendata(bg_screen_data[11:0]),
                        .baseblock(char_base_block_no_INTERMEDIATE),
