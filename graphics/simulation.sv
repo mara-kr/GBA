@@ -111,7 +111,7 @@ module sim_bench;
     //character base block 1
     //priority = 11 (lowest priority)
 
-    assign bg1cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b11};
+    assign bg1cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b10};
     //256x256 char background
     //screen base block 2
     //256-bit color
@@ -119,7 +119,7 @@ module sim_bench;
     //character base block 1
     //priority = 10 (second lowest priority)
 
-    assign bg2cnt = {2'b0, 1'b0, 5'd2, 1'b1, 1'b0, 2'b00, 2'b11};
+    assign bg2cnt = {2'b0, 1'b0, 5'd2, 1'b1, 1'b0, 2'b00, 2'b01};
     //256x256 char background
     //no wraparound
     //screen base block 6
@@ -128,7 +128,7 @@ module sim_bench;
     //character base block 1
     //priority = 10 (second lowest priority)
 
-    assign bg3cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b11};
+    assign bg3cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b00};
     //256x256 char background
     //screen base block 4
     //16-bit color
@@ -220,9 +220,9 @@ module sim_bench;
         graphics_clock <= 0;
         reset <= 1;
         #2 reset <= 0;
-        BTNL <= 0;
-        BTNR <= 0;
-        SW <= 8'b0;
+        BTNL <= 1;
+        BTNR <= 1;
+        SW <= 8'b00001111; //enable all backgrounds. disable objs
         #32 $finish;
     end
     always
@@ -241,8 +241,8 @@ module mem_vram_A (
     end
 
     always_ff @(posedge clock) begin
-        data <= vram_A[addr];
-        $display("data=%h addr=%h",data, addr);
+        data <= vram_A[addr[31:2]];
+        $display("data=%h addr=%h word=%h",data, addr, addr[31:2]);
     end
 endmodule: mem_vram_A
 
@@ -257,7 +257,7 @@ module mem_vram_A2 (
     end
 
     always_ff @(posedge clock) begin
-        data <= vram_A2[addr];
+        data <= vram_A2[addr[31:2]];
     end
 endmodule: mem_vram_A2
 
@@ -272,7 +272,7 @@ module mem_palette (
     end
 
     always_ff @(posedge clock) begin
-        data <= palette_bg[addr];
+        data <= palette_bg[addr[31:2]];
     end
 endmodule: mem_palette
 
@@ -287,7 +287,7 @@ module mem_obj (
     end
 
     always_ff @(posedge clock) begin
-        data <= obj_data[addr];
+        data <= obj_data[addr[31:2]];
     end
 endmodule: mem_obj
 

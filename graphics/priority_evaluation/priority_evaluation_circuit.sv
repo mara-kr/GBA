@@ -65,10 +65,12 @@ module priority_eval (
     pe_window_masker wm (.obj(window_obj), .win0, .win1, .winin,
                       .winout, .mask, .effects, .dispcnt);
 
+    assign replace_top = replace2 | replace3;
+    assign replace_bot = replace4 | replace5;
     pe_register #(20) TOP(.q(top_saved), .d(top_in), .clk, .clear, 
-                .enable(replace2 | replace3), .rst_b(1'b1));
+                .enable(replace_top), .rst_b(1'b1));
     pe_register #(20) BOT(.q(bot_saved), .d(bot_in), .clk, .clear, 
-                .enable(replace4 | replace5), .rst_b(1'b1));
+                .enable(replace_bot), .rst_b(1'b1));
     priority_comparator priority_comparator1(.inputA(BG), .inputB(OBJ), 
                 .mask(mask), .replace(replace1));
     
@@ -81,13 +83,13 @@ module priority_eval (
 
 
     priority_comparator priority_comparator2(.inputA(BG), .inputB(top_saved), 
-                .mask(), .replace(replace2));
+                .mask, .replace(replace2));
     priority_comparator priority_comparator3(.inputA(OBJ), .inputB(top_saved), 
-                .mask(), .replace(replace3));
+                .mask, .replace(replace3));
     priority_comparator priority_comparator4(.inputA(BG), .inputB(bot_saved), 
-                .mask(), .replace(replace4));
+                .mask, .replace(replace4));
     priority_comparator priority_comparator5(.inputA(OBJ), .inputB(bot_saved), 
-                .mask(), .replace(replace5));
+                .mask, .replace(replace5));
 
     pe_valid valid1(.A(top_saved), .mask(), .valid(out_valid1));
     pe_valid valid2(.A(OBJ), .mask(), .valid(out_valid2));

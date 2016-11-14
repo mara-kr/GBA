@@ -17,13 +17,13 @@
                      & (~(win0 | win1) | winout[5]);
 
     pe_mux_4_to_1 #(5) mux2(.in0(5'h1F), .in1(winin[4:0]), .in2(5'b0), 
-                    .in3(5'b0), .out(in_mask2), .select({dispcnt[13],win0}));
+                    .in3(5'b0), .out(in_mask2), .select({~dispcnt[13],win0}));
 
     pe_mux_4_to_1 #(5) mux3(.in0(5'h1F), .in1(winin[12:8]), .in2(5'b0), 
-                    .in3(5'b0), .out(in_mask3), .select({dispcnt[14],win1}));
+                    .in3(5'b0), .out(in_mask3), .select({~dispcnt[14],win1}));
 
     pe_mux_4_to_1 #(5) mux4(.in0(5'h1F), .in1(winout[12:8]), .in2(5'b0), 
-                    .in3(5'b0), .out(in_mask4), .select({dispcnt[15],obj}));
+                    .in3(5'b0), .out(in_mask4), .select({~dispcnt[15],obj}));
 
     pe_mux_2_to_1 #(5) mux5(.in0(5'h1F), .in1(winout[4:0]), 
                     .out(in_mask5), .select(~(win0 | win1)));

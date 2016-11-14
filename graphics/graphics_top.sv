@@ -68,7 +68,7 @@ module graphics_top(
     assign bg0cnt = registers[`BG0CNT_IDX][15:0];
     assign bg1cnt = registers[`BG1CNT_IDX][31:16];
     assign bg2cnt = registers[`BG2CNT_IDX][15:0];
-    assign bg3cnt = registers[`BG3CNT_IDX][31:0];
+    assign bg3cnt = registers[`BG3CNT_IDX][31:16];
     
     assign bg0hofs = registers[`BG0HOFS_IDX][15:0];
     assign bg1hofs = registers[`BG1HOFS_IDX][15:0];
