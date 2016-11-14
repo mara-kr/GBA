@@ -1,11 +1,22 @@
 `include "../gba_core_defines.vh"
 `include "../gba_mmio_defines.vh"
+`default_nettype none
 
 module manual_bench (
     input  logic [7:0] SW,
     output logic [3:0] VGA_R, VGA_G, VGA_B,
-    input  logic       BTND,
-    input  logic       GCLK);
+    input  logic       BTND, BTNR, BTNL,
+    input  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
+    input  logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr,
+    input  logic [31:0] gfx_vram_A_addr2,
+    output logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
+    output logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
+    output logic [31:0] gfx_vram_A_data2,
+    input  logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+    input  logic        graphics_clock, vga_clock,
+    (* mark_debug = "true" *) output logic        VGA_HS,
+    (* mark_debug = "true" *) output logic        VGA_VS
+    );
 
 
     logic [15:0] winin;
@@ -38,12 +49,14 @@ module manual_bench (
     logic [15:0] bg2pa;
     logic [15:0] bg2pb;
     logic [15:0] bg2pc;
+    logic [15:0] bg2pd;
+    logic [15:0] bg3pa;
+    logic [15:0] bg3pb;
+    logic [15:0] bg3pc;
     logic [15:0] bg3pd;
     logic [15:0] mosaic;
 
-    logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
-
-    logic clock, reset;
+    logic reset;
 
     assign reset = BTND;
 
@@ -133,6 +146,14 @@ module manual_bench (
 
     assign mosaic = 16'h3333; // 4x mosaicing in all directions for BG and OBJ
 
+
+    //TODO: don't know what these registers are, but they have to be defined
+    assign bg2x = 27'b0;
+    assign bg3x = 27'b0;
+    assign bg2y = 27'b0;
+    assign bg3y = 27'b0;
+    assign vcount = 8'b0;
+
     assign bg0hofs = 16'b0;
     assign bg1hofs = 16'b0;
     assign bg2hofs = 16'b0;
@@ -154,12 +175,12 @@ module manual_bench (
     assign bg3pd = 16'h0100;
 
     //window 0 covers left third of the screen
-    assign win0h = 16'h0050;
-    assign win0v = 16'h00A0;
+    assign win0H = 16'h0050;
+    assign win0V = 16'h00A0;
 
     //window 1 covers right third of the screen
-    assign win1h = 16'hA0F0;
-    assign win1v = 16'h00A0;
+    assign win1H = 16'hA0F0;
+    assign win1V = 16'h00A0;
 
     //enable display in win0 if BTNL is pressed, in win1 if BTNR
     assign winin = {2'b0, {6{BTNR}}, 2'b0, {6{BTNL}}};
@@ -183,12 +204,11 @@ module manual_bench (
     logic [14:0] buffer0_din, buffer1_din;
     logic buffer0_ce, buffer1_ce;
     logic buffer0_we, buffer1_we;
-    //clock wiz
-    design_1_clk_wiz_0_1 clk_wiz(.clk_in1(GCLK), .clk_out1(vga_clock), .clk_out2(graphics_clock), .reset(BTND));
 
     //dbl_buffer buffers
-    testbench_wrapper brams(.buffer0_addr(buffer0_address), .buffer0_clk(vga_clock), .buffer0_din, .buffer0_dout, .buffer0_en(buffer0_ce), .buffer0_we,
-                            .buffer1_addr(buffer1_address), .buffer1_clk(vga_clock), .buffer1_din, .buffer1_dout, .buffer1_en(buffer1_ce), .buffer1_we);
+
+    blk_mem_gen_0 buf0 (.clka(vga_clock), .addra(buffer0_address), .dina(buffer0_din), .douta(buffer0_dout), .ena(buffer0_ce), .wea(buffer0_we));
+    blk_mem_gen_1 buf1 (.clka(vga_clock), .addra(buffer1_address), .dina(buffer1_din), .douta(buffer1_dout), .ena(buffer1_ce), .wea(buffer1_we));
 
     //interface between graphics and dbl_buffer
     dblbuffer_driver driver(.toggle, .wen, .graphics_clock, .vcount, .graphics_addr, .clk(vga_clock), .rst_b(~BTND));
@@ -204,10 +224,10 @@ module manual_bench (
     vga_top video(.clock(vga_clock), .reset(BTND), .data(vga_color), .addr(vga_addr), .VGA_R, .VGA_G, .VGA_B, .VGA_HS, .VGA_VS);
 
     //graphics
-    graphics_top(.clock(graphics_clock), .reset, .IO_reg_datas,
+    graphics_top(.clock(graphics_clock), .reset,
                  .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
-                 .gfx_oam_data, .gfx_palette_bg_data, .gfx_pallete_obj_data,
-                 .gfx_vram_A_data2m,
+                 .gfx_oam_data, .gfx_palette_bg_data, .gfx_palette_obj_data,
+                 .gfx_vram_A_data2,
                  .gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
                  .gfx_oam_addr, .gfx_palette_bg_addr, .gfx_palette_obj_addr,
                  .gfx_vram_A_addr2,
@@ -287,3 +307,5 @@ module dbdriver_counter
         end
     end
 endmodule
+
+`default_nettype wire

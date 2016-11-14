@@ -47,6 +47,7 @@ module reg_decoder
   assign mosaic = bgcnt[6];
   assign rotate = (bgmode > 3'd1) || (bgmode[0] && (bgno[1]));
   assign bitmap_color = (bgmode != 3'd4);
+  assign bg_priority = bgcnt[1:0];
 
   logic [1:0] screen_size;
   assign screen_size = bgcnt[15:14];

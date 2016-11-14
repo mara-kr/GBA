@@ -32,7 +32,7 @@
     logic [31:0] pe_data;
     logic [31:0] pe_addr;
 
-    assign pe_row = (vcount == 8'd227) ? 8'd0 : pe_row + 1;
+    assign pe_row = (vcount == 8'd227) ? 8'd0 : vcount + 1;
     assign pe_data = (addr_is_obj) ? gfx_palette_obj_data : gfx_palette_bg_data;
     assign gfx_palette_bg_addr = pe_addr;
     assign gfx_palette_obj_addr = pe_addr;

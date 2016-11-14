@@ -5,10 +5,11 @@
 module graphics_top(
     input logic clock, reset,
 
-    input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+    //input logic [31:0] registers [`NUM_IO_REGS-1:0],
     input logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
     input logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
     input logic [31:0] gfx_vram_A_data2,
+    input logic [31:0] registers [`NUM_IO_REGS-1:0],
 
     output  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
     output  logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr,
@@ -52,64 +53,69 @@ module graphics_top(
     logic [15:0] bg3pd;
     logic [15:0] mosaic;
 
-    assign winin = IO_reg_datas[`WININ_IDX][15:0];
-    assign winout = IO_reg_datas[`WINOUT_IDX][31:16];
-    assign dispcnt = IO_reg_datas[`DISPCNT_IDX][15:0];
-    assign win0H = IO_reg_datas[`WIN0H_IDX][15:0];
-    assign win1H = IO_reg_datas[`WIN1H_IDX][31:16];
-    assign win0V = IO_reg_datas[`WIN0V_IDX][15:0];
-    assign win1V = IO_reg_datas[`WIN1V_IDX][31:16];
-    assign vcount = IO_reg_datas[`VCOUNT_IDX][7:0];
-    assign bldcnt = IO_reg_datas[`BLDCNT_IDX][15:0];
-    assign bldalpha = IO_reg_datas[`BLDALPHA_IDX][31:16];
-    assign bldy = IO_reg_datas[`BLDY_IDX][15:0];
+    assign winin = registers[`WININ_IDX][15:0];
+    assign winout = registers[`WINOUT_IDX][31:16];
+    assign dispcnt = registers[`DISPCNT_IDX][15:0];
+    assign win0H = registers[`WIN0H_IDX][15:0];
+    assign win1H = registers[`WIN1H_IDX][31:16];
+    assign win0V = registers[`WIN0V_IDX][15:0];
+    assign win1V = registers[`WIN1V_IDX][31:16];
+    assign vcount = registers[`VCOUNT_IDX][7:0];
+    assign bldcnt = registers[`BLDCNT_IDX][15:0];
+    assign bldalpha = registers[`BLDALPHA_IDX][31:16];
+    assign bldy = registers[`BLDY_IDX][15:0];
     
-    assign bg0cnt = IO_reg_datas[`BG0CNT_IDX][15:0];
-    assign bg1cnt = IO_reg_datas[`BG1CNT_IDX][31:16];
-    assign bg2cnt = IO_reg_datas[`BG2CNT_IDX][15:0];
-    assign bg3cnt = IO_reg_datas[`BG3CNT_IDX][31:0];
+    assign bg0cnt = registers[`BG0CNT_IDX][15:0];
+    assign bg1cnt = registers[`BG1CNT_IDX][31:16];
+    assign bg2cnt = registers[`BG2CNT_IDX][15:0];
+    assign bg3cnt = registers[`BG3CNT_IDX][31:0];
     
-    assign bg0hofs = IO_reg_datas[`BG0HOFS_IDX][15:0];
-    assign bg1hofs = IO_reg_datas[`BG1HOFS_IDX][15:0];
-    assign bg2hofs = IO_reg_datas[`BG2HOFS_IDX][15:0];
-    assign bg3hofs = IO_reg_datas[`BG3HOFS_IDX][15:0];
+    assign bg0hofs = registers[`BG0HOFS_IDX][15:0];
+    assign bg1hofs = registers[`BG1HOFS_IDX][15:0];
+    assign bg2hofs = registers[`BG2HOFS_IDX][15:0];
+    assign bg3hofs = registers[`BG3HOFS_IDX][15:0];
     
-    assign bg0vofs = IO_reg_datas[`BG0VOFS_IDX][31:16];
-    assign bg1vofs = IO_reg_datas[`BG1VOFS_IDX][31:16];
-    assign bg2vofs = IO_reg_datas[`BG2VOFS_IDX][31:16];
-    assign bg3vofs = IO_reg_datas[`BG3VOFS_IDX][31:16];
+    assign bg0vofs = registers[`BG0VOFS_IDX][31:16];
+    assign bg1vofs = registers[`BG1VOFS_IDX][31:16];
+    assign bg2vofs = registers[`BG2VOFS_IDX][31:16];
+    assign bg3vofs = registers[`BG3VOFS_IDX][31:16];
 
-    assign bg2x = IO_reg_datas[`BG2X_L_IDX][27:0];
-    assign bg3x = IO_reg_datas[`BG3X_L_IDX][27:0];
-    assign bg2y = IO_reg_datas[`BG2Y_L_IDX][27:0];
-    assign bg3y = IO_reg_datas[`BG3Y_L_IDX][27:0];
+    assign bg2x = registers[`BG2X_L_IDX][27:0];
+    assign bg3x = registers[`BG3X_L_IDX][27:0];
+    assign bg2y = registers[`BG2Y_L_IDX][27:0];
+    assign bg3y = registers[`BG3Y_L_IDX][27:0];
 
-    assign bg2pa = IO_reg_datas[`BG2PA_IDX][15:0];
-    assign bg2pb = IO_reg_datas[`BG2PA_IDX][31:16];
-    assign bg2pc = IO_reg_datas[`BG2PA_IDX][15:0];
-    assign bg2pd = IO_reg_datas[`BG2PA_IDX][31:16];
-    assign bg3pa = IO_reg_datas[`BG2PA_IDX][15:0];
-    assign bg3pb = IO_reg_datas[`BG2PA_IDX][31:16];
-    assign bg3pc = IO_reg_datas[`BG2PA_IDX][15:0];
-    assign bg3pd = IO_reg_datas[`BG2PA_IDX][31:16];
-    assign mosaic = IO_reg_datas[`MOSAIC_IDX][15:0];
+    assign bg2pa = registers[`BG2PA_IDX][15:0];
+    assign bg2pb = registers[`BG2PA_IDX][31:16];
+    assign bg2pc = registers[`BG2PA_IDX][15:0];
+    assign bg2pd = registers[`BG2PA_IDX][31:16];
+    assign bg3pa = registers[`BG2PA_IDX][15:0];
+    assign bg3pb = registers[`BG2PA_IDX][31:16];
+    assign bg3pc = registers[`BG2PA_IDX][15:0];
+    assign bg3pd = registers[`BG2PA_IDX][31:16];
+    assign mosaic = registers[`MOSAIC_IDX][15:0];
 
     logic [14:0] pe_color0;
     logic [14:0] pe_color1;
     logic [19:0] pe_layer0;
     logic [19:0] pe_layer1;
     logic [4:0] pe_effects;
-    logic [19:0] bg;
+    (* mark_debug = "true" *)logic [19:0] bg;
     logic [19:0] obj;
 
-    logic [16:0] bg_addr;
-    logic [14:0] obj_addr;
-    logic [15:0] obj_data;
-    logic [15:0] bg_screen_addr;
-    logic [15:0] bg_VRAM_data;
-    logic [15:0] bg_screen_data;
+    (* mark_debug = "true" *)logic [16:0] bg_addr;
+    (* mark_debug = "true" *)logic [14:0] obj_addr;
+    (* mark_debug = "true" *)logic [15:0] obj_data;
+    (* mark_debug = "true" *)logic [15:0] bg_screen_addr;
+    (* mark_debug = "true" *) logic [15:0] bg_VRAM_data;
+    (* mark_debug = "true" *) logic [15:0] bg_screen_data;
     logic [2:0] bgmode;
     logic [7:0] hcount;
+
+    assign gfx_vram_A_addr[31:16] = 16'b0;
+    assign gfx_vram_B_addr[31:14] = 18'b0;
+    assign gfx_vram_C_addr[31:14] = 18'b0;
+    assign gfx_vram_A_addr2[31:16] = 16'b0;
 
     //Background
     bg_processing_circuit bg_circ(
@@ -176,5 +182,6 @@ module graphics_top(
         .color0(pe_color0),
         .color1(pe_color1),
         .bldalpha, .bldy, .color(output_color));
+
 
 endmodule: graphics_top

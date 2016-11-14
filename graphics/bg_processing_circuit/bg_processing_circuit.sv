@@ -19,7 +19,7 @@ module bg_processing_circuit
 
    output logic [19:0] bg_packet, //stage output
 
-   input clock, rst_b
+   input logic clock, rst_b
   );
 
   //control signals
@@ -133,7 +133,7 @@ module bg_processing_circuit
                                 .bitmapped, .rotate, .overflow, .transparent);
 
   //mux on x input shown on diagram is redundant, both inputs are identical
-  data_formatter formatter(.data(bg_packet[14:0]), .x(x_OUTPUT),
+  data_formatter formatter(.data(bg_VRAM_data[14:0]), .x(x_OUTPUT),
                            .paletteno(paletteno_OUTPUT),
                            .palettemode(palettemode_OUTPUT),
                            .transparent(transparent_OUTPUT),

@@ -65,9 +65,9 @@ module priority_eval (
     pe_window_masker wm (.obj(window_obj), .win0, .win1, .winin,
                       .winout, .mask, .effects, .dispcnt);
 
-    pe_register #(20) TOP(.q(top_saved), .d(top_in), .clk(), .clear(), 
+    pe_register #(20) TOP(.q(top_saved), .d(top_in), .clk, .clear, 
                 .enable(replace2 | replace3), .rst_b(1'b1));
-    pe_register #(20) BOT(.q(bot_saved), .d(bot_in), .clk(), .clear(), 
+    pe_register #(20) BOT(.q(bot_saved), .d(bot_in), .clk, .clear, 
                 .enable(replace4 | replace5), .rst_b(1'b1));
     priority_comparator priority_comparator1(.inputA(BG), .inputB(OBJ), 
                 .mask(mask), .replace(replace1));
@@ -111,11 +111,11 @@ module priority_eval (
         end
         else if (send_address_2 == 1)  begin
             if (layer0[7:0] == address_saved) begin
-                address = {24'h500000, layer1[7:0]};
+                address = {24'b0, layer1[7:0]};
                 data_1_is_top=1;
             end
             else begin 
-                address = {24'h500000, layer0[7:0]};
+                address = {24'b0, layer0[7:0]};
                 data_1_is_top=0;
             end
         end
