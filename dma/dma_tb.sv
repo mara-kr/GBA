@@ -1,4 +1,4 @@
-
+`default_nettype none
 `include "../gba_core_defines.vh"
 
 module core_tb;
@@ -33,7 +33,12 @@ module core_tb;
 
     logic [15:0] hcount, vcount;
     logic sound_req;
-    
+
+    wire [31:0] dma_addr;
+    logic[31:0] test_addr;
+    logic check_correctness;
+    logic passed;
+    logic [10:0] count_time;
 
     dma_top dut (
         .controlL0, .controlH0,
@@ -57,7 +62,7 @@ module core_tb;
 
         .mem_wait(pause),
 
-        .addr,
+        .addr(dma_addr),
         .rdata, .wdata,
         .size,
         .wen(write),
@@ -75,39 +80,48 @@ module core_tb;
     sim_memory sim_mem (.clk, .rst_n, .addr, .wdata, .size, .write,
                          .rdata, .abort, .pause);
 
-    logic DMA_control;
-    logic [31:0] check_addr;
+    test_fsm fsm(.clk, .rst_n, 
+        .controlL0, .controlH0,
+        .srcAddrL0, .srcAddrH0,
+        .destAddrL0, .destAddrH0,
 
-    assign addr = (DMA_control) ? 31'bZ : check_addr;
-    assign write = (DMA_control) ? 'bZ : 'b0;
+        .controlL1, .controlH1,
+        .srcAddrL1, .srcAddrH1,
+        .destAddrL1, .destAddrH1,
 
+        .controlL2, .controlH2,
+        .srcAddrL2, .srcAddrH2,
+        .destAddrL2, .destAddrH2,
+
+        .controlL3, .controlH3,
+        .srcAddrL3, .srcAddrH3,
+        .destAddrL3, .destAddrH3,
+        .check_correctness,
+        .count_time, .passed,
+        .test_addr, .rdata);
+    
+    always_ff @(posedge clk, negedge rst_n) begin
+        if (rst_n == 0) begin
+            count_time <= 0;
+        end
+        else  begin
+            count_time <= count_time + 1;
+        end
+    end
+
+    assign addr = (check_correctness) ? test_addr : dma_addr;
     /* Clock and Reset Generation */
     initial begin
-        $monitor("clk:%b, rdata:%h, wdata:%h, addr:%h state=%s, write=%b", clk, rdata, wdata, addr, dut.dma0.fsm.cs, write);
+        //$monitor("MON:: clk:%b, rdata:%h, wdata:%h, addr:%h state=%s, write=%b, loadSAD=%b", 
+            //clk, rdata, wdata, addr, dut.dma1.fsm.cs, write, dut.dma1.fsm.loadSAD);
+        $monitor ("Passed:%b", passed);
         $display("Start"); // Start of SIM for diff script
         clk = 0;
         rst_n = 1'b1;
         irq_n = 1'b1;
         #1 rst_n <= 1'b0;
         #1 rst_n <= 1'b1;
-
-        $display("Write from Address 0 to address 8"); // Start of SIM for diff script
-        #2 DMA_control <= 1;
-            srcAddrL0 <= 16'b0000_0000_0000_0000;
-           srcAddrH0 <= 16'b0000_0000_0000_0000;
-           destAddrL0 <= 16'b0000_0000_0000_1000;
-           destAddrH0 <= 16'b0000_0000_0000_0000;
-           controlL0 <= 16'b0000_0000_0000_0001;
-            //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
-            //DMA_repeat off, incr source and dest after transfer
-            controlH0 <= 16'b1100_1000_1010_0000;
-        #4 
-           srcAddrL0 <= 16'b0000_0000_0011_0000;
-           srcAddrH0 <= 16'b0000_0000_0000_0000;
-           destAddrL0 <= 16'b0000_0000_0000_0100;
-           destAddrH0 <= 16'b0000_0000_0000_0000;
-           controlL0 <= 16'b0000_0000_0000_0001;
-        #20 $finish;
+        #150 $finish;
     end
 
     /* So the simulation stops */
@@ -117,6 +131,154 @@ module core_tb;
     end
 
 endmodule: core_tb
+
+module test_fsm
+  (output logic [15:0] controlL0, controlH0,
+   output logic [15:0] srcAddrL0, srcAddrH0,
+   output logic [15:0] destAddrL0, destAddrH0,
+   
+   output logic [15:0] controlL1, controlH1,
+   output logic [15:0] srcAddrL1, srcAddrH1,
+   output logic [15:0] destAddrL1, destAddrH1,
+
+   output logic [15:0] controlL2, controlH2,
+   output logic [15:0] srcAddrL2, srcAddrH2,
+   output logic [15:0] destAddrL2, destAddrH2,
+
+   output logic [15:0] controlL3, controlH3,
+   output logic [15:0] srcAddrL3, srcAddrH3,
+   output logic [15:0] destAddrL3, destAddrH3,
+   output logic        check_correctness,
+   output logic        passed,
+   output logic [31:0] test_addr,
+   input  logic [31:0] rdata,
+
+   input  logic clk, rst_n,
+   input  logic [10:0] count_time);
+
+  enum logic [3:0] {OFF, BASIC1, BASIC2, PREEMPT_DMA2, PREEMPT_DMA1, PREEMPT_DMA0, 
+                    CHECK_BASIC1_1, CHECK_BASIC1_2, CHECK_BASIC2, CHECK_PREEMPT, DONE} cs, ns;
+
+  always_ff @(posedge clk, negedge rst_n) begin
+    if(~rst_n)
+      cs <= OFF;
+    else
+      cs <= ns;
+  end
+
+  always_comb begin
+     controlH0 = 16'b0;
+     controlH1 = 16'b0;
+     controlH2 = 16'b0;
+     controlH3 = 16'b0;
+     check_correctness = 1'b0;
+    case(cs)
+      OFF: begin
+        controlH0 = 16'b0;
+        controlH1 = 16'b0;
+        controlH2 = 16'b0;
+        controlH3 = 16'b0;
+        ns = BASIC1;
+      end
+      BASIC1: begin
+        srcAddrL0 = 16'b0000_0000_0000_0000;
+        srcAddrH0 = 16'b0000_0000_0000_0000;
+        destAddrL0 = 16'b0000_0000_0000_1000;
+        destAddrH0 = 16'b0000_0000_0000_0000;
+        controlL0 = 16'b0000_0000_0000_0001;
+        //DMA on, interrupt enabled, start timing immediately, 16 bit transfer, 
+        //DMA_repeat off, incr source and dest after transfer
+        controlH0 = 16'b1100_1000_0000_0000;
+        ns = (count_time == 11'd5) ? CHECK_BASIC1_1 : BASIC1;
+      end
+      CHECK_BASIC1_1: begin
+        check_correctness = 1'b1;
+        test_addr = 32'b00000000;
+        ns = CHECK_BASIC1_2;
+      end
+      CHECK_BASIC1_2: begin
+        check_correctness = 1'b1;
+        if (rdata == 16'h0100) begin
+            passed = 1;
+        end
+        ns = BASIC2;
+      end
+      BASIC2: begin
+        srcAddrL0 = 16'b0000_0000_0000_0000;
+        srcAddrH0 = 16'b0000_0000_0000_0000;
+        destAddrL0 = 16'b0000_0000_0000_1000;
+        destAddrH0 = 16'b0000_0000_0000_0000;
+        controlL0 = 16'b0000_0000_0000_1000;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, source incr and dest after transfer
+        controlH0 = 16'b1100_1100_0000_0000;
+        ns = (count_time == 11'd30) ? PREEMPT_DMA2 : BASIC2;
+      end
+      PREEMPT_DMA2: begin
+        srcAddrL2 = 16'b0000_0000_0000_0000;
+        srcAddrH2 = 16'b0000_0000_0000_0000;
+        destAddrL2 = 16'b0000_0000_0000_1000;
+        destAddrH2 = 16'b0000_0000_0000_0000;
+        controlL2 = 16'b0000_0000_0000_0100;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, fixed source incr and dest after transfer
+        controlH2 = 16'b1100_1001_0000_0000;
+        ns = (count_time == 11'd36) ? PREEMPT_DMA1 : PREEMPT_DMA2;
+      end
+
+      PREEMPT_DMA1: begin
+        srcAddrL2 = 16'b0000_0000_0000_0000;
+        srcAddrH2 = 16'b0000_0000_0000_0000;
+        destAddrL2 = 16'b0000_0000_0000_1000;
+        destAddrH2 = 16'b0000_0000_0000_0000;
+        controlL2 = 16'b0000_0000_0000_0100;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, fixed source incr and dest after transfer
+        controlH2 = 16'b1100_1001_0000_0000;
+
+        srcAddrL1 = 16'b0000_0000_0000_0000;
+        srcAddrH1 = 16'b0000_0000_0000_0000;
+        destAddrL1 = 16'b0000_0000_0000_1000;
+        destAddrH1 = 16'b0000_0000_0000_0000;
+        controlL1 = 16'b0000_0000_0000_1010;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, fixed source incr and dest after transfer
+        controlH1 = 16'b1100_1001_0000_0000;
+        ns = (count_time == 11'd40) ? PREEMPT_DMA0 : PREEMPT_DMA1;
+      end
+
+      PREEMPT_DMA0: begin
+        srcAddrL2 = 16'b0000_0000_0000_0000;
+        srcAddrH2 = 16'b0000_0000_0000_0000;
+        destAddrL2 = 16'b0000_0000_0000_1000;
+        destAddrH2 = 16'b0000_0000_0000_0000;
+        controlL2 = 16'b0000_0000_0000_0100;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, fixed source incr and dest after transfer
+        controlH2 = 16'b1100_1001_0000_0000;
+
+        srcAddrL1 = 16'b0000_0000_0000_0000;
+        srcAddrH1 = 16'b0000_0000_0000_0000;
+        destAddrL1 = 16'b0000_0000_0000_1000;
+        destAddrH1 = 16'b0000_0000_0000_0000;
+        controlL1 = 16'b0000_0000_0000_1010;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, fixed source incr and dest after transfer
+        controlH1 = 16'b1100_1001_0000_0000;
+
+        srcAddrL0 = 16'b0000_0000_0000_0000;
+        srcAddrH0 = 16'b0000_0000_0000_0000;
+        destAddrL0 = 16'b0000_0000_0000_1000;
+        destAddrH0 = 16'b0000_0000_0000_0000;
+        controlL0 = 16'b0000_0000_0000_0001;
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA_repeat off, fixed source incr and dest after transfer
+        controlH0 = 16'b1100_1001_0000_0000;
+        ns = (count_time == 11'd80) ? DONE : PREEMPT_DMA0;
+      end
+  endcase
+  end
+endmodule: test_fsm
 
 module sim_memory
    (input  logic clk, rst_n,
@@ -303,6 +465,8 @@ module rom_memory
     initial begin
         filename = getenv(MEM_FILE);
         $readmemh("test.hex", mem);
+        #500 $writememh("output.hex", mem);
+        $finish;
     end
 
 endmodule: rom_memory

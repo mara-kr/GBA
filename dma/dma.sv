@@ -1,19 +1,23 @@
 //`default_nettype none
 
+//TODO: where does preemption_allowed go?
+
 module dma_fsm
   (input  logic start, mem_wait, dma_repeat, preempted, enable, xferDone, genIRQ,
+   input  logic allowed_to_begin, new_transfer,
    output logic loadCNT, loadSAD, loadDAD, stepSRC, stepDEST, storeRData,
    output logic active, write, disable_dma, set_wdata,
-   output logic irq,
+   output logic irq, others_cant_preempt,
    input  logic clk, rst_b);
 
-  enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD, PREEMPTEDWRITE} cs, ns;
+  enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD} cs, ns;
 
-  always_ff @(posedge clk, negedge rst_b)
+  always_ff @(posedge clk, negedge rst_b) begin
     if(~rst_b)
       cs <= OFF;
     else
       cs <= ns;
+  end
 
   always_comb begin
     set_wdata = 1'b0;
@@ -27,10 +31,11 @@ module dma_fsm
     write = 1'b0;
     disable_dma = 1'b0;
     irq = 1'b0;
+    others_cant_preempt = 1'b0;
     ns = OFF;
     case(cs)
       OFF: begin
-        if(enable) begin
+        if(enable && new_transfer) begin
           loadSAD = 1'b1;
           loadDAD = 1'b1;
           loadCNT = 1'b1;
@@ -43,9 +48,12 @@ module dma_fsm
             if(preempted || mem_wait) begin //start & (preempted || mem_wait)
               ns = QUEUED;
             end
-            else begin //start & ~(preempted || mem_wait)
+            else if (allowed_to_begin) begin
               ns = READ;
               active = 1'b1;
+            end
+            else begin
+                ns = IDLE;
             end
           end
           else begin //~start
@@ -58,9 +66,12 @@ module dma_fsm
           if(preempted || mem_wait) begin
             ns = QUEUED;
           end
-          else begin
+          else if (allowed_to_begin) begin
             ns = READ;
             active = 1'b1;
+          end
+          else begin
+              ns = QUEUED;
           end
         end
       end
@@ -70,17 +81,12 @@ module dma_fsm
           active = 1'b1;
         end
         else if(enable) begin
-          if(preempted) begin
-            ns = PREEMPTEDWRITE;
-            stepSRC = 1'b1;
-          end
-          else begin
-            ns = WRITE;
-            storeRData = 1'b1;
-            active = 1'b1;
-            stepSRC = 1'b1;
-            write = 1'b1;
-          end
+          ns = WRITE;
+          others_cant_preempt = 1'b1;
+          storeRData = 1'b1;
+          active = 1'b1;
+          stepSRC = 1'b1;
+          write = 1'b1;
         end
       end
       WRITE: begin
@@ -115,25 +121,17 @@ module dma_fsm
           if(preempted || mem_wait) begin
             ns = PREEMPTEDREAD;
           end
-          else begin
+          else if (allowed_to_begin) begin
             ns = READ;
             active = 1'b1;
           end
-        end
-      end
-      PREEMPTEDWRITE: begin
-        if(enable) begin
-          if(preempted || mem_wait) begin
-            ns = PREEMPTEDWRITE;
-          end
-          else begin
-            ns = WRITE;
-            active = 1'b1;
-            write = 1'b1;
+          else begin 
+              ns= PREEMPTEDREAD;
           end
         end
       end
-    endcase
+  
+  endcase
   end
 
 endmodule: dma_fsm
@@ -144,7 +142,7 @@ module dma_dp
    input  logic active, write, set_wdata,
    input  logic srcGamePak, destGamePak,
 
-   output logic xferDone,
+   output logic xferDone, new_transfer,
 
    input  logic [15:0] srcAddrL, srcAddrH,
    input  logic [15:0] destAddrL, destAddrH,
@@ -159,6 +157,10 @@ module dma_dp
    
    input  logic clk, rst_b
    );
+
+  logic [31:0] old_SAD_reg;
+  logic [31:0] old_DAD_reg;
+  logic [31:0] old_CTL_reg;
 
   logic [31:0] sAddr, dAddr;
   logic [31:0] steppedSAddr, steppedDAddr;
@@ -235,6 +237,13 @@ module dma_dp
   counter #(14) xferCnt (.d(14'b0), .q(xfers), .clk, .enable(stepSRC), .clear(loadCNT), .load(1'b0), .up(1'b1), .rst_b);
   mag_comp #(14) doneCheck (.a(xfers), .b(controlL[13:0]), .aeqb(xferDone));
 
+  //save old SAD DAD and CNT registers
+  register #(32) oldsad(.d({srcAddrH, srcAddrL}), .q(old_SAD_reg), .clk, .clear(1'b0), .enable(1'b1), .rst_b);
+  register #(32) olddad(.d({destAddrH, destAddrL}), .q(old_DAD_reg), .clk, .clear(1'b0), .enable(1'b1), .rst_b);
+  register #(32) oldctl(.d({controlH, controlL}), .q(old_CTL_reg), .clk, .clear(1'b0), .enable(1'b1), .rst_b);
+
+  assign new_transfer = ((old_SAD_reg != {srcAddrH, srcAddrL}) || (old_DAD_reg != {destAddrH, destAddrL}) || 
+                        (old_CTL_reg != {controlH, controlL})) ? 1'b1 : 1'b0;
 endmodule: dma_dp
 
 module dma_start
@@ -307,9 +316,11 @@ module dma_unit
 
    input  logic mem_wait, preempted,
    input  logic srcGamePak, destGamePak,
+   input  logic allowed_to_begin,
    output logic disable_dma,
    output logic active,
    output logic irq,
+   output logic others_cant_preempt,
 
    inout  tri   [31:0] addr, 
    inout  tri   [31:0] wdata, rdata,
@@ -333,13 +344,15 @@ module dma_unit
   logic start;
   logic set_wdata;
 
+  logic new_transfer;
+
   assign disable_dma = fsm_disable | dma_stop;
 
   dma_start starter(.controlH, .vcount, .hcount, .sound, .sound_req, .start, .dma_stop, .clk, .rst_b);
 
-  dma_fsm fsm(.start, .mem_wait, .dma_repeat(controlH[9]), .preempted, .enable(controlH[15]), .xferDone, .genIRQ(controlH[14]), .loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .disable_dma(fsm_disable), .irq, .clk, .rst_b, .set_wdata);
+  dma_fsm fsm(.start, .mem_wait, .dma_repeat(controlH[9]), .preempted, .enable(controlH[15]), .xferDone, .genIRQ(controlH[14]), .loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .disable_dma(fsm_disable), .irq, .clk, .rst_b, .set_wdata, .allowed_to_begin, .others_cant_preempt, .new_transfer);
 
-  dma_dp datapath(.loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .srcGamePak, .destGamePak, .xferDone, .srcAddrL, .srcAddrH, .destAddrL, .destAddrH, .controlL, .controlH, .sound, .rdata, .addr, .wdata, .size, .wen, .clk, .rst_b, .set_wdata);
+  dma_dp datapath(.loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .srcGamePak, .destGamePak, .xferDone, .srcAddrL, .srcAddrH, .destAddrL, .destAddrH, .controlL, .controlH, .sound, .rdata, .addr, .wdata, .size, .wen, .clk, .rst_b, .set_wdata, .new_transfer);
 
 endmodule: dma_unit
 
@@ -379,6 +392,8 @@ module dma_top
   logic [3:0] preempts;
   logic [3:0] actives;
   logic [3:0] irqs;
+  logic [3:0] mid_process;
+  logic allowed_to_begin;
 
   assign active = |actives;
   assign irq = |irqs; 
@@ -386,6 +401,9 @@ module dma_top
   assign preempts[1] = actives[0];
   assign preempts[2] = actives[0] | actives[1];
   assign preempts[3] = actives[0] | actives[1] | actives[2];
+  assign allowed_to_begin = ~mid_process[0] && ~mid_process[1]
+                                 && ~mid_process[2] && ~mid_process[3];
+
 
   dma_unit dma0(.controlL(controlL0), .controlH(controlH0),
                 .srcAddrL(srcAddrL0), .srcAddrH(srcAddrH0),
@@ -393,8 +411,8 @@ module dma_top
                 .mem_wait, .preempted(preempts[0]),
                 .srcGamePak(1'b0), .destGamePak(1'b0),
                 .disable_dma(disable_dma[0]),
-                .active(actives[0]),
-                .irq(irqs[0]),
+                .active(actives[0]), .allowed_to_begin,
+                .irq(irqs[0]), .others_cant_preempt(mid_process[0]),
                 .addr, .wdata, .rdata, .size, .wen,
                 .vcount, .hcount, .sound(1'b0), .sound_req,
                 .clk, .rst_b);
@@ -405,8 +423,8 @@ module dma_top
                 .mem_wait, .preempted(preempts[1]),
                 .srcGamePak(1'b1), .destGamePak(1'b0),
                 .disable_dma(disable_dma[1]),
-                .active(actives[1]),
-                .irq(irqs[1]),
+                .active(actives[1]), .allowed_to_begin,
+                .irq(irqs[1]), .others_cant_preempt(mid_process[1]),
                 .addr, .wdata, .rdata, .size, .wen,
                 .vcount, .hcount, .sound(1'b1), .sound_req,
                 .clk, .rst_b);
@@ -417,8 +435,8 @@ module dma_top
                 .mem_wait, .preempted(preempts[2]),
                 .srcGamePak(1'b1), .destGamePak(1'b0),
                 .disable_dma(disable_dma[2]),
-                .active(actives[2]),
-                .irq(irqs[2]),
+                .active(actives[2]), .allowed_to_begin,
+                .irq(irqs[2]), .others_cant_preempt(mid_process[2]),
                 .addr, .wdata, .rdata, .size, .wen,
                 .vcount, .hcount, .sound(1'b1), .sound_req,
                 .clk, .rst_b);
@@ -429,8 +447,8 @@ module dma_top
                 .mem_wait, .preempted(preempts[3]),
                 .srcGamePak(1'b1), .destGamePak(1'b1),
                 .disable_dma(disable_dma[3]),
-                .active(actives[3]),
-                .irq(irqs[3]),
+                .active(actives[3]), .allowed_to_begin,
+                .irq(irqs[3]), .others_cant_preempt(mid_process[3]),
                 .addr, .wdata, .rdata, .size, .wen,
                 .vcount, .hcount, .sound(1'b0), .sound_req,
                 .clk, .rst_b);
