@@ -1594,7 +1594,7 @@ case StagnatePipeline_Int is
      else
 	-- Clears bits[1..0] during address phase of LDM/STM/STR !!! TBD
    ClrBitZero_Reg <= IDC_STR or IDC_STM or IDC_LDM;
-   ClrBitOne_Reg <= IDC_STR or IDC_STM or IDC_LDM;
+   ClrBitOne_Reg <= (IDC_STR or IDC_STM or IDC_LDM) and not (IDR_BL and CPSRTFlag and ExecuteInst);
    SetBitZero_Reg <= (IDR_BL and CPSRTFlag and ExecuteInst); -- Thumb BL support added(the second part of instruction)
     end if;
 
@@ -1646,7 +1646,7 @@ PCIncStep  <= (CPSRTFlag or (IDR_BX and RmBitZero and (not CPSRTFlag)));
 AdrIncStep <= ((CPSRTFlag and (not (IDR_BX and (not RmBitZero) and -- THUMB & ~(Transfer to ARM)
                                     (not Branch_St1) and (not Branch_St2)))) or
               (IDR_BX and RmBitZero)) and                            -- Transfer to THUMB
-              (not STM_St) and (not nLDM_St0);
+              (not (IDR_STM and ExecuteInst)) and (not nLDM_St0);
 
 -- Switch ADDR register to the input of PC
 AdrToPCSel <=  ExceptFC or -- First cycle of interrupt entering
