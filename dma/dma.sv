@@ -214,7 +214,7 @@ module dma_dp
     sCnt = controlH[8:7];
     dCnt = controlH[6:5];
     targetAddr = {destAddrH, destAddrL};
-    if(controlH[13:12]) begin
+    if(&controlH[13:12]) begin
       if(sound) begin
         dCnt = 2'b10;
       end
@@ -486,3 +486,4 @@ module dma_top
 
 endmodule: dma_top
 
+`default_nettype wire

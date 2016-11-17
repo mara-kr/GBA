@@ -380,7 +380,7 @@ module test_fsm
           srcAddrL3 = 16'b0000_0000_0000_0000;
           srcAddrH3 = 16'b0000_0000_0000_0000;
           destAddrL3 = 16'b1000_0000_0000_1000;
-          destAddrH3 = 16'b0010_0000_0000_0000;
+          destAddrH3 = 16'b0000_0010_0000_0000;
           controlL3 = 16'b0000_0000_0000_0010;
           //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
           //DMA_repeat on H-blank, fixed source and dest after transfer
@@ -397,6 +397,9 @@ module test_fsm
         check_correctness = 1'b1;
         passed = (rdata == 32'h03020100) ? 1'b1 : 1'b0;
         ns = (xfer_count == controlL3[3:0]) ? DONE : CHECK_HCOUNT_1;
+      end
+      DONE: begin
+          passed = 1'b1;
       end
 
   endcase
