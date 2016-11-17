@@ -1,6 +1,8 @@
-//`default_nettype none
+`default_nettype none
+`include "../gba_core_defines.vh"
+`include "../gba_mmio_defines.vh"
 
-//TODO: where does preemption_allowed go?
+
 
 module dma_fsm
   (input  logic start, mem_wait, dma_repeat, preempted, enable, xferDone, genIRQ,
@@ -278,10 +280,10 @@ module dma_start
       2'b00: begin
         start = 1'b1;
       end
-      2'b01: begin
+      2'b10: begin
         start = (hcount[7:0] == 8'd240);
       end
-      2'b10: begin
+      2'b01: begin
         start = (vcount[7:0] == 8'd160);
       end
       2'b11: begin
@@ -357,22 +359,7 @@ module dma_unit
 endmodule: dma_unit
 
 module dma_top
-  (input  logic [15:0] controlL0, controlH0,
-   input  logic [15:0] srcAddrL0, srcAddrH0,
-   input  logic [15:0] destAddrL0, destAddrH0,
-
-   input  logic [15:0] controlL1, controlH1,
-   input  logic [15:0] srcAddrL1, srcAddrH1,
-   input  logic [15:0] destAddrL1, destAddrH1,
-
-   input  logic [15:0] controlL2, controlH2,
-   input  logic [15:0] srcAddrL2, srcAddrH2,
-   input  logic [15:0] destAddrL2, destAddrH2,
-
-   input  logic [15:0] controlL3, controlH3,
-   input  logic [15:0] srcAddrL3, srcAddrH3,
-   input  logic [15:0] destAddrL3, destAddrH3,
-
+  (input  logic [31:0] registers [`NUM_IO_REGS-1:0],
    input  logic [15:0] vcount, hcount,
    input  logic        sound_req,
 
@@ -388,74 +375,6 @@ module dma_top
    output logic        irq,
 
    input  logic clk, rst_b);
-
-  logic [3:0] preempts;
-  logic [3:0] actives;
-  logic [3:0] irqs;
-  logic [3:0] mid_process;
-  logic allowed_to_begin;
-
-  assign active = |actives;
-  assign irq = |irqs; 
-  assign preempts[0] = 1'b0;
-  assign preempts[1] = actives[0];
-  assign preempts[2] = actives[0] | actives[1];
-  assign preempts[3] = actives[0] | actives[1] | actives[2];
-  assign allowed_to_begin = ~mid_process[0] && ~mid_process[1]
-                                 && ~mid_process[2] && ~mid_process[3];
-
-
-  dma_unit dma0(.controlL(controlL0), .controlH(controlH0),
-                .srcAddrL(srcAddrL0), .srcAddrH(srcAddrH0),
-                .destAddrL(destAddrL0), .destAddrH(destAddrH0),
-                .mem_wait, .preempted(preempts[0]),
-                .srcGamePak(1'b0), .destGamePak(1'b0),
-                .disable_dma(disable_dma[0]),
-                .active(actives[0]), .allowed_to_begin,
-                .irq(irqs[0]), .others_cant_preempt(mid_process[0]),
-                .addr, .wdata, .rdata, .size, .wen,
-                .vcount, .hcount, .sound(1'b0), .sound_req,
-                .clk, .rst_b);
-
-  dma_unit dma1(.controlL(controlL1), .controlH(controlH1),
-                .srcAddrL(srcAddrL1), .srcAddrH(srcAddrH1),
-                .destAddrL(destAddrL1), .destAddrH(destAddrH1),
-                .mem_wait, .preempted(preempts[1]),
-                .srcGamePak(1'b1), .destGamePak(1'b0),
-                .disable_dma(disable_dma[1]),
-                .active(actives[1]), .allowed_to_begin,
-                .irq(irqs[1]), .others_cant_preempt(mid_process[1]),
-                .addr, .wdata, .rdata, .size, .wen,
-                .vcount, .hcount, .sound(1'b1), .sound_req,
-                .clk, .rst_b);
-
-  dma_unit dma2(.controlL(controlL2), .controlH(controlH2),
-                .srcAddrL(srcAddrL2), .srcAddrH(srcAddrH2),
-                .destAddrL(destAddrL2), .destAddrH(destAddrH2),
-                .mem_wait, .preempted(preempts[2]),
-                .srcGamePak(1'b1), .destGamePak(1'b0),
-                .disable_dma(disable_dma[2]),
-                .active(actives[2]), .allowed_to_begin,
-                .irq(irqs[2]), .others_cant_preempt(mid_process[2]),
-                .addr, .wdata, .rdata, .size, .wen,
-                .vcount, .hcount, .sound(1'b1), .sound_req,
-                .clk, .rst_b);
-
-  dma_unit dma3(.controlL(controlL3), .controlH(controlH3),
-                .srcAddrL(srcAddrL3), .srcAddrH(srcAddrH3),
-                .destAddrL(destAddrL3), .destAddrH(destAddrH3),
-                .mem_wait, .preempted(preempts[3]),
-                .srcGamePak(1'b1), .destGamePak(1'b1),
-                .disable_dma(disable_dma[3]),
-                .active(actives[3]), .allowed_to_begin,
-                .irq(irqs[3]), .others_cant_preempt(mid_process[3]),
-                .addr, .wdata, .rdata, .size, .wen,
-                .vcount, .hcount, .sound(1'b0), .sound_req,
-                .clk, .rst_b);
-
-endmodule: dma_top
-
-/*module dma_tb ();
 
    logic [15:0] controlL0, controlH0;
    logic [15:0] srcAddrL0, srcAddrH0;
@@ -473,63 +392,97 @@ endmodule: dma_top
    logic [15:0] srcAddrL3, srcAddrH3;
    logic [15:0] destAddrL3, destAddrH3;
 
-   logic [15:0] vcount, hcount;
-   logic        sound_req;
+   assign controlL0 = registers[`DMA0CNT_L_IDX][15:0];
+   assign controlH0 = registers[`DMA0CNT_H_IDX][31:16];
+   assign srcAddrL0 = registers[`DMA0SAD_L_IDX][15:0];
+   assign srcAddrH0 = registers[`DMA0SAD_H_IDX][31:16];
+   assign destAddrL0 = registers[`DMA0DAD_L_IDX][15:0];
+   assign destAddrH0 = registers [`DMA0DAD_H_IDX][31:16];
 
-   logic        mem_wait;
+   assign controlL1 = registers[`DMA1CNT_L_IDX][15:0];
+   assign controlH1 = registers[`DMA1CNT_H_IDX][31:16];
+   assign srcAddrL1 = registers[`DMA1SAD_L_IDX][15:0];
+   assign srcAddrH1 = registers[`DMA1SAD_H_IDX][31:16];
+   assign destAddrL1 = registers[`DMA1DAD_L_IDX][15:0];  
+   assign destAddrH1 = registers [`DMA1DAD_H_IDX][31:16];
 
-   tri   [31:0] addr;
-   tri   [31:0] rdata, wdata;
-   tri   [1:0]  size;
-   tri          wen;
+   assign controlL2 = registers[`DMA2CNT_L_IDX][15:0];
+   assign controlH2 = registers[`DMA2CNT_H_IDX][31:16];
+   assign srcAddrL2 = registers[`DMA2SAD_L_IDX][15:0];
+   assign srcAddrH2 = registers[`DMA2SAD_H_IDX][31:16];
+   assign destAddrL2 = registers[`DMA2DAD_L_IDX][15:0];  
+   assign destAddrH2 = registers [`DMA2DAD_H_IDX][31:16];
 
-   logic [3:0]  disable_dma;
-   logic        active;
-   logic        irq;
+   assign controlL3 = registers[`DMA3CNT_L_IDX][15:0];
+   assign controlH3 = registers[`DMA3CNT_H_IDX][31:16];
+   assign srcAddrL3 = registers[`DMA3SAD_L_IDX][15:0];
+   assign srcAddrH3 = registers[`DMA3SAD_H_IDX][31:16];
+   assign destAddrL3 = registers[`DMA3DAD_L_IDX][15:0];  
+   assign destAddrH3 = registers [`DMA3DAD_H_IDX][31:16];
 
-   logic clk, rst_b;
-   
-    dma_top dut (
-        .controlL0, .controlH0,
-        .srcAddrL0, .srcAddrH0,
-        .destAddrL0, .destAddrH0,
-        .controlL1, .controlH1,
-        .srcAddrL1, .srcAddrH1,
-        .destAddrL1, .destAddrH1,
-        .controlL2, .controlH2,
-        .srcAddrL2, .srcAddrH2,
-        .destAddrL2, .destAddrH2,
-        .controlL3, .controlH3,
-        .srcAddrL3, .srcAddrH3,
-        .destAddrL3, .destAddrH3,
-        .vcount, .hcount, .sound_req, .mem_wait,
-        .addr, .rdata, .wdata,
-        .size,.wen, .disable_dma,
-        .active,.irq, .clk, .rst_b);
-            
-    dist_mem_gen_0 your_instance_name (
-          .a(addr),      // input wire [15 : 0] a
-          .d(wdata),      // input wire [31 : 0] d
-          .clk(clk),  // input wire clk
-          .we(wen),    // input wire we
-          .spo(rdata)  // output wire [31 : 0] spo
-        );
-         
-    initial begin
-        clk <= 0;
-        rst_b<=0;
-        #2 rst_b <=1;
-        #2 
-        srcAddrL0 <= 16'b0000_0000_0000_1111;
-        destAddrL0 <= 16'b0000_0000_1111_0000;
-        controlL0 <= 16'b0000_0000_0000_0011;
-        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
-        //DMA_repeat off, incr source and dest after transfer
-        controlH0 <= 16'b1100_1000_0000_0000;
-                                      
-     end
-     
-    always 
-        #1 clk= !clk;
-        
-endmodule: dma_tb*/
+   logic [3:0] preempts;
+   logic [3:0] actives;
+   logic [3:0] irqs;
+   logic [3:0] mid_process;
+   logic allowed_to_begin;
+
+   assign active = |actives;
+   assign irq = |irqs; 
+   assign preempts[0] = 1'b0;
+   assign preempts[1] = actives[0];
+   assign preempts[2] = actives[0] | actives[1];
+   assign preempts[3] = actives[0] | actives[1] | actives[2];
+   assign allowed_to_begin = ~mid_process[0] && ~mid_process[1]
+                                  && ~mid_process[2] && ~mid_process[3];
+
+
+   dma_unit dma0(.controlL(controlL0), .controlH(controlH0),
+                 .srcAddrL(srcAddrL0), .srcAddrH(srcAddrH0),
+                 .destAddrL(destAddrL0), .destAddrH(destAddrH0),
+                 .mem_wait, .preempted(preempts[0]),
+                 .srcGamePak(1'b0), .destGamePak(1'b0),
+                 .disable_dma(disable_dma[0]),
+                 .active(actives[0]), .allowed_to_begin,
+                 .irq(irqs[0]), .others_cant_preempt(mid_process[0]),
+                 .addr, .wdata, .rdata, .size, .wen,
+                 .vcount, .hcount, .sound(1'b0), .sound_req,
+                 .clk, .rst_b);
+
+   dma_unit dma1(.controlL(controlL1), .controlH(controlH1),
+                 .srcAddrL(srcAddrL1), .srcAddrH(srcAddrH1),
+                 .destAddrL(destAddrL1), .destAddrH(destAddrH1),
+                 .mem_wait, .preempted(preempts[1]),
+                 .srcGamePak(1'b1), .destGamePak(1'b0),
+                 .disable_dma(disable_dma[1]),
+                 .active(actives[1]), .allowed_to_begin,
+                 .irq(irqs[1]), .others_cant_preempt(mid_process[1]),
+                 .addr, .wdata, .rdata, .size, .wen,
+                 .vcount, .hcount, .sound(1'b1), .sound_req,
+                 .clk, .rst_b);
+
+   dma_unit dma2(.controlL(controlL2), .controlH(controlH2),
+                 .srcAddrL(srcAddrL2), .srcAddrH(srcAddrH2),
+                 .destAddrL(destAddrL2), .destAddrH(destAddrH2),
+                 .mem_wait, .preempted(preempts[2]),
+                 .srcGamePak(1'b1), .destGamePak(1'b0),
+                 .disable_dma(disable_dma[2]),
+                 .active(actives[2]), .allowed_to_begin,
+                 .irq(irqs[2]), .others_cant_preempt(mid_process[2]),
+                 .addr, .wdata, .rdata, .size, .wen,
+                 .vcount, .hcount, .sound(1'b1), .sound_req,
+                 .clk, .rst_b);
+
+   dma_unit dma3(.controlL(controlL3), .controlH(controlH3),
+                 .srcAddrL(srcAddrL3), .srcAddrH(srcAddrH3),
+                 .destAddrL(destAddrL3), .destAddrH(destAddrH3),
+                 .mem_wait, .preempted(preempts[3]),
+                 .srcGamePak(1'b1), .destGamePak(1'b1),
+                 .disable_dma(disable_dma[3]),
+                 .active(actives[3]), .allowed_to_begin,
+                 .irq(irqs[3]), .others_cant_preempt(mid_process[3]),
+                 .addr, .wdata, .rdata, .size, .wen,
+                 .vcount, .hcount, .sound(1'b0), .sound_req,
+                 .clk, .rst_b);
+
+endmodule: dma_top
+
