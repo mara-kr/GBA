@@ -67,8 +67,8 @@ module test_fsm
       BASIC1: begin
         srcAddrL0 = 16'b0000_0000_0000_0000;
         srcAddrH0 = 16'b0000_0000_0000_0000;
-        destAddrL0 = 16'b0000_0000_0000_1000;
-        destAddrH0 = 16'b0000_0011_0000_0000;
+        destAddrL0 = 16'b0000_0000_0000_1010;
+        destAddrH0 = 16'b0000_0101_0000_0000;
         controlL0 = 16'b0000_0000_0000_0001;
         //DMA on, interrupt enabled, start timing immediately, 16 bit transfer, 
         //DMA_repeat off, incr source and dest after transfer
@@ -77,12 +77,12 @@ module test_fsm
       end
       CHECK_BASIC1_1: begin
         check_correctness = 1'b1;
-        test_addr = 32'h03000008;
+        test_addr = 32'h0500000A;
         ns = (~pause) ? CHECK_BASIC1_2 : CHECK_BASIC1_1;
       end
       CHECK_BASIC1_2: begin
         check_correctness = 1'b1;
-        passed = (rdata == 32'h00000100) ? 1'b1 : 1'b0;
+        passed = (rdata == 32'h01000000) ? 1'b1 : 1'b0;
         ns = (~pause) ? BASIC2 : CHECK_BASIC1_2;
       end
       BASIC2: begin

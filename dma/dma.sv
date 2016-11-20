@@ -224,10 +224,20 @@ module dma_dp
     end
   end
 
+  //if writing 16 bits to upper word of an address the data
+  // must be in the top word of the wdata_size
+  logic [31:0] wdata_size;
+
   assign addr = active ? desiredAddr : {32{1'bz}};
   assign wen = active ? write : 1'bz;
-  assign wdata = (set_wdata) ? data : {32{1'bz}};
+  assign wdata = (set_wdata) ? wdata_size : {32{1'bz}};
   assign size = active ? (size_mem_transfer): {32{1'bz}};
+
+  always_comb begin
+      if (size_mem_transfer == 2'b01 && desiredAddr[1]==1'b1) 
+          wdata_size[31:16] = data[15:0];
+      else wdata_size = data;
+  end
 
   mux_2_to_1 #(32) srcAddrMux (.i0(steppedSAddr), .i1({srcAddrH, srcAddrL}), .s(loadSAD), .y(nextSAddr));
   mux_2_to_1 #(32) destAddrMux (.i0(steppedDAddr), .i1(targetAddr), .s(loadDAD | (loadCNT & reloadDad)), .y(nextDAddr));

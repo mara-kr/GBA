@@ -147,6 +147,8 @@ module core_tb;
         irq_n = 1'b1;
         #1 rst_n <= 1'b0;
         #1 rst_n <= 1'b1;
+        #100 rst_n <= 1'b0;
+        #100 rst_n <= 1'b1;
         #400 $finish;
     end
 
