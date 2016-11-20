@@ -11,6 +11,7 @@ module cpu_top (
     input  logic [31:0] rdata,
     output logic [31:0] addr, wdata,
     output logic  [1:0] size,
+    output logic  [4:0] mode,
     output logic        write);
 
     logic [31:0] addr_int, wdata_int;
@@ -20,7 +21,7 @@ module cpu_top (
     ARM7TDMIS_Top cpu (.CLK(clock), .NRESET(~reset), .NIRQ(nIRQ),
                        .ADDR(addr_int), .WDATA(wdata_int), .RDATA(rdata),
                        .SIZE(size_int), .WRITE(write_int), .ABORT(abort),
-                       .PAUSE(pause | dmaActive), .NFIQ(1'b1));
+                       .PAUSE(pause | dmaActive), .MODE(mode), .NFIQ(1'b1));
 
     assign addr = (dmaActive) ? 32'bz : addr_int;
     assign size = (dmaActive) ? 2'bz : size_int;

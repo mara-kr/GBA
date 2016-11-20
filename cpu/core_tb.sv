@@ -17,6 +17,7 @@ module core_tb;
     // Memory interface
     logic [31:0] addr, wdata;
     wire  [31:0] rdata;
+    logic [4:0] mode;
     logic [1:0] size;
     logic abort, write;
 
@@ -24,7 +25,7 @@ module core_tb;
     ARM7TDMIS_Top DUT (.CLK(clk), .PAUSE(pause), .NRESET(rst_n),
                        .NIRQ(irq_n), .ADDR(addr), .WDATA(wdata),
                        .RDATA(rdata), .SIZE(size), .ABORT(abort),
-                       .WRITE(write), .NFIQ(1'b1));
+                       .WRITE(write), .MODE(mode), .NFIQ(1'b1));
 
     bus_monitor #("GBA_CPU_BUS_LOG") busMon (.clk, .rst_n, .pause, .addr,
                                              .wdata, .rdata, .size, .abort,
@@ -49,7 +50,9 @@ module core_tb;
     logic inst_ex;
     /* So the simulation stops */
     initial begin
-        #600000 $finish;
+        #20001 irq_n <= 1'b0;
+        #14 irq_n <= 1'b1;
+        #10000 $finish;
     end
 
     assign inst_pc = (DUT.ThDC_ThumbDecoderEn) ?
@@ -200,7 +203,7 @@ endmodule: sim_memory
  * Read data output in bus-style - High impedence if not in range
  */
 module memory
-    #(parameter START_ADDR=32'h0,
+    #(parameter BASE_ADDR=32'h0,
       parameter SIZE=32'h10)
     (input  logic clk, rst_n, pause,
      input  logic [31:0] addr, wdata,
@@ -214,10 +217,9 @@ module memory
      logic [3:0] we;
      logic curr_in_range, prev_in_range;
 
-     assign align_addr = (addr - START_ADDR) & 32'hFFFF_FFFC;
+     assign align_addr = (addr - BASE_ADDR) & 32'hFFFF_FFFC;
 
-     assign curr_in_range = (START_ADDR <= addr &&
-                             align_addr < SIZE);
+     assign curr_in_range = (BASE_ADDR[31:24] == addr[31:24]);
 
      assign rdata = (prev_in_range) ?
                     {b_rdata[3], b_rdata[2], b_rdata[1], b_rdata[0]} : 32'bz;
@@ -233,19 +235,15 @@ module memory
              prev_in_range <= curr_in_range;
              /* Write data presented 1 cycle after address & WE */
              prev_addr <= align_addr;
-             we <= (align_addr <= SIZE) ? byte_we : 4'd0;
-             if (prev_addr <= SIZE) begin
-                 if (we[3]) mem[prev_addr+3] <= wdata[31:24];
-                 if (we[2]) mem[prev_addr+2] <= wdata[23:16];
-                 if (we[1]) mem[prev_addr+1] <= wdata[15:8];
-                 if (we[0]) mem[prev_addr] <= wdata[7:0];
-             end
-             if (align_addr <= SIZE) begin
-                 b_rdata[3] <= mem[align_addr+3];
-                 b_rdata[2] <= mem[align_addr+2];
-                 b_rdata[1] <= mem[align_addr+1];
-                 b_rdata[0] <= mem[align_addr+0];
-             end
+             we <= (curr_in_range) ? byte_we : 4'd0;
+             if (we[3]) mem[prev_addr[$clog2(SIZE)-1:0]+3] <= wdata[31:24];
+             if (we[2]) mem[prev_addr[$clog2(SIZE)-1:0]+2] <= wdata[23:16];
+             if (we[1]) mem[prev_addr[$clog2(SIZE)-1:0]+1] <= wdata[15:8];
+             if (we[0]) mem[prev_addr[$clog2(SIZE)-1:0]] <= wdata[7:0];
+             b_rdata[3] <= mem[align_addr[$clog2(SIZE)-1:0]+3];
+             b_rdata[2] <= mem[align_addr[$clog2(SIZE)-1:0]+2];
+             b_rdata[1] <= mem[align_addr[$clog2(SIZE)-1:0]+1];
+             b_rdata[0] <= mem[align_addr[$clog2(SIZE)-1:0]+0];
          end
      end
 

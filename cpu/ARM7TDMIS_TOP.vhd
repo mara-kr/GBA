@@ -23,7 +23,9 @@ entity ARM7TDMIS_Top is port(
 	                        RDATA         : in  std_logic_vector(31 downto 0);
 							ABORT	      : in std_logic;
 							WRITE         : out std_logic;
-                            SIZE          : out std_logic_vector(1 downto 0)
+                            SIZE          : out std_logic_vector(1 downto 0);
+                            -- Information signals
+                            MODE          : out std_logic_vector(4 downto 0)
 							);
 end ARM7TDMIS_Top;
 
@@ -1168,6 +1170,7 @@ NormalCompilation:if not CSlackEstim generate
 -- Outputs of the core
 ADDR <= ADDR_Int;
 SIZE <= SIZE_Int;
+MODE <= PSR_CPSROut(4 downto 0);
 end generate;
 
 EstimationCompilation:if CSlackEstim generate
