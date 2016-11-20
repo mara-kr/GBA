@@ -372,7 +372,7 @@ module dma_top
 
    output logic [3:0]  disable_dma,
    output logic        active,
-   output logic        irq,
+   output logic        irq0, irq1, irq2, irq3,
 
    input  logic clk, rst_b);
 
@@ -422,12 +422,10 @@ module dma_top
 
    logic [3:0] preempts;
    logic [3:0] actives;
-   logic [3:0] irqs;
    logic [3:0] mid_process;
    logic allowed_to_begin;
 
    assign active = |actives;
-   assign irq = |irqs; 
    assign preempts[0] = 1'b0;
    assign preempts[1] = actives[0];
    assign preempts[2] = actives[0] | actives[1];
@@ -443,7 +441,7 @@ module dma_top
                  .srcGamePak(1'b0), .destGamePak(1'b0),
                  .disable_dma(disable_dma[0]),
                  .active(actives[0]), .allowed_to_begin,
-                 .irq(irqs[0]), .others_cant_preempt(mid_process[0]),
+                 .irq(irq0), .others_cant_preempt(mid_process[0]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b0), .sound_req,
                  .clk, .rst_b);
@@ -455,7 +453,7 @@ module dma_top
                  .srcGamePak(1'b1), .destGamePak(1'b0),
                  .disable_dma(disable_dma[1]),
                  .active(actives[1]), .allowed_to_begin,
-                 .irq(irqs[1]), .others_cant_preempt(mid_process[1]),
+                 .irq(irq1), .others_cant_preempt(mid_process[1]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b1), .sound_req,
                  .clk, .rst_b);
@@ -467,7 +465,7 @@ module dma_top
                  .srcGamePak(1'b1), .destGamePak(1'b0),
                  .disable_dma(disable_dma[2]),
                  .active(actives[2]), .allowed_to_begin,
-                 .irq(irqs[2]), .others_cant_preempt(mid_process[2]),
+                 .irq(irq2), .others_cant_preempt(mid_process[2]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b1), .sound_req,
                  .clk, .rst_b);
@@ -479,7 +477,7 @@ module dma_top
                  .srcGamePak(1'b1), .destGamePak(1'b1),
                  .disable_dma(disable_dma[3]),
                  .active(actives[3]), .allowed_to_begin,
-                 .irq(irqs[3]), .others_cant_preempt(mid_process[3]),
+                 .irq(irq3), .others_cant_preempt(mid_process[3]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b0), .sound_req,
                  .clk, .rst_b);

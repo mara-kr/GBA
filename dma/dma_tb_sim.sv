@@ -59,7 +59,7 @@ module core_tb;
 
     logic [3:0] disable_dma;
     logic active;
-    logic irq;
+    logic irq0, irq1, irq2, irq3;
 
     logic [15:0] hcount, vcount;
     logic sound_req;
@@ -86,7 +86,7 @@ module core_tb;
 
         .disable_dma,
         .active,
-        .irq,
+        .irq0, .irq1, .irq2, .irq3,
 
         .clk, .rst_b(rst_n));
 
@@ -139,8 +139,8 @@ module core_tb;
     assign write = (check_correctness) ? 1'b0 : dma_write;
     /* Clock and Reset Generation */
     initial begin
-        $monitor ("Passed:%b, pause=%b, rdata:%h, addr:%h, cs:%s, xfer_count:%d, rest=%b", 
-                    all_passed, pause, rdata, addr, fsm.cs, fsm.xfer_count, rst_n);
+        $monitor ("Passed:%b, rdata:%h, addr:%h, cs:%s, xfer_count:%d, rest=%b, irq0=%b, irq1=%b irq2=%b, irq3=%b", 
+                    all_passed, rdata, addr, fsm.cs, fsm.xfer_count, rst_n, irq0, irq1, irq2, irq3);
         $display("Start"); // Start of SIM for diff script
         clk = 0;
         rst_n = 1'b1;
