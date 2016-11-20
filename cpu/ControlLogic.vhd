@@ -1646,7 +1646,8 @@ PCIncStep  <= (CPSRTFlag or (IDR_BX and RmBitZero and (not CPSRTFlag)));
 AdrIncStep <= ((CPSRTFlag and (not (IDR_BX and (not RmBitZero) and -- THUMB & ~(Transfer to ARM)
                                     (not Branch_St1) and (not Branch_St2)))) or
               (IDR_BX and RmBitZero)) and                            -- Transfer to THUMB
-              (not (IDR_STM and ExecuteInst)) and (not nLDM_St0);
+              (not (IDR_STM and StagnatePipeline_Int and ExecuteInst)) and
+              (not (IDR_LDM and StagnatePipeline_Int and ExecuteInst));
 
 -- Switch ADDR register to the input of PC
 AdrToPCSel <=  ExceptFC or -- First cycle of interrupt entering
@@ -1657,9 +1658,9 @@ AdrToPCSel <=  ExceptFC or -- First cycle of interrupt entering
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- Combinatorial rgister address control (controled from the execution stage of the pipeline)!!! TBD !!!
-ABusRdAdr <= Rs when (IDR_DPIRegSh='1' and DPIRegSh_St='0')or(IDR_MUL or IDR_SMULL or IDR_UMULL or nMLA_St0 or nMLAL_St0)='1' else -- Rs ( The first cycle of "Data processing register shift")
-			 CR_PC	when ((IDR_B or IDR_BL or (IDR_ThBLFP and CPSRTFlag)) and ExecuteInst)='1' or Branch_St1='1' or ExceptFC='1' else -- *
+ABusRdAdr <= CR_PC	when ((IDR_B or IDR_BL or (IDR_ThBLFP and CPSRTFlag)) and ExecuteInst)='1' or Branch_St1='1' or ExceptFC='1' else -- *
 	         CR_LR	when Branch_St2='1' or ExceptSM_St1='1' else -- LR correction (BL/Exception)
+             Rs when (IDR_DPIRegSh='1' and DPIRegSh_St='0')or(IDR_MUL or IDR_SMULL or IDR_UMULL or nMLA_St0 or nMLAL_St0)='1' else -- Rs ( The first cycle of "Data processing register shift")
 			 Rn;                           -- Rn
 
 -- * Note PC(R15) (target address calculation for B/BL) or store PC to LR (BL/Exception)
@@ -2461,16 +2462,16 @@ begin
 if nRESET='0' then
     LastAddr <= (others => '0');
 elsif CLK='1' and CLK'event then
-    if CLKEN='1' and StagnatePipeline_Int='0' then
+    if CLKEN='1' then
         LastAddr <= Addr;
     end if;
 end if;
 end process;
 
-DataAddrLow <= LastAddr(1 downto 0) when (BRANCH_ST1='1' or BRANCH_ST2='1') else
+DataAddrLow <= LastAddr(1 downto 0) when (Branch_St1='1' or Branch_St2='1') else
               "00" when ((IDR_LDR='1' or IDR_LDRT='1') and (LDR_St1='1')) else
                LastAddr(1) & '0' when ((IDR_LDRH='1' or IDR_LDRSH='1') and (LDR_St1='0')) else
-               "00" when (IDR_LDM='1') else
+               "00" when (nLDM_St0='1') else
                LastAddr(1 downto 0);
 
 end RTL;

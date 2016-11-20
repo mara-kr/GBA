@@ -346,14 +346,14 @@ begin
         DecoderOut(23 downto 11) <= (23 downto 11 => HalfWordForDecode(10)); -- sign extend
         DecoderOut(10 downto 0) <= HalfWordForDecode(10 downto 0);
     elsif (HalfWordForDecode(15 downto 13)="111") then         -- BL
-        if (HalfWordForDecode(12 downto 11)="10") then
-            ThBLFP_Reg_EN <= '1';
+        if (HalfWordForDecode(12 downto 11)="10") then -- 1st Part of BL
+            ThBLFP_Reg_EN <= '1'; -- NOP
             --ThBLFP <= '1';
             DecoderOut(31 downto 28) <= "1110";
             DecoderOut(27 downto 24) <= "0000";
             DecoderOut(23 downto 11) <= "0000000000000";
             DecoderOut(10 downto 0) <= "00000000000";
-        else -- HalfWordForDecode(12:11)="11"
+        else -- HalfWordForDecode(12:11)="11" - 2nd part of BL
             --ThBLSP <= '1';
             DecoderOut(31 downto 28) <= "1110";
             DecoderOut(27 downto 24) <= "1011";
