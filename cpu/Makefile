@@ -9,7 +9,8 @@ VCS_REG_FILE=$(BUILD_DIR)/vcs_reg_out.txt
 BIOS_FILE=$(WORK_DIR)/gba_bios.hex
 #BIOS_FILE=$(WORK_DIR)/roms/pixels.hex
 #BIOS_FILE=$(WORK_DIR)/roms/mem_test.hex
-ROM_FILE=$(WORK_DIR)/roms/pixels.hex
+#ROM_FILE=$(WORK_DIR)/roms/pixels.hex
+ROM_FILE=$(WORK_DIR)/roms/loz_minish.hex
 #QEMU_REG_FILE=$(WORK_DIR)/test_files/pixels.regs
 QEMU_REG_FILE=$(WORK_DIR)/test_files/bios.regs
 BUS_LOG_FILE=$(WORK_DIR)/BusLog.txt
@@ -21,6 +22,7 @@ INIT=mkdir -p $(BUILD_DIR) && cp $(FILES) $(BUILD_DIR)/ && cd $(BUILD_DIR)
 export GBA_CPU_BIOS_FILE=$(BIOS_FILE)
 export GBA_CPU_ROM_FILE=$(ROM_FILE)
 export GBA_CPU_BUS_LOG=$(BUS_LOG_FILE)
+export GBA_PAK_INIT_1_FILE=$(WORK_DIR)/roms/pak_init_1.hex
 
 default: core
 
@@ -46,6 +48,9 @@ test_core:
 
 gui:
 	cd build && ./simv -gui &
+
+simv:
+	cd build && ./simv
 
 clean:
 	rm -rf $(BUILD_DIR)

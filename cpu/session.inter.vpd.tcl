@@ -1,6 +1,6 @@
 # Begin_DVE_Session_Save_Info
 # DVE full session
-# Saved on Sun Oct 9 17:34:02 2016
+# Saved on Sat Nov 12 21:06:38 2016
 # Designs open: 1
 #   Sim: simv
 # Toplevel windows open: 2
@@ -70,7 +70,7 @@ if {![gui_exist_window -window TopLevel.2]} {
 } else { 
     set TopLevel.2 TopLevel.2
 }
-gui_show_window -window ${TopLevel.2} -show_state normal -rect {{884 85} {1542 1024}}
+gui_show_window -window ${TopLevel.2} -show_state maximized -rect {{1 183} {1600 1281}}
 
 # ToolBar settings
 gui_set_toolbar_attributes -toolbar {TimeOperations} -dock_state top
@@ -117,12 +117,12 @@ gui_show_toolbar -toolbar {Testbench}
 # End ToolBar settings
 
 # Docked window settings
-set HSPane.2 [gui_create_window -type HSPane -parent ${TopLevel.2} -dock_state left -dock_on_new_line true -dock_extent 200]
-catch { set Hier.2 [gui_share_window -id ${HSPane.2} -type Hier] }
-gui_set_window_pref_key -window ${HSPane.2} -key dock_width -value_type integer -value 200
-gui_set_window_pref_key -window ${HSPane.2} -key dock_height -value_type integer -value 250
-gui_set_window_pref_key -window ${HSPane.2} -key dock_offset -value_type integer -value 0
-gui_update_layout -id ${HSPane.2} {{left 0} {top 0} {width 199} {height 769} {dock_state left} {dock_on_new_line true} {child_hier_colhier 934} {child_hier_coltype 661} {child_hier_colpd 0} {child_hier_col1 0} {child_hier_col2 1} {child_hier_col3 -1}}
+set HSPane.1 [gui_create_window -type HSPane -parent ${TopLevel.2} -dock_state left -dock_on_new_line true -dock_extent 198]
+catch { set Hier.1 [gui_share_window -id ${HSPane.1} -type Hier] }
+gui_set_window_pref_key -window ${HSPane.1} -key dock_width -value_type integer -value 198
+gui_set_window_pref_key -window ${HSPane.1} -key dock_height -value_type integer -value 250
+gui_set_window_pref_key -window ${HSPane.1} -key dock_offset -value_type integer -value 0
+gui_update_layout -id ${HSPane.1} {{left 0} {top 0} {width 197} {height 999} {dock_state left} {dock_on_new_line true} {child_hier_colhier 934} {child_hier_coltype 661} {child_hier_colpd 0} {child_hier_col1 0} {child_hier_col2 1} {child_hier_col3 -1}}
 #### Start - Readjusting docked view's offset / size
 set dockAreaList { top left right bottom }
 foreach dockArea $dockAreaList {
@@ -144,15 +144,15 @@ foreach dockArea $dockAreaList {
 gui_sync_global -id ${TopLevel.2} -option true
 
 # MDI window settings
-set DLPane.2 [gui_create_window -type {DLPane}  -parent ${TopLevel.2}]
-if {[gui_get_shared_view -id ${DLPane.2} -type Data] == {}} {
-        set Data.2 [gui_share_window -id ${DLPane.2} -type Data]
+set DLPane.1 [gui_create_window -type {DLPane}  -parent ${TopLevel.2}]
+if {[gui_get_shared_view -id ${DLPane.1} -type Data] == {}} {
+        set Data.1 [gui_share_window -id ${DLPane.1} -type Data]
 } else {
-        set Data.2  [gui_get_shared_view -id ${DLPane.2} -type Data]
+        set Data.1  [gui_get_shared_view -id ${DLPane.1} -type Data]
 }
 
-gui_show_window -window ${DLPane.2} -show_state maximized
-gui_update_layout -id ${DLPane.2} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_data_colvariable 356} {child_data_colvalue 21} {child_data_coltype 62} {child_data_col1 0} {child_data_col2 1} {child_data_col3 2}}
+gui_show_window -window ${DLPane.1} -show_state maximized
+gui_update_layout -id ${DLPane.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_data_colvariable 675} {child_data_colvalue 340} {child_data_coltype 381} {child_data_col1 0} {child_data_col2 1} {child_data_col3 2}}
 
 # End MDI window settings
 
@@ -165,7 +165,7 @@ if {![gui_exist_window -window TopLevel.3]} {
 } else { 
     set TopLevel.3 TopLevel.3
 }
-gui_show_window -window ${TopLevel.3} -show_state maximized -rect {{1993 67} {3912 1165}}
+gui_show_window -window ${TopLevel.3} -show_state maximized -rect {{533 106} {2132 1204}}
 
 # ToolBar settings
 gui_set_toolbar_attributes -toolbar {TimeOperations} -dock_state top
@@ -217,7 +217,7 @@ gui_sync_global -id ${TopLevel.3} -option true
 # MDI window settings
 set Wave.1 [gui_create_window -type {Wave}  -parent ${TopLevel.3}]
 gui_show_window -window ${Wave.1} -show_state maximized
-gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 557} {child_wave_right 1357} {child_wave_colname 310} {child_wave_colvalue 243} {child_wave_col1 0} {child_wave_col2 1}}
+gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 464} {child_wave_right 1130} {child_wave_colname 257} {child_wave_colvalue 203} {child_wave_col1 0} {child_wave_col2 1}}
 
 # End MDI window settings
 
@@ -264,34 +264,35 @@ gui_set_time_units 1s
 # Global: Signal Compare
 
 # Global: Signal Groups
-gui_load_child_values {core_tb.DUT.THDCDISIMPLEMENTED.THUMBDECODER_INST}
+gui_load_child_values {core_tb}
 gui_load_child_values {core_tb.DUT.IPDR_INST}
 gui_load_child_values {core_tb.DUT.PSR_INST}
+gui_load_child_values {core_tb.DUT.CONTROLLOGIC_INST}
 
 
-set _session_group_17 Group1
-gui_sg_create "$_session_group_17"
-set Group1 "$_session_group_17"
+set _session_group_1 Group1
+gui_sg_create "$_session_group_1"
+set Group1 "$_session_group_1"
 
-gui_sg_addsignal -group "$_session_group_17" { core_tb.clk core_tb.addr core_tb.wdata core_tb.size core_tb.write core_tb.rdata }
+gui_sg_addsignal -group "$_session_group_1" { core_tb.clk core_tb.addr core_tb.wdata core_tb.size core_tb.write core_tb.rdata }
 
-set _session_group_18 Group2
-gui_sg_create "$_session_group_18"
-set Group2 "$_session_group_18"
+set _session_group_2 Group2
+gui_sg_create "$_session_group_2"
+set Group2 "$_session_group_2"
 
-gui_sg_addsignal -group "$_session_group_18" { core_tb.DUT.REGFILE_INST.UMREGISTERFILE(0) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(1) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(2) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(3) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(4) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(5) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(6) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(7) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(12) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(13) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(14) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(15) core_tb.DUT.PSR_INST.CPSR }
+gui_sg_addsignal -group "$_session_group_2" { core_tb.DUT.REGFILE_INST.UMREGISTERFILE(0) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(1) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(2) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(3) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(4) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(5) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(6) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(7) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(12) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(13) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(14) core_tb.DUT.REGFILE_INST.UMREGISTERFILE(15) core_tb.DUT.PSR_INST.CPSR }
 
-set _session_group_19 Group3
-gui_sg_create "$_session_group_19"
-set Group3 "$_session_group_19"
+set _session_group_3 Group3
+gui_sg_create "$_session_group_3"
+set Group3 "$_session_group_3"
 
-gui_sg_addsignal -group "$_session_group_19" { core_tb.DUT.REGFILE_INST.SVCMREGISTERFILE(13) core_tb.DUT.REGFILE_INST.SVCMREGISTERFILE(14) core_tb.DUT.REGFILE_INST.IRQMREGISTERFILE(13) core_tb.DUT.REGFILE_INST.IRQMREGISTERFILE(14) core_tb.DUT.REGFILE_INST.USERMODE core_tb.DUT.REGFILE_INST.IRQMODE core_tb.DUT.REGFILE_INST.SVCMODE }
+gui_sg_addsignal -group "$_session_group_3" { core_tb.DUT.REGFILE_INST.SVCMREGISTERFILE(13) core_tb.DUT.REGFILE_INST.SVCMREGISTERFILE(14) core_tb.DUT.REGFILE_INST.IRQMREGISTERFILE(13) core_tb.DUT.REGFILE_INST.IRQMREGISTERFILE(14) core_tb.DUT.REGFILE_INST.USERMODE core_tb.DUT.REGFILE_INST.IRQMODE core_tb.DUT.REGFILE_INST.SVCMODE }
 
-set _session_group_20 Group4
-gui_sg_create "$_session_group_20"
-set Group4 "$_session_group_20"
+set _session_group_4 Group4
+gui_sg_create "$_session_group_4"
+set Group4 "$_session_group_4"
 
-gui_sg_addsignal -group "$_session_group_20" { core_tb.DUT.THDCDISIMPLEMENTED.THUMBDECODER_INST.THUMBDECODEREN core_tb.DUT.IPDR_INST.FETCHEDINSTRUCTIONIN core_tb.DUT.THDCDISIMPLEMENTED.THUMBDECODER_INST.HALFWORDFORDECODE core_tb.DUT.IPDR_INST.INSTFORDECODE core_tb.DUT.CONTROLLOGIC_INST.INSTFORDECODELATCHED }
+gui_sg_addsignal -group "$_session_group_4" { core_tb.DUT.IPDR_INST.FETCHEDINSTRUCTIONIN core_tb.DUT.THUMBDECODER_INST.HALFWORDFORDECODE core_tb.DUT.IPDR_INST.INSTFORDECODE core_tb.DUT.CONTROLLOGIC_INST.INSTFORDECODELATCHED core_tb.DUT.THUMBDECODER_INST.THUMBDECODEREN }
 
 # Global: Highlighting
 
@@ -301,7 +302,7 @@ gui_change_stack_mode -mode list
 # Post database loading setting...
 
 # Restore C1 time
-gui_set_time -C1_only 1730
+gui_set_time -C1_only 0
 
 
 
@@ -320,28 +321,28 @@ gui_set_loading_session_type noSession
 # DVE View/pane content session: 
 
 
-# Hier 'Hier.2'
-gui_show_window -window ${Hier.2}
-gui_list_set_filter -id ${Hier.2} -list { {Package 1} {All 0} {Process 1} {VirtPowSwitch 0} {UnnamedProcess 1} {UDP 0} {Function 1} {Block 1} {SrsnAndSpaCell 0} {OVA Unit 1} {LeafScCell 1} {LeafVlgCell 1} {Interface 1} {LeafVhdCell 1} {$unit 1} {NamedBlock 1} {Task 1} {VlgPackage 1} {ClassDef 1} {VirtIsoCell 0} }
-gui_list_set_filter -id ${Hier.2} -text {*}
-gui_hier_list_init -id ${Hier.2}
-gui_change_design -id ${Hier.2} -design Sim
-catch {gui_list_expand -id ${Hier.2} core_tb}
-catch {gui_list_expand -id ${Hier.2} core_tb.DUT}
-catch {gui_list_select -id ${Hier.2} {core_tb.DUT.CONTROLLOGIC_INST}}
-gui_view_scroll -id ${Hier.2} -vertical -set 0
-gui_view_scroll -id ${Hier.2} -horizontal -set 0
+# Hier 'Hier.1'
+gui_show_window -window ${Hier.1}
+gui_list_set_filter -id ${Hier.1} -list { {Package 1} {All 0} {Process 1} {VirtPowSwitch 0} {UnnamedProcess 1} {UDP 0} {Function 1} {Block 1} {SrsnAndSpaCell 0} {OVA Unit 1} {LeafScCell 1} {LeafVlgCell 1} {Interface 1} {LeafVhdCell 1} {$unit 1} {NamedBlock 1} {Task 1} {VlgPackage 1} {ClassDef 1} {VirtIsoCell 0} }
+gui_list_set_filter -id ${Hier.1} -text {*}
+gui_hier_list_init -id ${Hier.1}
+gui_change_design -id ${Hier.1} -design Sim
+catch {gui_list_expand -id ${Hier.1} core_tb}
+catch {gui_list_expand -id ${Hier.1} core_tb.DUT}
+catch {gui_list_select -id ${Hier.1} {core_tb.DUT.THUMBDECODER_INST}}
+gui_view_scroll -id ${Hier.1} -vertical -set 0
+gui_view_scroll -id ${Hier.1} -horizontal -set 0
 
-# Data 'Data.2'
-gui_list_set_filter -id ${Data.2} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {LowPower 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
-gui_list_set_filter -id ${Data.2} -text {*}
-gui_list_show_data -id ${Data.2} {core_tb.DUT.CONTROLLOGIC_INST}
-gui_show_window -window ${Data.2}
-catch { gui_list_select -id ${Data.2} {core_tb.DUT.CONTROLLOGIC_INST.INSTFORDECODELATCHED }}
-gui_view_scroll -id ${Data.2} -vertical -set 2368
-gui_view_scroll -id ${Data.2} -horizontal -set 0
-gui_view_scroll -id ${Hier.2} -vertical -set 0
-gui_view_scroll -id ${Hier.2} -horizontal -set 0
+# Data 'Data.1'
+gui_list_set_filter -id ${Data.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {LowPower 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
+gui_list_set_filter -id ${Data.1} -text {*}
+gui_list_show_data -id ${Data.1} {core_tb.DUT.THUMBDECODER_INST}
+gui_show_window -window ${Data.1}
+catch { gui_list_select -id ${Data.1} {core_tb.DUT.THUMBDECODER_INST.THUMBDECODEREN }}
+gui_view_scroll -id ${Data.1} -vertical -set 0
+gui_view_scroll -id ${Data.1} -horizontal -set 0
+gui_view_scroll -id ${Hier.1} -vertical -set 0
+gui_view_scroll -id ${Hier.1} -horizontal -set 0
 
 # View 'Wave.1'
 gui_wv_sync -id ${Wave.1} -switch false
@@ -352,14 +353,35 @@ gui_list_set_height -id Wave -height 25
 set origGroupCreationState [gui_list_create_group_when_add -wave]
 gui_list_create_group_when_add -wave -disable
 gui_marker_set_ref -id ${Wave.1}  C1
-gui_wv_zoom_timerange -id ${Wave.1} 1710 1748
+gui_wv_zoom_timerange -id ${Wave.1} 0 38
 gui_list_add_group -id ${Wave.1} -after {New Group} {Group1}
 gui_list_add_group -id ${Wave.1} -after {New Group} {Group2}
 gui_list_add_group -id ${Wave.1} -after {New Group} {Group3}
 gui_list_add_group -id ${Wave.1} -after {New Group} {Group4}
-gui_list_select -id ${Wave.1} {core_tb.DUT.THDCDISIMPLEMENTED.THUMBDECODER_INST.HALFWORDFORDECODE }
+gui_list_select -id ${Wave.1} {core_tb.DUT.THUMBDECODER_INST.THUMBDECODEREN }
 gui_seek_criteria -id ${Wave.1} {Any Edge}
 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(0) -add USER_R0 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(1) -add USER_R1 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(2) -add USER_R2 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(3) -add USER_R3 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(4) -add USER_R4 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(5) -add USER_R5 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(6) -add USER_R6 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(7) -add USER_R7 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(12) -add USER_R12 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(13) -add USER_R13 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(14) -add USER_R14 
+gui_list_alias -id ${Wave.1} -group ${Group2} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.UMREGISTERFILE(15) -add USER_R15 
+gui_list_alias -id ${Wave.1} -group ${Group3} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.SVCMREGISTERFILE(13) -add SVCM_R13 
+gui_list_alias -id ${Wave.1} -group ${Group3} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.SVCMREGISTERFILE(14) -add SVCM_R14 
+gui_list_alias -id ${Wave.1} -group ${Group3} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.IRQMREGISTERFILE(13) -add IRQM_R13 
+gui_list_alias -id ${Wave.1} -group ${Group3} -index 0 -signal Sim:core_tb.DUT.REGFILE_INST.IRQMREGISTERFILE(14) -add IRQM_R14 
+gui_list_alias -id ${Wave.1} -group ${Group4} -index 0 -signal Sim:core_tb.DUT.IPDR_INST.FETCHEDINSTRUCTIONIN -add IF_INST 
+gui_list_alias -id ${Wave.1} -group ${Group4} -index 0 -signal Sim:core_tb.DUT.THUMBDECODER_INST.HALFWORDFORDECODE -add ID_INST_TH 
+gui_list_alias -id ${Wave.1} -group ${Group4} -index 0 -signal Sim:core_tb.DUT.IPDR_INST.INSTFORDECODE -add ID_INST 
+gui_list_alias -id ${Wave.1} -group ${Group4} -index 0 -signal Sim:core_tb.DUT.CONTROLLOGIC_INST.INSTFORDECODELATCHED -add EX_INST 
+gui_list_alias -id ${Wave.1} -group ${Group4} -index 0 -signal Sim:core_tb.DUT.THUMBDECODER_INST.THUMBDECODEREN -add THUMB 
 
 
 gui_set_env TOGGLE::DEFAULT_WAVE_WINDOW ${Wave.1}
@@ -373,16 +395,16 @@ if { $groupExD } {
 }
 gui_list_set_filter -id ${Wave.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
 gui_list_set_filter -id ${Wave.1} -text {*}
-gui_list_set_insertion_bar  -id ${Wave.1} -group Group4  -item {core_tb.DUT.THDCDISIMPLEMENTED.THUMBDECODER_INST.HALFWORDFORDECODE(15 downto 0)} -position below
+gui_list_set_insertion_bar  -id ${Wave.1} -group Group4  -item core_tb.DUT.THUMBDECODER_INST.THUMBDECODEREN -position below
 
-gui_marker_move -id ${Wave.1} {C1} 1730
-gui_view_scroll -id ${Wave.1} -vertical -set 10
+gui_marker_move -id ${Wave.1} {C1} 0
+gui_view_scroll -id ${Wave.1} -vertical -set 0
 gui_show_grid -id ${Wave.1} -enable false
 # Restore toplevel window zorder
 # The toplevel window could be closed if it has no view/pane
 if {[gui_exist_window -window ${TopLevel.2}]} {
 	gui_set_active_window -window ${TopLevel.2}
-	gui_set_active_window -window ${DLPane.2}
+	gui_set_active_window -window ${DLPane.1}
 }
 if {[gui_exist_window -window ${TopLevel.3}]} {
 	gui_set_active_window -window ${TopLevel.3}

@@ -49,8 +49,7 @@ module core_tb;
     logic inst_ex;
     /* So the simulation stops */
     initial begin
-        #2000000 $finish;
-        //#200 $finish;
+        #600000 $finish;
     end
 
     assign inst_pc = (DUT.ThDC_ThumbDecoderEn) ?
@@ -63,6 +62,12 @@ module core_tb;
 
     always_ff @(posedge clk) begin
         if (rst_n) begin
+            if (DUT.ControlLogic_Inst.IDR_Branch &&
+               ~DUT.ControlLogic_Inst.Branch_St1 &&
+               ~DUT.ControlLogic_Inst.Branch_St2)
+               $display("%h -> %h (%b)",
+               DUT.RegFile_Inst.PCOut, addr, DUT.ControlLogic_Inst.CPSROut[5]);
+            /*
             $display("r0\t\t%h", DUT.RegFile_Inst.RegFileAOut[0]);
             $display("r1\t\t%h", DUT.RegFile_Inst.RegFileAOut[1]);
             $display("r2\t\t%h", DUT.RegFile_Inst.RegFileAOut[2]);
@@ -80,12 +85,11 @@ module core_tb;
             $display("lr\t\t%h", DUT.RegFile_Inst.RegFileAOut[14]);
             $display("pc\t\t%h", DUT.RegFile_Inst.RegFileAOut[15]);
             $display("cpsr\t%h\n", DUT.PSR_Inst.CPSR);
-            /*
-            if (inst_ex)
-                $display("Inst #:\t%d\nPC:\t%h\nInst:\t%h\n\n",
-                              inst_count, inst_pc,
-                              DUT.ControlLogic_Inst.InstForDecodeLatched);
-                              */
+            */
+            //if (inst_ex)
+            //    $display("Inst #:\t%d\nPC:\t%h\nInst:\t%h\n\n",
+            //                  inst_count, inst_pc,
+            //                  DUT.ControlLogic_Inst.InstForDecodeLatched);
         end
     end
 
@@ -152,6 +156,9 @@ module sim_memory
 
     rom_memory #(`PAK_ROM_3_START, `PAK_ROM_3_SIZE, "GBA_CPU_ROM_FILE")
         pak3_rom (.clk, .rst_n, .addr, .rdata);
+
+    rom_memory #(`PAK_INIT_1_START, `PAK_INIT_1_SIZE, "GBA_PAK_INIT_1_FILE")
+        pak_init1 (.clk, .rst_n, .addr, .rdata);
 
     rom_memory #(`SYSTEM_ROM_START, `SYSTEM_ROM_SIZE,"GBA_CPU_BIOS_FILE")
         sys_rom (.clk, .rst_n, .addr, .rdata);
