@@ -54,7 +54,8 @@ module mem_top (
     output logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
 
     // Values for R/O registers
-    input  logic [15:0] buttons, vcount
+    input  logic [15:0] buttons, vcount, reg_IF,
+    output logic [15:0] int_acks
     );
 
     /* Single cycle latency for writes */
@@ -111,6 +112,9 @@ module mem_top (
     logic  [3:0] bus_oam_we;
     logic        bus_oam_read, bus_oam_write;
 
+    logic [31:0] bus_pak_init_1_addr;
+    logic        bus_pak_init_1_read;
+
     logic  [3:0] bus_we;
 
     logic [3:0]  IO_reg_we [`NUM_IO_REGS-1:0];
@@ -157,6 +161,9 @@ module mem_top (
     assign bus_oam_write = bus_oam_addr <= `OAM_SIZE;
 
     assign bus_io_reg_read = (bus_addr_lat1 - `IO_REG_RAM_START) <= `IO_REG_RAM_SIZE;
+
+    assign bus_pak_init_1_read = (bus_addr_lat1 - `PAK_INIT_1_START) <= `PAK_INIT_1_SIZE;
+    assign bus_pak_init_1_addr = bus_addr_lat1 - `PAK_INIT_1_START;
 
     assign bus_intern_we = (bus_intern_write) ? bus_we : 4'd0;
     assign bus_vram_A_we = (bus_vram_A_write) ? bus_we : 4'd0;
@@ -250,15 +257,24 @@ module mem_top (
             assign IO_reg_we[i] = (IO_reg_en[i]) ? bus_we : 4'd0;
             if (i == `KEYINPUT_IDX) begin // Read-only for lowest 16 bits
                 IO_register16 key_high (.clock, .reset, .wdata(bus_wdata[31:16]),
-                                        .we(IO_reg_we[i][3:2]),
+                                        .we(IO_reg_we[i][3:2]), .clear(1'b0),
                                         .rdata(IO_reg_datas[i][31:16]));
                 assign IO_reg_datas[i][15:0] = buttons;
             end else if (i == `VCOUNT_IDX) begin // Read-only for upper 16 bits
                 IO_register16 vcount_low
                               (.clock, .reset, .wdata(bus_wdata[15:0]),
-                               .we(IO_reg_we[i][1:0]),
+                               .we(IO_reg_we[i][1:0]), .clear(1'b0),
                                .rdata(IO_reg_datas[i][15:0]));
                 assign IO_reg_datas[i][31:16] = vcount;
+            end else if (i == `IF_IDX) begin
+                // Reads to 0x202 read re_IF
+                IO_register16 IE (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(IO_reg_datas[i][15:0]));
+                IO_register16 IACK (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .rdata(int_acks));
+                assign IO_reg_datas[i][31:16] = reg_IF,;
             end else begin
                 assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
                 IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
@@ -286,6 +302,9 @@ module mem_top (
             bus_rdata = bus_oam_rdata;
         else if (bus_io_reg_read)
             bus_rdata = bus_io_reg_rdata;
+        else if (bus_pak_init_1_read)
+            bus_rdata = {12'hFFF, bus_pak_init_1_addr[4:2], 1'b1,
+                         12'hFFF, bus_pak_init_1_addr[4:2], 1'b0};
         else
             bus_rdata = 32'hz;
     end
@@ -360,17 +379,18 @@ module IO_register32
     end
 endmodule: IO_register32
 
-
+// WE has priority over clear
 module IO_register16
     (input  logic clock, reset,
      input  logic [15:0] wdata,
      input  logic [1:0]  we,
-     output logic [15:0] rdata);
+     output logic [15:0] rdata,
+     input  logic        clear);
 
     logic [15:0] data_next;
 
-    assign data_next[7:0] = (we[0]) ? wdata[7:0] : rdata[7:0];
-    assign data_next[15:8] = (we[1]) ? wdata[15:8] : rdata[15:8];
+    assign data_next[7:0] = (we[0]) ? wdata[7:0] : (clear) ? 8'd0 : rdata[7:0];
+    assign data_next[15:8] = (we[1]) ? wdata[15:8] : (clear) ? 8'd0 : rdata[15:8];
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset) rdata <= 0;
