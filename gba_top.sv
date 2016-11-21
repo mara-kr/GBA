@@ -70,7 +70,7 @@ module gba_top (
     interrupt_controller intc
         (.clock(gba_clock), .reset(BTND), .cpu_mode(mode), .nIRQ,
          .ime(IO_reg_datas[`IME_IDX][0]), .reg_IF, .reg_ACK,
-         .reg_IE(IO_reg_datas[`IE_IDX][15:0])
+         .reg_IE(IO_reg_datas[`IE_IDX][15:0]),
          .vblank(1'b0), .hblank(1'b0),
          .vcount_match(1'b0), .timer0(1'b0), .timer1(1'b0),
          .timer2(1'b0), .timer3(1'b0), .serial(1'b0), .keypad(1'b0),
