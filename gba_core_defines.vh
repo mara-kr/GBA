@@ -14,6 +14,13 @@ import "DPI-C" function string getenv(input string env_name);
 `define MEM_SIZE_WORD 2'b10
 `define MEM_SIZE_RESR 2'b11
 
+`define CPSR_IRQ 5'b10010
+`define CPSR_USR 5'b10000
+`define CPSR_SVC 5'b10011
+`define CPSR_ABT 5'b10111
+`define CPSR_UND 5'b11011
+`define CPSR_SYS 5'b11111
+
 `define SYSTEM_ROM_START 32'h0000_0000
 `define SYSTEM_ROM_END   32'h0000_3FFF
 `define SYSTEM_ROM_SIZE (`SYSTEM_ROM_END-`SYSTEM_ROM_START)
@@ -69,6 +76,10 @@ import "DPI-C" function string getenv(input string env_name);
 `define PAK_RAM_START    32'h0E00_0000
 `define PAK_RAM_END      32'h0E00_FFFF
 `define PAK_RAM_SIZE    (`PAK_RAM_END-`PAK_RAM_START)
+
+`define PAK_INIT_1_START 32'h0BFF_FFE0
+`define PAK_INIT_1_END   32'h0BFF_FFFF
+`define PAK_INIT_1_SIZE (`PAK_INIT_1_END - `PAK_INIT_1_START)
 
 /* VCS Max bit vector size is 16M */
 `define PAK_ROM_1_START  32'h0800_0000 // Wait State 0

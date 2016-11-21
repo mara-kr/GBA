@@ -29,12 +29,8 @@ module direct_sound (
     assign timer_overflow = (old_timer >  timer) ? 1 : 0;
     assign sampling_rate = timer_overflow;
 
-   always_ff @(posedge clock, posedge reset) begin
-       old_timer <= timer;
-   end
-
-   logic [4:0] prev_position_counter;
-   always_ff @(posedge clock, posedge reset) begin
+    logic [4:0] prev_position_counter;
+    always_ff @(posedge clock, posedge reset) begin
        if (reset == 1) begin
            sound_req <= 1'b0;
        end
@@ -45,7 +41,13 @@ module direct_sound (
            sound_req <=1'b0;
        end
         prev_position_counter <= position_counter;
+    end
+   
+   always_ff @(posedge clock, posedge reset) begin
+       if (reset) old_timer <= 16'b0;
+       else old_timer <= timer;
    end
+
 
     always_ff @(posedge sampling_rate, posedge reset) begin
         if (reset == 1) begin
