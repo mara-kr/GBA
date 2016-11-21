@@ -3,7 +3,7 @@
 `ifndef GBA_CORE_DEFINES_VH
 `define GBA_CORE_DEFINES_VH
 
-//import "DPI-C" function string getenv(input string env_name);
+import "DPI-C" function string getenv(input string env_name);
 
 /* Uncomment for logging */
 `define BUS_LOG_EN
@@ -40,7 +40,7 @@
 
 `define PALETTE_RAM_START     32'h0500_0000
 `define PALETTE_RAM_END       32'h0500_03FF
-`define PALETTE_RAM_SIZE      (`PALETTE_RAM_END-`PALLET_RAM_START)
+`define PALETTE_RAM_SIZE      (`PALETTE_RAM_END-`PALETTE_RAM_START)
 
 `define PALETTE_BG_RAM_START  (`PALETTE_RAM_START)
 `define PALETTE_BG_RAM_END    32'h0500_01FF
