@@ -40,6 +40,7 @@ module gba_top (
     logic        dmaActive, sound_req;
     logic        dma0, dma1, dma2, dma3;
     logic  [3:0] disable_dma;
+    logic        sound_req1, sound_req2;
 
     // Memory signals
     (* mark_debug = "true" *) logic [31:0] bus_addr, bus_wdata, bus_rdata;
@@ -118,7 +119,7 @@ module gba_top (
 
     gba_audio_top audio (.clk_100(GCLK), .reset(BTND), .AC_ADR0, .AC_ADR1,
                      .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
-                     .AC_SDA, .IO_reg_datas);
+                     .AC_SDA, .IO_reg_datas, .sound_req1, .sound_req2);
 
 
     // Interface for SNES controller
