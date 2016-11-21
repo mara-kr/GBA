@@ -28,9 +28,6 @@ module gba_top (
     // Buttons register output
     logic [15:0] buttons;
 
-    logic [15:0] vcount;
-    assign vcount = 16'd0; // TODO Map to Grapics controller port
-
     // CPU
     logic  [4:0] mode;
     logic        nIRQ, abort;
@@ -40,7 +37,9 @@ module gba_top (
     logic        timer0, timer1, timer2, timer3;
 
     // DMA
-    logic        dmaActive;
+    logic        dmaActive, sound_req;
+    logic        dma0, dma1, dma2, dma3;
+    logic  [3:0] disable_dma;
 
     // Memory signals
     (* mark_debug = "true" *) logic [31:0] bus_addr, bus_wdata, bus_rdata;
@@ -55,7 +54,17 @@ module gba_top (
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
-    assign dmaActive = 1'b0;
+    // Graphics
+    logic [15:0] vcount;
+    logic [8:0]  hcount;
+    logic        vblank, hblank;
+    assign vcount = 16'd0; // TODO Map to Grapics controller port
+    //assign vblank = (vcount == 16'd160); // TODO Make 1 cycle assertion
+    //assign hblank = (hcount == 9'd240); // TODO Make 1 cycle assertion
+    assign {vblank, hblank} = 2'd0;
+
+
+
     assign abort = 1'b0;
     assign gfx_vram_A_addr = 32'b0;
     assign gfx_vram_A_addr2 = 32'b0;
@@ -76,10 +85,9 @@ module gba_top (
          .ime(IO_reg_datas[`IME_IDX][0]), .reg_IF, .reg_ACK,
          .reg_IE(IO_reg_datas[`IE_IDX][15:0]),
          .vblank(1'b0), .hblank(1'b0),
-         .vcount_match(1'b0), .timer0(1'b0), .timer1(1'b0),
-         .timer2(1'b0), .timer3(1'b0), .serial(1'b0), .keypad(1'b0),
-         .game_pak(1'b0), .dma0(1'b0), .dma1(1'b0),
-         .dma2(1'b0), .dma3(1'b0));
+         .vcount_match(1'b0), .timer0, .timer1,
+         .timer2, .timer3, .serial(1'b0), .keypad(1'b0),
+         .game_pak(1'b0), .dma0, .dma1, .dma2, .dma3);
 
     // BRAM memory controller
     mem_top mem (.clock(gba_clk), .reset(BTND), .bus_addr, .bus_wdata, .bus_rdata,
@@ -96,7 +104,14 @@ module gba_top (
                  .IO_reg_datas,
 
                  .buttons, .vcount, .reg_IF, .int_acks(reg_ACK));
-/*
+
+    dma_top dma (.clk(gba_clk), .rst_b(~BTND), .registers(IO_reg_datas),
+                 .addr(bus_addr), .rdata(bus_rdata), .wdata(bus_wdata),
+                 .size(bus_size), .wen(bus_write), .active(dmaActive),
+                 .disable_dma(), .irq0(dma0), .irq1(dma1), .irq2(dma2),
+                 .irq3(dma3), .mem_wait(bus_pause), .sound_req(sound_req),
+                 .vcount(vcount), .hcount({7'd0, hcount}));
+
     timer_top timers (.clock_16(gba_clk), .reset(BTND), .IO_reg_datas,
                       .genIRQ0(timer0), .genIRQ1(timer1), .genIRQ2(timer2),
                       .genIRQ3(timer3));
@@ -104,7 +119,7 @@ module gba_top (
     gba_audio_top audio (.clk_100(GCLK), .reset(BTND), .AC_ADR0, .AC_ADR1,
                      .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
                      .AC_SDA, .IO_reg_datas);
-*/
+
 
     // Interface for SNES controller
     controller cont (.clock(GCLK), .reset(BTND), .data_latch(JA2),

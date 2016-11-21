@@ -20,15 +20,13 @@ module gba_audio_top (
     logic clk_256_output;
 
 
-    clk_wiz_0 clock_generate
+    clk_wiz_1 clock_generate
    (
    // Clock in ports
     .clk_in1(clk_100),      // input clk_in1
     // Clock out ports
     .clk_out1(clk_100_output),     // output clk_out1
-    .clk_out2(clk_256_output),     // output clk_out2
-    // Status and control signals
-    .reset);       // input reset
+    .clk_out2(clk_256_output));       // input reset
 
     //audio codec
     logic        clk_100_buffered;
