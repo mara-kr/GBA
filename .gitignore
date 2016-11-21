@@ -1,11 +1,48 @@
 *.svp
 *.pyc
 *~
+*.swp
 ucli.key
+.restartSimSession.tcl.old
+.synopsys_dve_rebuild.tcl
+
+csrc/*
+simv.daidir/*
+*.swp
+.__afs*
+
+csrc/*
+simv.daidir/*
+*.swp
+.__afs*
 
 
 *.bak
 *.log
+vivado*
+lab2/*
+*webtalk*
+*/csrc/
+*/DVEfiles/
+*/simv*
+*.vpd
+audio_test/
+audio_test_hdl/
+test/
+zedboard_audio-master/hdl/64/
+
+
 
 Desktop.ini
 
+.vlogansetup.*
+
+cpu/build/*
+cpu/inter.vpd
+cpu/vc_hdrs.h
+cpu/BusLog.txt
+
+vivado/GBA.runs/*
+vivado/GBA.hw/*
+vivado*
+webtalk.jou
