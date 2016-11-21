@@ -3,7 +3,7 @@
 `ifndef GBA_CORE_DEFINES_VH
 `define GBA_CORE_DEFINES_VH
 
-import "DPI-C" function string getenv(input string env_name);
+//import "DPI-C" function string getenv(input string env_name);
 
 /* Uncomment for logging */
 `define BUS_LOG_EN
