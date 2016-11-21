@@ -83,15 +83,23 @@ signal sp           : std_logic_vector(31 downto 0);
 signal r0           : std_logic_vector(31 downto 0);
 signal r1           : std_logic_vector(31 downto 0);
 signal r2           : std_logic_vector(31 downto 0);
+signal r3           : std_logic_vector(31 downto 0);
 signal r4           : std_logic_vector(31 downto 0);
+signal r5           : std_logic_vector(31 downto 0);
+signal r6           : std_logic_vector(31 downto 0);
+signal r7           : std_logic_vector(31 downto 0);
+
 
 attribute mark_debug of lr : signal is "true";
 attribute mark_debug of sp : signal is "true";
 attribute mark_debug of r0 : signal is "true";
 attribute mark_debug of r1 : signal is "true";
 attribute mark_debug of r2 : signal is "true";
+attribute mark_debug of r3 : signal is "true";
 attribute mark_debug of r4 : signal is "true";
-
+attribute mark_debug of r5 : signal is "true";
+attribute mark_debug of r6 : signal is "true";
+attribute mark_debug of r7 : signal is "true";
 
 
 
@@ -105,7 +113,12 @@ sp <= UMRegisterFile(13);
 r0 <= UMRegisterFile(0);
 r1 <= UMRegisterFile(1);
 r2 <= UMRegisterFile(2);
+r3 <= UMRegisterFile(3);
 r4 <= UMRegisterFile(4);
+r5 <= UMRegisterFile(5);
+r6 <= UMRegisterFile(6);
+r7 <= UMRegisterFile(7);
+
 
 
 --IndWriteEnLogic:for i in IndWrEn'range generate

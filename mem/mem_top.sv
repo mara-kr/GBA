@@ -28,8 +28,8 @@
  */
 
 `default_nettype none
-`include "gba_core_defines.vh"
-`include "gba_mmio_defines.vh"
+`include "../gba_core_defines.vh"
+`include "../gba_mmio_defines.vh"
 
 module mem_top (
     input  logic clock, reset,
@@ -112,10 +112,7 @@ module mem_top (
     // Data width set to 32bits, so addresses are aligned
     system_rom sys   (.clka(clock), .rsta(reset),
                       .addra(bus_system_addr[13:2]),
-                      .douta(bus_system_rdata),
-
-                      .clkb(clock), .rstb(reset),
-                      .addrb(32'b0), .doutb());
+                      .douta(bus_system_rdata));
 
     intern_mem intern (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
                        .bus_we, .bus_write_lat1, .bus_rdata(bus_intern_rdata),

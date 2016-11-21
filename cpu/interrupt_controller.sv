@@ -48,8 +48,9 @@ endmodule: interrupt_controller
 
 // Register - loads when D is high
 module int_reg (
-    logic clock, reset,
-    logic d, q, clr);
+    input  logic clock, reset,
+    input  logic d, clr,
+    output logic q);
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset || clr) q <= 1'b0;
