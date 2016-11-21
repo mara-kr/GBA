@@ -7,20 +7,20 @@ module dma_tb (
     // Memory interface
     input logic pause,
     output logic [31:0] test_addr,
-    inout wire   [31:0] rdata,
+    output wire   [31:0] rdata,
     output logic [31:0] registers [`NUM_IO_REGS-1:0],
     output logic [15:0] vcount, hcount,
     output logic check_correctness,
     output logic all_passed);
- 
+
     logic [15:0] controlL0, controlH0;
     logic [15:0] srcAddrL0, srcAddrH0;
     logic [15:0] destAddrL0, destAddrH0;
-    
+
     logic [15:0] controlL1, controlH1;
     logic [15:0] srcAddrL1, srcAddrH1;
     logic [15:0] destAddrL1, destAddrH1;
-    
+
     logic [15:0] controlL2, controlH2;
     logic [15:0] srcAddrL2, srcAddrH2;
     logic [15:0] destAddrL2, destAddrH2;
@@ -78,7 +78,7 @@ module dma_tb (
 
 
 
-     test_fsm fsm(.clk, .rst_n, 
+     test_fsm fsm(.clk, .rst_n,
         .controlL0, .controlH0,
         .srcAddrL0, .srcAddrH0,
         .destAddrL0, .destAddrH0,

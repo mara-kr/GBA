@@ -127,12 +127,12 @@ module dma_fsm
             ns = READ;
             active = 1'b1;
           end
-          else begin 
+          else begin
               ns= PREEMPTEDREAD;
           end
         end
       end
-  
+
   endcase
   end
 
@@ -151,12 +151,11 @@ module dma_dp
    input  logic [15:0] controlL, controlH,
    input  logic sound, //Can this dma unit handle sound xfers?
 
-   inout  tri   [31:0] rdata,
-   inout  tri   [31:0] addr,
-   inout  tri   [31:0] wdata,
-   inout  tri   [1:0]  size,
-   inout  tri          wen,
-   
+   input  tri   [31:0] rdata,
+   output tri   [31:0] addr, wdata,
+   output tri   [1:0]  size,
+   output tri          wen,
+
    input  logic clk, rst_b
    );
 
@@ -234,7 +233,7 @@ module dma_dp
   assign size = active ? (size_mem_transfer): {32{1'bz}};
 
   always_comb begin
-      if (size_mem_transfer == 2'b01 && desiredAddr[1]==1'b1) 
+      if (size_mem_transfer == 2'b01 && desiredAddr[1]==1'b1)
           wdata_size[31:16] = data[15:0];
       else wdata_size = data;
   end
@@ -247,14 +246,14 @@ module dma_dp
   register #(32) dad(.d(nextDAddr), .q(dAddrRaw), .clk, .clear(1'b0), .enable(dadEnable), .rst_b);
   register #(32) data_reg(.d(rdata), .q(data), .clk, .clear(1'b0), .enable(storeRData), .rst_b);
   counter #(14) xferCnt (.d(14'b0), .q(xfers), .clk, .enable(stepSRC), .clear(loadCNT), .load(1'b0), .up(1'b1), .rst_b);
-  mag_comp #(14) doneCheck (.a(xfers), .b(controlL[13:0]), .aeqb(xferDone));
+  assign xferDone = (xfers == controlL[13:0]);
 
   //save old SAD DAD and CNT registers
   register #(32) oldsad(.d({srcAddrH, srcAddrL}), .q(old_SAD_reg), .clk, .clear(1'b0), .enable(1'b1), .rst_b);
   register #(32) olddad(.d({destAddrH, destAddrL}), .q(old_DAD_reg), .clk, .clear(1'b0), .enable(1'b1), .rst_b);
   register #(32) oldctl(.d({controlH, controlL}), .q(old_CTL_reg), .clk, .clear(1'b0), .enable(1'b1), .rst_b);
 
-  assign new_transfer = ((old_SAD_reg != {srcAddrH, srcAddrL}) || (old_DAD_reg != {destAddrH, destAddrL}) || 
+  assign new_transfer = ((old_SAD_reg != {srcAddrH, srcAddrL}) || (old_DAD_reg != {destAddrH, destAddrL}) ||
                         (old_CTL_reg != {controlH, controlL})) ? 1'b1 : 1'b0;
 endmodule: dma_dp
 
@@ -266,13 +265,13 @@ module dma_start
    input  logic clk, rst_b);
 
   logic display_sync_startable;
-  logic passed_go; 
+  logic passed_go;
 
   always_ff @(posedge clk, negedge rst_b)
     if(~rst_b)
       display_sync_startable <= 1'b0;
     else
-      display_sync_startable <= passed_go; 
+      display_sync_startable <= passed_go;
 
   logic started;
   logic active;
@@ -334,10 +333,10 @@ module dma_unit
    output logic irq,
    output logic others_cant_preempt,
 
-   inout  tri   [31:0] addr, 
-   inout  tri   [31:0] wdata, rdata,
-   inout  tri   [1:0]  size,
-   inout  tri   wen,
+   output tri   [31:0] addr, wdata,
+   input  tri   [31:0] rdata,
+   output tri   [1:0]  size,
+   output tri   wen,
 
    input  logic [15:0] vcount, hcount,
    input  logic sound, sound_req,
@@ -351,7 +350,7 @@ module dma_unit
   logic stepSRC, stepDEST;
   logic storeRData;
   logic write;
-  
+
   logic dma_stop;
   logic start;
   logic set_wdata;
@@ -375,10 +374,11 @@ module dma_top
 
    input  logic        mem_wait,
 
-   inout  tri   [31:0] addr,
-   inout  tri   [31:0] rdata, wdata,
-   inout  tri   [1:0]  size,
-   inout  tri          wen,
+   output tri   [31:0] addr,
+   input  logic [31:0] rdata,
+   output tri   [31:0] wdata,
+   output tri   [1:0]  size,
+   output tri          wen,
 
    output logic [3:0]  disable_dma,
    output logic        active,
@@ -413,21 +413,21 @@ module dma_top
    assign controlH1 = registers[`DMA1CNT_H_IDX][31:16];
    assign srcAddrL1 = registers[`DMA1SAD_L_IDX][15:0];
    assign srcAddrH1 = registers[`DMA1SAD_H_IDX][31:16];
-   assign destAddrL1 = registers[`DMA1DAD_L_IDX][15:0];  
+   assign destAddrL1 = registers[`DMA1DAD_L_IDX][15:0];
    assign destAddrH1 = registers [`DMA1DAD_H_IDX][31:16];
 
    assign controlL2 = registers[`DMA2CNT_L_IDX][15:0];
    assign controlH2 = registers[`DMA2CNT_H_IDX][31:16];
    assign srcAddrL2 = registers[`DMA2SAD_L_IDX][15:0];
    assign srcAddrH2 = registers[`DMA2SAD_H_IDX][31:16];
-   assign destAddrL2 = registers[`DMA2DAD_L_IDX][15:0];  
+   assign destAddrL2 = registers[`DMA2DAD_L_IDX][15:0];
    assign destAddrH2 = registers [`DMA2DAD_H_IDX][31:16];
 
    assign controlL3 = registers[`DMA3CNT_L_IDX][15:0];
    assign controlH3 = registers[`DMA3CNT_H_IDX][31:16];
    assign srcAddrL3 = registers[`DMA3SAD_L_IDX][15:0];
    assign srcAddrH3 = registers[`DMA3SAD_H_IDX][31:16];
-   assign destAddrL3 = registers[`DMA3DAD_L_IDX][15:0];  
+   assign destAddrL3 = registers[`DMA3DAD_L_IDX][15:0];
    assign destAddrH3 = registers [`DMA3DAD_H_IDX][31:16];
 
    logic [3:0] preempts;
