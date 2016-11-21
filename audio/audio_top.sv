@@ -22,15 +22,13 @@ module gba_audio_top (
     logic clk_256_output;
 
 
-    clk_wiz_0 clock_generate
+    clk_wiz_1 clock_generate
    (
    // Clock in ports
     .clk_in1(clk_100),      // input clk_in1
     // Clock out ports
     .clk_out1(clk_100_output),     // output clk_out1
-    .clk_out2(clk_256_output),     // output clk_out2
-    // Status and control signals
-    .reset);       // input reset
+    .clk_out2(clk_256_output));       // input reset
 
     //audio codec
     logic        clk_100_buffered;
@@ -119,7 +117,7 @@ module gba_audio_top (
     assign addr_0x94 = IO_reg_datas[`WAVE_RAM1_L_IDX][15:0];
     assign addr_0x96 = IO_reg_datas[`WAVE_RAM1_H_IDX][31:16];
     assign addr_0x98 = IO_reg_datas[`WAVE_RAM2_L_IDX][15:0];
-    assign addr_0x9A = IO_reg_datas[`WAVE_RAM2_H_IDX][13:16];
+    assign addr_0x9A = IO_reg_datas[`WAVE_RAM2_H_IDX][31:16];
     assign addr_0x9C = IO_reg_datas[`WAVE_RAM3_L_IDX][15:0];
     assign addr_0x9E = IO_reg_datas[`WAVE_RAM3_H_IDX][31:16];
 
@@ -216,7 +214,7 @@ module gba_audio_top (
 
 
     direct_sound dsA(
-        .clock(clk_100),
+        .clock(clk_100_output),
         .reset(reset),
         .FIFO_L(FIFO_A_L),
         .FIFO_H(FIFO_A_H),
@@ -228,7 +226,7 @@ module gba_audio_top (
         .sound_req(sound_req1));
 
     direct_sound dsB(
-        .clock(clk_100),
+        .clock(clk_100_output),
         .reset(reset),
         .FIFO_L(FIFO_B_L),
         .FIFO_H(FIFO_B_H),
@@ -240,7 +238,7 @@ module gba_audio_top (
         .sound_req(sound_req2));
 
     ds_mixer dsm(
-        .clock(clk_100),
+        .clock(clk_100_output),
         .reset,
         .direct_A,
         .direct_B,
@@ -255,7 +253,7 @@ module gba_audio_top (
         .output_wave_l);
 
     power p(
-        .clock(clk_100),
+        .clock(clk_100_output),
         .NR52,
         .pause_channel1(pause_c1),
         .pause_channel2(pause_c2),
@@ -266,7 +264,7 @@ module gba_audio_top (
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
 
-    always_ff @(posedge clk_100) begin
+    always_ff @(posedge clk_100_output) begin
         hphone_valid <= 0;
         hphone_l <= 0;
         hphone_r <= 0;
@@ -280,7 +278,7 @@ module gba_audio_top (
 
     BUFG BUFG_inst(
         .O (clk_100_buffered),
-        .I (clk_100)
+        .I (clk_100_output)
         );
 
 
