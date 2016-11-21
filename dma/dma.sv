@@ -453,7 +453,7 @@ module dma_top
                  .active(actives[0]), .allowed_to_begin,
                  .irq(irq0), .others_cant_preempt(mid_process[0]),
                  .addr, .wdata, .rdata, .size, .wen,
-                 .vcount, .hcount, .sound(1'b0), .sound_req,
+                 .vcount, .hcount, .sound(1'b0), .sound_req(),
                  .clk, .rst_b);
 
    dma_unit dma1(.controlL(controlL1), .controlH(controlH1),
@@ -489,7 +489,7 @@ module dma_top
                  .active(actives[3]), .allowed_to_begin,
                  .irq(irq3), .others_cant_preempt(mid_process[3]),
                  .addr, .wdata, .rdata, .size, .wen,
-                 .vcount, .hcount, .sound(1'b0), .sound_req,
+                 .vcount, .hcount, .sound(1'b0), .sound_req(),
                  .clk, .rst_b);
 
 endmodule: dma_top

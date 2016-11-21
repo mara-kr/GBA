@@ -110,7 +110,7 @@ module gba_top (
                  .addr(bus_addr), .rdata(bus_rdata), .wdata(bus_wdata),
                  .size(bus_size), .wen(bus_write), .active(dmaActive),
                  .disable_dma(), .irq0(dma0), .irq1(dma1), .irq2(dma2),
-                 .irq3(dma3), .mem_wait(bus_pause), .sound_req(sound_req),
+                 .irq3(dma3), .mem_wait(bus_pause), .sound_req1, .sound_req2,
                  .vcount(vcount), .hcount({7'd0, hcount}));
 
     timer_top timers (.clock_16(gba_clk), .reset(BTND), .IO_reg_datas,
