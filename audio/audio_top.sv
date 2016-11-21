@@ -2,7 +2,7 @@
 `include "../gba_mmio_defines.vh"
 `include "../gba_core_defines.vh"
 
-module audio_top (
+module gba_audio_top (
     input logic clk_100,
     input logic reset,
     output logic AC_ADR0,
@@ -29,7 +29,7 @@ module audio_top (
     .clk_out2(clk_256_output),     // output clk_out2
     // Status and control signals
     .reset);       // input reset
-    
+
     //audio codec
     logic        clk_100_buffered;
     logic [5:0]  counter_saw_tooth;
@@ -50,11 +50,11 @@ module audio_top (
     logic [15:0] addr_0x9C;
     logic [15:0] addr_0x9E;
     logic [23:0] channel_3;
-    
+
     //square2 channel
     logic [7:0] NR21, NR22, NR23, NR24;
     logic [23:0] channel_2;
-    
+
     //square1 channel
     logic [7:0] NR10, NR11, NR12, NR13, NR14;
     logic [23:0] channel_1;
@@ -75,7 +75,7 @@ module audio_top (
     logic reset_c2;
     logic reset_c3;
     logic reset_c4;
-    
+
      //direct sound
     logic [15:0] FIFO_A_L;
     logic [15:0] FIFO_A_H;
@@ -94,7 +94,7 @@ module audio_top (
     logic reset_directB;
     logic [23:0] output_wave_r;
     logic [23:0] output_wave_l;
-    
+
     assign NR10 = IO_reg_datas[`SOUND1CNT_L_IDX][7:0];
     assign NR11 = IO_reg_datas[`SOUND1CNT_H_IDX][23:16];
     assign NR12 = IO_reg_datas[`SOUND1CNT_H_IDX][31:24];
@@ -120,7 +120,7 @@ module audio_top (
     assign addr_0x9A = IO_reg_datas[`WAVE_RAM2_H_IDX][13:16];
     assign addr_0x9C = IO_reg_datas[`WAVE_RAM3_L_IDX][15:0];
     assign addr_0x9E = IO_reg_datas[`WAVE_RAM3_H_IDX][31:16];
-    
+
     assign NR41 = IO_reg_datas[`SOUND4CNT_L_IDX][7:0];
     assign NR42 = IO_reg_datas[`SOUND4CNT_L_IDX][15:8];
     assign NR43 = IO_reg_datas[`SOUND4CNT_H_IDX][7:0];
@@ -153,12 +153,12 @@ module audio_top (
 
     .hphone_r(hphone_r),
     .hphone_r_valid_dummy(hphone_valid),
-    
+
     .line_in_l(line_in_l),
     .line_in_r(line_in_r),
     .new_sample(new_sample),
     .sample_clk_48k(sample_clk_48k));
-    
+
     noise n(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
@@ -181,21 +181,21 @@ module audio_top (
         .addr_0x9C,
         .addr_0x9E,
         .output_wave(channel_3));
-    
+
     square2 sq2(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
         .reset((reset || reset_c2)),
         .NR20, .NR21, .NR22, .NR23,
         .NR24, .output_wave(channel_2));
-    
+
     square1 sq1(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
         .reset(reset || reset_c1),
         .NR10, .NR11, .NR12, .NR13,
         .NR14, .output_wave(channel_1));
-    
+
     ch4_mixer m(.system_clock(clk_100),
         .reset,
         .channel1(channel_1),
@@ -221,7 +221,7 @@ module audio_top (
         .TM0_CNT_L,
         .TM1_CNT_L,
         .timer_num(timer_numA),
-        .sequencer_reset (reset_directA), 
+        .sequencer_reset (reset_directA),
         .waveout(direct_A));
 
     direct_sound dsB(
@@ -232,7 +232,7 @@ module audio_top (
         .TM0_CNT_L,
         .TM1_CNT_L,
         .timer_num(timer_numB),
-        .sequencer_reset(reset_directB), 
+        .sequencer_reset(reset_directB),
         .waveout(direct_B));
 
     ds_mixer (
@@ -261,7 +261,7 @@ module audio_top (
         .reset_channel2(reset_c2),
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
-    
+
     always_ff @(posedge clk_100) begin
         hphone_valid <= 0;
         hphone_l <= 0;
@@ -279,8 +279,8 @@ module audio_top (
         .I (clk_100)
         );
 
- 
-endmodule: audio_top
+
+endmodule: gba_audio_top
 
 `default_nettype wire
 

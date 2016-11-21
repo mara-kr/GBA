@@ -16,7 +16,10 @@ module gba_top (
     output logic JA2, JA3,
     output logic [7:0] LD,
     output logic [3:0] VGA_R, VGA_G, VGA_B,
-    output logic VGA_VS, VGA_HS);
+    output logic VGA_VS, VGA_HS,
+    output logic AC_ADR0, AC_ADR1, AC_GPIO0, AC_MCLK, AC_SCK,
+    input  logic AC_GPIO1, AC_GPIO2, AC_GPIO3,
+    inout  wire  AC_SDA);
 
     // 16.776 MHz clock for GBA/memory system
     logic gba_clk;
@@ -32,8 +35,9 @@ module gba_top (
     logic  [4:0] mode;
     logic        nIRQ, abort;
 
-    // Interrupt Registers
+    // Interrupt signals
     logic [15:0] reg_IF, reg_IE, reg_ACK;
+    logic        timer0, timer1, timer2, timer3;
 
     // DMA
     logic        dmaActive;
@@ -92,6 +96,15 @@ module gba_top (
                  .IO_reg_datas,
 
                  .buttons, .vcount, .reg_IF, .int_acks(reg_ACK));
+/*
+    timer_top timers (.clock_16(gba_clk), .reset(BTND), .IO_reg_datas,
+                      .genIRQ0(timer0), .genIRQ1(timer1), .genIRQ2(timer2),
+                      .genIRQ3(timer3));
+
+    gba_audio_top audio (.clk_100(GCLK), .reset(BTND), .AC_ADR0, .AC_ADR1,
+                     .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
+                     .AC_SDA, .IO_reg_datas);
+*/
 
     // Interface for SNES controller
     controller cont (.clock(GCLK), .reset(BTND), .data_latch(JA2),

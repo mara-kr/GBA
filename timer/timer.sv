@@ -95,7 +95,7 @@ module timer_clock_divider (
             count <= count + 1;
         end
     end
- endmodule: timer_clock_divider;
+ endmodule: timer_clock_divider
 
 
 /*module timer_test ();
