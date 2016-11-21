@@ -9,7 +9,7 @@
 `include "gba_mmio_defines.vh"
 
 module gba_top (
-    input  logic  GCLK, 
+    input  logic  GCLK,
     (* mark_debug = "true" *) input  logic  BTND,
     input  logic [7:0] SW,
     input  logic JA1,
@@ -29,7 +29,11 @@ module gba_top (
     assign vcount = 16'd0; // TODO Map to Grapics controller port
 
     // CPU
+    logic  [4:0] mode;
     logic        nIRQ, abort;
+
+    // Interrupt Registers
+    logic [15:0] reg_IF, reg_IE, reg_ACK;
 
     // DMA
     logic        dmaActive;
@@ -48,7 +52,6 @@ module gba_top (
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
     assign dmaActive = 1'b0;
-    assign nIRQ = 1'b1;
     assign abort = 1'b0;
     assign gfx_vram_A_addr = 32'b0;
     assign gfx_vram_A_addr2 = 32'b0;
@@ -57,12 +60,22 @@ module gba_top (
     assign gfx_oam_addr = 32'b0;
     assign gfx_palette_bg_addr = 32'b0;
     assign gfx_palette_obj_addr = 32'b0;
-    
+
     // CPU
-    cpu_top cpu (.clock(gba_clk), .reset(BTND), .nIRQ, .pause(bus_pause), 
-                 .abort,
+    cpu_top cpu (.clock(gba_clk), .reset(BTND), .nIRQ, .pause(bus_pause),
+                 .abort, .mode,
                  .dmaActive, .rdata(bus_rdata), .addr(bus_addr),
                  .wdata(bus_wdata), .size(bus_size), .write(bus_write));
+
+    interrupt_controller intc
+        (.clock(gba_clock), .reset(BTND), .cpu_mode(mode), .nIRQ,
+         .ime(IO_reg_datas[`IME_IDX][0]), .reg_IF, .reg_ACK,
+         .reg_IE(IO_reg_datas[`IE_IDX][15:0])
+         .vblank(1'b0), .hblank(1'b0),
+         .vcount_match(1'b0), .timer0(1'b0), .timer1(1'b0),
+         .timer2(1'b0), .timer3(1'b0), .serial(1'b0), .keypad(1'b0),
+         .game_pak(1'b0), .dma0(1'b0), .dma1(1'b0),
+         .dma2(1'b0), .dma3(1'b0));
 
     // BRAM memory controller
     mem_top mem (.clock(gba_clk), .reset(BTND), .bus_addr, .bus_wdata, .bus_rdata,
@@ -78,7 +91,7 @@ module gba_top (
 
                  .IO_reg_datas,
 
-                 .buttons, .vcount);
+                 .buttons, .vcount, .reg_IF, .int_acks(reg_ACK));
 
     // Interface for SNES controller
     controller cont (.clock(GCLK), .reset(BTND), .data_latch(JA2),
