@@ -2,7 +2,7 @@
 `include "../gba_mmio_defines.vh"
 `include "../gba_core_defines.vh"
 
-module audio_top (
+module gba_audio_top (
     input logic clk_100,
     input logic reset,
     output logic AC_ADR0,
@@ -14,6 +14,8 @@ module audio_top (
     output logic AC_MCLK,
     output logic AC_SCK,
     inout  wire AC_SDA,
+    output logic sound_req1,
+    output logic sound_req2,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0]);
 
     logic clk_100_output;
@@ -83,6 +85,8 @@ module audio_top (
     logic [15:0] FIFO_B_H;
     logic [15:0] TM0_CNT_L;
     logic [15:0] TM1_CNT_L;
+    logic sound_req1;
+    logic sound_req2;
 
     //final mixer
     logic [23:0] direct_A;
@@ -163,7 +167,7 @@ module audio_top (
         .system_clock(clk_100),
         .clock_256(clk_256_output),
         .reset((reset || reset_c4)),
-        .NR40, .NR41, .NR42, .NR43,
+        .NR41, .NR42, .NR43,
         .NR44, .output_wave(channel_4));
 
     wave w(
@@ -186,7 +190,7 @@ module audio_top (
         .system_clock(clk_100),
         .clock_256(clk_256_output),
         .reset((reset || reset_c2)),
-        .NR20, .NR21, .NR22, .NR23,
+        .NR21, .NR22, .NR23,
         .NR24, .output_wave(channel_2));
     
     square1 sq1(
@@ -222,7 +226,8 @@ module audio_top (
         .TM1_CNT_L,
         .timer_num(timer_numA),
         .sequencer_reset (reset_directA), 
-        .waveout(direct_A));
+        .waveout(direct_A),
+        .sound_req(sound_req1));
 
     direct_sound dsB(
         .clock(clk_100),
@@ -233,9 +238,10 @@ module audio_top (
         .TM1_CNT_L,
         .timer_num(timer_numB),
         .sequencer_reset(reset_directB), 
-        .waveout(direct_B));
+        .waveout(direct_B),
+        .sound_req(sound_req2));
 
-    ds_mixer (
+    ds_mixer dsm(
         .clock(clk_100),
         .reset,
         .direct_A,
@@ -280,7 +286,7 @@ module audio_top (
         );
 
  
-endmodule: audio_top
+endmodule: gba_audio_top
 
 `default_nettype wire
 
