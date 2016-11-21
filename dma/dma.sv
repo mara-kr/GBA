@@ -370,7 +370,7 @@ endmodule: dma_unit
 module dma_top
   (input  logic [31:0] registers [`NUM_IO_REGS-1:0],
    input  logic [15:0] vcount, hcount,
-   input  logic        sound_req,
+   input  logic        sound_req1, sound_req2,
 
    input  logic        mem_wait,
 
@@ -465,7 +465,7 @@ module dma_top
                  .active(actives[1]), .allowed_to_begin,
                  .irq(irq1), .others_cant_preempt(mid_process[1]),
                  .addr, .wdata, .rdata, .size, .wen,
-                 .vcount, .hcount, .sound(1'b1), .sound_req,
+                 .vcount, .hcount, .sound(1'b1), .sound_req(sound_req1),
                  .clk, .rst_b);
 
    dma_unit dma2(.controlL(controlL2), .controlH(controlH2),
@@ -477,7 +477,7 @@ module dma_top
                  .active(actives[2]), .allowed_to_begin,
                  .irq(irq2), .others_cant_preempt(mid_process[2]),
                  .addr, .wdata, .rdata, .size, .wen,
-                 .vcount, .hcount, .sound(1'b1), .sound_req,
+                 .vcount, .hcount, .sound(1'b1), .sound_req(sound_req2),
                  .clk, .rst_b);
 
    dma_unit dma3(.controlL(controlL3), .controlH(controlH3),
