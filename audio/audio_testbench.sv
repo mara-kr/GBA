@@ -1,4 +1,4 @@
-`default nettype_none
+`default_nettype none
 module audio_testbench_sv (
     input logic clk_100,
     input logic BTNC,
@@ -128,7 +128,6 @@ module audio_testbench_sv (
         .system_clock(clk_100),
         .clock_256(clk_256_output),
         .reset((BTNC || reset_c4)),
-        .NR40(NRx0),
         .NR41(NRx1),
         .NR42(NRx2),
         .NR43(NR43),
@@ -158,7 +157,6 @@ module audio_testbench_sv (
             .system_clock(clk_100),
             .clock_256(clk_256_output),
             .reset((BTNC || reset_c2)),
-            .NR20(NRx0),
             .NR21(NR21),
             .NR22(NRx2),
             .NR23(NR23),
@@ -215,7 +213,7 @@ module audio_testbench_sv (
     assign NR50 = 8'b11111111; //set full volume for left and right
     assign NR51 = 8'b11110000; //set all sounds on left, off right
     assign NR52 = 8'b11111111; //turn on all sounds 
-    4ch_mixer m(.system_clock(clk_100),
+    ch4_mixer m(.system_clock(clk_100),
             .reset(BTNC),
             .channel1(channel_1),
             .channel2(channel_2),
@@ -302,4 +300,4 @@ module audio_testbench_sv (
  
 endmodule: audio_testbench_sv
 
-`default nettype_wire
+`default_nettype wire
