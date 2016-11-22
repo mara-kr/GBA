@@ -18,7 +18,7 @@ module gba_audio_top (
     output logic sound_req2,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
     input logic [15:0] internal_TM0CNT_L,
-    input logic [15:0] internal_TM1CNT_L,);
+    input logic [15:0] internal_TM1CNT_L);
 
     logic clk_100_output;
     logic clk_256_output;
@@ -85,7 +85,6 @@ module gba_audio_top (
     logic [15:0] FIFO_B_H;
     logic [15:0] TM0_CNT_L;
     logic [15:0] TM1_CNT_L;
-    logic sound_req1, sound_req2;
 
     //final mixer
     logic [23:0] direct_A;
@@ -137,6 +136,8 @@ module gba_audio_top (
     assign FIFO_A_H = IO_reg_datas[`FIFO_A_H][31:16];
     assign FIFO_B_L = IO_reg_datas[`FIFO_B_L][15:0];
     assign FIFO_B_H = IO_reg_datas[`FIFO_B_H][31:16];
+    
+    assign SOUND_CNT_H = IO_reg_datas[`SOUNDCNT_H_IDX][31:16];
 
     audio_top top(
     .clk_100(clk_100_buffered),

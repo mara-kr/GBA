@@ -1161,33 +1161,11 @@ ControlLogic_Inst:component ControlLogic port map(
 -- Generate CLKEN signal
 CLKEN <= not PAUSE;
 
--- Check if slack estimation takes place
-assert not CSlackEstim
- report"Normal simulation is impossible"
-  severity FAILURE;
 
-NormalCompilation:if not CSlackEstim generate
--- Outputs of the core
 ADDR <= ADDR_Int;
 SIZE <= SIZE_Int;
 MODE <= PSR_CPSROut(4 downto 0);
-end generate;
 
-EstimationCompilation:if CSlackEstim generate
-OnlyForSlackEstimation:process(nRESET,CLK)
-begin
- if nRESET='0' then                -- Reset
-  ADDR <= (others => '0');
-  SIZE <= (others => '0');
- elsif CLK='1' and CLK'event then  -- Clock
-  if CLKEN='1' then                -- Clock enable
-  ADDR <= ADDR_Int;
-  SIZE <= SIZE_Int;
- end if;
-end if;
-end process;
-
-end generate;
 
 
 end Struct;

@@ -13,7 +13,7 @@ module timer_top (
     output logic [15:0] internal_TM0CNT_L,
     output logic [15:0] internal_TM1CNT_L,
     output logic [15:0] internal_TM2CNT_L,
-    output logic [15:0] internal_TM3CNT_L,);
+    output logic [15:0] internal_TM3CNT_L);
 
     wire [15:0] TM0CNT_L, TM1CNT_L;
     wire [15:0] TM2CNT_L, TM3CNT_L;

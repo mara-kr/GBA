@@ -44,7 +44,8 @@ module direct_sound (
     end
 
    always_ff @(posedge clock, posedge reset) begin
-       old_timer <= timer;
+       if (reset) old_timer <= 16'd0;
+       else old_timer <= timer;
    end
 
 
