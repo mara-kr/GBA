@@ -93,7 +93,7 @@ module mem_top (
 
     logic [3:0]  IO_reg_we [`NUM_IO_REGS-1:0];
     logic [`NUM_IO_REGS-1:0] IO_reg_en;
-    tri0 [31:0] bus_io_reg_rdata;
+    tri0  [31:0] bus_io_reg_rdata;
     logic        bus_io_reg_read;
 
     logic read_in_intern, read_in_palette, read_in_vram, read_in_oam;

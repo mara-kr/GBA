@@ -31,11 +31,10 @@ module timer (
     assign count_up = (count_up_timing) ? start_timer: (start_timer && prev_timer_finished);
 
     logic [15:0] timer_register;
-    assign TMxCNT_L = (count_up) ? timer_register : 16'bZ;
     assign internal_TMxCNT_L = (count_up) ? timer_register : 16'bz;
 
     //logic from prescaler clock to run at
-    timer_clock_divider tcd (.clock_16, .reset(), .cycles_64, .cycles_256, .cycles_1024);
+    timer_clock_divider tcd (.clock_16, .reset(reset), .cycles_64, .cycles_256, .cycles_1024);
     logic internal_clock;
     always_comb begin
         case (prescaler) //based on prescaler
