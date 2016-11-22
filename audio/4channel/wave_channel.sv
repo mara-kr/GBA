@@ -16,7 +16,7 @@ module wave_channel (
     input logic [15:0] addr_0x9E,
     output logic [23:0] wave);
 
-    logic [12:0] frequency_timer_period;
+    logic [16:0] frequency_timer_period;
     logic [10:0]frequency;
     logic frequency_timer_clock;
     logic [6:0] position_counter;

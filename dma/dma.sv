@@ -231,7 +231,7 @@ module dma_dp
 
   assign addr = active ? desiredAddr : {32{1'bz}};
   assign wen = active ? write : 1'bz;
-  assign wdata = (active) ? ((set_wdata) ? wdata_size : {32{1'bz}}) : {32{1'bz}};
+  assign wdata = (active & set_wdata) ? wdata_size : {32{1'bz}};
   assign size = active ? (size_mem_transfer): {32{1'bz}};
 
   always_comb begin
@@ -455,7 +455,7 @@ module dma_top
                  .active(actives[0]), .allowed_to_begin,
                  .irq(irq0), .others_cant_preempt(mid_process[0]),
                  .addr, .wdata, .rdata, .size, .wen,
-                 .vcount, .hcount, .sound(1'b0), .sound_req(),
+                 .vcount, .hcount, .sound(1'b0), .sound_req(1'b0),
                  .clk, .rst_b);
 
    dma_unit dma1(.controlL(controlL1), .controlH(controlH1),
@@ -491,7 +491,7 @@ module dma_top
                  .active(actives[3]), .allowed_to_begin,
                  .irq(irq3), .others_cant_preempt(mid_process[3]),
                  .addr, .wdata, .rdata, .size, .wen,
-                 .vcount, .hcount, .sound(1'b0), .sound_req(),
+                 .vcount, .hcount, .sound(1'b0), .sound_req(1'b0),
                  .clk, .rst_b);
 
 endmodule: dma_top

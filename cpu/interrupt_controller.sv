@@ -28,6 +28,7 @@ module interrupt_controller(
 
     assign int_ack = reg_ACK[13:0];
     assign int_assert = reg_IE[13:0] & ints_recd;
+    assign reg_IF = ints_recd;
 
     int_reg vb (.d(vblank), .q(ints_recd[0]), .clr(int_ack[0]), .*);
     int_reg hb (.d(hblank), .q(ints_recd[1]), .clr(int_ack[1]), .*);

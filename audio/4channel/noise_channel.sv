@@ -9,7 +9,7 @@ module noise_channel(
     logic [14:0] LFSR_right_shift;
     logic step7;
     logic old_step7;
-    logic [12:0] frequency_timer_period;
+    logic [16:0] frequency_timer_period;
     logic [3:0] shift_freq;
     logic frequency_timer_clock;
     logic [6:0] base_divisor;

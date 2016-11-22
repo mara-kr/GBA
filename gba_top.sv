@@ -66,6 +66,7 @@ module gba_top (
     logic [8:0]  hcount;
     logic        vblank, hblank;
     assign vcount = 16'd0; // TODO Map to Grapics controller port
+    assign hcount = 9'd0;
     //assign vblank = (vcount == 16'd160); // TODO Make 1 cycle assertion
     //assign hblank = (hcount == 9'd240); // TODO Make 1 cycle assertion
     assign {vblank, hblank} = 2'd0;
@@ -102,7 +103,7 @@ module gba_top (
 
                  .gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
                  .gfx_palette_obj_addr, .gfx_palette_bg_addr,
-                 .gfx_vram_A_addr2,
+                 .gfx_vram_A_addr2, .gfx_oam_addr,
 
                  .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
                  .gfx_palette_obj_data, .gfx_palette_bg_data,
@@ -120,7 +121,7 @@ module gba_top (
                  .vcount(vcount), .hcount({7'd0, hcount}));
 
     timer_top timers (.clock_16(gba_clk), .reset(BTND), .IO_reg_datas,
-                      .internal_TM0CNT_L, .internal_TM1CNT_L, .internal_TM2CNT_l,
+                      .internal_TM0CNT_L, .internal_TM1CNT_L, .internal_TM2CNT_L,
                       .internal_TM3CNT_L,
                       .genIRQ0(timer0), .genIRQ1(timer1), .genIRQ2(timer2),
                       .genIRQ3(timer3));
