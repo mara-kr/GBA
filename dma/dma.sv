@@ -3,7 +3,6 @@
 `include "../gba_mmio_defines.vh"
 
 
-
 module dma_fsm
   (input  logic start, mem_wait, dma_repeat, preempted, enable, xferDone, genIRQ,
    input  logic allowed_to_begin, new_transfer,
@@ -153,10 +152,10 @@ module dma_dp
    input  logic [15:0] controlL, controlH,
    input  logic sound, //Can this dma unit handle sound xfers?
 
-   input  tri   [31:0] rdata,
-   output tri   [31:0] addr, wdata,
-   output tri   [1:0]  size,
-   output tri          wen,
+   input  logic [31:0] rdata,
+   output wire  [31:0] addr, wdata,
+   output wire  [1:0]  size,
+   output wire         wen,
 
    input  logic clk, rst_b
    );
@@ -235,14 +234,14 @@ module dma_dp
   assign size = active ? (size_mem_transfer): {32{1'bz}};
 
   always_comb begin
+      wdata_size = data;
       if (size_mem_transfer == 2'b01 && desiredAddr[1]==1'b1)
           wdata_size[31:16] = data[15:0];
-      else wdata_size = data;
   end
 
   mux_2_to_1 #(32) srcAddrMux (.i0(steppedSAddr), .i1({srcAddrH, srcAddrL}), .s(loadSAD), .y(nextSAddr));
   mux_2_to_1 #(32) destAddrMux (.i0(steppedDAddr), .i1(targetAddr), .s(loadDAD | (loadCNT & reloadDad)), .y(nextDAddr));
-  mux_2_to_1 #(32) addrMux (.i0(sAddr), .i1(dAddr), .s(wen), .y(desiredAddr));
+  mux_2_to_1 #(32) addrMux (.i0(sAddr), .i1(dAddr), .s(write), .y(desiredAddr));
 
   register #(32) sad(.d(nextSAddr), .q(sAddrRaw), .clk, .clear(1'b0), .enable(sadEnable), .rst_b);
   register #(32) dad(.d(nextDAddr), .q(dAddrRaw), .clk, .clear(1'b0), .enable(dadEnable), .rst_b);
@@ -335,10 +334,10 @@ module dma_unit
    output logic irq,
    output logic others_cant_preempt,
 
-   output tri   [31:0] addr, wdata,
-   input  tri   [31:0] rdata,
-   output tri   [1:0]  size,
-   output tri   wen,
+   input  logic [31:0] rdata,
+   output wire  [31:0] addr, wdata,
+   output wire  [1:0]  size,
+   output wire  wen,
 
    input  logic [15:0] vcount, hcount,
    input  logic sound, sound_req,
@@ -363,9 +362,14 @@ module dma_unit
 
   dma_start starter(.controlH, .vcount, .hcount, .sound, .sound_req, .start, .dma_stop, .clk, .rst_b);
 
-  dma_fsm fsm(.start, .mem_wait, .dma_repeat(controlH[9]), .preempted, .enable(controlH[15]), .xferDone, .genIRQ(controlH[14]), .loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .disable_dma(fsm_disable), .irq, .clk, .rst_b, .set_wdata, .allowed_to_begin, .others_cant_preempt, .new_transfer);
+  dma_fsm fsm(.start, .mem_wait, .dma_repeat(controlH[9]), .preempted, .enable(controlH[15]), .xferDone,
+              .genIRQ(controlH[14]), .loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active,
+              .write, .disable_dma(fsm_disable), .irq, .clk, .rst_b, .set_wdata, .allowed_to_begin,
+              .others_cant_preempt, .new_transfer);
 
-  dma_dp datapath(.loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .srcGamePak, .destGamePak, .xferDone, .srcAddrL, .srcAddrH, .destAddrL, .destAddrH, .controlL, .controlH, .sound, .rdata, .addr, .wdata, .size, .wen, .clk, .rst_b, .set_wdata, .new_transfer);
+  dma_dp datapath(.loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active, .write, .srcGamePak,
+                  .destGamePak, .xferDone, .srcAddrL, .srcAddrH, .destAddrL, .destAddrH, .controlL, .controlH,
+                  .sound, .rdata, .addr, .wdata, .size, .wen, .clk, .rst_b, .set_wdata, .new_transfer);
 
 endmodule: dma_unit
 
@@ -376,11 +380,11 @@ module dma_top
 
    input  logic        mem_wait,
 
-   output tri   [31:0] addr,
    input  logic [31:0] rdata,
-   output tri   [31:0] wdata,
-   output tri   [1:0]  size,
-   output tri          wen,
+   output wire  [31:0] addr,
+   output wire  [31:0] wdata,
+   output wire  [1:0]  size,
+   output wire         wen,
 
    output logic [3:0]  disable_dma,
    output logic        active,
@@ -443,7 +447,7 @@ module dma_top
    assign preempts[2] = actives[0] | actives[1];
    assign preempts[3] = actives[0] | actives[1] | actives[2];
    assign allowed_to_begin = ~mid_process[0] && ~mid_process[1]
-                                  && ~mid_process[2] && ~mid_process[3];
+                             && ~mid_process[2] && ~mid_process[3];
 
 
    dma_unit dma0(.controlL(controlL0), .controlH(controlH0),
