@@ -1,13 +1,14 @@
 `default_nettype none
-//Assumptions: processor can only update the timer setting (TMxCNT_L) when 
+//Assumptions: processor can only update the timer setting (TMxCNT_L) when
 // the timer is paused when the timer is running it will internally update its setting
 
 module timer (
     input logic clock_16,
     input logic reset,
-    inout wire [15:0] TMxCNT_L,
+    input logic [15:0] TMxCNT_L,
     input logic [15:0] TMxCNT_H,
     input logic [15:0] prev_timer,
+    output logic [15:0] internal_TMxCNT_L,
     output logic genIRQ);
 
     //every control point from control registers
@@ -31,6 +32,7 @@ module timer (
 
     logic [15:0] timer_register;
     assign TMxCNT_L = (count_up) ? timer_register : 16'bZ;
+    assign internal_TMxCNT_L = (count_up) ? timer_register : 16'bz;
 
     //logic from prescaler clock to run at
     timer_clock_divider (.clock_16, .reset(), .cycles_64, .cycles_256, .cycles_1024);
@@ -44,7 +46,7 @@ module timer (
             default: internal_clock = clock_16;
         endcase
     end
-    
+
     always_ff @(posedge clock_16) begin
         if (reset || start_timer == 0)begin
             prev_timer_finished <= 0;
@@ -80,7 +82,7 @@ module timer_clock_divider (
     output logic cycles_64,
     output logic cycles_256,
     output logic cycles_1024);
-    
+
     logic [9:0] count;
 
     assign cycles_64 = count[5];
@@ -104,7 +106,7 @@ module timer_clock_divider (
     wire [15:0] TMxCNT_L;
     logic [15:0] TMxCNT_H;
     logic genIRQ;
-    
+
     timer dut(.clock_16, .reset, .TMxCNT_L, .TMxCNT_H, .genIRQ);
 
     logic start_timing;
@@ -118,7 +120,7 @@ module timer_clock_divider (
         reset <= 1;
         start_timing <= 0;
         TMxCNT_H <= 16'b0;
-        #2 
+        #2
         reset <= 0;
         TMxCNT_H <= 16'b00000000_1_0_000_0_00;
         start_timing <= 1;
