@@ -16,7 +16,9 @@ module gba_audio_top (
     inout  wire AC_SDA,
     output logic sound_req1,
     output logic sound_req2,
-    input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0]);
+    input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+    input logic [15:0] internal_TM0CNT_L,
+    input logic [15:0] internal_TM1CNT_L,);
 
     logic clk_100_output;
     logic clk_256_output;
@@ -83,6 +85,7 @@ module gba_audio_top (
     logic [15:0] FIFO_B_H;
     logic [15:0] TM0_CNT_L;
     logic [15:0] TM1_CNT_L;
+    logic sound_req1, sound_req2;
 
     //final mixer
     logic [23:0] direct_A;
@@ -214,12 +217,12 @@ module gba_audio_top (
 
 
     direct_sound dsA(
-        .clock(clk_100_output),
+        .clock(clk_100),
         .reset(reset),
         .FIFO_L(FIFO_A_L),
         .FIFO_H(FIFO_A_H),
-        .TM0_CNT_L,
-        .TM1_CNT_L,
+        .TM0_CNT_L(internal_TM0CNT_L),
+        .TM1_CNT_L(internal_TM1CNT_L),
         .timer_num(timer_numA),
         .sequencer_reset (reset_directA),
         .waveout(direct_A),
@@ -230,15 +233,15 @@ module gba_audio_top (
         .reset(reset),
         .FIFO_L(FIFO_B_L),
         .FIFO_H(FIFO_B_H),
-        .TM0_CNT_L,
-        .TM1_CNT_L,
+        .TM0_CNT_L(internal_TM0CNT_L),
+        .TM1_CNT_L(internal_TM1CNT_L),
         .timer_num(timer_numB),
         .sequencer_reset(reset_directB),
         .waveout(direct_B),
         .sound_req(sound_req2));
 
     ds_mixer dsm(
-        .clock(clk_100_output),
+        .clock(clk_100),
         .reset,
         .direct_A,
         .direct_B,
@@ -253,7 +256,7 @@ module gba_audio_top (
         .output_wave_l);
 
     power p(
-        .clock(clk_100_output),
+        .clock(clk_100),
         .NR52,
         .pause_channel1(pause_c1),
         .pause_channel2(pause_c2),
@@ -264,7 +267,7 @@ module gba_audio_top (
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
 
-    always_ff @(posedge clk_100_output) begin
+    always_ff @(posedge clk_100) begin
         hphone_valid <= 0;
         hphone_l <= 0;
         hphone_r <= 0;
@@ -278,7 +281,7 @@ module gba_audio_top (
 
     BUFG BUFG_inst(
         .O (clk_100_buffered),
-        .I (clk_100_output)
+        .I (clk_100)
         );
 
 

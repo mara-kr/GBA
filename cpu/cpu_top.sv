@@ -26,6 +26,6 @@ module cpu_top (
     assign addr = (dmaActive) ? 32'bz : addr_int;
     assign size = (dmaActive) ? 2'bz : size_int;
     assign write = (dmaActive) ? 1'bz : write_int;
-    assign wdata = (dmaActive) ? 1'bz : wdata_int;
+    assign wdata = (dmaActive) ? 32'bz : wdata_int;
 
 endmodule: cpu_top

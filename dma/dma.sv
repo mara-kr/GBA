@@ -103,11 +103,13 @@ module dma_fsm
             irq = genIRQ;
           end
           else if(xferDone) begin
+            active = 1'b1;
             ns = OFF;
             disable_dma = 1'b1;
             irq = genIRQ;
           end
           else if(preempted) begin
+            active = 1'b1;
             ns = PREEMPTEDREAD;
             stepDEST = 1'b1;
           end
@@ -229,7 +231,7 @@ module dma_dp
 
   assign addr = active ? desiredAddr : {32{1'bz}};
   assign wen = active ? write : 1'bz;
-  assign wdata = (set_wdata) ? wdata_size : {32{1'bz}};
+  assign wdata = (active) ? ((set_wdata) ? wdata_size : {32{1'bz}}) : {32{1'bz}};
   assign size = active ? (size_mem_transfer): {32{1'bz}};
 
   always_comb begin

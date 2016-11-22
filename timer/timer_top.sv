@@ -9,7 +9,11 @@ module timer_top (
     output logic genIRQ0,
     output logic genIRQ1,
     output logic genIRQ2,
-    output logic genIRQ3);
+    output logic genIRQ3,
+    output logic [15:0] internal_TM0CNT_L,
+    output logic [15:0] internal_TM1CNT_L,
+    output logic [15:0] internal_TM2CNT_L,
+    output logic [15:0] internal_TM3CNT_L,);
 
     wire [15:0] TM0CNT_L, TM1CNT_L;
     wire [15:0] TM2CNT_L, TM3CNT_L;
@@ -30,6 +34,7 @@ module timer_top (
         .clock_16,
         .reset,
         .TMxCNT_L(TM0CNT_L),
+        .internal_TMxCNT_L(internal_TM0CNT_L),
         .TMxCNT_H(TM0CNT_H),
         .genIRQ(genIRQ0),
         .prev_timer(16'hFF));
@@ -38,6 +43,7 @@ module timer_top (
         .clock_16,
         .reset,
         .TMxCNT_L(TM1CNT_L),
+        .internal_TMxCNT_L(internal_TM1CNT_L),
         .TMxCNT_H(TM1CNT_H),
         .genIRQ(genIRQ1),
         .prev_timer(TM0CNT_L));
@@ -46,14 +52,16 @@ module timer_top (
         .clock_16,
         .reset,
         .TMxCNT_L(TM2CNT_L),
+        .internal_TMxCNT_L(internal_TM2CNT_L),
         .TMxCNT_H(TM2CNT_H),
         .genIRQ(genIRQ2),
         .prev_timer(TM1CNT_L));
-    
+
      timer timer3(
         .clock_16,
         .reset,
         .TMxCNT_L(TM3CNT_L),
+        .internal_TMxCNT_L(internal_TM3CNT_L),
         .TMxCNT_H(TM3CNT_H),
         .genIRQ(genIRQ3),
         .prev_timer(TM2CNT_L));

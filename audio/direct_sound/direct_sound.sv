@@ -10,7 +10,7 @@ module direct_sound (
     input logic [15:0] TM0_CNT_L,
     input logic [15:0] TM1_CNT_L,
     input logic timer_num,
-    input logic sequencer_reset, 
+    input logic sequencer_reset,
     output logic [23:0] waveout,
     output logic sound_req);
 
@@ -42,10 +42,9 @@ module direct_sound (
        end
         prev_position_counter <= position_counter;
     end
-   
+
    always_ff @(posedge clock, posedge reset) begin
-       if (reset) old_timer <= 16'b0;
-       else old_timer <= timer;
+       old_timer <= timer;
    end
 
 
@@ -77,7 +76,7 @@ endmodule: direct_sound
     logic sound_req;
 
 
-    direct_sound dut (.clock, .reset, .FIFO_L, .FIFO_H, .TM0_CNT_L, .TM1_CNT_L, 
+    direct_sound dut (.clock, .reset, .FIFO_L, .FIFO_H, .TM0_CNT_L, .TM1_CNT_L,
                     .timer_num, .sequencer_reset, .waveout, .sound_req);
     initial begin
         //$monitor ("clk=%b, rest=%b, position=%d, waveformA=%h, waveformB=%h, sampling_clk=%b int_timer=%b timer_num=%b",
@@ -86,7 +85,7 @@ endmodule: direct_sound
         $monitor ("rest=%b, position=%d, waveformB=%h, sampling_clk=%b, sound_req=%b, prev_pos=%d",
                 reset, dut.position_counter, waveout, dut.sampling_rate, sound_req, dut.prev_position_counter);
         clock <= 0;
-        
+
         reset <= 1;
         #2
         reset <= 0;
@@ -96,7 +95,7 @@ endmodule: direct_sound
 
         #628000 $finish;
     end
-   
+
     always_ff @(posedge clock, posedge reset) begin
         if(reset) begin
             TM0_CNT_L <= 0;

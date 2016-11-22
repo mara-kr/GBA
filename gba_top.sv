@@ -42,6 +42,12 @@ module gba_top (
     logic  [3:0] disable_dma;
     logic        sound_req1, sound_req2;
 
+    // Timer
+    logic [15:0] internal_TM0CNT_L;
+    logic [15:0] internal_TM1CNT_L;
+    logic [15:0] internal_TM2CNT_L;
+    logic [15:0] internal_TM3CNT_L;
+
     // Memory signals
     (* mark_debug = "true" *) logic [31:0] bus_addr, bus_wdata, bus_rdata;
     (* mark_debug = "true" *) logic  [1:0] bus_size;
@@ -114,12 +120,15 @@ module gba_top (
                  .vcount(vcount), .hcount({7'd0, hcount}));
 
     timer_top timers (.clock_16(gba_clk), .reset(BTND), .IO_reg_datas,
+                      .internal_TM0CNT_L, .internal_TM1CNT_L, .internal_TM2CNT_l,
+                      .internal_TM3CNT_L,
                       .genIRQ0(timer0), .genIRQ1(timer1), .genIRQ2(timer2),
                       .genIRQ3(timer3));
 
     gba_audio_top audio (.clk_100(GCLK), .reset(BTND), .AC_ADR0, .AC_ADR1,
                      .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
-                     .AC_SDA, .IO_reg_datas, .sound_req1, .sound_req2);
+                     .AC_SDA, .IO_reg_datas, .sound_req1, .sound_req2,
+                     .internal_TM0CNT_L, .internal_TM1CNT_L);
 
 
     // Interface for SNES controller
