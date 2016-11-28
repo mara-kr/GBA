@@ -9,6 +9,7 @@ module obj_top (
     input  logic [31:0] OAM_mem_data, 
     input  logic [15:0] VRAM_mem_data,
     input  logic [15:0] dispcnt,
+    input  logic [15:0] mosaic_mmio_reg,
     input  logic  [7:0] vcount, hcount, //vcount is current row being displayed, hcount is column being output by BG
     input  logic  [2:0] bgmode
 
@@ -19,6 +20,7 @@ module obj_top (
 
     logic  [5:0] X, Y;
     logic  [5:0] mosaicX, mosaicY, flipX, flipY;
+    logic  [3:0] hscale, vscale;
     logic  [7:0] row, pinfo;
     logic        visible, valid, transparent;
 
@@ -29,7 +31,7 @@ module obj_top (
     logic [10:0] timer;
     logic  [9:0] objname;
     logic  [8:0] objx, col, col_offset;
-    logic  [7:0] objy, OAMaddr_obj, hsize, vsize, OAMaddr_attr;
+    (* mark_debug="true" *)logic  [7:0] objy, OAMaddr_obj, hsize, vsize, OAMaddr_attr;
     logic  [6:0] obj_hsize, obj_vsize;
     logic  [4:0] attrno;
     logic  [3:0] paletteno;
@@ -51,6 +53,9 @@ module obj_top (
 
     assign hsize = (dblsize) ? {obj_hsize[6:0], 1'b0} : obj_hsize;
     assign vsize = (dblsize) ? {obj_vsize[6:0], 1'b0} : obj_vsize;
+
+    assign hscale = mosaic_mmio_reg[11:8];
+    assign vscale = mosaic_mmio_reg[15:12]; 
 
     assign row = vcount + 1;
     assign col = rotation ? objx + col_offset : objx - hsize[7:1] + col_offset;
@@ -149,8 +154,12 @@ module obj_top (
 
     attribute_lookup_unit alu (.clock, .reset, .A, .B, .C, .D,
                                 .OAMaddr(OAMaddr_attr), .readOAM, .done(attr_done),
-                                .attrno, .start,
+                                .attrno, .start(lookupAttr),
                                 .OAMdata(OAM_mem_data));
+                                
+    assign OAM_mem_addr = readOAM ? OAMaddr_attr : OAMaddr_obj;
+
+    mosaic_processing_unit mpu(.hscale, .vscale, .mosaic, .row(X), .col(Y), .x(mosaicX), .y(mosaicY));
 
     row_visible_unit rvu (.visible, .row, .objy, .vsize, .rotation);
 

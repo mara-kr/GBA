@@ -10,10 +10,10 @@ module overflow_handler
   bg_mag_comp #(10) vert_overflow(.a(y), .b(vmax), .agtb(v_overflow), .aeqb(), .altb());
 
   logic overflow_occurred;
-  assign overflow_occured = h_overflow | v_overflow | (rotate & rot_scale_overflowed);
+  assign overflow_occurred = h_overflow | v_overflow | (rotate & rot_scale_overflowed);
 
   logic transparent_overflow;
   assign transparent_overflow = bitmapped | (rotate & ~overflow);
-  bg_mux_2_to_1 #(1) transparency_mux(.i0(1'b0), .i1(transparent_overflow), .s(overflow_occured), .y(transparent));
+  bg_mux_2_to_1 #(1) transparency_mux(.i0(1'b0), .i1(transparent_overflow), .s(overflow_occurred), .y(transparent));
 
 endmodule: overflow_handler

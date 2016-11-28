@@ -6,18 +6,18 @@ module manual_bench (
     input  logic [7:0] SW,
     output logic [3:0] VGA_R, VGA_G, VGA_B,
     input  logic       BTND, BTNR, BTNL,
-    input  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
-    input  logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr,
-    input  logic [31:0] gfx_vram_A_addr2,
-    output logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
-    output logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
-    output logic [31:0] gfx_vram_A_data2,
-    input  logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+    output  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
+    output  logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr,
+    output  logic [31:0] gfx_vram_A_addr2,
+    input  logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
+    input  logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
+    input  logic [31:0] gfx_vram_A_data2,
     input  logic        graphics_clock, vga_clock,
     (* mark_debug = "true" *) output logic        VGA_HS,
     (* mark_debug = "true" *) output logic        VGA_VS
     );
 
+    logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
     logic [15:0] winin;
     logic [15:0] winout;
@@ -67,7 +67,7 @@ module manual_bench (
     assign IO_reg_datas[`WIN1H_IDX][31:16] = win1H;
     assign IO_reg_datas[`WIN0V_IDX][15:0] = win0V;
     assign IO_reg_datas[`WIN1V_IDX][31:16] = win1V;
-    assign IO_reg_datas[`VCOUNT_IDX][7:0] = vcount;
+    assign IO_reg_datas[`VCOUNT_IDX][15:8] = vcount;
     assign IO_reg_datas[`BLDCNT_IDX][15:0] = bldcnt;
     assign IO_reg_datas[`BLDALPHA_IDX][31:16] = bldalpha;
     assign IO_reg_datas[`BLDY_IDX][15:0] = bldy;
@@ -75,7 +75,7 @@ module manual_bench (
     assign IO_reg_datas[`BG0CNT_IDX][15:0] = bg0cnt;
     assign IO_reg_datas[`BG1CNT_IDX][31:16] = bg1cnt;
     assign IO_reg_datas[`BG2CNT_IDX][15:0] = bg2cnt;
-    assign IO_reg_datas[`BG3CNT_IDX][31:0] = bg3cnt;
+    assign IO_reg_datas[`BG3CNT_IDX][31:16] = bg3cnt;
     
     assign IO_reg_datas[`BG0HOFS_IDX][15:0] = bg0hofs;
     assign IO_reg_datas[`BG1HOFS_IDX][15:0] = bg1hofs;
@@ -93,16 +93,16 @@ module manual_bench (
     assign IO_reg_datas[`BG3Y_L_IDX][27:0] = bg3y;
 
     assign IO_reg_datas[`BG2PA_IDX][15:0] = bg2pa;
-    assign IO_reg_datas[`BG2PA_IDX][31:16] = bg2pb;
-    assign IO_reg_datas[`BG2PA_IDX][15:0] = bg2pc;
-    assign IO_reg_datas[`BG2PA_IDX][31:16] = bg2pd;
-    assign IO_reg_datas[`BG2PA_IDX][15:0] = bg3pa;
-    assign IO_reg_datas[`BG2PA_IDX][31:16] = bg3pb;
-    assign IO_reg_datas[`BG2PA_IDX][15:0] = bg3pc;
-    assign IO_reg_datas[`BG2PA_IDX][31:16] = bg3pd;
+    assign IO_reg_datas[`BG2PB_IDX][31:16] = bg2pb;
+    assign IO_reg_datas[`BG2PC_IDX][15:0] = bg2pc;
+    assign IO_reg_datas[`BG2PD_IDX][31:16] = bg2pd;
+    assign IO_reg_datas[`BG3PA_IDX][15:0] = bg3pa;
+    assign IO_reg_datas[`BG3PB_IDX][31:16] = bg3pb;
+    assign IO_reg_datas[`BG3PC_IDX][15:0] = bg3pc;
+    assign IO_reg_datas[`BG3PD_IDX][31:16] = bg3pd;
     assign IO_reg_datas[`MOSAIC_IDX][15:0] = mosaic;
     
-    assign dispcnt = {3'b111, SW[4:0], 1'b0, 1'b1, 1'b0, 1'b0, 1'b0, 3'b001};
+    assign dispcnt = {3'b111, 1'b1, SW[3:0], 1'b0, 1'b1, 1'b0, 1'b0, 1'b0, 3'b001};
     //no windows
     //display layers specified by switches
     //no forced blank
@@ -111,36 +111,36 @@ module manual_bench (
     //display bitmap frame 0
     //bg mode 001 - BG 0 & 1 are char bgs, BG2 is rotation/scaling
 
-    assign bg0cnt = {2'b0, 1'b0, 5'b0, 1'b0, SW[5], 2'b00, 2'b11};
+    assign bg0cnt = {2'b0, 1'b0, 4'b0, SW[4], 1'b0, SW[5], 2'b0, 2'b01, 2'b11};
     //256x256 char background
     //screen base block 0
     //16-bit color
-    //mosaic if SW[5]
+    //mosaic if SW[5]; 1'b0
     //character base block 1
     //priority = 11 (lowest priority)
 
-    assign bg1cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b11};
+    assign bg1cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b01, 2'b10};
     //256x256 char background
     //screen base block 2
     //256-bit color
-    //mosaic if SW[5]
+    //mosaic if SW[5]; 1'b0
     //character base block 1
     //priority = 10 (second lowest priority)
 
-    assign bg2cnt = {2'b0, 1'b0, 5'd2, 1'b1, 1'b0, 2'b00, 2'b11};
-    //256x256 char background
+    assign bg2cnt = {2'b01, 1'b0, 5'd6, 1'b1, SW[5], 2'b00, 2'b01, 2'b01};
+    //256x256 rotation char background
     //no wraparound
-    //screen base block 6
+    //screen base bGlock 6
     //256-bit color
     //no mosaic
     //character base block 1
-    //priority = 10 (second lowest priority)
+    //priority = 01 (second highest priority)
 
-    assign bg3cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b11};
+    assign bg3cnt = {2'b0, 1'b0, 5'd2, 1'b1, SW[5], 2'b00, 2'b01, 2'b00};
     //256x256 char background
     //screen base block 4
     //16-bit color
-    //mosaic if SW[5]
+    //mosaic if SW[5]; 1'b0
     //character base block 1
     //priority = 00 (highest priority)
 
@@ -152,23 +152,22 @@ module manual_bench (
     assign bg3x = 27'b0;
     assign bg2y = 27'b0;
     assign bg3y = 27'b0;
-    assign vcount = 8'b0;
 
-    assign bg0hofs = 16'b0;
-    assign bg1hofs = 16'b0;
-    assign bg2hofs = 16'b0;
-    assign bg3hofs = 16'b0;
-    assign bg0vofs = 16'b0;
-    assign bg1vofs = 16'b0;
-    assign bg2vofs = 16'b0;
-    assign bg3vofs = 16'b0;
+    assign bg0hofs = SW[7] ? 16'd128 : 16'b0;
+    assign bg1hofs = SW[7] ? 16'd128 : 16'b0;
+    assign bg2hofs = SW[7] ? 16'd128 : 16'b0;
+    assign bg3hofs = SW[7] ? 16'd128 : 16'b0;
+    assign bg0vofs = SW[7] ? 16'd128 : 16'b0;
+    assign bg1vofs = SW[7] ? 16'd128 : 16'b0;
+    assign bg2vofs = SW[7] ? 16'd128 : 16'b0;
+    assign bg3vofs = SW[7] ? 16'd128 : 16'b0;
 
     //default BG2 to no rotation
     //rotate 45 degrees if SW[6] is set 
-    assign bg2pa = SW[6] ? 16'h005A : 16'h0100;
-    assign bg2pb = SW[6] ? 16'h805A : 16'h0000;
-    assign bg2pc = SW[6] ? 16'h005A : 16'h0000;
-    assign bg2pd = SW[6] ? 16'h005A : 16'h0100;
+    assign bg2pa = SW[6] ? 16'h00B5 : 16'h0100;
+    assign bg2pb = SW[6] ? 16'h80B5 : 16'h0000;
+    assign bg2pc = SW[6] ? 16'h00B5 : 16'h0000;
+    assign bg2pd = SW[6] ? 16'h00B5 : 16'h0100;
     assign bg3pa = 16'h0100;
     assign bg3pb = 16'h0000;
     assign bg3pc = 16'h0000;
@@ -176,11 +175,11 @@ module manual_bench (
 
     //window 0 covers left third of the screen
     assign win0H = 16'h0050;
-    assign win0V = 16'h00A0;
+    assign win0V = 16'h0050;
 
     //window 1 covers right third of the screen
     assign win1H = 16'hA0F0;
-    assign win1V = 16'h00A0;
+    assign win1V = 16'h50A0;
 
     //enable display in win0 if BTNL is pressed, in win1 if BTNR
     assign winin = {2'b0, {6{BTNR}}, 2'b0, {6{BTNL}}};
@@ -195,7 +194,6 @@ module manual_bench (
 
     //module instantiations
     logic wen, toggle;
-    logic graphics_clock, vga_block;
     logic [14:0] graphics_color, vga_color;
     logic [16:0] graphics_addr, vga_addr;
    
@@ -231,15 +229,16 @@ module manual_bench (
                  .gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
                  .gfx_oam_addr, .gfx_palette_bg_addr, .gfx_palette_obj_addr,
                  .gfx_vram_A_addr2,
+                 .registers(IO_reg_datas),
                  .output_color(graphics_color));
 
 endmodule: manual_bench
 
 module dblbuffer_driver(
-    output logic toggle,
-    output logic wen,
+    (* mark_debug = "true" *)output logic toggle,
+    (* mark_debug = "true" *)output logic wen,
     input logic graphics_clock,
-    output logic [16:0] graphics_addr,
+    (* mark_debug = "true" *)output logic [16:0] graphics_addr,
     output logic [7:0] vcount,
     input logic clk,
     input logic rst_b
@@ -247,21 +246,23 @@ module dblbuffer_driver(
     
     assign vcount = row;
     
-    dbdriver_counter #(20, 842687) toggler(.clk, .rst_b, .en(1'b1), .last(toggle), .Q());
+    dbdriver_counter #(20, 842687) toggler(.clk, .rst_b, .en(1'b1), .clear(1'b0), .last(toggle), .Q());
     
-    logic [18:0] addr;
-    logic [7:0] row;
-    logic [8:0] col;
+    logic [18:0] timer;
+    (* mark_debug = "true" *)logic [7:0] row;
+    (* mark_debug = "true" *)logic [8:0] col;
     
-    logic step_row;
-    logic next_frame;
-    assign graphics_addr = addr[18:2];
-    dbdriver_counter #(19, 280895) addrs(.clk(graphics_clock), .en(1'b1), .clear(1'b0), .rst_b, .last(next_frame), .Q(addr));
+    (* mark_debug = "true" *)logic step_row;
+    (* mark_debug = "true" *)logic next_frame;
+    logic step;
+    assign step = timer[1] & timer[0];
+    dbdriver_counter #(19, 280895) sync(.clk(graphics_clock), .en(1'b1), .clear(1'b0), .rst_b, .last(next_frame), .Q(timer));
+    dbdriver_counter #(16, 38399) addrs(.clk(graphics_clock), .en(wen & step), .clear(next_frame & step), .rst_b, .last(), .Q(graphics_addr));
 
-    dbdriver_counter #(8, 159) rows(.clk(graphics_clock), .en(step_row & addr[1] & addr[0]), .clear(next_frame & addr[1] & addr[0]), .rst_b, .last(), .Q(row));
-    dbdriver_counter #(9, 239) cols(.clk(graphics_clock), .en(addr[1] & addr[0]), .clear(next_frame & addr[1] & addr[0]), .rst_b, .last(step_row), .Q(col));
+    dbdriver_counter #(8, 227) rows(.clk(graphics_clock), .en(step_row & step), .clear(next_frame & step), .rst_b, .last(), .Q(row));
+    dbdriver_counter #(9, 307) cols(.clk(graphics_clock), .en(step), .clear(next_frame & step), .rst_b, .last(step_row), .Q(col));
 
-    assign wen = graphics_addr < 38400;
+    assign wen = row < 8'd160 && col < 9'd240;
     
 endmodule
 

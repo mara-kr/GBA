@@ -20,7 +20,7 @@
     output logic [4:0] pe_effects);
     
     logic pe_clear;
-    logic [7:0] pe_col;
+    logic [8:0] pe_col;
     logic pe_send_address_1;
     logic pe_send_address_2;
     logic pe_read_data_1;
@@ -28,7 +28,7 @@
     logic addr_is_obj;
 
 
-    logic [7:0] pe_row;
+    (* mark_debug = "true" *) logic [7:0] pe_row;
     logic [31:0] pe_data;
     logic [31:0] pe_addr;
 
@@ -43,7 +43,7 @@
         .dispcnt, .vcount(pe_row),
         .win0H, .win1H, 
         .win0V, .win1V, 
-        .col(pe_col), .send_address_1(pe_send_address_1),
+        .col(pe_col[7:0]), .send_address_1(pe_send_address_1),
         .send_address_2(pe_send_address_2), 
         .read_data_1(pe_read_data_1), .read_data_2(pe_read_data_2), 
         .address(pe_addr),

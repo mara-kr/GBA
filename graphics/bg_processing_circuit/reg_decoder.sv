@@ -56,11 +56,12 @@ module reg_decoder
   always_comb begin
     case(bgmode)
       3'd0: is_rotation_bg = 1'b0;
-      3'd1: is_rotation_bg = 1'b0;
-      3'd2: is_rotation_bg = 1'b0;
-      3'd3: is_rotation_bg = 1'b0;
-      3'd4: is_rotation_bg = 1'b0;
-      3'd5: is_rotation_bg = 1'b0;
+      3'd1: is_rotation_bg = bgno[1];
+      3'd2: is_rotation_bg = 1'b1;
+      3'd3: is_rotation_bg = 1'b1;
+      3'd4: is_rotation_bg = 1'b1;
+      3'd5: is_rotation_bg = 1'b1;
+      default: is_rotation_bg = 1'b0;
     endcase
   end
 

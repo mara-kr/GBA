@@ -60,7 +60,7 @@ module graphics_top(
     assign win1H = registers[`WIN1H_IDX][31:16];
     assign win0V = registers[`WIN0V_IDX][15:0];
     assign win1V = registers[`WIN1V_IDX][31:16];
-    assign vcount = registers[`VCOUNT_IDX][7:0];
+    assign vcount = registers[`VCOUNT_IDX][15:8];
     assign bldcnt = registers[`BLDCNT_IDX][15:0];
     assign bldalpha = registers[`BLDALPHA_IDX][31:16];
     assign bldy = registers[`BLDY_IDX][15:0];
@@ -86,13 +86,13 @@ module graphics_top(
     assign bg3y = registers[`BG3Y_L_IDX][27:0];
 
     assign bg2pa = registers[`BG2PA_IDX][15:0];
-    assign bg2pb = registers[`BG2PA_IDX][31:16];
-    assign bg2pc = registers[`BG2PA_IDX][15:0];
-    assign bg2pd = registers[`BG2PA_IDX][31:16];
-    assign bg3pa = registers[`BG2PA_IDX][15:0];
-    assign bg3pb = registers[`BG2PA_IDX][31:16];
-    assign bg3pc = registers[`BG2PA_IDX][15:0];
-    assign bg3pd = registers[`BG2PA_IDX][31:16];
+    assign bg2pb = registers[`BG2PB_IDX][31:16];
+    assign bg2pc = registers[`BG2PC_IDX][15:0];
+    assign bg2pd = registers[`BG2PD_IDX][31:16];
+    assign bg3pa = registers[`BG3PA_IDX][15:0];
+    assign bg3pb = registers[`BG3PB_IDX][31:16];
+    assign bg3pc = registers[`BG3PC_IDX][15:0];
+    assign bg3pd = registers[`BG3PD_IDX][31:16];
     assign mosaic = registers[`MOSAIC_IDX][15:0];
 
     logic [14:0] pe_color0;
@@ -157,7 +157,7 @@ module graphics_top(
         .obj_packet(obj),
         .OAM_mem_data(gfx_oam_data), .VRAM_mem_data(obj_data),
         .vcount(vcount + 8'b1), .hcount,
-        .dispcnt, .bgmode);
+        .dispcnt, .mosaic_mmio_reg(mosaic), .bgmode);
     //row is 3 ahead of VCOUNT
     //Priority Evaluation
     pe_top pe( 

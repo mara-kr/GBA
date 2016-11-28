@@ -4,7 +4,8 @@ module char_data_lookup
    input logic [2:0] x, y,
    input logic rotate,
    input logic palettemode,
-   output logic [15:0] addr
+   output logic [15:0] addr,
+   output logic sixteen_color_dot_select 
   );
 
   logic [9:0] charname;
@@ -24,6 +25,7 @@ module char_data_lookup
   logic [15:0] sixteen_color_addr, two_fifty_six_color_addr, addr_offset;
   assign sixteen_color_addr = {1'b0, charname, yprime, xprime[2:1]};
   assign two_fifty_six_color_addr = {charname, yprime, xprime};
+  assign sixteen_color_dot_select = xprime[0];
   bg_mux_2_to_1 #(16) addr_offset_mux(.i0(sixteen_color_addr), .i1(two_fifty_six_color_addr), .s(palettemode), .y(addr_offset));
 
   assign addr = addr_offset + {baseblock, 14'b0};

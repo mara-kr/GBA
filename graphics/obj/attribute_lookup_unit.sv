@@ -41,6 +41,7 @@ module attribute_lookup_unit (
         writeC = 1'b0;
         writeD = 1'b0;
         done = 1'b0;
+        ns = IDLE;
         case (cs)
             IDLE: begin
                 loadAttrNo = start;
