@@ -276,11 +276,17 @@ module dma_start
 
   logic started;
   logic active;
-  always_ff @(posedge clk, negedge rst_b)
-    if(~rst_b)
-      started <= 1'b0;
-    else
-      started <= active;
+  logic sound_req_delay;
+  always_ff @(posedge clk, negedge rst_b) begin
+      if(~rst_b) begin
+        started <= 1'b0;
+        sound_req_delay <= 1'b0;
+      end
+      else begin
+        started <= active;
+        sound_req_delay <= sound_req; //delay by one clock cycle to shorten critical path
+      end
+  end
 
   always_comb begin
     dma_stop = 1'b0; //extra control to turn off dma repeat
@@ -298,7 +304,7 @@ module dma_start
       end
       2'b11: begin
         if(sound) begin
-          start = sound_req;
+          start = sound_req_delay;
         end
         else begin
           if(vcount[7:0] == 8'd02 && display_sync_startable) begin
