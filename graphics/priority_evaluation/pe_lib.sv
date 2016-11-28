@@ -67,3 +67,21 @@ module pe_register(q, d, clk, clear, enable, rst_b);
        q <= d;
 
 endmodule: pe_register
+
+module pe_counter
+  #(parameter WIDTH=2)
+  (output logic [WIDTH-1:0] q,
+   input  logic en, clear,
+   input  logic clk, rst_b);
+
+  always_ff @(posedge clk, negedge rst_b)
+    if(~rst_b)
+      q <= 0;
+    else if(clear)
+      q <= 0;
+    else if(en)
+      q <= q + 1;
+    else
+      q <= q;
+
+endmodule: pe_counter

@@ -61,7 +61,7 @@ module bg_processing_circuit
 
   logic [9:0] x, y; //(x,y) coordinates of pixel data
   logic [2:0] x_INTERMEDIATE, y_INTERMEDIATE; //3 least significant bits
-  logic x_OUTPUT; //LSB
+  logic sixteen_color_dot_select, sixteen_color_dot_select_OUTPUT;
 
   logic [3:0] paletteno, paletteno_OUTPUT;
 
@@ -110,8 +110,16 @@ module bg_processing_circuit
 
   bg_scrolling_unit bsu(.hofs, .vofs, .row, .col(col[7:0]), .x(scroll_x), .y(scroll_y));
 
-  bg_rot_scale_unit rsu(.A(dx), .B(dmx), .C(dy), .D(dmy), .bgx, .bgy,
+/*  bg_rot_scale_unit rsu(.A(dx), .B(dmx), .C(dy), .D(dmy), .bgx, .bgy,
                         .step(&bgno), .steprow(start_row), .newframe(new_frame),
+                        .clock, .rst_b,
+                        .x(rot_scale_x), .y(rot_scale_y),
+                        .overflow(rot_scale_overflowed));
+*/
+  bg_rot_scale_top rsu(.bg2x, .bg2y, .bg3x, .bg3y,
+                        .bg2pa, .bg2pb, .bg2pc, .bg2pd,
+                        .bg3pa, .bg3pb, .bg3pc, .bg3pd,
+                        .bgno, .steprow(start_row), .newframe(new_frame),
                         .clock, .rst_b,
                         .x(rot_scale_x), .y(rot_scale_y),
                         .overflow(rot_scale_overflowed));
@@ -131,7 +139,7 @@ module bg_processing_circuit
                        .rotate(rotate_INTERMEDIATE),
                        .x(x_INTERMEDIATE), .y(y_INTERMEDIATE),
                        .palettemode(palettemode_INTERMEDIATE),
-                       .addr(char_addr));
+                       .addr(char_addr), .sixteen_color_dot_select);
 
   bitmap_address_unit bmau(.x(x[7:0]), .y(y[7:0]), .hmax, .bitmap_color, .frame, .addr(bitmap_addr));
   
@@ -141,7 +149,8 @@ module bg_processing_circuit
                                 .bitmapped, .rotate, .overflow, .transparent);
 
   //mux on x input shown on diagram is redundant, both inputs are identical
-  data_formatter formatter(.data(bg_VRAM_data[14:0]), .x(x_OUTPUT),
+  data_formatter formatter(.data(bg_VRAM_data[14:0]),
+                           .sixteen_color_dot_select(sixteen_color_dot_select_OUTPUT),
                            .paletteno(paletteno_OUTPUT),
                            .palettemode(palettemode_OUTPUT),
                            .transparent(transparent_OUTPUT),
@@ -152,7 +161,7 @@ module bg_processing_circuit
   //Here be registers.
   bg_pipeline #(3) x_int(.q(x_INTERMEDIATE), .d(x[2:0]), .clock);
   bg_pipeline #(3) y_int(.q(y_INTERMEDIATE), .d(y[2:0]), .clock);
-  bg_pipeline #(1) x_out(.q(x_OUTPUT), .d(x_INTERMEDIATE[0]), .clock);
+  bg_pipeline #(1) dot_select_out(.q(sixteen_color_dot_select_OUTPUT), .d(sixteen_color_dot_select), .clock);
 
   bg_pipeline #(4) pno_out(.q(paletteno_OUTPUT), .d(paletteno), .clock);
 

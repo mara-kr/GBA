@@ -1,6 +1,6 @@
 module data_formatter
   (input logic [14:0] data,
-   input logic x,
+   input logic sixteen_color_dot_select,
    input logic palettemode,
    input logic bitmapped, transparent,
    input logic [3:0] paletteno,
@@ -16,7 +16,7 @@ module data_formatter
   logic [7:0] palette_byte;
 
   assign palette_byte[7:4] = 4'b0;
-  bg_mux_2_to_1 #(4) small_palette_mux(.i0(data[3:0]), .i1(data[7:4]), .s(x), .y(palette_byte[3:0]));
+  bg_mux_2_to_1 #(4) small_palette_mux(.i0(data[3:0]), .i1(data[7:4]), .s(sixteen_color_dot_select), .y(palette_byte[3:0]));
   bg_mux_2_to_1 #(8) palette_mux(.i0(palette_byte), .i1(data[7:0]), .s(palettemode), .y(palette_index));
 
   assign visible = (|palette_index | bitmapped) & bgused & ~transparent;

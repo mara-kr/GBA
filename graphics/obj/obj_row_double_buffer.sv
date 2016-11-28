@@ -42,7 +42,7 @@ module obj_row_buffer (
 
     assign rdata = (rcol < 8'd240) ? rdata_bus : 20'b0;
     generate
-        for (genvar i = 0; i < 239; i++) begin : REGS
+        for (genvar i = 0; i < 240; i++) begin : REGS
             assign reg_in[i] = {4'd0, col_data} | (reg_out[i] & 20'h4000);
             is_transparent ist (.transparent(transparent_col[i]),
                                 .data(reg_out[i][15:0]),

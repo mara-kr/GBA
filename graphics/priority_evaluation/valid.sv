@@ -1,6 +1,7 @@
 module pe_valid (
     input logic [19:0] A,
     input logic [4:0] mask,
+    input logic [1:0] bgno,
     output logic valid);
 
     logic mux_result;
@@ -11,7 +12,7 @@ module pe_valid (
                     .in1(mask[1]), 
                     .in2(mask[2]), 
                     .in3(mask[3]), 
-                    .select(A[9:8]));
+                    .select(bgno));
    assign valid = ((A[17] & mask[4]) | mux_result) & (A[15] | A[16]);
 endmodule: pe_valid
 

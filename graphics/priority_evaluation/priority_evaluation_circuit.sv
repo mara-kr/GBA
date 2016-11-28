@@ -30,21 +30,21 @@ module priority_eval (
     output logic [19:0] layer1,
     output logic [4:0] effects);
 
-    logic [19:0] top_in;
-    logic [19:0] top_saved;
-    logic [19:0] bot_in;
-    logic [19:0] bot_saved;
+    (* mark_debug = "true" *) logic [19:0] top_in;
+    (* mark_debug = "true" *) logic [19:0] top_saved;
+    (* mark_debug = "true" *) logic [19:0] bot_in;
+    (* mark_debug = "true" *) logic [19:0] bot_saved;
 
-    logic replace_top;
-    logic replace_bot;
+    (* mark_debug = "true" *) logic replace_top;
+    (* mark_debug = "true" *) logic replace_bot;
+    logic [1:0] bgno;
 
-
-    logic [4:0] mask;
-    logic replace1;
-    logic replace2;
-    logic replace3;
-    logic replace4;
-    logic replace5;
+    (* mark_debug = "true" *) logic [4:0] mask;
+    (* mark_debug = "true" *) logic replace1;
+    (* mark_debug = "true" *) logic replace2;
+    (* mark_debug = "true" *) logic replace3;
+    (* mark_debug = "true" *) logic replace4;
+    (* mark_debug = "true" *) logic replace5;
 
     logic [19:0] out_mux2;
     logic [19:0] out_mux3;
@@ -55,8 +55,8 @@ module priority_eval (
     logic out_valid3;
 
     logic window_obj;
-    logic win0;
-    logic win1;
+    (* mark_debug = "true" *) logic win0;
+    (* mark_debug = "true" *) logic win1;
 
     pe_window_detector wd (.objmode(OBJ[14:13]), .X(col),
                         .Y(vcount), .win0H, .win1H,
@@ -72,7 +72,7 @@ module priority_eval (
     pe_register #(20) BOT(.q(bot_saved), .d(bot_in), .clk, .clear, 
                 .enable(replace_bot), .rst_b(1'b1));
     priority_comparator priority_comparator1(.inputA(BG), .inputB(OBJ), 
-                .mask(mask), .replace(replace1));
+                .mask(mask), .bgno, .replace(replace1));
     
     pe_mux_2_to_1 #(20) mux1(.out(top_in), .in0(OBJ), .in1(BG), .select(replace1));
     pe_mux_2_to_1 #(20) mux2(.out(out_mux2), .in0(BG), .in1(OBJ), .select(replace1));
@@ -83,17 +83,18 @@ module priority_eval (
 
 
     priority_comparator priority_comparator2(.inputA(BG), .inputB(top_saved), 
-                .mask, .replace(replace2));
+                .mask, .bgno, .replace(replace2));
     priority_comparator priority_comparator3(.inputA(OBJ), .inputB(top_saved), 
-                .mask, .replace(replace3));
+                .mask, .bgno, .replace(replace3));
     priority_comparator priority_comparator4(.inputA(BG), .inputB(bot_saved), 
-                .mask, .replace(replace4));
+                .mask, .bgno, .replace(replace4));
     priority_comparator priority_comparator5(.inputA(OBJ), .inputB(bot_saved), 
-                .mask, .replace(replace5));
+                .mask, .bgno, .replace(replace5));
 
-    pe_valid valid1(.A(top_saved), .mask(), .valid(out_valid1));
-    pe_valid valid2(.A(OBJ), .mask(), .valid(out_valid2));
-    pe_valid valid3(.A(BG), .mask(), .valid(out_valid3));
+    pe_counter #(2) bgno_cntr (.q(bgno), .en(1'b1), .clear, .clk, .rst_b(1'b1));
+    pe_valid valid1(.A(top_saved), .mask, .bgno, .valid(out_valid1));
+    pe_valid valid2(.A(OBJ), .mask, .bgno, .valid(out_valid2));
+    pe_valid valid3(.A(BG), .mask, .bgno, .valid(out_valid3));
 
     pe_mux_2_to_1 #(20) mux5(.out(layer0), .in0(top_saved), .in1(top_in), 
                 .select(replace_top));
@@ -105,21 +106,26 @@ module priority_eval (
     logic data_1_is_top;
     logic [15:0] data_from_PRAM;
 
-    assign data_from_PRAM = (address_saved[0]) ? data[31:16] : data[15:0];
+    assign data_from_PRAM = (address_saved[1]) ? data[31:16] : data[15:0];
     always_comb begin
         addr_is_obj = layer0[17];
         if (send_address_1 == 1) begin
-            address = layer0[7:0];
+            address = {layer0[7:0], 1'b0};
+            data_1_is_top=1'b0;
         end
         else if (send_address_2 == 1)  begin
             if (layer0[7:0] == address_saved) begin
-                address = {24'b0, layer1[7:0]};
-                data_1_is_top=1;
+                address = {23'b0, layer1[7:0], 1'b0};
+                data_1_is_top=1'b1;
             end
             else begin 
-                address = {24'b0, layer0[7:0]};
-                data_1_is_top=0;
+                address = {23'b0, layer0[7:0], 1'b0};
+                data_1_is_top=1'b0;
             end
+        end
+        else begin
+            address = 32'b0;
+            data_1_is_top = 1'b0;
         end
     end
 

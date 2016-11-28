@@ -32,7 +32,7 @@ module obj_pri_encoder (
     input  logic [7:0] val);
 
     always_comb begin
-        casex (val)
+        unique casex (val)
             8'b1xxx_xxxx: pri = 3'd7;
             8'bx1xx_xxxx: pri = 3'd6;
             8'bxx1x_xxxx: pri = 3'd5;

@@ -1,14 +1,14 @@
 module pe_fsm(
     input logic clock,
     input logic reset,
-    output logic clear,
-    output logic [7:0] col,
+    (* mark_debug = "true" *) output logic clear,
+    (* mark_debug = "true" *) output logic [9:0] col,
     output logic send_address_1,
     output logic send_address_2,
     output logic read_data_1,
     output logic read_data_2);
 
-    logic incr_col;
+    (* mark_debug = "true" *) logic incr_col;
     logic [1:0] cycle_delay_3;
     
     enum logic [7:0] {START, P0, P1, P2, P3} cs, ns;
@@ -20,10 +20,11 @@ module pe_fsm(
         send_address_2 = 0;
         read_data_1 = 0;
         read_data_2 = 0;
+        ns = START;
         case (cs)
             START: begin
                 clear = 1;
-                if (cycle_delay_3 == 3) begin 
+                if (cycle_delay_3 == 2) begin 
                     ns = P0;
                 end
                 else begin
@@ -70,13 +71,18 @@ module pe_fsm(
         if (reset) begin
             col <= 0;
         end
-        else if (incr_col == 1) begin
-            col <= col + 1;
-        end
-        else if (col == 8'd159) 
-            col <= 0;
         else begin
-            col <= col;
+            if (incr_col == 1) begin
+                if (col == 9'd307) begin //Must be careful to have correct timing
+                    col <= 0;
+                end
+                else begin
+                    col <= col + 1;
+                end
+            end
+            else begin
+                col <= col;
+            end
         end
     end
 

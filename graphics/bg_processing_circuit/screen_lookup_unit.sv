@@ -42,7 +42,9 @@ module screen_lookup_unit
   assign rotation_offset = row_offset | {7'b0, xprime};
 
   logic [13:0] text_offset;
-  assign text_offset = {1'b0, yprime[5], xprime[5], yprime[4:0], xprime[4:0], 1'b0};
+  logic [1:0] quadrant; 
+  assign quadrant = ((vmax == 10'd511) && (hmax == 10'd255)) ? {1'b0, yprime[5]} : {yprime[5], xprime[5]};
+  assign text_offset = {1'b0, quadrant, yprime[4:0], xprime[4:0], 1'b0};
 
   logic [13:0] screen_offset;
   bg_mux_2_to_1 #(14) offset_mux(.i0(text_offset), .i1(rotation_offset), .s(rotate), .y(screen_offset));
