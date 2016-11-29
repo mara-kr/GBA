@@ -17,7 +17,8 @@ module timer_top (
 
     wire [15:0] TM0CNT_L, TM1CNT_L;
     wire [15:0] TM2CNT_L, TM3CNT_L;
-    logic [15:0] TM0CNT_H, TM1CNT_H;
+    (* mark_debug = "true" *) logic [15:0] TM0CNT_H;
+    logic [15:0] TM1CNT_H;
     logic [15:0] TM2CNT_H, TM3CNT_H;
 
     assign TM0CNT_L = IO_reg_datas[`TM0CNT_L_IDX][15:0];

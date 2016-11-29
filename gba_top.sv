@@ -22,8 +22,9 @@ module gba_top (
     inout  wire  AC_SDA);
 
     // 16.776 MHz clock for GBA/memory system
-    logic gba_clk;
-    clk_wiz_0 clk0 (.clk_in1(GCLK), .gba_clk);
+    logic gba_clk, clk_100, clk_256;
+    clk_wiz_0 clk0 (.clk_in1(GCLK), 
+                    .gba_clk, .clk_100, .clk_256);
 
     // Buttons register output
     logic [15:0] buttons;
@@ -126,7 +127,7 @@ module gba_top (
                       .genIRQ0(timer0), .genIRQ1(timer1), .genIRQ2(timer2),
                       .genIRQ3(timer3));
 
-    gba_audio_top audio (.clk_100(GCLK), .reset(BTND), .AC_ADR0, .AC_ADR1,
+    gba_audio_top audio (.clk_100(clk_100), .clk_256, .reset(BTND), .AC_ADR0, .AC_ADR1,
                      .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
                      .AC_SDA, .IO_reg_datas, .sound_req1, .sound_req2,
                      .internal_TM0CNT_L, .internal_TM1CNT_L);

@@ -86,6 +86,9 @@ module mem_top (
 
     logic [31:0] bus_pak_init_1_addr;
     logic        bus_pak_init_1_read;
+    
+    logic [31:0] bus_game_addr, bus_game_rdata;
+    logic        bus_game_read;
 
     logic [31:0] bus_intern_rdata, bus_palette_rdata, bus_vram_rdata;
     logic [31:0] bus_oam_rdata;
@@ -101,8 +104,12 @@ module mem_top (
                          .write(bus_write_lat1), .byte_we(bus_we));
 
     assign bus_system_addr = bus_mem_addr;
+    assign bus_game_addr = bus_mem_addr;
 
     assign bus_system_read = bus_addr_lat1[31:24] == 8'h0;
+    assign bus_game_read = (bus_addr_lat1[31:24] == 8'h08) ||
+                           (bus_addr_lat1[31:24] == 8'h0A) ||
+                           (bus_addr_lat1[31:24] == 8'h0C);
 
     assign bus_io_reg_read = (bus_addr_lat1 - `IO_REG_RAM_START) <= `IO_REG_RAM_SIZE;
 
@@ -113,6 +120,9 @@ module mem_top (
     system_rom sys   (.clka(clock), .rsta(reset),
                       .addra(bus_system_addr[13:2]),
                       .douta(bus_system_rdata));
+                      
+    game_rom game (.clka(clock), .rsta(reset), .addra(bus_game_addr[9:2]),
+                   .douta(bus_game_rdata));
 
     intern_mem intern (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
                        .bus_we, .bus_write_lat1, .bus_rdata(bus_intern_rdata),
@@ -136,6 +146,8 @@ module mem_top (
     oam_mem oam (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
                  .bus_we, .bus_write_lat1, .gfx_oam_addr, .gfx_oam_data,
                  .bus_rdata(bus_oam_rdata), .read_in_oam);
+                 
+    
 
     generate
         for (genvar i = 0; i < `NUM_IO_REGS; i++) begin
@@ -186,6 +198,8 @@ module mem_top (
         else if (bus_pak_init_1_read)
             bus_rdata = {12'hFFF, bus_pak_init_1_addr[4:2], 1'b1,
                          12'hFFF, bus_pak_init_1_addr[4:2], 1'b0};
+        else if (bus_game_read)
+            bus_rdata = bus_game_rdata;
         else
             bus_rdata = 32'hz;
     end

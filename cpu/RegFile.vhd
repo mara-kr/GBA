@@ -88,6 +88,11 @@ signal r4           : std_logic_vector(31 downto 0);
 signal r5           : std_logic_vector(31 downto 0);
 signal r6           : std_logic_vector(31 downto 0);
 signal r7           : std_logic_vector(31 downto 0);
+signal r8           : std_logic_vector(31 downto 0);
+signal r9           : std_logic_vector(31 downto 0);
+signal r10           : std_logic_vector(31 downto 0);
+signal r11           : std_logic_vector(31 downto 0);
+signal r12           : std_logic_vector(31 downto 0);
 
 
 attribute mark_debug of lr : signal is "true";
@@ -100,6 +105,11 @@ attribute mark_debug of r4 : signal is "true";
 attribute mark_debug of r5 : signal is "true";
 attribute mark_debug of r6 : signal is "true";
 attribute mark_debug of r7 : signal is "true";
+attribute mark_debug of r8 : signal is "true";
+attribute mark_debug of r9 : signal is "true";
+attribute mark_debug of r10 : signal is "true";
+attribute mark_debug of r11 : signal is "true";
+attribute mark_debug of r12 : signal is "true";
 
 
 
@@ -118,6 +128,12 @@ r4 <= UMRegisterFile(4);
 r5 <= UMRegisterFile(5);
 r6 <= UMRegisterFile(6);
 r7 <= UMRegisterFile(7);
+r8 <= UMRegisterFile(8);
+r9 <= UMRegisterFile(9);
+r10 <= UMRegisterFile(10);
+r11 <= UMRegisterFile(11);
+r12 <= UMRegisterFile(12);
+
 
 
 
