@@ -4,6 +4,7 @@
 
 module gba_audio_top (
     input logic clk_100,
+    input logic clk_256,
     input logic reset,
     output logic AC_ADR0,
     output logic AC_ADR1,
@@ -17,20 +18,12 @@ module gba_audio_top (
     output logic sound_req1,
     output logic sound_req2,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
-    input logic [15:0] internal_TM0CNT_L,
-    input logic [15:0] internal_TM1CNT_L);
+    (* mark_debug = "true" *) input logic [15:0] internal_TM0CNT_L,
+    (* mark_debug = "true" *) input logic [15:0] internal_TM1CNT_L);
 
-    logic clk_100_output;
-    logic clk_256_output;
-
-
-    clk_wiz_1 clock_generate
-   (
-   // Clock in ports
-    .clk_in1(clk_100),      // input clk_in1
-    // Clock out ports
-    .clk_out1(clk_100_output),     // output clk_out1
-    .clk_out2(clk_256_output));       // input reset
+    logic clk_100_output, clk_256_output;
+    assign clk_100_output = clk_100;
+    assign clk_256_output = clk_256;
 
     //audio codec
     logic        clk_100_buffered;
@@ -79,12 +72,10 @@ module gba_audio_top (
     logic reset_c4;
 
      //direct sound
-    logic [15:0] FIFO_A_L;
-    logic [15:0] FIFO_A_H;
-    logic [15:0] FIFO_B_L;
-    logic [15:0] FIFO_B_H;
-    logic [15:0] TM0_CNT_L;
-    logic [15:0] TM1_CNT_L;
+    (* mark_debug = "true" *) logic [15:0] FIFO_A_L;
+    (* mark_debug = "true" *) logic [15:0] FIFO_A_H;
+    (* mark_debug = "true" *) logic [15:0] FIFO_B_L;
+    (* mark_debug = "true" *) logic [15:0] FIFO_B_H;
 
     //final mixer
     logic [23:0] direct_A;

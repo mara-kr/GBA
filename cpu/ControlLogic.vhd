@@ -1834,7 +1834,7 @@ ConditionIsTrue <= '1' when (cond="0000" and CPSRZFlag='1')or -- EQ
 							(cond="1010" and CPSRNFlag=CPSRVFlag)or -- GE
 							(cond="1011" and CPSRNFlag/=CPSRVFlag)or -- LT
 							(cond="1100" and CPSRZFlag='0'and CPSRNFlag=CPSRVFlag )or -- GT
-							(cond="1101" and CPSRZFlag='1'and CPSRNFlag/=CPSRVFlag )or -- LE
+							(cond="1101" and (CPSRZFlag='1' or (CPSRNFlag/=CPSRVFlag)))or -- LE
 							 cond="1110" else -- AL
 							 '0';
 

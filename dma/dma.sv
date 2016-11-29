@@ -382,7 +382,7 @@ endmodule: dma_unit
 module dma_top
   (input  logic [31:0] registers [`NUM_IO_REGS-1:0],
    input  logic [15:0] vcount, hcount,
-   input  logic        sound_req1, sound_req2,
+    (* mark_debug = "true" *) input  logic        sound_req1, sound_req2,
 
    input  logic        mem_wait,
 
@@ -402,13 +402,13 @@ module dma_top
    logic [15:0] srcAddrL0, srcAddrH0;
    logic [15:0] destAddrL0, destAddrH0;
 
-   logic [15:0] controlL1, controlH1;
-   logic [15:0] srcAddrL1, srcAddrH1;
-   logic [15:0] destAddrL1, destAddrH1;
+   (* mark_debug = "true" *) logic [15:0] controlL1, controlH1;
+   (* mark_debug = "true" *) logic [15:0] srcAddrL1, srcAddrH1;
+   (* mark_debug = "true" *) logic [15:0] destAddrL1, destAddrH1;
 
-   logic [15:0] controlL2, controlH2;
-   logic [15:0] srcAddrL2, srcAddrH2;
-   logic [15:0] destAddrL2, destAddrH2;
+   (* mark_debug = "true" *) logic [15:0] controlL2, controlH2;
+   (* mark_debug = "true" *) logic [15:0] srcAddrL2, srcAddrH2;
+   (* mark_debug = "true" *) logic [15:0] destAddrL2, destAddrH2;
 
    logic [15:0] controlL3, controlH3;
    logic [15:0] srcAddrL3, srcAddrH3;
