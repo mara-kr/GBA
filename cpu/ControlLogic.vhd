@@ -310,6 +310,15 @@ signal IDC_LDRSH : std_logic := '0';
 
 signal IDC_LDM    : std_logic := '0'; -- ?? Variants
 
+attribute mark_debug of IDC_LDR : signal is "true";
+attribute mark_debug of IDC_LDRT : signal is "true";
+attribute mark_debug of IDC_LDRB : signal is "true";
+attribute mark_debug of IDC_LDRBT : signal is "true";
+attribute mark_debug of IDC_LDRSB : signal is "true";
+attribute mark_debug of IDC_LDRH : signal is "true";
+attribute mark_debug of IDC_LDRSH : signal is "true";
+attribute mark_debug of IDC_LDM : signal is "true";
+
 -- Store
 signal IDC_STR   : std_logic := '0';
 signal IDC_STRT  : std_logic := '0';
@@ -318,6 +327,13 @@ signal IDC_STRBT : std_logic := '0';
 signal IDC_STRH  : std_logic := '0';
 
 signal IDC_STM    : std_logic := '0'; -- ?? Variants
+
+attribute mark_debug of IDC_STR : signal is "true";
+attribute mark_debug of IDC_STRT : signal is "true";
+attribute mark_debug of IDC_STRB : signal is "true";
+attribute mark_debug of IDC_STRBT : signal is "true";
+attribute mark_debug of IDC_STRH : signal is "true";
+attribute mark_debug of IDC_STM : signal is "true";
 
 -- Swap
 signal IDC_SWP  : std_logic := '0';
@@ -388,6 +404,14 @@ signal IDR_LDRH  : std_logic := '0';
 signal IDR_LDRSH : std_logic := '0';
 
 signal IDR_LDM    : std_logic := '0'; -- ?? Variants
+attribute mark_debug of IDR_LDR : signal is "true";
+attribute mark_debug of IDR_LDRT : signal is "true";
+attribute mark_debug of IDR_LDRB : signal is "true";
+attribute mark_debug of IDR_LDRBT : signal is "true";
+attribute mark_debug of IDR_LDRSB : signal is "true";
+attribute mark_debug of IDR_LDRH : signal is "true";
+attribute mark_debug of IDR_LDRSH : signal is "true";
+attribute mark_debug of IDR_LDM : signal is "true";
 
 -- Store
 signal IDR_STR   : std_logic := '0';
@@ -397,6 +421,13 @@ signal IDR_STRBT : std_logic := '0';
 signal IDR_STRH  : std_logic := '0';
 
 signal IDR_STM    : std_logic := '0'; -- ?? Variants
+
+attribute mark_debug of IDR_STR : signal is "true";
+attribute mark_debug of IDR_STRT : signal is "true";
+attribute mark_debug of IDR_STRB : signal is "true";
+attribute mark_debug of IDR_STRBT : signal is "true";
+attribute mark_debug of IDR_STRH : signal is "true";
+attribute mark_debug of IDR_STM : signal is "true";
 
 -- Swap
 signal IDR_SWP  : std_logic := '0';
@@ -1528,7 +1559,7 @@ case StagnatePipeline_Int is
     MemDataRegOutSel   <= '0';
     SExtOffset24BitSel <= IDC_B or IDC_BL;
     Offset12BitSel     <= IDC_LSImmOffset;
-    Offset8BitSel      <= IDC_LHWBSImmOffset or IDC_LHWBSImmOffset;
+    Offset8BitSel      <= IDC_LHWBSImmOffset or IDC_LSHWImmOffset;
     Immediate8BitSel   <= IDC_DPIImmRot or IDC_MSR_I;
     AdrGenDataSel      <= IDC_LDM or IDC_STM;
 
@@ -1723,7 +1754,8 @@ DecAfterSel  <= '1' when U='0' and P='0' else '0';
 MltAdrSel <= (IDR_LDM or IDR_STM) and ExecuteInst;  -- Base register update for LDM/STM
 SngMltSel <= (IDR_LDR or IDR_LDRT or IDR_LDRB or IDR_LDRBT or
               IDR_LDRSB or IDR_LDRH or IDR_LDRSH or
-			  IDR_STR or IDR_STRT or IDR_STRB or IDR_STRBT or IDR_STRH)and ExecuteInst; -- ??? TBD '0' -> LDM/STM and LR corrections
+			  IDR_STR or IDR_STRT or IDR_STRB or IDR_STRBT or IDR_STRH)
+              and ExecuteInst and (not IDC_STM); -- ??? TBD '0' -> LDM/STM and LR corrections
 
 -- Notes:
 -- IncBeforeSel has the highest priority
