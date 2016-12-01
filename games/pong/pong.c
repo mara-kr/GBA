@@ -33,7 +33,7 @@ typedef tile4bpp tile_block[512];
 #define bg1hofs ((volatile uint16 *)(MEM_IO + 0x14))
 #define bg1vofs ((volatile uint16 *)(MEM_IO + 0x16))
 #define bg2hofs ((volatile uint16 *)(MEM_IO + 0x18))
-#define bg2vofs ((volatile uint16 *)(MEM_IO + 0x20))
+#define bg2vofs ((volatile uint16 *)(MEM_IO + 0x1A))
 
 // Form a 16-bit BGR GBA colour from three component values (hopefully, in range).
 static inline rgb15 RGB15(int r, int g, int b) { return r | (g << 5) | (b << 10); }
@@ -51,21 +51,21 @@ int main(void) {
 	
 	//set colors in PRAM
 	bg_palette_memory[0] = 0x0000;//RGB15(0x00, 0x00, 0x00); //black
-	bg_palette_memory[1] = 0x7C00;//RGB15(0x1F, 0x00, 0x00); //red
-	bg_palette_memory[17] = 0x03E0;//RGB15(0x00, 0x1F, 0x00); //blue
-	bg_palette_memory[33] = 0x001F;//RGB15(0x00, 0x00, 0x1F); //green
+	bg_palette_memory[1] = 0x7C00; //blue
+	bg_palette_memory[17] = 0x03E0;// green
+	bg_palette_memory[33] = 0x001F; //red
 
 	//set screen data format for paddle 1
 	//tile 1 is paddle 1
 	*(volatile unsigned short *)(MEM_VRAM + 0x4000) = 0x0001;
 	*(volatile unsigned short *)(MEM_VRAM + 0x4040) = 0x0801;
-	*bg0hofs = ~(0x9F) + 1;
+	*bg0hofs = ~(0xDF) + 1;
 	*bg0vofs = ~(0x3F) + 1;
 
 	//paddle 2 is paddle 1 right shifted in a different color
 	*(volatile unsigned short *)(MEM_VRAM + 0x4800) = 0x1001;
 	*(volatile unsigned short *)(MEM_VRAM + 0x4840) = 0x1801;
-	*bg1hofs = ~(0x0F) + 1;
+	*bg1hofs = ~(0x0B) + 1;
 	*bg1vofs = ~(0x3F) + 1;
 	
 	//ball is tile 3
