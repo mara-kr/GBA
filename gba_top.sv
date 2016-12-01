@@ -10,7 +10,7 @@
 
 module gba_top (
     input  logic  GCLK,
-    (* mark_debug = "true" *) input  logic  BTND,
+    input  logic  BTND,
     input  logic [7:0] SW,
     input  logic JA1,
     output logic JA2, JA3,
@@ -23,7 +23,7 @@ module gba_top (
 
     // 16.776 MHz clock for GBA/memory system
     logic gba_clk, clk_100, clk_256;
-    clk_wiz_0 clk0 (.clk_in1(GCLK), 
+    clk_wiz_0 clk0 (.clk_in1(GCLK),
                     .gba_clk, .clk_100, .clk_256);
 
     // Buttons register output
@@ -63,10 +63,34 @@ module gba_top (
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
     // Graphics
-    logic [15:0] vcount;
+    (* mark_debug = "true" *) logic [15:0] vcount;
     logic [8:0]  hcount;
     logic        vblank, hblank;
-    assign vcount = 16'd0; // TODO Map to Grapics controller port
+
+    (* mark_debug = "true" *) logic [7:0] vcount_div;
+    logic [15:0] next_vcount;
+    (* mark_debug = "true" *) logic [31:0] vcount_reg;
+    assign vcount_reg = IO_reg_datas[`VCOUNT_IDX];
+
+    always_comb begin
+        if (vcount_div == 7'b0)
+            next_vcount = (vcount == 16'd227) ? 16'b0 : vcount + 1;
+        else
+            next_vcount = vcount;
+    end
+
+
+    always_ff @(posedge gba_clk, posedge BTND) begin
+        if (BTND) begin
+            vcount <= 16'd0;
+            vcount_div <= 7'b0;
+        end else begin
+            vcount <= next_vcount;
+            vcount_div <= vcount_div + 1;
+        end
+    end
+
+    //assign vcount = 16'd0; // TODO Map to Grapics controller port
     assign hcount = 9'd0;
     //assign vblank = (vcount == 16'd160); // TODO Make 1 cycle assertion
     //assign hblank = (hcount == 9'd240); // TODO Make 1 cycle assertion
