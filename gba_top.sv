@@ -7,6 +7,7 @@
 
 `include "gba_core_defines.vh"
 `include "gba_mmio_defines.vh"
+`default_nettype none
 
 module gba_top (
     input  logic  GCLK,
@@ -22,16 +23,17 @@ module gba_top (
     inout  wire  AC_SDA);
 
     // 16.776 MHz clock for GBA/memory system
-    logic gba_clk, clk_100, clk_256;
+    logic gba_clk, clk_100, clk_256, vga_clk;
     clk_wiz_0 clk0 (.clk_in1(GCLK),
-                    .gba_clk, .clk_100, .clk_256);
+                    .gba_clk, .clk_100, .clk_256, .vga_clk);
 
     // Buttons register output
     logic [15:0] buttons;
 
     // CPU
     logic  [4:0] mode;
-    logic        nIRQ, abort;
+    (* mark_debug = "true" *) logic        nIRQ;
+    logic        abort;
 
     // Interrupt signals
     logic [15:0] reg_IF, reg_IE, reg_ACK;
@@ -63,49 +65,10 @@ module gba_top (
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
     // Graphics
-    (* mark_debug = "true" *) logic [15:0] vcount;
-    logic [8:0]  hcount;
-    logic        vblank, hblank;
-
-    (* mark_debug = "true" *) logic [7:0] vcount_div;
-    logic [15:0] next_vcount;
-    (* mark_debug = "true" *) logic [31:0] vcount_reg;
-    assign vcount_reg = IO_reg_datas[`VCOUNT_IDX];
-
-    always_comb begin
-        if (vcount_div == 7'b0)
-            next_vcount = (vcount == 16'd227) ? 16'b0 : vcount + 1;
-        else
-            next_vcount = vcount;
-    end
-
-
-    always_ff @(posedge gba_clk, posedge BTND) begin
-        if (BTND) begin
-            vcount <= 16'd0;
-            vcount_div <= 7'b0;
-        end else begin
-            vcount <= next_vcount;
-            vcount_div <= vcount_div + 1;
-        end
-    end
-
-    //assign vcount = 16'd0; // TODO Map to Grapics controller port
-    assign hcount = 9'd0;
-    //assign vblank = (vcount == 16'd160); // TODO Make 1 cycle assertion
-    //assign hblank = (hcount == 9'd240); // TODO Make 1 cycle assertion
-    assign {vblank, hblank} = 2'd0;
-
-
+    logic [7:0] vcount;
+    logic [8:0] hcount;
 
     assign abort = 1'b0;
-    assign gfx_vram_A_addr = 32'b0;
-    assign gfx_vram_A_addr2 = 32'b0;
-    assign gfx_vram_B_addr = 32'b0;
-    assign gfx_vram_C_addr = 32'b0;
-    assign gfx_oam_addr = 32'b0;
-    assign gfx_palette_bg_addr = 32'b0;
-    assign gfx_palette_obj_addr = 32'b0;
 
     // CPU
     cpu_top cpu (.clock(gba_clk), .reset(BTND), .nIRQ, .pause(bus_pause),
@@ -114,11 +77,11 @@ module gba_top (
                  .wdata(bus_wdata), .size(bus_size), .write(bus_write));
 
     interrupt_controller intc
-        (.clock(gba_clock), .reset(BTND), .cpu_mode(mode), .nIRQ,
+        (.clock(gba_clk), .reset(BTND), .cpu_mode(mode), .nIRQ,
          .ime(IO_reg_datas[`IME_IDX][0]), .reg_IF, .reg_ACK,
          .reg_IE(IO_reg_datas[`IE_IDX][15:0]),
-         .vblank(1'b0), .hblank(1'b0),
-         .vcount_match(1'b0), .timer0, .timer1,
+         .vcount, .hcount, .set_vcount(IO_reg_datas[`DISPSTAT_IDX][15:8]),
+         .timer0, .timer1,
          .timer2, .timer3, .serial(1'b0), .keypad(1'b0),
          .game_pak(1'b0), .dma0, .dma1, .dma2, .dma3);
 
@@ -132,11 +95,25 @@ module gba_top (
 
                  .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
                  .gfx_palette_obj_data, .gfx_palette_bg_data,
-                 .gfx_vram_A_data2,
+                 .gfx_vram_A_data2, .gfx_oam_data,
 
                  .IO_reg_datas,
 
-                 .buttons, .vcount, .reg_IF, .int_acks(reg_ACK));
+                 .buttons, .vcount,
+                 .reg_IF, .int_acks(reg_ACK));
+
+    graphics_system gfx (.gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
+                         .gfx_oam_addr, .gfx_palette_bg_addr,
+                         .gfx_palette_obj_addr, .gfx_vram_A_addr2,
+
+                         .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
+                         .gfx_oam_data, .gfx_palette_bg_data,
+                         .gfx_palette_obj_data, .gfx_vram_A_data2,
+
+                         .IO_reg_datas, .graphics_clock(gba_clk),
+                         .vga_clock(vga_clk),
+                         .reset(BTND), .vcount, .hcount,
+                         .VGA_R, .VGA_G, .VGA_B, .VGA_HS, .VGA_VS);
 
     dma_top dma (.clk(gba_clk), .rst_b(~BTND), .registers(IO_reg_datas),
                  .addr(bus_addr), .rdata(bus_rdata), .wdata(bus_wdata),
@@ -199,3 +176,5 @@ module led_controller (
         endcase
     end
 endmodule: led_controller
+
+`default_nettype wire
