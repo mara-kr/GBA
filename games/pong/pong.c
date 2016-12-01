@@ -17,6 +17,8 @@ typedef uint32 tile4bpp[8];
 #define KEY_UP     0x0040
 #define KEY_DOWN   0x0080
 #define KEY_START  0x0008
+#define KEY_A      0x0001
+#define KEY_B      0x0002
 #define KEY_ANY    0x03FF
 
 #define bg_palette_memory ((volatile rgb15 *)MEM_PAL)
@@ -34,11 +36,14 @@ typedef uint32 tile4bpp[8];
 #define bg2hofs ((volatile uint16 *)(MEM_IO + 0x18))
 #define bg2vofs ((volatile uint16 *)(MEM_IO + 0x1A))
 
-#define MIN_H_SCREEN 0x00
-#define MAX_H_SCREEN 0x19
+#define MIN_H_SCREEN (-0x04)
+#define MAX_H_SCREEN (-0xEF)
 #define MIN_V_SCREEN 0x00
-#define MAX_V_SCREEN 0x70
-#define CENTER_V_SCREEN 0xCA
+#define MAX_V_SCREEN (-0x97)
+#define CENTER_V_SCREEN (-0x4B)
+#define CENTER_H_SCREEN (-0x77)
+#define PADDLE_1_X (-0X0B)
+#define PADDLE_0_X (-0xDF)
 
 #define PADDLE_WIDTH 0x08
 #define PADDLE_HEIGHT 0x0F
@@ -59,7 +64,6 @@ void waitForVcountRestart(void){
 }
 
 int main(void) {
-	char restart = 0;
 	//set DISPCNT
 	*dispcnt = 0x0700; //bg mode0, display window 0 and 1, turn on bg2, bg1, bg0
 
@@ -73,19 +77,19 @@ int main(void) {
 	bg_palette_memory[17] = 0x03E0;// green
 	bg_palette_memory[33] = RGB15(0x1F, 0x00, 0x00); //red = 1
 	bg_palette_memory[34] = RGB15(0x1F, 0x1F, 0x1F); //white = 2
-	bg_palette_memory[36] = RGB15(0x10, 0x10, 0x10); //gray = 3
+	bg_palette_memory[36] = RGB15(0x8, 0x8, 0x8); //gray = 3
 
 	//set screen data format for paddle 1
 	//tile 1 is paddle 1
 	*(volatile unsigned short *)(MEM_VRAM + 0x4000) = 0x0001;
 	*(volatile unsigned short *)(MEM_VRAM + 0x4040) = 0x0801;
-	*bg0hofs = ~(0xDF) + 1;
+	*bg0hofs = PADDLE_0_X;
 	*bg0vofs = CENTER_V_SCREEN;
 
 	//paddle 2 is paddle 1 right shifted in a different color
 	*(volatile unsigned short *)(MEM_VRAM + 0x4800) = 0x1001;
 	*(volatile unsigned short *)(MEM_VRAM + 0x4840) = 0x1801;
-	*bg1hofs = ~(0x0B) + 1;
+	*bg1hofs = PADDLE_1_X;
 	*bg1vofs = CENTER_V_SCREEN;
 
 	//ball is tile 3
@@ -121,12 +125,14 @@ int main(void) {
 	*(unsigned short *)(MEM_VRAM + 0x7C) = 0x2000;
 	*(unsigned short *)(MEM_VRAM + 0x7E) = 0x0002;
 
-	uint32 key_states = 0;
-	int x_dir = 1;
+	uint32 volatile key_states = 0;
+	int x_dir = 2;
     int y_dir = 1;
-    uint16 ball_x = ~(0x6F) + 1;
-    uint16 ball_y = CENTER_V_SCREEN;
-    uint16 player_1 = CENTER_V_SCREEN;
+    int paddle_velocity = 2;
+    short ball_x = CENTER_H_SCREEN;
+    short ball_y = CENTER_V_SCREEN;
+    short player_1 = CENTER_V_SCREEN;
+    short player_0 = CENTER_V_SCREEN;
     uint16 counter = 0;
 
     volatile uint16 old_bg2hofs;
@@ -136,53 +142,56 @@ int main(void) {
         while(REG_DISPLAY_VCOUNT >= 160);
         while(REG_DISPLAY_VCOUNT < 160);
         if (counter % 256 == 0x00){ //have to slow it way down
-
-            //update location
+                        //update location
             ball_x = ball_x + x_dir;
             ball_y = ball_y + y_dir;
 
             // get current key states (*REG_KEY_INPUT stores the states inverted)
             key_states = ~*REG_KEY_INPUT & KEY_ANY;
-            if (key_states & KEY_UP) {
-                player_1 = clamp((player_1 - 0x01), MIN_V_SCREEN, MAX_V_SCREEN);
-            }
             if (key_states & KEY_DOWN) {
-                player_1 = clamp((player_1 + 0x01), MIN_V_SCREEN, MAX_V_SCREEN);
+                player_1 = clamp((player_1 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
+            }
+            if (key_states & KEY_UP) {
+                player_1 = clamp((player_1 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
+            }
+            if (key_states & KEY_A) {
+                player_0 = clamp((player_0 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
+            }
+            if (key_states & KEY_B) {
+                player_0 = clamp((player_0 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
             }
 
             //game over
-            /*if (*bg2hofs <= MIN_H_SCREEN || *bg2hofs >= MAX_H_SCREEN) {
-                while (~key_states & KEY_START) {
-                    restart = 1;
+            if (ball_x == PADDLE_1_X + BALL_WIDTH || ball_x == PADDLE_0_X - BALL_WIDTH) {
+                while (1) {
+                    key_states = ~*REG_KEY_INPUT & KEY_ANY;
+                    if (key_states & KEY_START){
+                        player_0 = CENTER_V_SCREEN;
+                        player_1 = CENTER_V_SCREEN;
+                        ball_x = ~(0x6F) + 1;
+                        ball_y = CENTER_V_SCREEN;
+                        break;
+                    }
                 }
-            }*/
+            }
             //bounce off vertical edges
-            if (ball_y == MIN_V_SCREEN || ball_y == MAX_V_SCREEN) {
+            else if (ball_y == MIN_V_SCREEN || ball_y == MAX_V_SCREEN) {
                 y_dir = -y_dir;
             }
             //bounce off paddle
-            else if (((ball_x == *bg0hofs) && 
-                        (ball_y >= *bg0vofs) && (ball_y <= *bg0vofs + PADDLE_HEIGHT)) ||
-                    ((ball_x == *bg1hofs + PADDLE_WIDTH) && 
-                     (ball_y >= *bg1vofs) && (ball_y <= *bg1vofs + PADDLE_HEIGHT))) {
+            else if (((ball_x - BALL_WIDTH == PADDLE_0_X) && 
+                     (ball_y <= player_0 + PADDLE_HEIGHT) && (ball_y >= player_0 - PADDLE_HEIGHT)) ||
+                    ((ball_x == PADDLE_1_X - PADDLE_WIDTH) && 
+                     (ball_y <= player_1 + PADDLE_HEIGHT) && (ball_y >= player_1 - PADDLE_HEIGHT))
+                    ) {
                 x_dir = -x_dir;
             }
-            
-
-            /*if (restart == 1) {
-                *bg0hofs = ~(0xDF) + 1;
-                *bg0vofs = ~(0x3F) + 1;
-                *bg1hofs = ~(0x0B) + 1;
-                *bg1vofs = ~(0x3F) + 1;
-                *bg2hofs = ~(0x6F) + 1;
-                *bg2vofs = ~(0x3F) + 1;
-                restart = 0;
-            }*/
 
             //update location registers
             *bg2hofs = ball_x;
             *bg2vofs = ball_y;
             *bg1vofs = player_1;
+            *bg0vofs = player_0;
         }
 
     }
