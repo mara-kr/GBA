@@ -1,0 +1,11 @@
+BG Processing Circuit ignores changes to BG2X,BG3X,BG2Y, or B3Y until the next frame is rendered. See Nintendo manual page 51.
+
+OBJ processing circuit: rotation scaling objects will only display the lower right corner of the object. This is because x/y coordinates of rot/scale objects are provided for the center of the objects, not the upper left corner. We assume all x/y coordinates are given for the upper left corner.
+
+BG bitmap modes 5 & 6: No idea which bitmap frame to display each cycle. Obviously they toggle, but which frame starts? May cause weird output in some bitmap modes.
+***Should use frame specified by dispcnt[4]
+
+OBJ processing circuit is not fast enough right now, cannot display full obj capacity per line. (Since takes two cycles to read OBJ attributes) Possible workaround is to start reading the next object a cycle early and delay all outputs to when all data is present
+
+Graphics does not implement Forced Blank feature (dispcnt[7]), signal is ignored
+Graphics does not implement h-blank interval processing flag, signal is ignored (always processes during hblank)
