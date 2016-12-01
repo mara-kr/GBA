@@ -365,7 +365,7 @@ component ControlLogic is port(
 					   PCInSel		        : out std_logic;
 					   ALUInSel		        : out std_logic;
 					   ExceptionVectorSel   : out std_logic;
-					   PCIncStep            : out std_logic; 	-- ?? Common  1
+			  		   PCIncStep            : out std_logic; 	-- ?? Common  1
 					   AdrIncStep		    : out std_logic;
 					   AdrToPCSel	        : out std_logic;
 					   AdrCntEn             : out std_logic;
@@ -536,6 +536,9 @@ signal ALU_ZFlagOut : std_logic := '0';
 -- Shifter signals
 signal	Shifter_ShBBusIn   : std_logic_vector(31 downto 0) := (others => '0');
 signal	Shifter_ShOut      : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of Shifter_ShOut : signal is "true";
+attribute mark_debug of Shifter_ShBBusIn : signal is "true";
+
 signal	Shifter_ShCFlagIn  : std_logic := '0';
 signal	Shifter_ShCFlagOut : std_logic := '0';
 signal	Shifter_ShLenRs    : std_logic_vector(7 downto 0) := (others => '0');
@@ -648,6 +651,7 @@ signal RSA_ShLenRsOut : std_logic_vector(7 downto 0) := (others => '0');
 
 -- A bus multiplexer signals
 signal ABM_ABusOut            : std_logic_vector(31 downto 0) := (others => '0');
+attribute mark_debug of ABM_ABusOut : signal is "true";
 signal ABM_RegFileAOutSel     : std_logic := '0';
 signal ABM_MultiplierAOutSel  : std_logic := '0';
 signal ABM_CPSROutSel		  : std_logic := '0';
@@ -663,6 +667,16 @@ signal BBM_Offset12BitSel	  : std_logic := '0';
 signal BBM_Offset8BitSel	  : std_logic := '0';
 signal BBM_Immediate8BitSel	  : std_logic := '0';
 signal BBM_AdrGenDataSel      : std_logic := '0';
+attribute mark_debug of BBM_BBusOut : signal is "true";
+attribute mark_debug of BBM_RegFileBOutSel : signal is "true";
+attribute mark_debug of BBM_MultiplierBOutSel : signal is "true";
+attribute mark_debug of BBM_MemDataRegOutSel : signal is "true";
+attribute mark_debug of BBM_SExtOffset24BitSel : signal is "true";
+attribute mark_debug of BBM_Offset12BitSel : signal is "true";
+attribute mark_debug of BBM_Offset8BitSel : signal is "true";
+attribute mark_debug of BBM_Immediate8BitSel : signal is "true";
+attribute mark_debug of BBM_AdrGenDataSel : signal is "true";
+
 
 -- Address generator for load/store signals
 signal LSAdrGen_BDataOut	  : std_logic_vector(31 downto 0) := (others => '0');
@@ -672,6 +686,14 @@ signal LSAdrGen_DecBeforeSel  : std_logic := '0';
 signal LSAdrGen_DecAfterSel   : std_logic := '0';
 signal LSAdrGen_MltAdrSel	  : std_logic := '0';
 signal LSAdrGen_SngMltSel	  : std_logic := '0';
+attribute mark_debug of LSAdrGen_BDataOut : signal is "true";
+attribute mark_debug of LSAdrGen_RegisterList : signal is "true";
+attribute mark_debug of LSAdrGen_IncBeforeSel : signal is "true";
+attribute mark_debug of LSAdrGen_DecBeforeSel : signal is "true";
+attribute mark_debug of LSAdrGen_DecAfterSel : signal is "true";
+attribute mark_debug of LSAdrGen_MltAdrSel : signal is "true";
+attribute mark_debug of LSAdrGen_SngMltSel : signal is "true";
+
 
 -- Bit 0,1 clearer
 signal RBM_DataOut    : std_logic_vector(31 downto 0) := (others => '0');
