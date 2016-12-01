@@ -46,7 +46,7 @@ typedef uint32 tile4bpp[8];
 #define PADDLE_0_X (-0xDF)
 
 #define PADDLE_WIDTH 0x08
-#define PADDLE_HEIGHT 0x0F
+#define PADDLE_HEIGHT 0xF
 #define BALL_HEIGHT 0x08
 #define BALL_WIDTH 0x08
 
@@ -141,7 +141,7 @@ int main(void) {
         // Skip past the rest of any current V-Blank, then skip past the V-Draw
         while(REG_DISPLAY_VCOUNT >= 160);
         while(REG_DISPLAY_VCOUNT < 160);
-        if (counter % 256 == 0x00){ //have to slow it way down
+        if (counter % 200 == 0x00){ //have to slow it way down
                         //update location
             ball_x = ball_x + x_dir;
             ball_y = ball_y + y_dir;
@@ -179,10 +179,12 @@ int main(void) {
                 y_dir = -y_dir;
             }
             //bounce off paddle
-            else if (((ball_x - BALL_WIDTH == PADDLE_0_X) && 
-                     (ball_y <= player_0 + PADDLE_HEIGHT) && (ball_y >= player_0 - PADDLE_HEIGHT)) ||
+            if (((ball_x - BALL_WIDTH == PADDLE_0_X) && 
+                     (ball_y <= player_0 + PADDLE_HEIGHT - BALL_HEIGHT) && 
+                     (ball_y >= player_0 - PADDLE_HEIGHT + BALL_HEIGHT - 8)) ||
                     ((ball_x == PADDLE_1_X - PADDLE_WIDTH) && 
-                     (ball_y <= player_1 + PADDLE_HEIGHT) && (ball_y >= player_1 - PADDLE_HEIGHT))
+                     (ball_y <= player_1 + PADDLE_HEIGHT - BALL_HEIGHT) && 
+                     (ball_y >= player_1 - PADDLE_HEIGHT + BALL_HEIGHT - 8))
                     ) {
                 x_dir = -x_dir;
             }
