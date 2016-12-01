@@ -1,9 +1,9 @@
+#include "stdio.h"
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
 typedef uint16 rgb15;
 typedef uint32 tile4bpp[8];
-typedef tile4bpp tile_block[512];
 
 #define SCREEN_WIDTH  240
 #define SCREEN_HEIGHT 160
@@ -12,9 +12,8 @@ typedef tile4bpp tile_block[512];
 #define MEM_PAL  0x05000000
 #define MEM_VRAM 0x06000000
 
-#define REG_DISPLAY        (*((volatile uint32 *)(MEM_IO)))
 #define REG_DISPLAY_VCOUNT (*((volatile uint32 *)(MEM_IO + 0x0006)))
-#define REG_KEY_INPUT      (*((volatile uint32 *)(MEM_IO + 0x0130)))
+#define REG_KEY_INPUT      ((volatile uint32 *)(MEM_IO + 0x0130))
 
 #define KEY_UP     0x0040
 #define KEY_DOWN   0x0080
@@ -118,29 +117,36 @@ int main(void) {
 	uint32 key_states = 0;
 	int x_dir = 2;
 	int y_dir = -1;
-	while (1);
-	/*while (1) {
+	while (1) {
+		*bg2vofs = 0x00;
+		printf("hell_world\n");
 		while(REG_DISPLAY_VCOUNT >= 160);
-		while(REG_DISPLAY_VCOUNT < 160);
+		while(REG_DISPLAY_VCOUNT < 160);	
 		//update location
-		bg2hofs = bg2hofs + x_dir;
-		bg2vofs = bg2hofs + y_dir;
+		//*bg2hofs = *bg2hofs + x_dir;
+		uint16 old_bg2hofs = *bg2hofs;
+		*bg2hofs = old_bg2hofs - (uint16)0x02;
+		*bg2vofs = 0x00;
+		//*bg2vofs = *bg2vofs + y_dir;
+		
+		// get current key states (*REG_KEY_INPUT stores the states inverted)
+		/*key_states = ~*REG_KEY_INPUT & KEY_ANY;
 
-		key_states = ~REG_KEY_INPUT & KEY_ANY;
 		//game over
-		if (bg2hofs == MIN_H_SCREEN || bg2hofs == MAX_H_SCREEN) {
+		if (*bg2hofs <= MIN_H_SCREEN || *bg2hofs >= MAX_H_SCREEN) {
 			while (~key_states & KEY_START) {
 				restart = 1;
 			}
 		}
 		//bounce off vertical edges
-		else if (bg2hofs == MIN_V_SCREEN || bg2vofs == MAX_V_SCREEN) {
+		else if (*bg2hofs == MIN_V_SCREEN || *bg2vofs == MAX_V_SCREEN) {
 			y_dir = -y_dir;
 		}
 		//bounce off paddle
-		else if (bg2hofs == bg1hofs + PADDLE_WIDTH) && 
-				 (bgvofs >= bg1 )  
-				|| bg2vofs == MAX_V_SCREEN) {
+		else if (((*bg2hofs == *bg0hofs) && 
+				 (*bg2vofs >= *bg0vofs) && (*bg2vofs <= *bg0vofs + PADDLE_HEIGHT)) ||
+				 ((*bg2hofs == *bg1hofs + PADDLE_WIDTH) && 
+				 (*bg2vofs >= *bg1vofs) && (*bg2vofs <= *bg1vofs + PADDLE_HEIGHT))) {
 			x_dir = -x_dir;
 		}
 
@@ -152,8 +158,7 @@ int main(void) {
 			*bg2hofs = ~(0x6F) + 1;
 			*bg2vofs = ~(0x3F) + 1;
 			restart = 0;
-		}
-		bg2hofs
-	}*/
+		}*/
+	}
 	return 0;
 }
