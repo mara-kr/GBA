@@ -6,29 +6,53 @@ module interrupt_controller(
     input  logic        clock, reset,
     output logic        nIRQ,
 
-    input  logic        ime, // Interrupt master enable
-    output logic [15:0] reg_IF, // Interrupt Request Flags
-    input  logic [15:0] reg_IE, reg_ACK,
+    (* mark_debug = "true" *) input  logic        ime, // Interrupt master enable
+    (* mark_debug = "true" *) output logic [15:0] reg_IF, // Interrupt Request Flags
+    (* mark_debug = "true" *) input  logic [15:0] reg_IE,
+    input  logic [15:0] reg_ACK,
 
-    input  logic  [4:0] cpu_mode,
+    (* mark_debug = "true" *) input  logic  [4:0] cpu_mode,
+    input  logic  [8:0] hcount,
+    input  logic  [7:0] vcount, set_vcount,
 
-    input  logic        vblank, hblank, vcount_match,
     input  logic        timer0, timer1, timer2, timer3,
     input  logic        serial, keypad, game_pak,
-    input  logic        dma0, dma1, dma2, dma3);
+    (* mark_debug = "true" *) input  logic        dma0, dma1, dma2, dma3);
 
-    logic [13:0] ints_recd;  // Received interrupts
+    (* mark_debug = "true" *) logic [13:0] ints_recd;  // Received interrupts
     logic [13:0] int_ack;    // If interrupt is being acknowledged
-    logic [13:0] int_assert; // Whether interrupt is asserted
+    (* mark_debug = "true" *) logic [13:0] int_assert; // Whether interrupt is asserted
+
+    (* mark_debug = "true" *) logic vblank, hblank;
+    logic vblank_reg, hblank_reg;
+    logic vcount_match, vcount_match_reg;
+
+    // Logic to make vblank/hblank/vcount match be asserted for 1 cycle
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) begin
+            vblank_reg <= 1'b0;
+            hblank_reg <= 1'b0;
+            vcount_match_reg <= 1'b0;
+        end else begin
+            vblank_reg <= (vcount == 8'd160);
+            hblank_reg <= (hcount == 9'd240);
+            vcount_match_reg <= (vcount == set_vcount);
+        end
+    end
+
+    assign vblank = (vcount == 8'd160) & ~(vblank_reg);
+    assign hblank = (hcount == 9'd240) & ~(hblank_reg);
+    assign vcount_match = (vcount == set_vcount) & ~(vcount_match_reg);
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset) nIRQ <= 1'b1;
-        else nIRQ <= ~((cpu_mode == `CPSR_IRQ) & |int_assert & ime);
+        else nIRQ <= ~((cpu_mode != `CPSR_IRQ) & |int_assert & ime);
     end
+
 
     assign int_ack = reg_ACK[13:0];
     assign int_assert = reg_IE[13:0] & ints_recd;
-    assign reg_IF = ints_recd;
+    assign reg_IF = {2'b0, int_assert}; // Don't show interrupt if not enabled
 
     int_reg vb (.d(vblank), .q(ints_recd[0]), .clr(int_ack[0]), .*);
     int_reg hb (.d(hblank), .q(ints_recd[1]), .clr(int_ack[1]), .*);

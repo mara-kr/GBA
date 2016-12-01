@@ -310,15 +310,6 @@ signal IDC_LDRSH : std_logic := '0';
 
 signal IDC_LDM    : std_logic := '0'; -- ?? Variants
 
-attribute mark_debug of IDC_LDR : signal is "true";
-attribute mark_debug of IDC_LDRT : signal is "true";
-attribute mark_debug of IDC_LDRB : signal is "true";
-attribute mark_debug of IDC_LDRBT : signal is "true";
-attribute mark_debug of IDC_LDRSB : signal is "true";
-attribute mark_debug of IDC_LDRH : signal is "true";
-attribute mark_debug of IDC_LDRSH : signal is "true";
-attribute mark_debug of IDC_LDM : signal is "true";
-
 -- Store
 signal IDC_STR   : std_logic := '0';
 signal IDC_STRT  : std_logic := '0';
@@ -327,13 +318,6 @@ signal IDC_STRBT : std_logic := '0';
 signal IDC_STRH  : std_logic := '0';
 
 signal IDC_STM    : std_logic := '0'; -- ?? Variants
-
-attribute mark_debug of IDC_STR : signal is "true";
-attribute mark_debug of IDC_STRT : signal is "true";
-attribute mark_debug of IDC_STRB : signal is "true";
-attribute mark_debug of IDC_STRBT : signal is "true";
-attribute mark_debug of IDC_STRH : signal is "true";
-attribute mark_debug of IDC_STM : signal is "true";
 
 -- Swap
 signal IDC_SWP  : std_logic := '0';
@@ -390,6 +374,7 @@ signal IDR_MRS     : std_logic := '0';
 signal IDR_B     : std_logic := '0';
 attribute mark_debug of IDR_B : signal is "true";
 signal IDR_BL    : std_logic := '0';
+attribute mark_debug of IDR_BL : signal is "true";
 signal IDR_BX    : std_logic := '0';
 attribute mark_debug of IDR_BX : signal is "true";
 
@@ -404,14 +389,6 @@ signal IDR_LDRH  : std_logic := '0';
 signal IDR_LDRSH : std_logic := '0';
 
 signal IDR_LDM    : std_logic := '0'; -- ?? Variants
-attribute mark_debug of IDR_LDR : signal is "true";
-attribute mark_debug of IDR_LDRT : signal is "true";
-attribute mark_debug of IDR_LDRB : signal is "true";
-attribute mark_debug of IDR_LDRBT : signal is "true";
-attribute mark_debug of IDR_LDRSB : signal is "true";
-attribute mark_debug of IDR_LDRH : signal is "true";
-attribute mark_debug of IDR_LDRSH : signal is "true";
-attribute mark_debug of IDR_LDM : signal is "true";
 
 -- Store
 signal IDR_STR   : std_logic := '0';
@@ -421,13 +398,6 @@ signal IDR_STRBT : std_logic := '0';
 signal IDR_STRH  : std_logic := '0';
 
 signal IDR_STM    : std_logic := '0'; -- ?? Variants
-
-attribute mark_debug of IDR_STR : signal is "true";
-attribute mark_debug of IDR_STRT : signal is "true";
-attribute mark_debug of IDR_STRB : signal is "true";
-attribute mark_debug of IDR_STRBT : signal is "true";
-attribute mark_debug of IDR_STRH : signal is "true";
-attribute mark_debug of IDR_STM : signal is "true";
 
 -- Swap
 signal IDR_SWP  : std_logic := '0';
@@ -593,6 +563,7 @@ signal ExceptSM_St1   : std_logic := '0';
 signal ExceptSM_St2   : std_logic := '0';
 
 signal ExceptFC		  : std_logic := '0'; -- The first cycle of exception
+
 
 -- Individual exception start signals
 signal DAbtExcStart      : std_logic := '0'; -- Data abort exception start
@@ -2431,7 +2402,8 @@ CPSRFFlWE <= '1' when RestCPSR='1' or
 -- T flag write enable
 CPSRTFlWE <= '1' when RestCPSR='1' or
 			 (IDR_BX='1' and ExecuteInst='1' and nBranch_St0='0') or -- Branch with exchange (First cycle)
-             (WriteToCPSR='1' and CPSRMode /= CUserMode and Mask(0)='1') -- Write to CPSR (ignored in User Mode)
+             (WriteToCPSR='1' and CPSRMode /= CUserMode and Mask(0)='1') or -- Write to CPSR (ignored in User Mode)
+             (ExceptFC='1')
 			 else '0';
 
 -- Was done in order to avoid some Aldec(4.2) bug
