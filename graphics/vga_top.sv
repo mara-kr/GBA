@@ -56,7 +56,7 @@ module vga_counter
      input  logic en,
      output logic [WIDTH-1:0] out);
 
-    (* mark_debug= "true" *) logic [WIDTH-1:0] next_out;
+    logic [WIDTH-1:0] next_out;
 
     always_comb begin
         if(out + 1 == MAX) next_out = {WIDTH{1'b0}};
@@ -107,14 +107,14 @@ endmodule: vga
 // TODO Addr should be VGA index + 1
 module vga_top(
     input  logic clock, reset,
-    (* mark_debug = "true" *) input  logic [14:0] data,
-    (* mark_debug = "true" *) output logic [16:0] addr,
-    (* mark_debug = "true" *) output logic [3:0] VGA_R, VGA_G, VGA_B,
+    input  logic [14:0] data,
+    output logic [16:0] addr,
+    output logic [3:0] VGA_R, VGA_G, VGA_B,
     output logic VGA_HS, VGA_VS);
 
-    (* mark_debug = "true" *) logic [8:0] row;
-    (* mark_debug = "true" *) logic [9:0] col;
-    (* mark_debug = "true" *) logic [16:0] curr_addr;
+    logic [8:0] row;
+    logic [9:0] col;
+    logic [16:0] curr_addr;
 
     // Ignore LSB of color from graphics since we only have 4 bits
     logic on_screen;
@@ -143,7 +143,7 @@ module addr_calc(
     logic updateable;
     vga_counter #(1, 2) update_counter(.clock, .reset, .en(1'b1), .out(updateable));
 
-    (* mark_debug="true" *)logic [16:0] rows_idx, next_row_idx;
+    logic [16:0] rows_idx, next_row_idx;
 
     always_ff @(posedge clock, posedge reset)
         if(reset)
