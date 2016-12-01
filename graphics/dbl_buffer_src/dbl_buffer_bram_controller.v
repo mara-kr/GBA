@@ -36,7 +36,7 @@ module double_buffer
   input ap_rst_n;
   input [16:0]graphics_addr;
   input [14:0]graphics_color;
-  (* mark_debug = "true" *) input toggle;
+  input toggle;
   input [16:0]vga_addr;
   output [14:0]vga_color;
   input [0:0]wen;
