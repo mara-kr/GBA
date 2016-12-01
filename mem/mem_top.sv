@@ -86,7 +86,7 @@ module mem_top (
 
     logic [31:0] bus_pak_init_1_addr;
     logic        bus_pak_init_1_read;
-    
+
     logic [31:0] bus_game_addr, bus_game_rdata;
     logic        bus_game_read;
 
@@ -120,7 +120,7 @@ module mem_top (
     system_rom sys   (.clka(clock), .rsta(reset),
                       .addra(bus_system_addr[13:2]),
                       .douta(bus_system_rdata));
-                      
+
     game_rom game (.clka(clock), .rsta(reset), .addra(bus_game_addr[9:2]),
                    .douta(bus_game_rdata));
 
@@ -146,14 +146,13 @@ module mem_top (
     oam_mem oam (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
                  .bus_we, .bus_write_lat1, .gfx_oam_addr, .gfx_oam_data,
                  .bus_rdata(bus_oam_rdata), .read_in_oam);
-                 
-    
 
     generate
         for (genvar i = 0; i < `NUM_IO_REGS; i++) begin
             localparam [31:0] reg_addr = `IO_REG_RAM_START + (i*4);
             assign IO_reg_en[i] = bus_addr_lat1[31:2] == reg_addr[31:2];
             assign IO_reg_we[i] = (IO_reg_en[i]) ? bus_we : 4'd0;
+            assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
             if (i == `KEYINPUT_IDX) begin // Read-only for lowest 16 bits
                 IO_register16 key_high (.clock, .reset, .wdata(bus_wdata[31:16]),
                                         .we(IO_reg_we[i][3:2]), .clear(1'b0),
@@ -175,7 +174,6 @@ module mem_top (
                                     .rdata(int_acks));
                 assign IO_reg_datas[i][31:16] = reg_IF;
             end else begin
-                assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
                 IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
                                   .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
             end
