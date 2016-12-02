@@ -16,8 +16,10 @@ entity ThumbDecoder is port(
 					   ExpandedInst	   : out std_logic_vector(31 downto 0);
 					   HalfWordAddress : in  std_logic;
 					   ThumbDecoderEn  : in  std_logic;
+                       StagnatePipeline: in  std_logic;
 					   ThBLFP          : out std_logic;
-                       ThBLSP          : out std_logic
+                       ThBLSP          : out std_logic;
+                       ThADR           : out std_logic
 					       );
 end ThumbDecoder;
 
@@ -34,6 +36,8 @@ signal ThBLSP_Int : std_logic := '0'; -- The second part of Thumb branch with li
 signal ThBLFP_Reg : std_logic_vector(10 downto 0) := (others => '0');
 signal ThBLFP_Reg_EN : std_logic;
 
+signal ThADR_IDC : std_logic;
+signal ThADR_Int : std_logic;
 -----------------------------------------------------------------
 -- Instruction types
 
@@ -50,6 +54,17 @@ HalfWordForDecode <= InstForDecode(15 downto 0) when HalfWordAddress='0' else
 
 ExpandedInst <= DecoderOut when ThumbDecoderEn='1' else -- Thumb instruction
 				InstForDecode;                          -- ARM instruction
+
+ThADR_Register:process(nRESET, CLK)
+begin
+    if nRESET='0' then
+        ThADR_Int <= '0';
+    elsif CLK='1' and CLK'event then
+        if (CLKEN='1' and StagnatePipeline='0') then
+            ThADR_Int <= ThADR_IDC;
+        end if;
+    end if;
+end process;
 
 ThBL_Reg:process(nRESET, CLK)
 begin
@@ -73,6 +88,7 @@ begin
     ThBLFP_Int <= '0';
     ThBLSP_Int <= '0';
     ThBLFP_Reg_EN <= '0';
+    ThADR_IDC <= '0';
     DecoderOut(31 downto 0) <= (others => '0');
     if (HalfWordForDecode(15 downto 11)="00100") then           -- MOV1
         DecoderOut(31 downto 28) <= "1110";
@@ -142,6 +158,7 @@ begin
         DecoderOut(15 downto 12) <= '0' & HalfWordForDecode(10 downto 8);
         DecoderOut(11 downto 8) <= "1111";
         DecoderOut(7 downto 0) <= HalfWordForDecode(7 downto 0);
+        ThADR_IDC <= '1';
     elsif (HalfWordForDecode(15 downto 11)="10101") then       -- ADD6
         DecoderOut(31 downto 28) <= "1110";
         DecoderOut(27 downto 20) <= "00101000";
@@ -557,6 +574,7 @@ end process;
 -- Outputs
 ThBLFP <= ThBLFP_Int;
 ThBLSP <= ThBLSP_Int;
+ThADR <= ThADR_Int and ThumbDecoderEn;
 
 end RTL;
 

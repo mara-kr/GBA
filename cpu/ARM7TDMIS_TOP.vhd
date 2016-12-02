@@ -51,6 +51,7 @@ component ALU is port (
 						-- Flag inputs
 						CFlagIn	   : in  std_logic;
 						CFlagUse   : in  std_logic; -- ADC/SBC/RSC instructions
+                        ThADR      : in  std_logic;
 						-- Flag outputs
 						CFlagOut    : out  std_logic;
 						VFlagOut    : out  std_logic;
@@ -319,8 +320,10 @@ component ThumbDecoder is port(
 					   ExpandedInst	   : out std_logic_vector(31 downto 0);
 					   HalfWordAddress : in  std_logic;
 					   ThumbDecoderEn  : in  std_logic;
+                       StagnatePipeline: in  std_logic;
 					   ThBLFP          : out std_logic;
-                       ThBLSP          : out std_logic
+                       ThBLSP          : out std_logic;
+                       ThADR           : out std_logic
 					       );
 end component;
 
@@ -531,13 +534,12 @@ signal ALU_CFlagOut : std_logic := '0';
 signal ALU_VFlagOut : std_logic := '0';
 signal ALU_NFlagOut : std_logic := '0';
 signal ALU_ZFlagOut : std_logic := '0';
+signal ALU_ThADR    : std_logic := '0';
 
 
 -- Shifter signals
 signal	Shifter_ShBBusIn   : std_logic_vector(31 downto 0) := (others => '0');
 signal	Shifter_ShOut      : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of Shifter_ShOut : signal is "true";
-attribute mark_debug of Shifter_ShBBusIn : signal is "true";
 
 signal	Shifter_ShCFlagIn  : std_logic := '0';
 signal	Shifter_ShCFlagOut : std_logic := '0';
@@ -550,23 +552,16 @@ signal	Shifter_ShCFlagEn  : std_logic := '0';
 
 -- Register file signals
 signal RegFile_ABusOut        : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RegFile_ABusOut : signal is "true";
 signal RegFile_BBusOut        : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RegFile_BBusOut : signal is "true";
 signal RegFile_ABusRdAdr      : std_logic_vector(3 downto 0) := (others => '0');
-attribute mark_debug of RegFile_ABusRdAdr : signal is "true";
 signal RegFile_BBusRdAdr      : std_logic_vector(3 downto 0) := (others => '0');
-attribute mark_debug of RegFile_BBusRdAdr : signal is "true";
 signal RegFile_WriteAdr       : std_logic_vector(3 downto 0) := (others => '0');
 signal RegFile_WrEn	  	      : std_logic := '0';
 signal RegFile_PCIn           : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RegFile_PCIn : signal is "true";
 signal RegFile_PCOut          : std_logic_vector(31 downto 0) := (others => '0');
 attribute mark_debug of RegFile_PCOut : signal is "true";
 signal RegFile_PCWrEn         : std_logic := '0';
-attribute mark_debug of RegFile_PCWrEn : signal is "true";
 signal RegFile_PCSrcSel       : std_logic := '0';
-attribute mark_debug of RegFile_PCSrcSel : signal is "true";
 signal RegFile_RFMode         : std_logic_vector(4 downto 0) := (others => '0');
 signal RegFile_SaveBaseReg    : std_logic := '0';
 signal RegFile_RestoreBaseReg : std_logic := '0';
@@ -634,12 +629,6 @@ signal AMI_PCIncStep          : std_logic := '0';
 signal AMI_AdrIncStep		  : std_logic := '0';
 signal AMI_AdrToPCSel		  : std_logic := '0';
 signal AMI_AdrCntEn			  : std_logic := '0';
-attribute mark_debug of AMI_PCInSel : signal is "true";
-attribute mark_debug of AMI_ALUInSel : signal is "true";
-attribute mark_debug of AMI_AdrIncStep : signal is "true";
-attribute mark_debug of AMI_PCIncStep : signal is "true";
-attribute mark_debug of AMI_AdrCntEn : signal is "true";
-
 
 
 -- Data out register signals
@@ -651,7 +640,6 @@ signal RSA_ShLenRsOut : std_logic_vector(7 downto 0) := (others => '0');
 
 -- A bus multiplexer signals
 signal ABM_ABusOut            : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of ABM_ABusOut : signal is "true";
 signal ABM_RegFileAOutSel     : std_logic := '0';
 signal ABM_MultiplierAOutSel  : std_logic := '0';
 signal ABM_CPSROutSel		  : std_logic := '0';
@@ -667,16 +655,6 @@ signal BBM_Offset12BitSel	  : std_logic := '0';
 signal BBM_Offset8BitSel	  : std_logic := '0';
 signal BBM_Immediate8BitSel	  : std_logic := '0';
 signal BBM_AdrGenDataSel      : std_logic := '0';
-attribute mark_debug of BBM_BBusOut : signal is "true";
-attribute mark_debug of BBM_RegFileBOutSel : signal is "true";
-attribute mark_debug of BBM_MultiplierBOutSel : signal is "true";
-attribute mark_debug of BBM_MemDataRegOutSel : signal is "true";
-attribute mark_debug of BBM_SExtOffset24BitSel : signal is "true";
-attribute mark_debug of BBM_Offset12BitSel : signal is "true";
-attribute mark_debug of BBM_Offset8BitSel : signal is "true";
-attribute mark_debug of BBM_Immediate8BitSel : signal is "true";
-attribute mark_debug of BBM_AdrGenDataSel : signal is "true";
-
 
 -- Address generator for load/store signals
 signal LSAdrGen_BDataOut	  : std_logic_vector(31 downto 0) := (others => '0');
@@ -686,13 +664,6 @@ signal LSAdrGen_DecBeforeSel  : std_logic := '0';
 signal LSAdrGen_DecAfterSel   : std_logic := '0';
 signal LSAdrGen_MltAdrSel	  : std_logic := '0';
 signal LSAdrGen_SngMltSel	  : std_logic := '0';
-attribute mark_debug of LSAdrGen_BDataOut : signal is "true";
-attribute mark_debug of LSAdrGen_RegisterList : signal is "true";
-attribute mark_debug of LSAdrGen_IncBeforeSel : signal is "true";
-attribute mark_debug of LSAdrGen_DecBeforeSel : signal is "true";
-attribute mark_debug of LSAdrGen_DecAfterSel : signal is "true";
-attribute mark_debug of LSAdrGen_MltAdrSel : signal is "true";
-attribute mark_debug of LSAdrGen_SngMltSel : signal is "true";
 
 
 -- Bit 0,1 clearer
@@ -731,6 +702,7 @@ ALU_Inst:component ALU port map(
 						-- Flag inputs
 						CFlagIn	   => ALU_CFlagIn,
 						CFlagUse   => ALU_CFlagUse,
+                        ThADR      => ALU_ThADR,
 						-- Flag outputs
 						CFlagOut   => ALU_CFlagOut,
 						VFlagOut   => ALU_VFlagOut,
@@ -986,8 +958,10 @@ ThumbDecoder_Inst:component ThumbDecoder
 					   ExpandedInst	   => IPDR_FromThumbDecoder,
 					   HalfWordAddress => IPDR_HalfWordAddress,
 					   ThumbDecoderEn  => ThDC_ThumbDecoderEn,
+                       StagnatePipeline=> IPDR_StagnatePipeline,
 					   ThBLFP          => ThDC_ThBLFP,
                        ThBLSP          => ThDC_ThBLSP,
+                       ThADR           => ALU_ThADR,
                        CLK             => CLK,
                        nRESET          => nRESET,
                        CLKEN           => CLKEN

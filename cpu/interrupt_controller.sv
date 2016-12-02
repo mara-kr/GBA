@@ -11,17 +11,17 @@ module interrupt_controller(
     (* mark_debug = "true" *) input  logic [15:0] reg_IE,
     input  logic [15:0] reg_ACK,
 
-    (* mark_debug = "true" *) input  logic  [4:0] cpu_mode,
+    input  logic  [4:0] cpu_mode,
     input  logic  [8:0] hcount,
     input  logic  [7:0] vcount, set_vcount,
 
     input  logic        timer0, timer1, timer2, timer3,
     input  logic        serial, keypad, game_pak,
-    (* mark_debug = "true" *) input  logic        dma0, dma1, dma2, dma3);
+    input  logic        dma0, dma1, dma2, dma3);
 
-    (* mark_debug = "true" *) logic [13:0] ints_recd;  // Received interrupts
+    logic [13:0] ints_recd;  // Received interrupts
     logic [13:0] int_ack;    // If interrupt is being acknowledged
-    (* mark_debug = "true" *) logic [13:0] int_assert; // Whether interrupt is asserted
+    logic [13:0] int_assert; // Whether interrupt is asserted
 
     (* mark_debug = "true" *) logic vblank, hblank;
     logic vblank_reg, hblank_reg;
