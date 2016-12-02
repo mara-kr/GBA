@@ -59,7 +59,7 @@ module gba_audio_top (
     logic [23:0] channel_4;
 
     //mixed channel
-    logic [7:0] NR50, NR51,  NR52;
+    (* mark_debug = "true" *) logic [7:0] NR50, NR51,  NR52;
     logic [23:0] ch4_mixed_l;
     logic [23:0] ch4_mixed_r;
     logic pause_c1;
@@ -80,7 +80,7 @@ module gba_audio_top (
     //final mixer
     logic [23:0] direct_A;
     logic [23:0] direct_B;
-    logic [15:0] SOUND_CNT_H;
+    (* mark_debug = "true" *) logic [15:0] SOUND_CNT_H;
     logic timer_numA;
     logic timer_numB;
     logic reset_directA;

@@ -11,7 +11,7 @@ module dma_fsm
    output logic irq, others_cant_preempt,
    input  logic clk, rst_b);
 
-  (* mark_debug = "true" *)enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD} cs, ns;
+  enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD} cs, ns;
 
   always_ff @(posedge clk, negedge rst_b) begin
     if(~rst_b)
@@ -382,7 +382,7 @@ endmodule: dma_unit
 module dma_top
   (input  logic [31:0] registers [`NUM_IO_REGS-1:0],
    input  logic [15:0] vcount, hcount,
-    (* mark_debug = "true" *) input  logic        sound_req1, sound_req2,
+   input  logic        sound_req1, sound_req2,
 
    input  logic        mem_wait,
 
