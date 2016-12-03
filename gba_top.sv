@@ -37,30 +37,31 @@ module gba_top (
 
     // Interrupt signals
     logic [15:0] reg_IF, reg_IE, reg_ACK;
-    logic        timer0, timer1, timer2, timer3;
+    (* mark_debug = "true" *) logic        timer0, timer1, timer2, timer3;
 
     // DMA
-    logic        dmaActive, sound_req;
-    logic        dma0, dma1, dma2, dma3;
+    (* mark_debug = "true" *) logic        dmaActive, sound_req;
+    (* mark_debug = "true" *) logic        dma0, dma1, dma2, dma3;
     logic  [3:0] disable_dma;
-    logic        sound_req1, sound_req2;
+    (* mark_debug = "true" *) logic        sound_req1, sound_req2;
 
     // Timer
-    logic [15:0] internal_TM0CNT_L;
+    (* mark_debug = "true" *) logic [15:0] internal_TM0CNT_L;
     logic [15:0] internal_TM1CNT_L;
     logic [15:0] internal_TM2CNT_L;
     logic [15:0] internal_TM3CNT_L;
+    logic [15:0] TM0CNT_L, TM1CNT_L, TM2CNT_L, TM3CNT_L;
 
     // Memory signals
     (* mark_debug = "true" *) logic [31:0] bus_addr, bus_wdata, bus_rdata;
     (* mark_debug = "true" *) logic  [1:0] bus_size;
     (* mark_debug = "true" *) logic        bus_pause, bus_write;
-    logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr;
-    logic [31:0] gfx_oam_addr, gfx_palette_bg_addr, gfx_palette_obj_addr;
-    logic [31:0] gfx_vram_A_addr2;
-    logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data;
-    logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data;
-    logic [31:0] gfx_vram_A_data2;
+    (* mark_debug = "true" *) logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr;
+    (* mark_debug = "true" *) logic [31:0] gfx_vram_A_addr2, gfx_palette_bg_addr;
+    logic [31:0] gfx_oam_addr, gfx_palette_obj_addr;
+    (* mark_debug = "true" *) logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data;
+    (* mark_debug = "true" *) logic [31:0] gfx_vram_A_data2, gfx_palette_bg_data;
+    logic [31:0] gfx_oam_data, gfx_palette_obj_data;
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
@@ -100,7 +101,10 @@ module gba_top (
                  .IO_reg_datas,
 
                  .buttons, .vcount,
-                 .reg_IF, .int_acks(reg_ACK));
+                 .reg_IF, .int_acks(reg_ACK),
+                 .internal_TM0CNT_L, .internal_TM1CNT_L, .internal_TM2CNT_L,
+                 .internal_TM4CNT_L,
+                 .TM0CNT_L, .TM1CNT_L, .TM2CNT_L, .TM3CNT_L);
 
     graphics_system gfx (.gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
                          .gfx_oam_addr, .gfx_palette_bg_addr,
@@ -125,6 +129,7 @@ module gba_top (
     timer_top timers (.clock_16(gba_clk), .reset(BTND), .IO_reg_datas,
                       .internal_TM0CNT_L, .internal_TM1CNT_L, .internal_TM2CNT_L,
                       .internal_TM3CNT_L,
+                      TM0CNT_L, .TM1CNT_L, .TM2CNT_L, .TM3CNT_L,
                       .genIRQ0(timer0), .genIRQ1(timer1), .genIRQ2(timer2),
                       .genIRQ3(timer3));
 
@@ -172,7 +177,7 @@ module led_controller (
             8'hD: LD = led_reg3[15:8];
             8'hE: LD = led_reg3[23:16];
             8'hF: LD = led_reg3[31:24];
-            default: LD = (SW[7]) ? buttons[15:8] : buttons [7:0];
+            default: LD = (SW[7]) ? ~buttons[15:8] : ~buttons[7:0];
         endcase
     end
 endmodule: led_controller

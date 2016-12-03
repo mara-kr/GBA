@@ -102,14 +102,6 @@ attribute mark_debug of r1 : signal is "true";
 attribute mark_debug of r2 : signal is "true";
 attribute mark_debug of r3 : signal is "true";
 attribute mark_debug of r4 : signal is "true";
-attribute mark_debug of r5 : signal is "true";
-attribute mark_debug of r6 : signal is "true";
-attribute mark_debug of r7 : signal is "true";
-attribute mark_debug of r8 : signal is "true";
-attribute mark_debug of r9 : signal is "true";
-attribute mark_debug of r10 : signal is "true";
-attribute mark_debug of r11 : signal is "true";
-attribute mark_debug of r12 : signal is "true";
 
 
 

@@ -668,7 +668,6 @@ signal LSAdrGen_SngMltSel	  : std_logic := '0';
 
 -- Bit 0,1 clearer
 signal RBM_DataOut    : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RBM_DataOut : signal is "true";
 signal RBM_ClrBitZero : std_logic := '0';
 signal RBM_ClrBitOne  : std_logic := '0';
 signal RBM_SetBitZero : std_logic := '0';
