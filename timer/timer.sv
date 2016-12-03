@@ -34,7 +34,7 @@ module timer (
     logic [15:0] timer_register;
     assign internal_TMxCNT_L = timer_register;
 
-    logic start_from_0_to_1;
+    (* mark_debug = "true" *) logic start_from_0_to_1;
     assign start_from_0_to_1 = (prev_start_timer == 1'b0 && start_timer == 1'b1) ? 1'b1 : 1'b0;
 
     //logic from prescaler clock to run at
@@ -55,7 +55,7 @@ module timer (
             prev_timer_finished <= 0;
             prev_start_timer <= 0;
         end
-        else if (prev_timer == 16'hFF) begin
+        else if (prev_timer == 16'hFFFF) begin
             prev_timer_finished <=1;
         end
         else begin
@@ -68,7 +68,7 @@ module timer (
         if (start_from_0_to_1) begin
             timer_register <= TMxCNT_L;
         end
-        if (timer_register == 16'hFF) begin
+        if (timer_register == 16'hFFFF) begin
             if (enable_irq) begin
                 genIRQ <= 1;
             end
@@ -80,6 +80,7 @@ module timer (
         else if (~count_up_timing) begin
             timer_register <= timer_register + 1;
         end
+        // TODO count_up_timing
     end
 
 endmodule: timer

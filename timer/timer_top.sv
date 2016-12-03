@@ -6,10 +6,10 @@ module timer_top (
     input logic clock_16,
     input logic reset,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
-    input logic TM0CNT_L,
-    input logic TM1CNT_L,
-    input logic TM2CNT_L,
-    input logic TM3CNT_L,
+    (* mark_debug = "true" *) input logic [15:0] TM0CNT_L,
+    input logic [15:0] TM1CNT_L,
+    input logic [15:0] TM2CNT_L,
+    input logic [15:0] TM3CNT_L,
     output logic genIRQ0,
     output logic genIRQ1,
     output logic genIRQ2,
@@ -19,8 +19,6 @@ module timer_top (
     output logic [15:0] internal_TM2CNT_L,
     output logic [15:0] internal_TM3CNT_L);
 
-    wire [15:0] TM0CNT_L, TM1CNT_L;
-    wire [15:0] TM2CNT_L, TM3CNT_L;
     (* mark_debug = "true" *) logic [15:0] TM0CNT_H;
     logic [15:0] TM1CNT_H;
     logic [15:0] TM2CNT_H, TM3CNT_H;
@@ -37,7 +35,7 @@ module timer_top (
         .internal_TMxCNT_L(internal_TM0CNT_L),
         .TMxCNT_H(TM0CNT_H),
         .genIRQ(genIRQ0),
-        .prev_timer(16'hFF));
+        .prev_timer(16'hFFFF));
 
      timer timer1(
         .clock_16,

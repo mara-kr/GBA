@@ -57,8 +57,9 @@ module mem_top (
     input  logic [15:0] buttons, vcount, reg_IF,
     output logic [15:0] int_acks,
     input  logic [15:0] internal_TM0CNT_L, internal_TM1CNT_L, internal_TM2CNT_L,
-    input  logic [15:0] internal_TM4CNT_L,
-    output logic [15:0] TM0CNT_L, TM1CNT_L TM2CNT_L, TM3CNT_L
+    input  logic [15:0] internal_TM3CNT_L,
+    output logic [15:0] TM0CNT_L, TM1CNT_L, TM2CNT_L, TM3CNT_L,
+    output logic        dsASqRst, dsBSqRst
     );
 
     /* Single cycle latency for writes */
@@ -212,6 +213,16 @@ module mem_top (
                                     .we(IO_reg_we[i][3:2]), .clear(1'b1),
                                     .rdata(IO_reg_datas[i][31:16]));
                 assign IO_reg_datas[i][15:0] = internal_TM3CNT_L;
+            end else if (i == `SOUNDCNT_H_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 SCH_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(IO_reg_datas[i][15:0]));
+                IO_register16 SCH_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .rdata({1'b0, IO_reg_datas[i][30:28], 1'b0, IO_reg_datas[i][26:16]}));
+                assign dsASqRst = IO_reg_we[i][3] & bus_wdata[27];
+                assign dsBSqRst = IO_reg_we[i][3] & bus_wdata[31];
             end else begin
                 IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
                                   .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
