@@ -6,6 +6,10 @@ module timer_top (
     input logic clock_16,
     input logic reset,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+    input logic TM0CNT_L,
+    input logic TM1CNT_L,
+    input logic TM2CNT_L,
+    input logic TM3CNT_L,
     output logic genIRQ0,
     output logic genIRQ1,
     output logic genIRQ2,
@@ -20,11 +24,6 @@ module timer_top (
     (* mark_debug = "true" *) logic [15:0] TM0CNT_H;
     logic [15:0] TM1CNT_H;
     logic [15:0] TM2CNT_H, TM3CNT_H;
-
-    assign TM0CNT_L = IO_reg_datas[`TM0CNT_L_IDX][15:0];
-    assign TM1CNT_L = IO_reg_datas[`TM1CNT_L_IDX][15:0];
-    assign TM2CNT_L = IO_reg_datas[`TM2CNT_L_IDX][15:0];
-    assign TM3CNT_L = IO_reg_datas[`TM3CNT_L_IDX][15:0];
 
     assign TM0CNT_H = IO_reg_datas[`TM0CNT_L_IDX][31:16];
     assign TM1CNT_H = IO_reg_datas[`TM1CNT_L_IDX][31:16];
