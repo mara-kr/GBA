@@ -36,6 +36,16 @@ typedef uint32 tile4bpp[8];
 #define bg2hofs ((volatile uint16 *)(MEM_IO + 0x18))
 #define bg2vofs ((volatile uint16 *)(MEM_IO + 0x1A))
 
+
+#define sound2cnt_l ((volatile uint16 *)(MEM_IO + 0x68))
+#define sound2cnt_h ((volatile uint16 *)(MEM_IO + 0x6C))
+#define soundcnt_l ((volatile uint16 *)(MEM_IO + 0x80))
+#define soundcnt_h ((volatile uint16 *)(MEM_IO + 0x82))
+#define soundcnt_x ((volatile uint16 *)(MEM_IO + 0x84))
+#define sound1cnt_l ((volatile uint16 *)(MEM_IO + 0x60))
+#define sound1cnt_h ((volatile uint16 *)(MEM_IO + 0x62))
+#define sound1cnt_x ((volatile uint16 *)(MEM_IO + 0x64))
+
 #define MIN_H_SCREEN (-0x04)
 #define MAX_H_SCREEN (-0xEF)
 #define MIN_V_SCREEN 0x00
@@ -56,12 +66,35 @@ static inline rgb15 RGB15(int r, int g, int b) { return r | (g << 5) | (b << 10)
 // Clamp 'value' in the range 'min' to 'max' (inclusive).
 static inline int clamp(int value, int min, int max) { return (value < min ? min : (value > max ? max : value)); }
 
-void waitForVblank(void){
-    while (REG_DISPLAY_VCOUNT <160);
-}
-void waitForVcountRestart(void){
-    while (REG_DISPLAY_VCOUNT!=0);
-}
+// Listing 18.1: a sound-rate macro and friends
+
+typedef enum 
+{
+    NOTE_C=0, NOTE_CIS, NOTE_D,   NOTE_DIS, 
+    NOTE_E,   NOTE_F,   NOTE_FIS, NOTE_G, 
+    NOTE_GIS, NOTE_A,   NOTE_BES, NOTE_B
+} eSndNoteId;
+
+// Rates for traditional notes in octave +5
+const uint32 __snd_rates[12]=
+{
+    8013, 7566, 7144, 6742, // C , C#, D , D#
+    6362, 6005, 5666, 5346, // E , F , F#, G
+    5048, 4766, 4499, 4246  // G#, A , A#, B
+};
+
+#define SND_RATE(note, oct) ( 2048-(__snd_rates[note]>>(4+(oct))) )
+
+#define SDMG_SQR1    0x01
+#define SDMG_SQR2    0x02
+#define SDMG_WAVE    0x04
+#define SDMG_NOISE   0x08
+
+#define SDMG_BUILD(_lmode, _rmode, _lvol, _rvol)    \
+    ( ((_lvol)&7) | (((_rvol)&7)<<4) | ((_lmode)<<8) | ((_rmode)<<12) )
+
+#define SDMG_BUILD_LR(_mode, _vol) SDMG_BUILD(_mode, _mode, _vol, _vol)
+
 
 int main(void) {
 	//set DISPCNT
@@ -135,14 +168,33 @@ int main(void) {
     short player_0 = CENTER_V_SCREEN;
     uint16 counter = 0;
 
-    volatile uint16 old_bg2hofs;
+
+
+   // turn sound on
+    *soundcnt_x= (1 << 0x7);
+    // snd1 on left/right ; both full volume
+    *soundcnt_l = SDMG_BUILD_LR(SDMG_SQR1, 7);
+    // DMG ratio to 100%
+    *soundcnt_h= 0x2;
+
+    // no sweep
+    *sound1cnt_l= 0x00;
+    // envelope: vol=12, decay, max step time (7) ; 50% duty
+    *sound1cnt_h = 0xC78;
+    *sound1cnt_x= 0;
+	//play the actual note
+	*sound1cnt_x = (0x1 << 15) | SND_RATE(NOTE_A, 0); //octave
+
     while (1) {
         counter = counter +1;
         // Skip past the rest of any current V-Blank, then skip past the V-Draw
         while(REG_DISPLAY_VCOUNT >= 160);
         while(REG_DISPLAY_VCOUNT < 160);
         if (counter % 200 == 0x00){ //have to slow it way down
-                        //update location
+            //turn sound off
+            *soundcnt_x = 0; 
+            
+            //update location
             ball_x = ball_x + x_dir;
             ball_y = ball_y + y_dir;
 
@@ -187,6 +239,8 @@ int main(void) {
                      (ball_y >= player_1 - PADDLE_HEIGHT + BALL_HEIGHT - 8))
                     ) {
                 x_dir = -x_dir;
+                *soundcnt_x= (1 << 0x7);
+	            *sound1cnt_x = (0x1 << 15) | SND_RATE(NOTE_A, 0); //octave
             }
 
             //update location registers
