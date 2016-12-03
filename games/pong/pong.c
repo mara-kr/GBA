@@ -185,8 +185,18 @@ int main(void) {
 	//play the actual note
 	*sound1cnt_x = (0x1 << 15) | SND_RATE(NOTE_A, 0); //octave
 
-    while (1) {
-        counter = counter +1;
+	//play a jig
+	const uint8 lens[6]= { 1,1,4, 1,1,4 };
+	const uint8 notes[6]= { 0x02, 0x05, 0x12,  0x02, 0x05, 0x12 };
+	for(int ii=0; ii<12; ii++)
+	{
+		//play the actual note
+		*sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
+		for (int i = 0; i < (8*lens[ii] * 1000); i ++ );
+	}
+
+	while (1) {
+		counter = counter +1;
         // Skip past the rest of any current V-Blank, then skip past the V-Draw
         while(REG_DISPLAY_VCOUNT >= 160);
         while(REG_DISPLAY_VCOUNT < 160);
