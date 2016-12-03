@@ -5,6 +5,7 @@
 module gba_audio_top (
     input logic clk_100,
     input logic clk_256,
+    input logic gba_clk,
     input logic reset,
     output logic AC_ADR0,
     output logic AC_ADR1,
@@ -19,7 +20,8 @@ module gba_audio_top (
     output logic sound_req2,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
     (* mark_debug = "true" *) input logic [15:0] internal_TM0CNT_L,
-    (* mark_debug = "true" *) input logic [15:0] internal_TM1CNT_L);
+    (* mark_debug = "true" *) input logic [15:0] internal_TM1CNT_L,
+    input logic dsASqRst, dsBSqRst);
 
     logic clk_100_output, clk_256_output;
     assign clk_100_output = clk_100;
@@ -28,7 +30,7 @@ module gba_audio_top (
     //audio codec
     logic        clk_100_buffered;
     logic [5:0]  counter_saw_tooth;
-    logic [23:0] hphone_l, hphone_r;
+    (* mark_debug = "true" *) logic [23:0] hphone_l, hphone_r;
     logic        hphone_valid;
     logic        new_sample;
     logic        sample_clk_48k;
@@ -51,7 +53,7 @@ module gba_audio_top (
     logic [23:0] channel_2;
 
     //square1 channel
-    logic [7:0] NR10, NR11, NR12, NR13, NR14;
+    (* mark_debug = "true" *) logic [7:0] NR10, NR11, NR12, NR13, NR14;
     logic [23:0] channel_1;
 
     //noise channel
@@ -127,7 +129,7 @@ module gba_audio_top (
     assign FIFO_A_H = IO_reg_datas[`FIFO_A_H][31:16];
     assign FIFO_B_L = IO_reg_datas[`FIFO_B_L][15:0];
     assign FIFO_B_H = IO_reg_datas[`FIFO_B_H][31:16];
-    
+
     assign SOUND_CNT_H = IO_reg_datas[`SOUNDCNT_H_IDX][31:16];
 
     audio_top top(
@@ -216,7 +218,7 @@ module gba_audio_top (
         .TM0_CNT_L(internal_TM0CNT_L),
         .TM1_CNT_L(internal_TM1CNT_L),
         .timer_num(timer_numA),
-        .sequencer_reset (reset_directA),
+        .sequencer_reset (dsASqRst),
         .waveout(direct_A),
         .sound_req(sound_req1));
 
@@ -228,7 +230,7 @@ module gba_audio_top (
         .TM0_CNT_L(internal_TM0CNT_L),
         .TM1_CNT_L(internal_TM1CNT_L),
         .timer_num(timer_numB),
-        .sequencer_reset(reset_directB),
+        .sequencer_reset(dsBSqRst),
         .waveout(direct_B),
         .sound_req(sound_req2));
 
