@@ -9,27 +9,25 @@ module direct_sound (
     input logic [15:0] FIFO_H,
     input logic [15:0] TM0_CNT_L,
     input logic [15:0] TM1_CNT_L,
-    input logic timer_num,
-    input logic sequencer_reset,
+    (* mark_debug = "true" *) input logic timer_num,
+    (* mark_debug = "true" *) input logic sequencer_reset,
     output logic [23:0] waveout,
     output logic sound_req);
 
-    logic [4:0] position_counter;
+    (* mark_debug = "true" *) logic [4:0] position_counter;
+    (* mark_debug = "true" *) logic [4:0] prev_position_counter;
     logic [31:0] waveform_pattern;
-    logic [15:0] timer;
-    logic [15:0] old_timer;
-    logic timer_overflow;
-    logic sampling_rate;
+    (* mark_debug = "true" *) logic [15:0] timer;
+    (* mark_debug = "true" *) logic [15:0] old_timer;
+    (* mark_debug = "true" *) logic timer_overflow;
 
     assign waveform_pattern = {FIFO_H, FIFO_L};
 
     assign waveout = {waveform_pattern[(position_counter+7)-:8], 16'b0};
     assign timer = (timer_num) ?  TM1_CNT_L : TM0_CNT_L;
 
-    assign timer_overflow = (old_timer >  timer) ? 1 : 0;
-    assign sampling_rate = timer_overflow;
+    assign timer_overflow = (old_timer >  timer);
 
-    logic [4:0] prev_position_counter;
     always_ff @(posedge clock, posedge reset) begin
        if (reset == 1) begin
            sound_req <= 1'b0;
@@ -48,15 +46,14 @@ module direct_sound (
        else old_timer <= timer;
    end
 
-
-    always_ff @(posedge sampling_rate, posedge reset) begin
-        if (reset == 1) begin
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) begin
             position_counter <= 0;
         end
-        else if (sequencer_reset == 1) begin
+        else if (sequencer_reset) begin
             position_counter <= 0;
         end
-        else begin
+        else if (timer_overflow) begin
             position_counter <= position_counter + 8;
         end
     end

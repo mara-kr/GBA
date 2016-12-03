@@ -7,14 +7,14 @@ module square1 (
     input logic [7:0] NR12,
     input logic [7:0] NR13,
     input logic [7:0] NR14,
-    output logic [23: 0]output_wave); 
+    (* mark_debug = "true" *) output logic [23:0]output_wave); 
 
     logic clock_128;
     logic clock_64;
-    logic enable_square_wave;
-    logic [23:0] square_wave;
-    logic [23:0] length_wave;
-    logic [3:0] volume_level;
+    (* mark_debug = "true" *) logic enable_square_wave;
+    (* mark_debug = "true" *) logic [23:0] square_wave;
+    (* mark_debug = "true" *) logic [23:0] length_wave;
+    (* mark_debug = "true" *) logic [3:0] volume_level;
     logic [7:0] internal_NR13;
     logic [7:0] internal_NR14;
     
