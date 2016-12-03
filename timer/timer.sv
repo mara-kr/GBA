@@ -13,6 +13,7 @@ module timer (
 
     //every control point from control registers
     logic start_timer;
+    logic prev_start_timer;
     logic enable_irq;
     logic count_up_timing;
     logic [1:0] prescaler;
@@ -31,7 +32,10 @@ module timer (
     assign count_up = (count_up_timing) ? start_timer: (start_timer && prev_timer_finished);
 
     logic [15:0] timer_register;
-    assign internal_TMxCNT_L = (count_up) ? timer_register : 16'bz;
+    assign internal_TMxCNT_L = timer_register;
+
+    logic start_from_0_to_1;
+    assign start_from_0_to_1 = (prev_start_timer == 1'b0 && start_timer == 1'b1) ? 1'b1 : 1'b0;
 
     //logic from prescaler clock to run at
     timer_clock_divider tcd (.clock_16, .reset(reset), .cycles_64, .cycles_256, .cycles_1024);
@@ -49,6 +53,7 @@ module timer (
     always_ff @(posedge clock_16) begin
         if (reset || start_timer == 0)begin
             prev_timer_finished <= 0;
+            prev_start_timer <= 0;
         end
         else if (prev_timer == 16'hFF) begin
             prev_timer_finished <=1;
@@ -56,20 +61,24 @@ module timer (
         else begin
             prev_timer_finished <= prev_timer_finished;
         end
+        prev_start_timer <= start_timer;
     end
 
     always_ff @(posedge internal_clock) begin
-        if (count_up) begin
-            timer_register <= timer_register + 1;
-        end
-        else begin
+        if (start_from_0_to_1) begin
             timer_register <= TMxCNT_L;
         end
-        if (timer_register == 16'hFF && enable_irq) begin
-            genIRQ <= 1;
+        if (timer_register == 16'hFF) begin
+            if (enable_irq) begin
+                genIRQ <= 1;
+            end
+            else begin
+                genIRQ <= 0;
+            end
+            timer_register <= TMxCNT_L;
         end
-        else begin
-            genIRQ <= 0;
+        else if (~count_up_timing) begin
+            timer_register <= timer_register + 1;
         end
     end
 
