@@ -196,11 +196,9 @@ int main(void) {
 	}
 
 	while (1) {
-		counter = counter +1;
         // Skip past the rest of any current V-Blank, then skip past the V-Draw
         while(REG_DISPLAY_VCOUNT >= 160);
         while(REG_DISPLAY_VCOUNT < 160);
-        if (counter % 200 == 0x00){ //have to slow it way down
             //turn sound off
             *soundcnt_x = 0; 
             
@@ -258,7 +256,6 @@ int main(void) {
             *bg2vofs = ball_y;
             *bg1vofs = player_1;
             *bg0vofs = player_0;
-        }
 
     }
     return 0;
