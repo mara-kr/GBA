@@ -119,9 +119,9 @@ module vga_top(
     // Ignore LSB of color from graphics since we only have 4 bits
     logic on_screen;
     assign on_screen = row[8:1] < `GBA_ROWS && col[9:1] < `GBA_COLS;
-    assign VGA_R = (on_screen) ? data[14:11] : 4'h0;
+    assign VGA_B = (on_screen) ? data[14:11] : 4'h0;
     assign VGA_G = (on_screen) ? data[9:6] : 4'h0;
-    assign VGA_B = (on_screen) ? data[4:1] : 4'h0;
+    assign VGA_R = (on_screen) ? data[4:1] : 4'h0;
 
     // Synchronous reads, don't make out of bounds accesses
     assign addr = (row[8:1] < `GBA_ROWS && col[9:1] < `GBA_COLS) ? curr_addr : 17'd0;
@@ -179,14 +179,14 @@ module vga_top_testpattern (
     input  logic GCLK, BTND,
     input  logic [7:0] SW,
     output logic [7:0] LD,
-    (* mark_debug = "true" *) output logic VGA_HS, VGA_VS,
-    (* mark_debug = "true" *) output logic [3:0] VGA_R, VGA_B, VGA_G);
+    output logic VGA_HS, VGA_VS,
+    output logic [3:0] VGA_R, VGA_B, VGA_G);
 
     logic c_red, r_red;
     logic [1:0] c_green, r_green;
     logic [3:0] c_blue, r_blue;
-    (* mark_debug = "true" *) logic [8:0] row;
-    (* mark_debug = "true" *) logic [9:0] col;
+    logic [8:0] row;
+    logic [9:0] col;
 
     logic GBA_CLK;
     logic [1:0] divider;
