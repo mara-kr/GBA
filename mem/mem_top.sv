@@ -55,7 +55,10 @@ module mem_top (
 
     // Values for R/O registers
     input  logic [15:0] buttons, vcount, reg_IF,
-    output logic [15:0] int_acks
+    output logic [15:0] int_acks,
+    input  logic [15:0] internal_TM0CNT_L, internal_TM1CNT_L, internal_TM2CNT_L,
+    input  logic [15:0] internal_TM4CNT_L,
+    output logic [15:0] TM0CNT_L, TM1CNT_L TM2CNT_L, TM3CNT_L
     );
 
     /* Single cycle latency for writes */
@@ -121,7 +124,7 @@ module mem_top (
                       .addra(bus_system_addr[13:2]),
                       .douta(bus_system_rdata));
 
-    game_rom game (.clka(clock), .rsta(reset), .addra(bus_game_addr[9:2]),
+    game_rom game (.clka(clock), .rsta(reset), .addra(bus_game_addr[11:2]),
                    .douta(bus_game_rdata));
 
     intern_mem intern (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
@@ -173,6 +176,42 @@ module mem_top (
                                     .we(IO_reg_we[i][3:2]), .clear(1'b1),
                                     .rdata(int_acks));
                 assign IO_reg_datas[i][31:16] = reg_IF;
+            end else if (i == `TM0CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T0_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM0CNT_L));
+                IO_register16 T0_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM0CNT_L;
+            end else if (i == `TM1CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T1_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM1CNT_L));
+                IO_register16 T1_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM1CNT_L;
+            end else if (i == `TM2CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T2_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM2CNT_L));
+                IO_register16 T2_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM2CNT_L;
+            end else if (i == `TM3CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T3_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM3CNT_L));
+                IO_register16 T3_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM3CNT_L;
             end else begin
                 IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
                                   .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));

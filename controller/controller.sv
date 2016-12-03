@@ -43,8 +43,8 @@ module controller
 
      // Buttons register
      always_ff @(negedge data_clock, posedge reset) begin
-         if (reset) buttons_int <= 16'd0;
-         else buttons_int[button_cyc_cnt] <= ~serial_data;
+         if (reset) buttons_int <= 16'hFFFF;
+         else buttons_int[button_cyc_cnt] <= serial_data;
      end
 
      // Reordering to match GBA spec
@@ -59,7 +59,7 @@ module controller
         buttons[7] = buttons_int[4]; // Down
         buttons[8] = buttons_int[10]; // R
         buttons[9] = buttons_int[9]; // L
-        buttons[15:10] = 6'd1;
+        buttons[15:10] = 6'h3F;
      end
 
      always_comb begin
