@@ -41,6 +41,7 @@ module mem_top (
     input  logic  [1:0] bus_size,
     output logic        bus_pause,
     input  logic        bus_write,
+    input  logic        dmaActive,
 
     // Signals for graphics Bus
     input  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
@@ -67,6 +68,23 @@ module mem_top (
     logic [31:0] bus_mem_addr;
     logic  [1:0] bus_size_lat1;
     logic        bus_write_lat1;
+
+    // DMA Bus interaction fixes (preempt cpu sync to inst. stream
+    logic posedge_dmaActive, negedge_dmaActive;
+    logic dmaActive_lat1;
+    logic [31:0] old_cpu_rdata; // RDATA when CPU was preempted
+    logic [31:0] rdata_int; // Internal RDATA
+    mem_register #(1) dmaA (.clock, .reset, .en(1'b1), .clr(1'b0),
+                            .D(dmaActive), .Q(dmaActive_lat1));
+    assign posedge_dmaActive = ~dmaActive_lat1 & dmaActive;
+    assign negedge_dmaActive = dmaActive_lat1 & ~dmaActive;
+
+    mem_register #(32) rdata (.clock, .reset, .clr(1'b0),
+                              .en(posedge_dmaActive),
+                              .D(bus_rdata), .Q(old_cpu_rdata));
+
+    assign bus_rdata = (negedge_dmaActive) ? old_cpu_rdata : rdata_int;
+
 
     // Could add more pauses for memory regions, this is needed
     // because of the CPU's write format
@@ -232,24 +250,24 @@ module mem_top (
 
     always_comb begin
         if (bus_system_read)
-            bus_rdata = bus_system_rdata;
+            bus_rdata_int = bus_system_rdata;
         else if (read_in_intern)
-            bus_rdata = bus_intern_rdata;
+            bus_rdata_int = bus_intern_rdata;
         else if (read_in_vram)
-            bus_rdata = bus_vram_rdata;
+            bus_rdata_int = bus_vram_rdata;
         else if (read_in_palette)
-            bus_rdata = bus_palette_rdata;
+            bus_rdata_int = bus_palette_rdata;
         else if (read_in_oam)
-            bus_rdata = bus_oam_rdata;
+            bus_rdata_int = bus_oam_rdata;
         else if (bus_io_reg_read)
-            bus_rdata = bus_io_reg_rdata;
+            bus_rdata_int = bus_io_reg_rdata;
         else if (bus_pak_init_1_read)
-            bus_rdata = {12'hFFF, bus_pak_init_1_addr[4:2], 1'b1,
+            bus_rdata_int = {12'hFFF, bus_pak_init_1_addr[4:2], 1'b1,
                          12'hFFF, bus_pak_init_1_addr[4:2], 1'b0};
         else if (bus_game_read)
-            bus_rdata = bus_game_rdata;
+            bus_rdata_int = bus_game_rdata;
         else
-            bus_rdata = 32'hz;
+            bus_rdata_int = 32'h0;
     end
 
 endmodule: mem_top

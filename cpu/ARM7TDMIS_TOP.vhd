@@ -25,7 +25,8 @@ entity ARM7TDMIS_Top is port(
 							WRITE         : out std_logic;
                             SIZE          : out std_logic_vector(1 downto 0);
                             -- Information signals
-                            MODE          : out std_logic_vector(4 downto 0)
+                            MODE          : out std_logic_vector(4 downto 0);
+                            PREEMPTABLE    : out std_logic
 							);
 end ARM7TDMIS_Top;
 
@@ -509,7 +510,8 @@ component ControlLogic is port(
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
-                       SIZE       : out std_logic_vector(1 downto 0)
+                       SIZE       : out std_logic_vector(1 downto 0);
+                       PREEMPTABLE : out std_logic
 					   );
 end component;
 
@@ -680,6 +682,7 @@ attribute mark_debug of ThDC_ThumbDecoderEn : signal is "true";
 -- Internal copies of some core outputs
 signal ADDR_Int              : std_logic_vector(ADDR'range) := (others => '0');
 signal SIZE_Int              : std_logic_vector(SIZE'range) := (others => '0');
+signal PREEMPTABLE_Int        : std_logic := '0';
 
 signal BigEndianMode : std_logic := '0';
 
@@ -1149,7 +1152,8 @@ ControlLogic_Inst:component ControlLogic port map(
 					   -- Memory interface
 					   ABORT      => ABORT,
    					   WRITE      => WRITE,
-                       SIZE       => SIZE_Int
+                       SIZE       => SIZE_Int,
+                       PREEMPTABLE => PREEMPTABLE_Int
 					   );
 
 
@@ -1160,6 +1164,7 @@ CLKEN <= not PAUSE;
 ADDR <= ADDR_Int;
 SIZE <= SIZE_Int;
 MODE <= PSR_CPSROut(4 downto 0);
+PREEMPTABLE <= PREEMPTABLE_Int;
 
 
 
