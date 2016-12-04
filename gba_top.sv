@@ -40,7 +40,7 @@ module gba_top (
     (* mark_debug = "true" *) logic        timer0, timer1, timer2, timer3;
 
     // DMA
-    (* mark_debug = "true" *) logic        dmaActive, sound_req;
+    (* mark_debug = "true" *) logic        dmaActive;
     (* mark_debug = "true" *) logic        dma0, dma1, dma2, dma3;
     logic  [3:0] disable_dma;
     (* mark_debug = "true" *) logic        sound_req1, sound_req2;

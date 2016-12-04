@@ -4,14 +4,16 @@
 
 
 module dma_fsm
-  (input  logic start, mem_wait, dma_repeat, preempted, enable, xferDone, genIRQ,
-   input  logic allowed_to_begin, new_transfer,
+  (input  logic mem_wait, dma_repeat,  
+   (* mark_debug = "true" *) input  logic enable, new_transfer, start, preempted,
+   input  logic genIRQ,
+   (* mark_debug = "true" *) input  logic allowed_to_begin, xferDone,
    output logic loadCNT, loadSAD, loadDAD, stepSRC, stepDEST, storeRData,
    output logic active, write, disable_dma, set_wdata,
    output logic irq, others_cant_preempt,
    input  logic clk, rst_b);
 
-  enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD} cs, ns;
+  (* mark_debug = "true" *) enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD} cs, ns;
 
   always_ff @(posedge clk, negedge rst_b) begin
     if(~rst_b)
@@ -170,7 +172,7 @@ module dma_dp
   logic [31:0] desiredAddr;
   logic [31:0] sAddrRaw, dAddrRaw;
   logic [31:0] data;
-  logic [13:0] xfers;
+  (* mark_debug = "true" *) logic [13:0] xfers;
   logic [13:0] wordCount;
 
   logic xferWord;
@@ -247,7 +249,9 @@ module dma_dp
   register #(32) dad(.d(nextDAddr), .q(dAddrRaw), .clk, .clear(1'b0), .enable(dadEnable), .rst_b);
   register #(32) data_reg(.d(rdata), .q(data), .clk, .clear(1'b0), .enable(storeRData), .rst_b);
   counter #(14) xferCnt (.d(14'b0), .q(xfers), .clk, .enable(stepSRC), .clear(loadCNT), .load(1'b0), .up(1'b1), .rst_b);
-  assign xferDone = (xfers == controlL[13:0]);
+  (* mark_debug = "true" *) logic [13:0] words_to_transfer;
+  assign words_to_transfer = (sound) ? 14'd4 : controlL[13:0];
+  assign xferDone = (xfers == words_to_transfer);
 
   //save old SAD DAD and CNT registers
   register #(32) oldsad(.d({srcAddrH, srcAddrL}), .q(old_SAD_reg), .clk, .clear(1'b0), .enable(1'b1), .rst_b);
@@ -274,16 +278,12 @@ module dma_start
     else
       display_sync_startable <= passed_go;
 
-  logic started;
-  logic active;
-  logic sound_req_delay;
+  (* mark_debug = "true" *) logic sound_req_delay;
   always_ff @(posedge clk, negedge rst_b) begin
       if(~rst_b) begin
-        started <= 1'b0;
         sound_req_delay <= 1'b0;
       end
       else begin
-        started <= active;
         sound_req_delay <= sound_req; //delay by one clock cycle to shorten critical path
       end
   end
@@ -291,7 +291,6 @@ module dma_start
   always_comb begin
     dma_stop = 1'b0; //extra control to turn off dma repeat
     passed_go = display_sync_startable;
-    active = started;
     case(controlH[13:12])
       2'b00: begin
         start = 1'b1;
@@ -309,12 +308,10 @@ module dma_start
         else begin
           if(vcount[7:0] == 8'd02 && display_sync_startable) begin
             start = 1'b1;
-            active = 1'b1;
           end
           else if(vcount[7:0] == 8'd162) begin
             start = 1'b0;
             dma_stop = 1'b1;
-            active = 1'b0;
             passed_go = controlH[15]; //can start now if dma is enabled
           end
           else begin
@@ -382,7 +379,7 @@ endmodule: dma_unit
 module dma_top
   (input  logic [31:0] registers [`NUM_IO_REGS-1:0],
    input  logic [15:0] vcount, hcount,
-   input  logic        sound_req1, sound_req2,
+   (* mark_debug = "true" *) input  logic        sound_req1, sound_req2,
 
    input  logic        mem_wait,
 
@@ -398,7 +395,7 @@ module dma_top
 
    input  logic clk, rst_b);
 
-   logic [15:0] controlL0, controlH0;
+   (* mark_debug = "true" *) logic [15:0] controlL0, controlH0;
    logic [15:0] srcAddrL0, srcAddrH0;
    logic [15:0] destAddrL0, destAddrH0;
 
@@ -410,7 +407,7 @@ module dma_top
    (* mark_debug = "true" *) logic [15:0] srcAddrL2, srcAddrH2;
    (* mark_debug = "true" *) logic [15:0] destAddrL2, destAddrH2;
 
-   logic [15:0] controlL3, controlH3;
+   (* mark_debug = "true" *) logic [15:0] controlL3, controlH3;
    logic [15:0] srcAddrL3, srcAddrH3;
    logic [15:0] destAddrL3, destAddrH3;
 
@@ -442,10 +439,10 @@ module dma_top
    assign destAddrL3 = registers[`DMA3DAD_L_IDX][15:0];
    assign destAddrH3 = registers [`DMA3DAD_H_IDX][31:16];
 
-   logic [3:0] preempts;
-   logic [3:0] actives;
-   logic [3:0] mid_process;
-   logic allowed_to_begin;
+   (* mark_debug = "true" *) logic [3:0] preempts;
+   (* mark_debug = "true" *) logic [3:0] actives;
+   (* mark_debug = "true" *) logic [3:0] mid_process;
+   (* mark_debug = "true" *) logic allowed_to_begin;
 
    assign active = |actives;
    assign preempts[0] = 1'b0;

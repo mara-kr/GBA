@@ -1,7 +1,7 @@
 module square1 (
     input logic system_clock,
     input logic clock_256,
-    input logic reset,
+    (* mark_debug = "true" *) input logic reset,
     input logic [7:0] NR10,
     input logic [7:0] NR11,
     input logic [7:0] NR12,

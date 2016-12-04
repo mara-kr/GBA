@@ -64,10 +64,6 @@ module gba_audio_top (
     (* mark_debug = "true" *) logic [7:0] NR50, NR51,  NR52;
     logic [23:0] ch4_mixed_l;
     logic [23:0] ch4_mixed_r;
-    logic pause_c1;
-    logic pause_c2;
-    logic pause_c3;
-    logic pause_c4;
     logic reset_c1;
     logic reset_c2;
     logic reset_c3;
@@ -189,7 +185,7 @@ module gba_audio_top (
     square1 sq1(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
-        .reset(reset || reset_c1),
+        .reset(reset || ~NR52[7]),
         .NR10, .NR11, .NR12, .NR13,
         .NR14, .output_wave(channel_1));
 
@@ -199,10 +195,6 @@ module gba_audio_top (
         .channel2(channel_2),
         .channel3(channel_3),
         .channel4(channel_4),
-        .pause_channel_1(pause_c1),
-        .pause_channel_2(pause_c2),
-        .pause_channel_3(pause_c3),
-        .pause_channel_4(pause_c4),
         .NR50, .NR51, .NR52,
         .output_wave_left(ch4_mixed_l),
         .output_wave_right(ch4_mixed_r)); //used to reset the system
@@ -211,7 +203,7 @@ module gba_audio_top (
 
 
     direct_sound dsA(
-        .clock(clk_100),
+        .clock(gba_clk),
         .reset(reset),
         .FIFO_L(FIFO_A_L),
         .FIFO_H(FIFO_A_H),
@@ -223,7 +215,7 @@ module gba_audio_top (
         .sound_req(sound_req1));
 
     direct_sound dsB(
-        .clock(clk_100_output),
+        .clock(gba_clk),
         .reset(reset),
         .FIFO_L(FIFO_B_L),
         .FIFO_H(FIFO_B_H),
@@ -252,10 +244,6 @@ module gba_audio_top (
     power p(
         .clock(clk_100),
         .NR52,
-        .pause_channel1(pause_c1),
-        .pause_channel2(pause_c2),
-        .pause_channel3(pause_c3),
-        .pause_channel4(pause_c4),
         .reset_channel1(reset_c1),
         .reset_channel2(reset_c2),
         .reset_channel3(reset_c3),

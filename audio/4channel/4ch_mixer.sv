@@ -5,10 +5,6 @@ module ch4_mixer ( input logic system_clock,
                input logic [23:0] channel2,
                input logic [23:0] channel3,
                input logic [23:0] channel4,
-               input logic pause_channel_1,
-               input logic pause_channel_2,
-               input logic pause_channel_3,
-               input logic pause_channel_4,
                input logic [7:0] NR50,
                input logic [7:0] NR51,
                input logic [7:0] NR52,
@@ -28,14 +24,14 @@ module ch4_mixer ( input logic system_clock,
                logic [3:0] volume_control_r;
                
     
-               assign channel1_output_l = (NR51[4] && ~pause_channel_1) ? channel1 : 24'b0;
-               assign channel2_output_l = (NR51[5] && ~pause_channel_2) ? channel2 : 24'b0;
-               assign channel3_output_l = (NR51[6] && ~pause_channel_3) ? channel3 : 24'b0;
-               assign channel4_output_l = (NR51[7] && ~pause_channel_4) ? channel4 : 24'b0;
-               assign channel1_output_r = (NR51[0] && ~pause_channel_1) ? channel1 : 24'b0;
-               assign channel2_output_r = (NR51[1] && ~pause_channel_2) ? channel2 : 24'b0;
-               assign channel3_output_r = (NR51[2] && ~pause_channel_3) ? channel3 : 24'b0;
-               assign channel4_output_r = (NR51[3] && ~pause_channel_4) ? channel4 : 24'b0;
+               assign channel1_output_l = (NR51[4]) ? channel1 : 24'b0;
+               assign channel2_output_l = (NR51[5]) ? channel2 : 24'b0;
+               assign channel3_output_l = (NR51[6]) ? channel3 : 24'b0;
+               assign channel4_output_l = (NR51[7]) ? channel4 : 24'b0;
+               assign channel1_output_r = (NR51[0]) ? channel1 : 24'b0;
+               assign channel2_output_r = (NR51[1]) ? channel2 : 24'b0;
+               assign channel3_output_r = (NR51[2]) ? channel3 : 24'b0;
+               assign channel4_output_r = (NR51[3]) ? channel4 : 24'b0;
                                //channel >> (master_volume << 1)
         
                assign output_wave_left = (channel1_output_l + channel2_output_l 

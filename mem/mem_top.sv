@@ -220,7 +220,7 @@ module mem_top (
                                   .rdata(IO_reg_datas[i][15:0]));
                 IO_register16 SCH_H (.clock, .reset, .wdata(bus_wdata[31:16]),
                                     .we(IO_reg_we[i][3:2]), .clear(1'b1),
-                                    .rdata({1'b0, IO_reg_datas[i][30:28], 1'b0, IO_reg_datas[i][26:16]}));
+                                    .rdata(IO_reg_datas[i][31:16]));
                 assign dsASqRst = IO_reg_we[i][3] & bus_wdata[27];
                 assign dsBSqRst = IO_reg_we[i][3] & bus_wdata[31];
             end else begin
