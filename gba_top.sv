@@ -34,6 +34,7 @@ module gba_top (
     logic  [4:0] mode;
     (* mark_debug = "true" *) logic        nIRQ;
     logic        abort;
+    logic        cpu_preemptable;
 
     // Interrupt signals
     logic [15:0] reg_IF, reg_IE, reg_ACK;
@@ -75,7 +76,7 @@ module gba_top (
 
     // CPU
     cpu_top cpu (.clock(gba_clk), .reset(BTND), .nIRQ, .pause(bus_pause),
-                 .abort, .mode,
+                 .abort, .mode, .preemptable(cpu_preemptable),
                  .dmaActive, .rdata(bus_rdata), .addr(bus_addr),
                  .wdata(bus_wdata), .size(bus_size), .write(bus_write));
 
@@ -90,7 +91,7 @@ module gba_top (
 
     // BRAM memory controller
     mem_top mem (.clock(gba_clk), .reset(BTND), .bus_addr, .bus_wdata, .bus_rdata,
-                 .bus_size, .bus_pause, .bus_write,
+                 .bus_size, .bus_pause, .bus_write, .dmaActive,
 
                  .gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
                  .gfx_palette_obj_addr, .gfx_palette_bg_addr,
@@ -126,7 +127,8 @@ module gba_top (
                  .size(bus_size), .wen(bus_write), .active(dmaActive),
                  .disable_dma(), .irq0(dma0), .irq1(dma1), .irq2(dma2),
                  .irq3(dma3), .mem_wait(bus_pause), .sound_req1, .sound_req2,
-                 .vcount(vcount), .hcount({7'd0, hcount}));
+                 .vcount(vcount), .hcount({7'd0, hcount}),
+                 .cpu_preemptable);
 
     timer_top timers (.clock_16(gba_clk), .reset(BTND), .IO_reg_datas,
                       .internal_TM0CNT_L, .internal_TM1CNT_L, .internal_TM2CNT_L,

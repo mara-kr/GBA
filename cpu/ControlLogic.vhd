@@ -193,7 +193,8 @@ entity ControlLogic is port(
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
-                       SIZE       : out std_logic_vector(1 downto 0)
+                       SIZE       : out std_logic_vector(1 downto 0);
+                       PREEMPTABLE : out std_logic
 					   );
 
 end ControlLogic;
@@ -2478,4 +2479,7 @@ DataAddrLow <= LastAddr(1 downto 0) when (Branch_St1='1' or Branch_St2='1') else
                "00" when (nLDM_St0='1') else
                LastAddr(1 downto 0);
 
+PREEMPTABLE <= '1' when StagnatePipeline_Int='0' and PipelineRefilling='0' and
+                        StagnatePipelineDel_Int='0'
+                   else '0';
 end RTL;
