@@ -70,6 +70,8 @@ module core_tb;
     logic check_correctness;
     logic passed, all_passed;
     logic [10:0] count_time;
+    logic sound_req1;
+    logic cpu_preemptable;
 
     dma_top dut (
         .registers,
@@ -85,8 +87,8 @@ module core_tb;
         .disable_dma,
         .active,
         .irq0, .irq1, .irq2, .irq3,
-
-        .sound_req1(1'b0), .sound_req2(1'b0),
+        .cpu_preemptable,
+        .sound_req1, .sound_req2(1'b0),
         .clk, .rst_b(rst_n));
 
     bus_monitor #("GBA_CPU_BUS_LOG") busMon (.clk, .rst_n, .pause, .addr,
@@ -96,7 +98,7 @@ module core_tb;
     sim_memory sim_mem (.clk, .rst_n, .addr, .wdata, .size, .write,
                          .rdata, .abort, .pause);
 
-    test_fsm fsm(.clk, .rst_n,
+    /**test_fsm fsm(.clk, .rst_n,
         .controlL0, .controlH0,
         .srcAddrL0, .srcAddrH0,
         .destAddrL0, .destAddrH0,
@@ -116,7 +118,7 @@ module core_tb;
         .count_time, .passed,
         .test_addr, .rdata,
         .pause,
-        .hcount);
+        .hcount);*/
 
     always_ff @(posedge clk, negedge rst_n) begin
         if (rst_n == 0) begin
@@ -138,16 +140,23 @@ module core_tb;
     assign write = (check_correctness) ? 1'b0 : dma_write;
     /* Clock and Reset Generation */
     initial begin
-        $monitor ("Passed:%b, wdata:%h, addr:%h, cs:%s, xfer_count:%d, rest=%b, irq0=%b, irq1=%b irq2=%b, irq3=%b",
-                    all_passed, wdata, addr, fsm.cs, fsm.xfer_count, rst_n, irq0, irq1, irq2, irq3);
+        $monitor ("Passed:%b, wdata:%h, addr:%h, active:%b, rest=%b",
+                    all_passed, wdata, addr, active, rst_n);
+        //$monitor ("Passed:%b, wdata:%h, addr:%h, active:%b, cs:%s, xfer_count:%d, rest=%b, irq0=%b, irq1=%b irq2=%b, irq3=%b",
+        //            all_passed, wdata, addr, active, fsm.cs, fsm.xfer_count, rst_n, irq0, irq1, irq2, irq3);
         $display("Start"); // Start of SIM for diff script
         clk = 0;
         rst_n = 1'b1;
         irq_n = 1'b1;
         #1 rst_n <= 1'b0;
         #1 rst_n <= 1'b1;
-        #100 rst_n <= 1'b0;
-        #100 rst_n <= 1'b1;
+        controlH1 <= 16'hb600;
+        sound_req1 <=1'b1;
+        cpu_preemptable <= 1'b0;
+        #2 sound_req1 <=1'b0;
+        #16 cpu_preemptable <= 1'b1;
+        //#100 rst_n <= 1'b0;
+        //#100 rst_n <= 1'b1;
         #400 $finish;
     end
 
