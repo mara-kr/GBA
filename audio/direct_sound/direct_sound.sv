@@ -11,6 +11,7 @@ module direct_sound (
     input logic [2:0]  FIFO_size,
     input logic [31:0] FIFO_value,
     output logic FIFO_re,
+    output logic FIFO_clr,
     (* mark_debug = "true" *) input logic timer_num,
     (* mark_debug = "true" *) input logic sequencer_reset,
     (* mark_debug = "true" *) output logic [23:0] waveout,
@@ -23,24 +24,26 @@ module direct_sound (
     (* mark_debug = "true" *) logic [15:0] old_timer;
     (* mark_debug = "true" *) logic timer_overflow;
 
-    assign waveform_pattern = FIFO_value;
+    logic [1:0] count_timer_overflow;
 
+
+    assign waveform_pattern = FIFO_value;
+    assign FIFO_clr = sequencer_reset;
     assign waveout = {waveform_pattern[(position_counter+7)-:8], 16'b0};
     assign timer = (timer_num) ?  TM1_CNT_L : TM0_CNT_L;
 
     assign timer_overflow = (old_timer >  timer);
-    assign FIFO_re = (output_r || output_l) ?  timer_overflow : 1'b0;
+    assign FIFO_re = (output_r || output_l) ?  (count_timer_overflow == 2'b11) : 1'b0;
     
     
-    assign sound_req = (size_FIFO == 3'd4);
+    assign sound_req = (FIFO_size == 3'd4);
     
-    logic [1:0] count_timer_overflow;
     always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
             count_timer_overflow = 1'b0;
         end
         else if (timer_overflow) begin
-            count_timer_overflow <= count_timer_over + 1;
+            count_timer_overflow <= count_timer_overflow + 1;
         end
     end
 
