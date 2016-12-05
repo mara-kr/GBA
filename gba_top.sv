@@ -34,7 +34,7 @@ module gba_top (
     logic  [4:0] mode;
     (* mark_debug = "true" *) logic        nIRQ;
     logic        abort;
-    logic        cpu_preemptable;
+    (* mark_debug = "true" *) logic        cpu_preemptable;
 
     // Interrupt signals
     logic [15:0] reg_IF, reg_IE, reg_ACK;
