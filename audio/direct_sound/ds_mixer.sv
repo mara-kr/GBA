@@ -1,17 +1,17 @@
 module ds_mixer (
        input logic clock,
        input logic reset,
-       input logic [23:0] direct_A,
-       input logic [23:0] direct_B,
-       input logic [23:0] channel4_l,
-       input logic [23:0] channel4_r,
+       (* mark_debug = "true" *)input logic [23:0] direct_A,
+       (* mark_debug = "true" *)input logic [23:0] direct_B,
+       (* mark_debug = "true" *)input logic [23:0] channel4_l,
+       (* mark_debug = "true" *)input logic [23:0] channel4_r,
        input logic [15:0] sound_cnt_h,
        output logic timer_numA,
        output logic timer_numB,
        output logic reset_directA,
        output logic reset_directB,
-       output logic [23:0] output_wave_r,
-       output logic [23:0] output_wave_l);
+       (* mark_debug = "true" *)output logic [23:0] output_wave_r,
+       (* mark_debug = "true" *)output logic [23:0] output_wave_l);
 
        //Assumption: timer is turned on by processor
 

@@ -5,9 +5,10 @@
 
 module dma_fsm
   (input  logic mem_wait, dma_repeat,  
-   (* mark_debug = "true" *) input  logic enable, new_transfer, start, preempted,
+   (* mark_debug = "true" *) input  logic enable, start,
+   input  logic new_transfer, preempted,
    input  logic genIRQ,
-   (* mark_debug = "true" *) input  logic allowed_to_begin, xferDone,
+   input  logic allowed_to_begin, xferDone,
    output logic loadCNT, loadSAD, loadDAD, stepSRC, stepDEST, storeRData,
    output logic active, write, disable_dma, set_wdata,
    output logic irq, others_cant_preempt,
@@ -178,7 +179,7 @@ module dma_dp
   logic [31:0] desiredAddr;
   logic [31:0] sAddrRaw, dAddrRaw;
   logic [31:0] data;
-  (* mark_debug = "true" *) logic [13:0] xfers;
+  logic [13:0] xfers;
   logic [13:0] wordCount;
 
   logic xferWord;
@@ -278,7 +279,7 @@ module dma_start
 
   logic display_sync_startable;
   logic passed_go;
-  logic hold_sound;
+  (* mark_debug = "true" *) logic hold_sound;
 
   always_ff @(posedge clk, negedge rst_b)
     if(~rst_b)
@@ -286,7 +287,7 @@ module dma_start
     else
       display_sync_startable <= passed_go;
 
-  (* mark_debug = "true" *) logic sound_req_delay;
+  logic sound_req_delay;
   always_ff @(posedge clk, negedge rst_b) begin
       if(~rst_b) begin
         sound_req_delay <= 1'b0;
@@ -385,7 +386,7 @@ module dma_unit
   logic set_wdata;
 
   logic new_transfer;
-  (* mark_debug = "true" *) logic reload_xfers;
+  logic reload_xfers;
 
   assign disable_dma = fsm_disable | dma_stop;
 
@@ -422,7 +423,7 @@ module dma_top
 
    input  logic clk, rst_b);
 
-   (* mark_debug = "true" *) logic [15:0] controlL0, controlH0;
+   logic [15:0] controlL0, controlH0;
    logic [15:0] srcAddrL0, srcAddrH0;
    logic [15:0] destAddrL0, destAddrH0;
 
@@ -434,7 +435,7 @@ module dma_top
    (* mark_debug = "true" *) logic [15:0] srcAddrL2, srcAddrH2;
    (* mark_debug = "true" *) logic [15:0] destAddrL2, destAddrH2;
 
-   (* mark_debug = "true" *) logic [15:0] controlL3, controlH3;
+   logic [15:0] controlL3, controlH3;
    logic [15:0] srcAddrL3, srcAddrH3;
    logic [15:0] destAddrL3, destAddrH3;
 
@@ -468,7 +469,7 @@ module dma_top
 
    (* mark_debug = "true" *) logic [3:0] preempts;
    (* mark_debug = "true" *) logic [3:0] actives;
-   (* mark_debug = "true" *) logic [3:0] mid_process;
+   logic [3:0] mid_process;
    (* mark_debug = "true" *) logic allowed_to_begin;
 
    assign active = |actives;

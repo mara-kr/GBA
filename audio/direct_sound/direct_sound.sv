@@ -5,13 +5,15 @@
 module direct_sound (
     input logic clock,
     input logic reset,
-    input logic [15:0] FIFO_L,
-    input logic [15:0] FIFO_H,
     input logic [15:0] TM0_CNT_L,
     input logic [15:0] TM1_CNT_L,
+    input logic output_l, output_r,
+    input logic [2:0]  FIFO_size,
+    input logic [31:0] FIFO_value,
+    output logic FIFO_re,
     (* mark_debug = "true" *) input logic timer_num,
     (* mark_debug = "true" *) input logic sequencer_reset,
-    output logic [23:0] waveout,
+    (* mark_debug = "true" *) output logic [23:0] waveout,
     output logic sound_req);
 
     (* mark_debug = "true" *) logic [4:0] position_counter;
@@ -21,24 +23,25 @@ module direct_sound (
     (* mark_debug = "true" *) logic [15:0] old_timer;
     (* mark_debug = "true" *) logic timer_overflow;
 
-    assign waveform_pattern = {FIFO_H, FIFO_L};
+    assign waveform_pattern = FIFO_value;
 
     assign waveout = {waveform_pattern[(position_counter+7)-:8], 16'b0};
     assign timer = (timer_num) ?  TM1_CNT_L : TM0_CNT_L;
 
     assign timer_overflow = (old_timer >  timer);
-
+    assign FIFO_re = (output_r || output_l) ?  timer_overflow : 1'b0;
+    
+    
+    assign sound_req = (size_FIFO == 3'd4);
+    
+    logic [1:0] count_timer_overflow;
     always_ff @(posedge clock, posedge reset) begin
-       if (reset == 1) begin
-           sound_req <= 1'b0;
-       end
-       else if (position_counter == 5'd24 && prev_position_counter == 5'd16) begin
-           sound_req <= 1'b1;
-       end
-       else begin
-           sound_req <=1'b0;
-       end
-        prev_position_counter <= position_counter;
+        if (reset) begin
+            count_timer_overflow = 1'b0;
+        end
+        else if (timer_overflow) begin
+            count_timer_overflow <= count_timer_over + 1;
+        end
     end
 
    always_ff @(posedge clock, posedge reset) begin
@@ -50,15 +53,15 @@ module direct_sound (
         if (reset) begin
             position_counter <= 0;
         end
-        else if (sequencer_reset) begin
+        else if (sequencer_reset || (~output_r && ~output_l)) begin
             position_counter <= 0;
         end
         else if (timer_overflow) begin
             position_counter <= position_counter + 8;
         end
     end
-
 endmodule: direct_sound
+
 
 
 /*module direct_sound_test ();

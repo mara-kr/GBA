@@ -212,6 +212,8 @@ module gba_audio_top (
         .timer_num(timer_numA),
         .sequencer_reset (dsASqRst),
         .waveout(direct_A),
+        .output_r(SOUND_CNT_H[8]),
+        .output_l(SOUND_CNT_H[9]),
         .sound_req(sound_req1));
 
     direct_sound dsB(
@@ -224,6 +226,8 @@ module gba_audio_top (
         .timer_num(timer_numB),
         .sequencer_reset(dsBSqRst),
         .waveout(direct_B),
+        .output_r(SOUND_CNT_H[12]),
+        .output_l(SOUND_CNT_H[13]),
         .sound_req(sound_req2));
 
     ds_mixer dsm(
