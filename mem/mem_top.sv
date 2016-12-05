@@ -61,11 +61,11 @@ module mem_top (
     input  logic [15:0] internal_TM3CNT_L,
     output logic [15:0] TM0CNT_L, TM1CNT_L, TM2CNT_L, TM3CNT_L,
     output logic        dsASqRst, dsBSqRst,
-    
+
     // Value for DMA Sound FIFO
     input  logic        FIFO_re_A, FIFO_re_B,
     output logic [31:0] FIFO_val_A, FIFO_val_B,
-    output logic [2:0]  FIFO_size_A, FIFO_size_B,
+    output logic [3:0]  FIFO_size_A, FIFO_size_B,
     input  logic        FIFO_clr_A, FIFO_clr_B
     );
 
@@ -143,20 +143,20 @@ module mem_top (
 
     assign bus_pak_init_1_read = (bus_addr_lat1 - `PAK_INIT_1_START) <= `PAK_INIT_1_SIZE;
     assign bus_pak_init_1_addr = bus_addr_lat1 - `PAK_INIT_1_START;
-    
-    logic FIFO_we_A, FIFO_we_B;
-    
-    fifo #(32) dsA (.clk(clock), .rst(reset), .we(FIFO_we_A), .re(FIFO_re_A), 
-                    .full(), .empty(), .data_in(bus_wdata),
+
+    (* mark_debug = "true" *) logic FIFO_we_A, FIFO_we_B, full_A, full_B, empty_A, empty_B;
+
+    fifo #(32) dsA (.clk(clock), .rst(reset), .we(FIFO_we_A), .re(FIFO_re_A),
+                    .full(full_A), .empty(empty_A), .data_in(bus_wdata),
                     .data_out(FIFO_val_A), .size(FIFO_size_A),
                     .clr(FIFO_clr_A));
-                    
-    fifo #(32) dsB (.clk(clock), .rst(reset), .we(FIFO_we_B), .re(FIFO_re_B), 
-                    .full(), .empty(), .data_in(bus_wdata),
+
+    fifo #(32) dsB (.clk(clock), .rst(reset), .we(FIFO_we_B), .re(FIFO_re_B),
+                    .full(full_B), .empty(empty_B), .data_in(bus_wdata),
                     .data_out(FIFO_val_B), .size(FIFO_size_B),
                     .clr(FIFO_clr_B));
-                                       
-    
+
+
 
     // Data width set to 32bits, so addresses are aligned
     system_rom sys   (.clka(clock), .rsta(reset),

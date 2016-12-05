@@ -7,11 +7,11 @@ module gba_audio_top (
     input  logic clk_256,
     input  logic gba_clk,
     input  logic reset,
-    input  logic [2:0]  FIFO_size_A,
+    input  logic [3:0]  FIFO_size_A,
     input  logic [31:0] FIFO_val_A,
     output logic FIFO_re_A,
     output logic FIFO_clr_A,
-    input  logic [2:0] FIFO_size_B,
+    input  logic [3:0] FIFO_size_B,
     input  logic [31:0] FIFO_val_B,
     output logic FIFO_re_B,
     output logic FIFO_clr_B,
@@ -39,8 +39,8 @@ module gba_audio_top (
     logic        clk_100_buffered;
     logic [5:0]  counter_saw_tooth;
     (* mark_debug = "true" *) logic [23:0] hphone_l, hphone_r;
-    logic        hphone_valid;
-    logic        new_sample;
+    (* mark_debug = "true" *) logic        hphone_valid;
+    (* mark_debug = "true" *) logic        new_sample;
     logic        sample_clk_48k;
     logic [23:0] line_in_r, line_in_l;
 

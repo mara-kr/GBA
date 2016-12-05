@@ -8,7 +8,7 @@ module direct_sound (
     input logic [15:0] TM0_CNT_L,
     input logic [15:0] TM1_CNT_L,
     input logic output_l, output_r,
-    input logic [2:0]  FIFO_size,
+    input logic [3:0]  FIFO_size,
     input logic [31:0] FIFO_value,
     output logic FIFO_re,
     output logic FIFO_clr,
@@ -18,13 +18,11 @@ module direct_sound (
     output logic sound_req);
 
     (* mark_debug = "true" *) logic [4:0] position_counter;
-    (* mark_debug = "true" *) logic [4:0] prev_position_counter;
     logic [31:0] waveform_pattern;
-    (* mark_debug = "true" *) logic [15:0] timer;
-    (* mark_debug = "true" *) logic [15:0] old_timer;
+    logic [15:0] timer;
+    logic [15:0] old_timer;
     (* mark_debug = "true" *) logic timer_overflow;
 
-    logic [1:0] count_timer_overflow;
 
 
     assign waveform_pattern = FIFO_value;
@@ -33,19 +31,10 @@ module direct_sound (
     assign timer = (timer_num) ?  TM1_CNT_L : TM0_CNT_L;
 
     assign timer_overflow = (old_timer >  timer);
-    assign FIFO_re = (output_r || output_l) ?  (count_timer_overflow == 2'b11) : 1'b0;
+    assign FIFO_re = (output_r || output_l) ?  (position_counter == 5'd24 && timer_overflow) : 1'b0;
     
     
-    assign sound_req = (FIFO_size <= 3'd4) && (output_l || output_r);
-    
-    always_ff @(posedge clock, posedge reset) begin
-        if (reset) begin
-            count_timer_overflow = 1'b0;
-        end
-        else if (timer_overflow) begin
-            count_timer_overflow <= count_timer_overflow + 1;
-        end
-    end
+    assign sound_req = (FIFO_size <= 3'd4) && (output_l || output_r) && timer_overflow;
 
    always_ff @(posedge clock, posedge reset) begin
        if (reset) old_timer <= 16'd0;
