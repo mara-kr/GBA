@@ -102,6 +102,8 @@ attribute mark_debug of r1 : signal is "true";
 attribute mark_debug of r2 : signal is "true";
 attribute mark_debug of r3 : signal is "true";
 attribute mark_debug of r4 : signal is "true";
+attribute mark_debug of r7 : signal is "true";
+
 
 
 
