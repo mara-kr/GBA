@@ -31,14 +31,6 @@ module graphics_system (
     logic buffer0_ce, buffer1_ce;
     logic buffer0_we, buffer1_we;
 
-    assign gfx_vram_A_addr = 32'b0;
-    assign gfx_vram_A_addr2 = 32'b0;
-    assign gfx_vram_B_addr = 32'b0;
-    assign gfx_vram_C_addr = 32'b0;
-    assign gfx_oam_addr = 32'b0;
-    assign gfx_palette_bg_addr = 32'b0;
-    assign gfx_palette_obj_addr = 32'b0;
-    assign graphics_color = 15'b0;
     
     //dbl_buffer buffers
 
@@ -62,7 +54,6 @@ module graphics_system (
     vga_top video(.clock(vga_clock), .reset(reset), .data(vga_color), .addr(vga_addr), .VGA_R, .VGA_G, .VGA_B, .VGA_HS, .VGA_VS);
 
     //graphics
-    /*
     graphics_top gfx(.clock(graphics_clock), .reset,
                  .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
                  .gfx_oam_data, .gfx_palette_bg_data, .gfx_palette_obj_data,
@@ -72,7 +63,6 @@ module graphics_system (
                  .gfx_vram_A_addr2,
                  .registers(IO_reg_datas),
                  .output_color(graphics_color));
-    */
 
 endmodule: graphics_system
 
