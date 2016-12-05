@@ -36,7 +36,7 @@ module direct_sound (
     assign FIFO_re = (output_r || output_l) ?  (count_timer_overflow == 2'b11) : 1'b0;
     
     
-    assign sound_req = (FIFO_size == 3'd4);
+    assign sound_req = (FIFO_size <= 3'd4) && (output_l || output_r);
     
     always_ff @(posedge clock, posedge reset) begin
         if (reset) begin

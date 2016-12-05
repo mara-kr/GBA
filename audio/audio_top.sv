@@ -77,12 +77,6 @@ module gba_audio_top (
     logic reset_c3;
     logic reset_c4;
 
-     //direct sound
-    (* mark_debug = "true" *) logic [15:0] FIFO_A_L;
-    (* mark_debug = "true" *) logic [15:0] FIFO_A_H;
-    (* mark_debug = "true" *) logic [15:0] FIFO_B_L;
-    (* mark_debug = "true" *) logic [15:0] FIFO_B_H;
-
     //final mixer
     logic [23:0] direct_A;
     logic [23:0] direct_B;
@@ -91,8 +85,8 @@ module gba_audio_top (
     logic timer_numB;
     logic reset_directA;
     logic reset_directB;
-    logic [23:0] output_wave_r;
-    logic [23:0] output_wave_l;
+    (* mark_debug = "true" *) logic [23:0] output_wave_r;
+    (* mark_debug = "true" *) logic [23:0] output_wave_l;
 
     assign NR10 = IO_reg_datas[`SOUND1CNT_L_IDX][7:0];
     assign NR11 = IO_reg_datas[`SOUND1CNT_H_IDX][23:16];
@@ -128,11 +122,6 @@ module gba_audio_top (
     assign NR50 = IO_reg_datas[`SOUNDCNT_L_IDX][7:0];
     assign NR51 = IO_reg_datas[`SOUNDCNT_L_IDX][15:8];
     assign NR52 = IO_reg_datas[`SOUNDCNT_X_IDX][7:0];
-
-    assign FIFO_A_L = IO_reg_datas[`FIFO_A_L][15:0];
-    assign FIFO_A_H = IO_reg_datas[`FIFO_A_H][31:16];
-    assign FIFO_B_L = IO_reg_datas[`FIFO_B_L][15:0];
-    assign FIFO_B_H = IO_reg_datas[`FIFO_B_H][31:16];
 
     assign SOUND_CNT_H = IO_reg_datas[`SOUNDCNT_H_IDX][31:16];
 

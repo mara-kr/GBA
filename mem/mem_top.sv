@@ -60,7 +60,13 @@ module mem_top (
     input  logic [15:0] internal_TM0CNT_L, internal_TM1CNT_L, internal_TM2CNT_L,
     input  logic [15:0] internal_TM3CNT_L,
     output logic [15:0] TM0CNT_L, TM1CNT_L, TM2CNT_L, TM3CNT_L,
-    output logic        dsASqRst, dsBSqRst
+    output logic        dsASqRst, dsBSqRst,
+    
+    // Value for DMA Sound FIFO
+    input  logic        FIFO_re_A, FIFO_re_B,
+    output logic [31:0] FIFO_val_A, FIFO_val_B,
+    output logic [2:0]  FIFO_size_A, FIFO_size_B,
+    input  logic        FIFO_clr_A, FIFO_clr_B
     );
 
     /* Single cycle latency for writes */
@@ -73,7 +79,7 @@ module mem_top (
     logic posedge_dmaActive, negedge_dmaActive;
     logic dmaActive_lat1;
     logic [31:0] old_cpu_rdata; // RDATA when CPU was preempted
-    logic [31:0] rdata_int; // Internal RDATA
+    logic [31:0] bus_rdata_int; // Internal RDATA
     mem_register #(1) dmaA (.clock, .reset, .en(1'b1), .clr(1'b0),
                             .D(dmaActive), .Q(dmaActive_lat1));
     assign posedge_dmaActive = ~dmaActive_lat1 & dmaActive;
@@ -83,7 +89,7 @@ module mem_top (
                               .en(posedge_dmaActive),
                               .D(bus_rdata), .Q(old_cpu_rdata));
 
-    assign bus_rdata = (negedge_dmaActive) ? old_cpu_rdata : rdata_int;
+    assign bus_rdata = (negedge_dmaActive) ? old_cpu_rdata : bus_rdata_int;
 
 
     // Could add more pauses for memory regions, this is needed
@@ -137,6 +143,20 @@ module mem_top (
 
     assign bus_pak_init_1_read = (bus_addr_lat1 - `PAK_INIT_1_START) <= `PAK_INIT_1_SIZE;
     assign bus_pak_init_1_addr = bus_addr_lat1 - `PAK_INIT_1_START;
+    
+    logic FIFO_we_A, FIFO_we_B;
+    
+    fifo #(32) dsA (.clk(clock), .rst(reset), .we(FIFO_we_A), .re(FIFO_re_A), 
+                    .full(), .empty(), .data_in(bus_wdata),
+                    .data_out(FIFO_val_A), .size(FIFO_size_A),
+                    .clr(FIFO_clr_A));
+                    
+    fifo #(32) dsB (.clk(clock), .rst(reset), .we(FIFO_we_B), .re(FIFO_re_B), 
+                    .full(), .empty(), .data_in(bus_wdata),
+                    .data_out(FIFO_val_B), .size(FIFO_size_B),
+                    .clr(FIFO_clr_B));
+                                       
+    
 
     // Data width set to 32bits, so addresses are aligned
     system_rom sys   (.clka(clock), .rsta(reset),
@@ -201,7 +221,7 @@ module mem_top (
                                   .we(IO_reg_we[i][1:0]), .clear(1'b0),
                                   .rdata(TM0CNT_L));
                 IO_register16 T0_H (.clock, .reset, .wdata(bus_wdata[31:16]),
-                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
                                     .rdata(IO_reg_datas[i][31:16]));
                 assign IO_reg_datas[i][15:0] = internal_TM0CNT_L;
             end else if (i == `TM1CNT_L_IDX) begin
@@ -210,7 +230,7 @@ module mem_top (
                                   .we(IO_reg_we[i][1:0]), .clear(1'b0),
                                   .rdata(TM1CNT_L));
                 IO_register16 T1_H (.clock, .reset, .wdata(bus_wdata[31:16]),
-                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
                                     .rdata(IO_reg_datas[i][31:16]));
                 assign IO_reg_datas[i][15:0] = internal_TM1CNT_L;
             end else if (i == `TM2CNT_L_IDX) begin
@@ -219,7 +239,7 @@ module mem_top (
                                   .we(IO_reg_we[i][1:0]), .clear(1'b0),
                                   .rdata(TM2CNT_L));
                 IO_register16 T2_H (.clock, .reset, .wdata(bus_wdata[31:16]),
-                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
                                     .rdata(IO_reg_datas[i][31:16]));
                 assign IO_reg_datas[i][15:0] = internal_TM2CNT_L;
             end else if (i == `TM3CNT_L_IDX) begin
@@ -228,7 +248,7 @@ module mem_top (
                                   .we(IO_reg_we[i][1:0]), .clear(1'b0),
                                   .rdata(TM3CNT_L));
                 IO_register16 T3_H (.clock, .reset, .wdata(bus_wdata[31:16]),
-                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
                                     .rdata(IO_reg_datas[i][31:16]));
                 assign IO_reg_datas[i][15:0] = internal_TM3CNT_L;
             end else if (i == `SOUNDCNT_H_IDX) begin
@@ -237,10 +257,16 @@ module mem_top (
                                   .we(IO_reg_we[i][1:0]), .clear(1'b0),
                                   .rdata(IO_reg_datas[i][15:0]));
                 IO_register16 SCH_H (.clock, .reset, .wdata(bus_wdata[31:16]),
-                                    .we(IO_reg_we[i][3:2]), .clear(1'b1),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
                                     .rdata(IO_reg_datas[i][31:16]));
                 assign dsASqRst = IO_reg_we[i][3] & bus_wdata[27];
                 assign dsBSqRst = IO_reg_we[i][3] & bus_wdata[31];
+            end else if (i == `FIFO_A_L) begin
+                assign IO_reg_datas[i] = FIFO_val_A;
+                assign FIFO_we_A = IO_reg_we[i][0];
+            end else if (i == `FIFO_B_L) begin
+                assign IO_reg_datas[i] = FIFO_val_B;
+                assign FIFO_we_B = IO_reg_we[i][0];
             end else begin
                 IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
                                   .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
@@ -573,3 +599,57 @@ module IO_register16
         else rdata <= data_next;
     end
 endmodule: IO_register16
+
+/*  Create a fifo (First In First Out) with depth 4 using the given interface
+ *  and constraints.
+ *  -The fifo is initally empty.
+ *  -Reads are combinational, so "data_out" is valid unless "empty" is asserted.
+ *   Removal from the queue is processed on the clock edge.
+ *  -Writes are processed on the clock edge.
+ *  -If the "we" happens to be asserted while the fifo is full, do NOT update
+ *   the fifo.
+ *  -Similarly, if the "re" is asserted while the fifo is empty, do NOT update
+ *   the fifo.
+ */
+module fifo(clk, rst, data_in, we, re, full, empty, data_out, size, clr);
+  parameter WIDTH = 32;
+  input logic clk, rst;
+  input logic [WIDTH-1:0] data_in;
+  input logic we; //write enable
+  input logic re; //read enable
+  input logic clr;
+  output logic full;
+  output logic empty;
+  output logic [WIDTH-1:0] data_out;
+  output logic [3:0] size;
+
+  logic [WIDTH-1:0] Q [7]; // memory array of 7 bytes
+  logic [1:0] getPtr, putPtr;
+  assign empty = (size == 4'd0);
+  assign full = (size == 4'd8);
+  assign data_out = Q[getPtr];
+  always_ff @(posedge clk, posedge rst) begin
+      if (rst || clr) begin
+          getPtr <= 0;
+          putPtr <= 0;
+          size <= 0;
+      end else begin
+          /* re && we adds and removes (if we can) */
+          if (we && (!full) && re && (!empty)) begin
+              Q[putPtr] <= data_in;
+              putPtr <= putPtr + 1;
+              getPtr <= getPtr + 1;
+          end
+          else if (we && (!full)) begin // put stuff in queue
+              Q[putPtr] <= data_in;
+              putPtr <= putPtr + 1;
+              size <= size + 1;
+          end
+          else if (re && (!empty)) begin // read stuff out of the queue
+              getPtr <= getPtr + 1;
+              size <= size - 1;
+          end
+      end
+  end
+
+endmodule: fifo
