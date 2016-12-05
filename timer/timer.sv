@@ -34,7 +34,7 @@ module timer (
     logic [15:0] timer_register;
     assign internal_TMxCNT_L = timer_register;
 
-    (* mark_debug = "true" *) logic start_from_0_to_1;
+    logic start_from_0_to_1;
     assign start_from_0_to_1 = (prev_start_timer == 1'b0 && start_timer == 1'b1) ? 1'b1 : 1'b0;
 
     //logic from prescaler clock to run at

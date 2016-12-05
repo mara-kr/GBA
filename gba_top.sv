@@ -63,6 +63,10 @@ module gba_top (
     logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data;
     logic [31:0] gfx_vram_A_data2, gfx_palette_bg_data;
     logic [31:0] gfx_oam_data, gfx_palette_obj_data;
+    
+    (* mark_debug = "true" *) logic        FIFO_re_A, FIFO_re_B, FIFO_clr_A, FIFO_clr_B;
+    (* mark_debug = "true" *) logic [31:0] FIFO_val_A, FIFO_val_B;
+    (* mark_debug = "true" *) logic  [3:0] FIFO_size_A, FIFO_size_B;
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
@@ -107,7 +111,10 @@ module gba_top (
                  .reg_IF, .int_acks(reg_ACK),
                  .internal_TM0CNT_L, .internal_TM1CNT_L, .internal_TM2CNT_L,
                  .internal_TM3CNT_L,
-                 .TM0CNT_L, .TM1CNT_L, .TM2CNT_L, .TM3CNT_L, .dsASqRst, .dsBSqRst);
+                 .TM0CNT_L, .TM1CNT_L, .TM2CNT_L, .TM3CNT_L, .dsASqRst, .dsBSqRst,
+                 
+                 .FIFO_re_A, .FIFO_re_B, .FIFO_clr_A, .FIFO_clr_B, .FIFO_val_A,
+                 .FIFO_val_B, .FIFO_size_A, .FIFO_size_B);
 
     graphics_system gfx (.gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
                          .gfx_oam_addr, .gfx_palette_bg_addr,
@@ -138,10 +145,14 @@ module gba_top (
                       .genIRQ3(timer3));
 
     gba_audio_top audio (.clk_100(clk_100), .clk_256, .gba_clk, .reset(BTND), .AC_ADR0, .AC_ADR1,
-                     .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
-                     .AC_SDA, .IO_reg_datas, .sound_req1, .sound_req2,
-                     .internal_TM0CNT_L, .internal_TM1CNT_L,
-                     .dsASqRst, .dsBSqRst, .SW(SW[0]));
+                         .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
+                         .AC_SDA, .IO_reg_datas, .sound_req1, .sound_req2,
+                         .internal_TM0CNT_L, .internal_TM1CNT_L,
+                         .dsASqRst, .dsBSqRst, SW(SW[0])
+                         
+                         .FIFO_re_A, .FIFO_re_B, .FIFO_clr_A, .FIFO_clr_B, .FIFO_val_A,
+                         .FIFO_val_B, .FIFO_size_A, .FIFO_size_B
+                         );
 
 
     // Interface for SNES controller

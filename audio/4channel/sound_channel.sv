@@ -11,7 +11,7 @@ module square1 (
 
     logic clock_128;
     logic clock_64;
-    (* mark_debug = "true" *) logic enable_square_wave;
+    logic enable_square_wave;
     (* mark_debug = "true" *) logic [23:0] square_wave;
     (* mark_debug = "true" *) logic [23:0] length_wave;
     (* mark_debug = "true" *) logic [3:0] volume_level;

@@ -7,7 +7,7 @@ module interrupt_controller(
     output logic        nIRQ,
 
     (* mark_debug = "true" *) input  logic        ime, // Interrupt master enable
-    (* mark_debug = "true" *) output logic [15:0] reg_IF, // Interrupt Request Flags
+    output logic [15:0] reg_IF, // Interrupt Request Flags
     (* mark_debug = "true" *) input  logic [15:0] reg_IE,
     input  logic [15:0] reg_ACK,
 
