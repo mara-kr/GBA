@@ -266,11 +266,13 @@ module dma_start
   (input  logic [15:0] controlH,
    input  logic [15:0] vcount, hcount,
    input  logic sound, sound_req, //can this dma sync with sound, and are they requesting dma
+   input  logic cpu_preemptable,
    output logic start, dma_stop,
    input  logic clk, rst_b);
 
   logic display_sync_startable;
   logic passed_go;
+  logic hold_sound;
 
   always_ff @(posedge clk, negedge rst_b)
     if(~rst_b)
@@ -283,33 +285,49 @@ module dma_start
       if(~rst_b) begin
         sound_req_delay <= 1'b0;
       end
+      else if (hold_sound) begin
+        sound_req_delay <= sound_req_delay; //delay by one clock cycle to shorten critical path
+      end
       else begin
-        sound_req_delay <= sound_req; //delay by one clock cycle to shorten critical path
+        sound_req_delay <= sound_req;
       end
   end
 
   always_comb begin
     dma_stop = 1'b0; //extra control to turn off dma repeat
     passed_go = display_sync_startable;
+    hold_sound = 1'b0;
     case(controlH[13:12])
       2'b00: begin
-        start = 1'b1;
+        start = cpu_preemptable;
       end
       2'b10: begin
-        start = (hcount[7:0] == 8'd240);
+        start = (hcount[7:0] == 8'd240 && cpu_preemptable);
       end
       2'b01: begin
-        start = (vcount[7:0] == 8'd160);
+        start = (vcount[7:0] == 8'd160 && cpu_preemptable);
       end
       2'b11: begin
         if(sound) begin
-          start = sound_req_delay;
+          if (sound_req_delay) begin
+            if(cpu_preemptable) begin
+              start = 1'b1;
+            end
+            else begin
+              start = 1'b0;
+              hold_sound = 1'b1;
+            end
+          end
+          else begin
+            start = 1'b0;
+            hold_sound = 1'b0;
+          end
         end
         else begin
-          if(vcount[7:0] == 8'd02 && display_sync_startable) begin
+          if(vcount[7:0] == 8'd02 && display_sync_startable && cpu_preemptable) begin
             start = 1'b1;
           end
-          else if(vcount[7:0] == 8'd162) begin
+          else if(vcount[7:0] == 8'd162 && cpu_preemptable) begin
             start = 1'b0;
             dma_stop = 1'b1;
             passed_go = controlH[15]; //can start now if dma is enabled
@@ -332,6 +350,7 @@ module dma_unit
    input  logic mem_wait, preempted,
    input  logic srcGamePak, destGamePak,
    input  logic allowed_to_begin,
+   input  logic cpu_preemptable,
    output logic disable_dma,
    output logic active,
    output logic irq,
@@ -363,7 +382,7 @@ module dma_unit
 
   assign disable_dma = fsm_disable | dma_stop;
 
-  dma_start starter(.controlH, .vcount, .hcount, .sound, .sound_req, .start, .dma_stop, .clk, .rst_b);
+  dma_start starter(.controlH, .vcount, .hcount, .sound, .sound_req, .start, .dma_stop, .clk, .rst_b, .cpu_preemptable);
 
   dma_fsm fsm(.start, .mem_wait, .dma_repeat(controlH[9]), .preempted, .enable(controlH[15]), .xferDone,
               .genIRQ(controlH[14]), .loadCNT, .loadSAD, .loadDAD, .stepSRC, .stepDEST, .storeRData, .active,
@@ -379,6 +398,7 @@ endmodule: dma_unit
 module dma_top
   (input  logic [31:0] registers [`NUM_IO_REGS-1:0],
    input  logic [15:0] vcount, hcount,
+   input  logic cpu_preemptable,
    (* mark_debug = "true" *) input  logic        sound_req1, sound_req2,
 
    input  logic        mem_wait,
@@ -463,6 +483,7 @@ module dma_top
                  .irq(irq0), .others_cant_preempt(mid_process[0]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b0), .sound_req(1'b0),
+                 .cpu_preemptable,
                  .clk, .rst_b);
 
    dma_unit dma1(.controlL(controlL1), .controlH(controlH1),
@@ -475,6 +496,7 @@ module dma_top
                  .irq(irq1), .others_cant_preempt(mid_process[1]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b1), .sound_req(sound_req1),
+                 .cpu_preemptable,
                  .clk, .rst_b);
 
    dma_unit dma2(.controlL(controlL2), .controlH(controlH2),
@@ -487,6 +509,7 @@ module dma_top
                  .irq(irq2), .others_cant_preempt(mid_process[2]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b1), .sound_req(sound_req2),
+                 .cpu_preemptable,
                  .clk, .rst_b);
 
    dma_unit dma3(.controlL(controlL3), .controlH(controlH3),
@@ -499,6 +522,7 @@ module dma_top
                  .irq(irq3), .others_cant_preempt(mid_process[3]),
                  .addr, .wdata, .rdata, .size, .wen,
                  .vcount, .hcount, .sound(1'b0), .sound_req(1'b0),
+                 .cpu_preemptable,
                  .clk, .rst_b);
 
 endmodule: dma_top
