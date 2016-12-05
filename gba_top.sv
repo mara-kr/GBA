@@ -141,7 +141,7 @@ module gba_top (
                      .AC_GPIO1, .AC_GPIO2, .AC_GPIO3, .AC_MCLK, .AC_SCK,
                      .AC_SDA, .IO_reg_datas, .sound_req1, .sound_req2,
                      .internal_TM0CNT_L, .internal_TM1CNT_L,
-                     .dsASqRst, .dsBSqRst);
+                     .dsASqRst, .dsBSqRst, .SW(SW[0]));
 
 
     // Interface for SNES controller

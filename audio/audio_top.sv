@@ -7,6 +7,7 @@ module gba_audio_top (
     input  logic clk_256,
     input  logic gba_clk,
     input  logic reset,
+    input  logic SW,
     input  logic [2:0]  FIFO_size_A,
     input  logic [31:0] FIFO_val_A,
     output logic FIFO_re_A,
@@ -39,8 +40,8 @@ module gba_audio_top (
     logic        clk_100_buffered;
     logic [5:0]  counter_saw_tooth;
     (* mark_debug = "true" *) logic [23:0] hphone_l, hphone_r;
-    logic        hphone_valid;
-    logic        new_sample;
+    (* mark_debug = "true" *) logic        hphone_valid;
+    (* mark_debug = "true" *) logic        new_sample;
     logic        sample_clk_48k;
     logic [23:0] line_in_r, line_in_l;
 
@@ -265,15 +266,29 @@ module gba_audio_top (
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
 
+    logic [5:0] counter_saw_tooth;
+
     always_ff @(posedge clk_100) begin
         hphone_valid <= 0;
         hphone_l <= 0;
         hphone_r <= 0;
 
+        if (reset) begin
+            counter_saw_tooth <= 0;
+        end
+
         if (new_sample == 1) begin
-            hphone_valid <= 1'b1;
-            hphone_r <= {output_wave_r};
-            hphone_l <= {output_wave_l};
+            if (SW) begin
+                counter_saw_tooth <= counter_saw_tooth + 1;
+                hphone_valid <= 1'b1;
+                hphone_r <= {counter_saw_tooth, 18'd0};
+                hphone_l <= {counter_saw_tooth, 18'd0};
+            end
+            else begin
+                hphone_valid <= 1'b1;
+                hphone_r <= {output_wave_r};
+                hphone_l <= {output_wave_l};
+            end
         end
     end
 
