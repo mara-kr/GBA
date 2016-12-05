@@ -428,12 +428,12 @@ module dma_top
    logic [15:0] destAddrL0, destAddrH0;
 
    (* mark_debug = "true" *) logic [15:0] controlL1, controlH1;
-   (* mark_debug = "true" *) logic [15:0] srcAddrL1, srcAddrH1;
-   (* mark_debug = "true" *) logic [15:0] destAddrL1, destAddrH1;
+   logic [15:0] srcAddrL1, srcAddrH1;
+   logic [15:0] destAddrL1, destAddrH1;
 
    (* mark_debug = "true" *) logic [15:0] controlL2, controlH2;
-   (* mark_debug = "true" *) logic [15:0] srcAddrL2, srcAddrH2;
-   (* mark_debug = "true" *) logic [15:0] destAddrL2, destAddrH2;
+   logic [15:0] srcAddrL2, srcAddrH2;
+   logic [15:0] destAddrL2, destAddrH2;
 
    logic [15:0] controlL3, controlH3;
    logic [15:0] srcAddrL3, srcAddrH3;

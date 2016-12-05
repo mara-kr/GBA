@@ -66,7 +66,7 @@ module gba_top (
     
     (* mark_debug = "true" *) logic        FIFO_re_A, FIFO_re_B, FIFO_clr_A, FIFO_clr_B;
     (* mark_debug = "true" *) logic [31:0] FIFO_val_A, FIFO_val_B;
-    (* mark_debug = "true" *) logic  [2:0] FIFO_size_A, FIFO_size_B;
+    (* mark_debug = "true" *) logic  [3:0] FIFO_size_A, FIFO_size_B;
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
