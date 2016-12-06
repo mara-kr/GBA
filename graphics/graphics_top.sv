@@ -156,7 +156,7 @@ module graphics_top(
         .OAM_mem_addr(gfx_oam_addr), .VRAM_mem_addr(obj_addr),
         .obj_packet(obj),
         .OAM_mem_data(gfx_oam_data), .VRAM_mem_data(obj_data),
-        .vcount(vcount + 8'b1), .hcount,
+        .vcount, .hcount,
         .dispcnt, .mosaic_mmio_reg(mosaic), .bgmode);
     //row is 3 ahead of VCOUNT
     //Priority Evaluation

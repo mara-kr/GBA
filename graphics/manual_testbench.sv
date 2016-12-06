@@ -182,7 +182,8 @@ module manual_bench (
     assign win1V = 16'h50A0;
 
     //enable display in win0 if BTNL is pressed, in win1 if BTNR
-    assign winin = {2'b0, {6{BTNR}}, 2'b0, {6{BTNL}}};
+    //assign winin = {2'b0, {6{BTNR}}, 2'b0, {6{BTNL}}};
+    assign winin = {2'b0, 2'b11, {4{BTNR}}, 2'b0, 2'b11, {4{BTNL}}};
     assign winout = 16'hFFFF; //always display outside of windows
 
     //disable special effects
@@ -222,7 +223,7 @@ module manual_bench (
     vga_top video(.clock(vga_clock), .reset(BTND), .data(vga_color), .addr(vga_addr), .VGA_R, .VGA_G, .VGA_B, .VGA_HS, .VGA_VS);
 
     //graphics
-    graphics_top(.clock(graphics_clock), .reset,
+    graphics_top gfx(.clock(graphics_clock), .reset,
                  .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
                  .gfx_oam_data, .gfx_palette_bg_data, .gfx_palette_obj_data,
                  .gfx_vram_A_data2,
