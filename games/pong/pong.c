@@ -10,6 +10,7 @@ typedef uint32 tile4bpp[8];
 #define MEM_IO   0x04000000
 #define MEM_PAL  0x05000000
 #define MEM_VRAM 0x06000000
+#define MEM_OAM  0x07000000
 
 #define REG_DISPLAY_VCOUNT (*((volatile uint32 *)(MEM_IO + 0x0006)))
 #define REG_KEY_INPUT      ((volatile uint32 *)(MEM_IO + 0x0130))
@@ -18,10 +19,11 @@ typedef uint32 tile4bpp[8];
 #define KEY_DOWN   0x0080
 #define KEY_START  0x0008
 #define KEY_A      0x0001
-#define KEY_B      0x0002
+#define KEY_R      0x0100
 #define KEY_ANY    0x03FF
 
-#define bg_palette_memory ((volatile rgb15 *)MEM_PAL)
+#define bg_palette_memory  ((volatile rgb15 *)MEM_PAL)
+#define obj_palette_memory ((volatile rgb15 *)(MEM_PAL + 0x200))
 //register definitions
 #define dispcnt ((volatile uint16 *)MEM_IO)
 
@@ -96,6 +98,122 @@ const uint32 __snd_rates[12]=
 #define SDMG_BUILD_LR(_mode, _vol) SDMG_BUILD(_mode, _mode, _vol, _vol)
 
 
+
+void letter_M(void) {
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0000) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+	*(volatile unsigned short *)(MEM_OAM + 0x0002) = 0x4000; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+	*(volatile unsigned short *)(MEM_OAM + 0x0004) = 0x0000; 
+
+    *(unsigned short *)(MEM_VRAM + 0x10000) = 0x0011; //line 1 top left
+	*(unsigned short *)(MEM_VRAM + 0x10002) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10004) = 0x0101; // line 2
+	*(unsigned short *)(MEM_VRAM + 0x10006) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10008) = 0x1001; // line 3
+	*(unsigned short *)(MEM_VRAM + 0x1000A) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x1000C) = 0x0001; // line 4
+	*(unsigned short *)(MEM_VRAM + 0x1000E) = 0x0001;
+	*(unsigned short *)(MEM_VRAM + 0x10010) = 0x0001; // line 5
+	*(unsigned short *)(MEM_VRAM + 0x10012) = 0x0010;
+	*(unsigned short *)(MEM_VRAM + 0x10014) = 0x0001; // line 6
+	*(unsigned short *)(MEM_VRAM + 0x10016) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x10018) = 0x0001; // line 7
+	*(unsigned short *)(MEM_VRAM + 0x1001A) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x1001C) = 0x0001; // line 8
+	*(unsigned short *)(MEM_VRAM + 0x1001E) = 0x0000;
+	
+    *(unsigned short *)(MEM_VRAM + 0x10020) = 0x0000; //line 1 top right
+	*(unsigned short *)(MEM_VRAM + 0x10022) = 0x1100;
+	*(unsigned short *)(MEM_VRAM + 0x10024) = 0x0000; // line 2
+	*(unsigned short *)(MEM_VRAM + 0x10026) = 0x1010;
+	*(unsigned short *)(MEM_VRAM + 0x10028) = 0x0000; // line 3
+	*(unsigned short *)(MEM_VRAM + 0x1002A) = 0x1001;
+	*(unsigned short *)(MEM_VRAM + 0x1002C) = 0x1000; // line 4
+	*(unsigned short *)(MEM_VRAM + 0x1002E) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10030) = 0x0100; // line 5
+	*(unsigned short *)(MEM_VRAM + 0x10032) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10034) = 0x0010; // line 6
+	*(unsigned short *)(MEM_VRAM + 0x10036) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10038) = 0x0001; // line 7
+	*(unsigned short *)(MEM_VRAM + 0x1003A) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x1003C) = 0x0000; // line 8
+	*(unsigned short *)(MEM_VRAM + 0x1003E) = 0x1000;
+	
+    *(unsigned short *)(MEM_VRAM + 0x10040) = 0x0001; //line 9 bottom left
+	*(unsigned short *)(MEM_VRAM + 0x10042) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10044) = 0x0001; // line 10
+	*(unsigned short *)(MEM_VRAM + 0x10046) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10048) = 0x0001; // line 11
+	*(unsigned short *)(MEM_VRAM + 0x1004A) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x1004C) = 0x0001; // line 12
+	*(unsigned short *)(MEM_VRAM + 0x1004E) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10050) = 0x0001; // line 13
+	*(unsigned short *)(MEM_VRAM + 0x10052) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10054) = 0x0001; // line 14
+	*(unsigned short *)(MEM_VRAM + 0x10056) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10058) = 0x0001; // line 15
+	*(unsigned short *)(MEM_VRAM + 0x1005A) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x1005C) = 0x0001; // line 16
+	*(unsigned short *)(MEM_VRAM + 0x1005E) = 0x0000;
+
+    *(unsigned short *)(MEM_VRAM + 0x10060) = 0x0000; //line 9 bottom left
+	*(unsigned short *)(MEM_VRAM + 0x10062) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10064) = 0x0000; // line 10
+	*(unsigned short *)(MEM_VRAM + 0x10066) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10068) = 0x0000; // line 11
+	*(unsigned short *)(MEM_VRAM + 0x1006A) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x1006C) = 0x0000; // line 12
+	*(unsigned short *)(MEM_VRAM + 0x1006E) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10070) = 0x0000; // line 13
+	*(unsigned short *)(MEM_VRAM + 0x10072) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10074) = 0x0000; // line 14
+	*(unsigned short *)(MEM_VRAM + 0x10076) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10078) = 0x0000; // line 15
+	*(unsigned short *)(MEM_VRAM + 0x1007A) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x1007C) = 0x0000; // line 16
+	*(unsigned short *)(MEM_VRAM + 0x1007E) = 0x1000;
+}
+
+void letter_A (void){
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0006) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+	*(volatile unsigned short *)(MEM_OAM + 0x0008) = 0x4000; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+	*(volatile unsigned short *)(MEM_OAM + 0x000A) = 0x0001; 
+
+    *(unsigned short *)(MEM_VRAM + 0x10080) = 0x0000; //line 9 bottom left
+	*(unsigned short *)(MEM_VRAM + 0x10082) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10084) = 0x0000; // line 10
+	*(unsigned short *)(MEM_VRAM + 0x10086) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10088) = 0x0000; // line 11
+	*(unsigned short *)(MEM_VRAM + 0x1008A) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x1008C) = 0x0000; // line 12
+	*(unsigned short *)(MEM_VRAM + 0x1008E) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10090) = 0x0000; // line 13
+	*(unsigned short *)(MEM_VRAM + 0x10092) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10094) = 0x0000; // line 14
+	*(unsigned short *)(MEM_VRAM + 0x10096) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x10098) = 0x0000; // line 15
+	*(unsigned short *)(MEM_VRAM + 0x1009A) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x1009C) = 0x0000; // line 16
+	*(unsigned short *)(MEM_VRAM + 0x1009E) = 0x1000;
+}
+
+void mario_wins(void){
+	*dispcnt = 0x1740; //bg mode0, display window 0 and 1, turn on bg2, bg1, bg0A
+    
+    letter_M();
+}
+void luigi_wins(void){
+
+}
 int main(void) {
 	//set DISPCNT
 	*dispcnt = 0x0700; //bg mode0, display window 0 and 1, turn on bg2, bg1, bg0
@@ -129,8 +247,12 @@ int main(void) {
 	bg_palette_memory[36] = RGB15(0x1F, 0x1F, 0x0); //yellow = 3
 	bg_palette_memory[37] = RGB15(0x0, 0x1F, 0x1F); //tourquoise = 3
 	bg_palette_memory[38] = RGB15(0x1F, 0x0, 0x1F); //magenta = 3
-	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //brow = 3
+	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //brown = 3
 	bg_palette_memory[40] = RGB15(0x0, 0x8, 0x8); //gray = 3
+
+    //set colors in OBJ PRAM
+    obj_palette_memory[1] = RGB15(0x1F, 0x1F, 0x1F); // white = 1
+    obj_palette_memory[2] = RGB15(0x1F, 0x00, 0x00); // red = 2;
 
 	//set screen data format for paddle 1
 	//tile 1 is paddle 1
@@ -147,7 +269,7 @@ int main(void) {
 
 	//ball is tile 3
 	*(volatile unsigned short *)(MEM_VRAM + 0x5000) = 0x2003;
-	*bg2hofs = ~(0x6F) + 1;
+	*bg2hofs = CENTER_H_SCREEN;
 	*bg2vofs = CENTER_V_SCREEN;
 
 	//set screen data format for paddle 1
@@ -171,7 +293,7 @@ int main(void) {
 	*(unsigned short *)(MEM_VRAM + 0x3E) = 0x0212; //1-shirt
 	*(unsigned short *)(MEM_VRAM + 0x40) = 0x2122; //2-shirt
 	*(unsigned short *)(MEM_VRAM + 0x42) = 0x2212; //2-shirt
-	*(unsigned short *)(MEM_VRAM + 0x44) = 0x2212; //3-shirt
+	*(unsigned short *)(MEM_VRAM + 0x44) = 0x2122; //3-shirt
 	*(unsigned short *)(MEM_VRAM + 0x46) = 0x2212; //3-shirt
 
 
@@ -187,22 +309,14 @@ int main(void) {
     *(unsigned short *)(MEM_VRAM + 0x58) = 0x0333; //1-shoes
 	*(unsigned short *)(MEM_VRAM + 0x5A) = 0x3330; //1-shoes
 
-    /**(unsigned short *)(MEM_VRAM + 0x40) = 0x1100;
-	*(unsigned short *)(MEM_VRAM + 0x42) = 0x0011;
-	*(unsigned short *)(MEM_VRAM + 0x44) = 0x1110;
-	*(unsigned short *)(MEM_VRAM + 0x46) = 0x0111;
-	*(unsigned short *)(MEM_VRAM + 0x48) = 0x1111;
-	for (short i = 0x48; i <= 0x5E; i += 0x02) {
-		*(unsigned short *)(MEM_VRAM + i) = 0x1111;
-	}*/
 
 	//set screen data format for ball
-	*(unsigned short *)(MEM_VRAM + 0x60) = 0x1234;
-	*(unsigned short *)(MEM_VRAM + 0x62) = 0x5678;
+	*(unsigned short *)(MEM_VRAM + 0x60) = 0x1000;
+	*(unsigned short *)(MEM_VRAM + 0x62) = 0x0001;
 	*(unsigned short *)(MEM_VRAM + 0x64) = 0x1100;
 	*(unsigned short *)(MEM_VRAM + 0x66) = 0x0011;
-	*(unsigned short *)(MEM_VRAM + 0x68) = 0x3113;
-	*(unsigned short *)(MEM_VRAM + 0x6A) = 0x3113;
+	*(unsigned short *)(MEM_VRAM + 0x68) = 0x3110; 
+	*(unsigned short *)(MEM_VRAM + 0x6A) = 0x0113;
 	*(unsigned short *)(MEM_VRAM + 0x6C) = 0x2333;
 	*(unsigned short *)(MEM_VRAM + 0x6E) = 0x3332;
 	*(unsigned short *)(MEM_VRAM + 0x70) = 0x2333;
@@ -214,6 +328,8 @@ int main(void) {
 	*(unsigned short *)(MEM_VRAM + 0x7C) = 0x2000;
 	*(unsigned short *)(MEM_VRAM + 0x7E) = 0x0002;
 
+
+
 	uint32 volatile key_states = 0;
 	int x_dir = 2;
     int y_dir = 1;
@@ -223,8 +339,6 @@ int main(void) {
     short player_1 = CENTER_V_SCREEN;
     short player_0 = CENTER_V_SCREEN;
     uint16 counter = 0;
-
-
 
    // turn sound on
     *soundcnt_x= (1 << 0x7);
@@ -237,24 +351,30 @@ int main(void) {
     *sound1cnt_l= 0x00;
     // envelope: vol=12, decay, max step time (7) ; 50% duty
     *sound1cnt_h = 0xC78;
-    *sound1cnt_x= 0;
-	//play the actual note
-	*sound1cnt_x = (0x1 << 15) | SND_RATE(NOTE_A, 0); //octave
+
 
 	//play a jig
-	const uint8 lens[6]= { 1,1,4, 1,1,4 };
-	const uint8 notes[6]= { 0x02, 0x05, 0x12,  0x02, 0x05, 0x12 };
-	for(int ii=0; ii<6; ii++)
-	{
-		//play the actual note
-		*sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
-		for (int i = 0; i < (8*lens[ii] * 2000); i ++ );
-	}
+	const uint8 lens[6]= { 3,4, 8, 8, 4, 3};
+	const uint8 notes[6]= { 0x02, 0x05, 0x08};
 
 	while (1) {
+        mario_wins();
+        counter = counter + 1;
         // Skip past the rest of any current V-Blank, then skip past the V-Draw
         while(REG_DISPLAY_VCOUNT >= 160);
         while(REG_DISPLAY_VCOUNT < 160);
+        if (counter % 200 == 0x00){
+            if (ball_x == CENTER_H_SCREEN && ball_y == CENTER_V_SCREEN){
+                //reset_sound
+                *soundcnt_x= (1 << 0x7);
+                for(int ii=0; ii<3; ii++)
+                {
+                    //play the actual note
+                    *sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
+                    for (int i = 0; i < (8*lens[ii] * 2000); i ++ );
+                }
+                *soundcnt_x= 0;
+            }
             //turn sound off
             *soundcnt_x = 0; 
             
@@ -273,22 +393,35 @@ int main(void) {
             if (key_states & KEY_A) {
                 player_0 = clamp((player_0 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
             }
-            if (key_states & KEY_B) {
+            if (key_states & KEY_R) {
                 player_0 = clamp((player_0 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
             }
 
             //game over
             if (ball_x == PADDLE_1_X + BALL_WIDTH || ball_x == PADDLE_0_X - BALL_WIDTH) {
+                *soundcnt_x= (1 << 0x7);
+                for(int ii=2; ii>=0; ii--)
+                {
+                    //play the actual note
+                    *sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
+                    for (int i = 0; i < (8*lens[ii + 3] * 2000); i ++ );
+                }
+                *soundcnt_x= 0;
                 while (1) {
                     key_states = ~*REG_KEY_INPUT & KEY_ANY;
                     if (key_states & KEY_START){
                         player_0 = CENTER_V_SCREEN;
                         player_1 = CENTER_V_SCREEN;
-                        ball_x = ~(0x6F) + 1;
+                        ball_x = CENTER_H_SCREEN;
                         ball_y = CENTER_V_SCREEN;
                         break;
                     }
                 }
+                if (ball_x == PADDLE_1_X + BALL_WIDTH){ //mario wins
+                    mario_wins();
+                }
+                else luigi_wins;
+
             }
             //bounce off vertical edges
             else if (ball_y == MIN_V_SCREEN || ball_y == MAX_V_SCREEN) {
@@ -312,6 +445,8 @@ int main(void) {
             *bg2vofs = ball_y;
             *bg1vofs = player_1;
             *bg0vofs = player_0;
+            
+        }
 
     }
     return 0;
