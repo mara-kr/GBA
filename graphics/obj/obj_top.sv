@@ -19,7 +19,7 @@ module obj_top (
     logic [14:0] vram_addr;
 
     logic  [5:0] X, Y;
-    logic  [5:0] mosaicX, mosaicY, flipX, flipY;
+    logic  [5:0] mosaicX, mosaicY, flipX, flipY, rotX, rotY;
     logic  [3:0] hscale, vscale;
     logic  [7:0] row, pinfo;
     logic        visible, valid, transparent;
@@ -29,9 +29,9 @@ module obj_top (
     logic        readOAM, attr_done, lookupAttr, start;
 
     logic [10:0] timer;
-    logic  [9:0] objname;
+    logic  [9:0] objname, OAMaddr_attr, OAMaddr_obj;
     logic  [8:0] objx, col, col_offset;
-    (* mark_debug="true" *)logic  [7:0] objy, OAMaddr_obj, hsize, vsize, OAMaddr_attr;
+    logic  [7:0] objy, hsize, vsize;
     logic  [6:0] obj_hsize, obj_vsize;
     logic  [4:0] attrno;
     logic  [3:0] paletteno;

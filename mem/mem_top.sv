@@ -144,7 +144,7 @@ module mem_top (
     assign bus_pak_init_1_read = (bus_addr_lat1 - `PAK_INIT_1_START) <= `PAK_INIT_1_SIZE;
     assign bus_pak_init_1_addr = bus_addr_lat1 - `PAK_INIT_1_START;
 
-    (* mark_debug = "true" *) logic FIFO_we_A, FIFO_we_B, full_A, full_B, empty_A, empty_B;
+    logic FIFO_we_A, FIFO_we_B, full_A, full_B, empty_A, empty_B;
 
     fifo #(32) dsA (.clk(clock), .rst(reset), .we(FIFO_we_A), .re(FIFO_re_A),
                     .full(full_A), .empty(empty_A), .data_in(bus_wdata),

@@ -56,11 +56,7 @@ module vga_counter
      input  logic en,
      output logic [WIDTH-1:0] out);
 
-<<<<<<< HEAD
     logic [WIDTH-1:0] next_out;
-=======
-    (* mark_debug= "true" *) logic [WIDTH-1:0] next_out;
->>>>>>> obj_graphics
 
     always_comb begin
         if(out + 1 == MAX) next_out = {WIDTH{1'b0}};
@@ -111,7 +107,6 @@ endmodule: vga
 // TODO Addr should be VGA index + 1
 module vga_top(
     input  logic clock, reset,
-<<<<<<< HEAD
     input  logic [14:0] data,
     output logic [16:0] addr,
     output logic [3:0] VGA_R, VGA_G, VGA_B,
@@ -120,29 +115,13 @@ module vga_top(
     logic [8:0] row;
     logic [9:0] col;
     logic [16:0] curr_addr;
-=======
-    (* mark_debug = "true" *) input  logic [14:0] data,
-    (* mark_debug = "true" *) output logic [16:0] addr,
-    (* mark_debug = "true" *) output logic [3:0] VGA_R, VGA_G, VGA_B,
-    output logic VGA_HS, VGA_VS);
-
-    (* mark_debug = "true" *) logic [8:0] row;
-    (* mark_debug = "true" *) logic [9:0] col;
-    (* mark_debug = "true" *) logic [16:0] curr_addr;
->>>>>>> obj_graphics
 
     // Ignore LSB of color from graphics since we only have 4 bits
     logic on_screen;
     assign on_screen = row[8:1] < `GBA_ROWS && col[9:1] < `GBA_COLS;
-<<<<<<< HEAD
     assign VGA_B = (on_screen) ? data[14:11] : 4'h0;
     assign VGA_G = (on_screen) ? data[9:6] : 4'h0;
     assign VGA_R = (on_screen) ? data[4:1] : 4'h0;
-=======
-    assign VGA_R = (on_screen) ? data[14:11] : 4'h0;
-    assign VGA_G = (on_screen) ? data[9:6] : 4'h0;
-    assign VGA_B = (on_screen) ? data[4:1] : 4'h0;
->>>>>>> obj_graphics
 
     // Synchronous reads, don't make out of bounds accesses
     assign addr = (row[8:1] < `GBA_ROWS && col[9:1] < `GBA_COLS) ? curr_addr : 17'd0;

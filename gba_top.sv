@@ -64,8 +64,8 @@ module gba_top (
     logic [31:0] gfx_vram_A_data2, gfx_palette_bg_data;
     logic [31:0] gfx_oam_data, gfx_palette_obj_data;
 
-    (* mark_debug = "true" *) logic        FIFO_re_A, FIFO_re_B, FIFO_clr_A, FIFO_clr_B;
-    (* mark_debug = "true" *) logic [31:0] FIFO_val_A, FIFO_val_B;
+    logic        FIFO_re_A, FIFO_re_B, FIFO_clr_A, FIFO_clr_B;
+    logic [31:0] FIFO_val_A, FIFO_val_B;
     (* mark_debug = "true" *) logic  [3:0] FIFO_size_A, FIFO_size_B;
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
