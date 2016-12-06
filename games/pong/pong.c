@@ -110,7 +110,12 @@ int main(void) {
 	bg_palette_memory[17] = 0x03E0;// green
 	bg_palette_memory[33] = RGB15(0x1F, 0x00, 0x00); //red = 1
 	bg_palette_memory[34] = RGB15(0x1F, 0x1F, 0x1F); //white = 2
-	bg_palette_memory[36] = RGB15(0x8, 0x8, 0x8); //gray = 3
+	bg_palette_memory[35] = RGB15(0x7, 0x7, 0x7); //gray = 3
+	bg_palette_memory[36] = RGB15(0x1F, 0x1F, 0x0); //gray = 3
+	bg_palette_memory[37] = RGB15(0x0, 0x1F, 0x1F); //gray = 3
+	bg_palette_memory[38] = RGB15(0x1F, 0x0, 0x1F); //gray = 3
+	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //gray = 3
+	bg_palette_memory[40] = RGB15(0x0, 0x8, 0x8); //gray = 3
 
 	//set screen data format for paddle 1
 	//tile 1 is paddle 1
@@ -141,8 +146,8 @@ int main(void) {
 	}
 
 	//set screen data format for ball
-	*(unsigned short *)(MEM_VRAM + 0x60) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x62) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x60) = 0x1234;
+	*(unsigned short *)(MEM_VRAM + 0x62) = 0x5678;
 	*(unsigned short *)(MEM_VRAM + 0x64) = 0x1100;
 	*(unsigned short *)(MEM_VRAM + 0x66) = 0x0011;
 	*(unsigned short *)(MEM_VRAM + 0x68) = 0x3113;
