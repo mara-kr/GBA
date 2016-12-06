@@ -38,12 +38,12 @@ module obj_row_buffer (
         col_ones_hot = 256'b0;
         col_ones_hot[wcol] = 1'b1;
     end
-    assign col_data = (palettemode) ? 16'h0 : wdata;
+    assign col_data = (transparent) ? 20'h0 : wdata;
 
     assign rdata = (rcol < 8'd240) ? rdata_bus : 20'b0;
     generate
         for (genvar i = 0; i < 240; i++) begin : REGS
-            assign reg_in[i] = {4'd0, col_data} | (reg_out[i] & 20'h4000);
+            assign reg_in[i] = col_data | (reg_out[i] & 20'h4000);
             is_transparent ist (.transparent(transparent_col[i]),
                                 .data(reg_out[i][15:0]),
                                 .palettemode);
@@ -56,7 +56,7 @@ module obj_row_buffer (
     endgenerate
 
     always_comb begin
-        if(rcol < 8'd239)
+        if(rcol < 8'd240)
             rdata_bus = reg_out[rcol];
         else
             rdata_bus = 20'hF_FFFF;

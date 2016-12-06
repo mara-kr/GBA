@@ -2,26 +2,26 @@
 module attribute_lookup_unit (
     input  logic        clock, reset,
     output logic [15:0] A, B, C, D,
-    output logic  [7:0] OAMaddr,
+    output logic  [9:0] OAMaddr,
     output logic        readOAM, done,
     input  logic [31:0] OAMdata,
     input  logic  [4:0] attrno,
     input  logic        start);
 
-    logic [7:0] reg_out;
+    logic [9:0] reg_out;
     logic       writeA, writeB, writeC, writeD;
     logic       loadAttrNo;
-    enum logic [2:0] {IDLE, WRITE_A, WRITE_B, WRITE_C, WRITE_D, FINISH} cs, ns;
+    enum logic [2:0] {IDLE, PREP, WRITE_A, WRITE_B, WRITE_C, WRITE_D, FINISH} cs, ns;
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset) cs <= IDLE;
         else cs <= ns;
     end
 
-    obj_register #(8) addr_reg (.clock, .reset, .q(reg_out), .d(OAMaddr + 8'd4),
+    obj_register #(10) addr_reg (.clock, .reset, .q(reg_out), .d(OAMaddr + 8'd8),
                                 .clear(1'b0), .en(1'b1));
     // Increment to read every other word
-    assign OAMaddr = (loadAttrNo) ? {attrno[4:0], 3'b0} : reg_out[7:0];
+    assign OAMaddr = (loadAttrNo) ? {attrno[4:0], 5'b00110} : reg_out[9:0]; //start 48 bits past the attrno'th 64bit boundary
 
     obj_register #(16) regA (.clock, .reset, .q(A), .d(OAMdata[31:16]),
                              .clear(1'b0), .en(writeA));
@@ -44,9 +44,12 @@ module attribute_lookup_unit (
         ns = IDLE;
         case (cs)
             IDLE: begin
-                loadAttrNo = start;
-                readOAM = start;
-                ns = (start) ? WRITE_A : IDLE;
+                ns = (start) ? PREP : IDLE;
+            end
+            PREP: begin
+                loadAttrNo = 1'b1;
+                readOAM = 1'b1;
+                ns = WRITE_A;
             end
             WRITE_A: begin
                 writeA = 1'b1;

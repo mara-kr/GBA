@@ -24,19 +24,18 @@ module graphics_system (
     logic wen, toggle;
     logic [14:0] graphics_color, vga_color;
     logic [16:0] graphics_addr, vga_addr;
-
     logic [14:0] buffer0_dout, buffer1_dout;
     logic [16:0] buffer0_address, buffer1_address;
     logic [14:0] buffer0_din, buffer1_din;
     logic buffer0_ce, buffer1_ce;
     logic buffer0_we, buffer1_we;
 
-    
+
     //dbl_buffer buffers
 
-    dbl_buffer_bram0 buf0 (.clka(vga_clock), .addra(buffer0_address), .dina(buffer0_din), .douta(buffer0_dout), 
+    dbl_buffer_bram0 buf0 (.clka(vga_clock), .addra(buffer0_address), .dina(buffer0_din), .douta(buffer0_dout),
                            .ena(buffer0_ce), .wea(buffer0_we));
-    dbl_buffer_bram1 buf1 (.clka(vga_clock), .addra(buffer1_address), .dina(buffer1_din), .douta(buffer1_dout), 
+    dbl_buffer_bram1 buf1 (.clka(vga_clock), .addra(buffer1_address), .dina(buffer1_din), .douta(buffer1_dout),
                            .ena(buffer1_ce), .wea(buffer1_we));
 
     //interface between graphics and dbl_buffer
