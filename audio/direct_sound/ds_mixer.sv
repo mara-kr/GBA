@@ -5,8 +5,8 @@ module ds_mixer (
        input logic [23:0] direct_B,
        input logic [23:0] channel4_l,
        input logic [23:0] channel4_r,
-       (* mark_debug = "true" *) input logic [15:0] sound_cnt_h,
-       (* mark_debug = "true" *) output logic timer_numA,
+       input logic [15:0] sound_cnt_h,
+       output logic timer_numA,
        output logic timer_numB,
        output logic [23:0] output_wave_r,
        output logic [23:0] output_wave_l);
@@ -16,8 +16,8 @@ module ds_mixer (
        assign timer_numB = sound_cnt_h[14];
        assign timer_numA = sound_cnt_h[10];
 
-       (* mark_debug = "true" *) logic [23:0] directA_l;
-       (* mark_debug = "true" *) logic [23:0] directA_r;
+       logic [23:0] directA_l;
+       logic [23:0] directA_r;
        logic [23:0] directB_l;
        logic [23:0] directB_r;
 
