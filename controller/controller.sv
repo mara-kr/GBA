@@ -16,16 +16,17 @@
 `define LATCH_CYCLES ((6 * `US_CYCLES) - 1) // (half the full (12us) clock)
 
 module controller
-    (output logic        data_latch, data_clock,
+    ((* mark_debug = "true" *) output logic        data_latch, data_clock,
      output logic [15:0] buttons,
-     input  logic        serial_data, clock, reset);
+     (* mark_debug = "true" *) input  logic        serial_data, 
+     input  logic        clock, reset);
 
      enum logic [2:0] {WAIT, LATCH_PULSE, LATCH_WAIT, CYC_HI, CYC_LO} cs, ns;
 
      logic [`CYC_WIDTH-1:0] cycle_cnt;
-     logic [15:0] buttons_int;
-     logic [3:0] button_cyc_cnt;
-     logic cycle_clr, button_clr, button_en;
+     (* mark_debug = "true" *) logic [15:0] buttons_int;
+     (* mark_debug = "true" *) logic [3:0] button_cyc_cnt;
+     (* mark_debug = "true" *) logic cycle_clr, button_clr, button_en;
 
      controller_counter #(`CYC_WIDTH)
         cycles (.clock, .reset, .enable(1'b1), .clear(cycle_clr),
