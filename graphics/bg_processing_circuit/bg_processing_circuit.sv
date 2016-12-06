@@ -95,6 +95,7 @@ module bg_processing_circuit
   //datapath logic
   bg_counter #(11) col_bgno_counter(.q({col, bgno}), .d(), .enable(1'b1), .clear(start_row), .load(1'b0), .up(1'b1), .rst_b, .clk(clock));
 
+/*
   reg_decoder bg_decode
              (.bg0cnt, .bg1cnt, .bg2cnt, .bg3cnt,
               .bg0hofs, .bg1hofs, .bg2hofs, .bg3hofs,
@@ -109,13 +110,15 @@ module bg_processing_circuit
 
 
   bg_scrolling_unit bsu(.hofs, .vofs, .row, .col(col[7:0]), .x(scroll_x), .y(scroll_y));
-
+/*
+//KEEP THIS COMMENTED
 /*  bg_rot_scale_unit rsu(.A(dx), .B(dmx), .C(dy), .D(dmy), .bgx, .bgy,
                         .step(&bgno), .steprow(start_row), .newframe(new_frame),
                         .clock, .rst_b,
                         .x(rot_scale_x), .y(rot_scale_y),
                         .overflow(rot_scale_overflowed));
 */
+/*
   bg_rot_scale_top rsu(.bg2x, .bg2y, .bg3x, .bg3y,
                         .bg2pa, .bg2pb, .bg2pc, .bg2pd,
                         .bg3pa, .bg3pb, .bg3pc, .bg3pd,
@@ -157,7 +160,8 @@ module bg_processing_circuit
                            .bitmapped(bitmapped_OUTPUT), .bgno(bgno_OUTPUT),
                            .bg_priority(bg_priority_OUTPUT),
                            .bgused(bgused_OUTPUT), .formatted(bg_packet));
-
+*/
+  assign bg_packet = 20'b0;
   //Here be registers.
   bg_pipeline #(3) x_int(.q(x_INTERMEDIATE), .d(x[2:0]), .clock);
   bg_pipeline #(3) y_int(.q(y_INTERMEDIATE), .d(y[2:0]), .clock);

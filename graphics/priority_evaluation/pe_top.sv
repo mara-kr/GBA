@@ -25,15 +25,17 @@
     logic pe_send_address_2;
     logic pe_read_data_1;
     logic pe_read_data_2;
-    logic addr_is_obj;
+    logic addr_is_obj, addr_is_obj_lat1;
 
 
     (* mark_debug = "true" *) logic [7:0] pe_row;
     logic [31:0] pe_data;
     logic [31:0] pe_addr;
+    
+    pe_register #(1) palette_sel(.q(addr_is_obj_lat1), .d(addr_is_obj), .clk(clock), .clear(1'b0), .enable(1'b1), .rst_b(1'b1));
 
     assign pe_row = (vcount == 8'd227) ? 8'd0 : vcount + 1;
-    assign pe_data = (addr_is_obj) ? gfx_palette_obj_data : gfx_palette_bg_data;
+    assign pe_data = (addr_is_obj_lat1) ? gfx_palette_obj_data : gfx_palette_bg_data;
     assign gfx_palette_bg_addr = pe_addr;
     assign gfx_palette_obj_addr = pe_addr;
     //our row is one ahead of vcount
