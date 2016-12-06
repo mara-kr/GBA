@@ -104,29 +104,44 @@ int main(void) {
 	*bg1cnt = 0x0902;
 	*bg2cnt = 0x0A00;
 
-	//set colors in PRAM
+	//set colors in PRAM 1
 	bg_palette_memory[0] = 0x0000;//RGB15(0x00, 0x00, 0x00); //black
-	bg_palette_memory[1] = 0x7C00; //blue
-	bg_palette_memory[17] = 0x03E0;// green
+	bg_palette_memory[1] = 0x7C00; //blue = 1
+	bg_palette_memory[2] = RGB15(0x1F, 0x00, 0x00); //red = 2
+	bg_palette_memory[3] = RGB15(0x8, 0x8, 0x0); //brown = 3
+	bg_palette_memory[4] = RGB15(0x1F, 0x1F, 0x0); //yellow = 4
+	bg_palette_memory[5] = RGB15(0x1F, 0x1F, 0x1F); //white = 5
+	bg_palette_memory[6] = RGB15(0xf7, 0xae, 0x4f); //skin = 6
+	bg_palette_memory[7] = RGB15(0x0, 0x8, 0x8); //gray = 7
+
+    //set colors in PRAM 2
+	bg_palette_memory[17] = 0x7C00; //blue = 1
+	bg_palette_memory[18] = RGB15(0x00, 0x1F, 0x00); //green = 2
+	bg_palette_memory[19] = RGB15(0x8, 0x8, 0x0); //brown = 3
+	bg_palette_memory[20] = RGB15(0x1F, 0x1F, 0x0); //yellow = 4
+	bg_palette_memory[21] = RGB15(0x1F, 0x1F, 0x1F); //white = 5
+	bg_palette_memory[22] = RGB15(0xf7, 0xae, 0x4f); //skin = 6
+	bg_palette_memory[23] = RGB15(0x0, 0x8, 0x8); //gray = 7
+
 	bg_palette_memory[33] = RGB15(0x1F, 0x00, 0x00); //red = 1
 	bg_palette_memory[34] = RGB15(0x1F, 0x1F, 0x1F); //white = 2
 	bg_palette_memory[35] = RGB15(0x7, 0x7, 0x7); //gray = 3
-	bg_palette_memory[36] = RGB15(0x1F, 0x1F, 0x0); //gray = 3
-	bg_palette_memory[37] = RGB15(0x0, 0x1F, 0x1F); //gray = 3
-	bg_palette_memory[38] = RGB15(0x1F, 0x0, 0x1F); //gray = 3
-	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //gray = 3
+	bg_palette_memory[36] = RGB15(0x1F, 0x1F, 0x0); //yellow = 3
+	bg_palette_memory[37] = RGB15(0x0, 0x1F, 0x1F); //tourquoise = 3
+	bg_palette_memory[38] = RGB15(0x1F, 0x0, 0x1F); //magenta = 3
+	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //brow = 3
 	bg_palette_memory[40] = RGB15(0x0, 0x8, 0x8); //gray = 3
 
 	//set screen data format for paddle 1
 	//tile 1 is paddle 1
-	*(volatile unsigned short *)(MEM_VRAM + 0x4000) = 0x0001;
-	*(volatile unsigned short *)(MEM_VRAM + 0x4040) = 0x0801;
+	*(volatile unsigned short *)(MEM_VRAM + 0x4800) = 0x0001;
+	*(volatile unsigned short *)(MEM_VRAM + 0x4840) = 0x0002;
 	*bg0hofs = PADDLE_0_X;
 	*bg0vofs = CENTER_V_SCREEN;
 
-	//paddle 2 is paddle 1 right shifted in a different color
-	*(volatile unsigned short *)(MEM_VRAM + 0x4800) = 0x1001;
-	*(volatile unsigned short *)(MEM_VRAM + 0x4840) = 0x1801;
+	//paddle 2 is paddle 2 right shifted in a different color
+	*(volatile unsigned short *)(MEM_VRAM + 0x4000) = 0x1401;
+	*(volatile unsigned short *)(MEM_VRAM + 0x4040) = 0x1402;
 	*bg1hofs = PADDLE_1_X;
 	*bg1vofs = CENTER_V_SCREEN;
 
@@ -136,14 +151,50 @@ int main(void) {
 	*bg2vofs = CENTER_V_SCREEN;
 
 	//set screen data format for paddle 1
-	*(unsigned short *)(MEM_VRAM + 0x20) = 0x1100;
-	*(unsigned short *)(MEM_VRAM + 0x22) = 0x0011;
-	*(unsigned short *)(MEM_VRAM + 0x24) = 0x1110;
-	*(unsigned short *)(MEM_VRAM + 0x26) = 0x0111;
-	*(unsigned short *)(MEM_VRAM + 0x28) = 0x1111;
-	for (short i = 0x0028; i <= 0x003E; i += 0x02) {
+	*(unsigned short *)(MEM_VRAM + 0x20) = 0x2200; //1-hathat
+	*(unsigned short *)(MEM_VRAM + 0x22) = 0x0022; //1-hat
+	*(unsigned short *)(MEM_VRAM + 0x24) = 0x2220; //2-hat 
+	*(unsigned short *)(MEM_VRAM + 0x26) = 0x2222; //2-hat
+	*(unsigned short *)(MEM_VRAM + 0x28) = 0x6770; //1-face
+	*(unsigned short *)(MEM_VRAM + 0x2A) = 0x0067; //1-face
+	*(unsigned short *)(MEM_VRAM + 0x2C) = 0x6760; //2-face
+	*(unsigned short *)(MEM_VRAM + 0x2E) = 0x0667; //2-face
+	*(unsigned short *)(MEM_VRAM + 0x30) = 0x6660; //3-face
+	*(unsigned short *)(MEM_VRAM + 0x32) = 0x6676; //3-face
+	*(unsigned short *)(MEM_VRAM + 0x34) = 0x6600; //4-face
+	*(unsigned short *)(MEM_VRAM + 0x36) = 0x0777; //4-face
+	*(unsigned short *)(MEM_VRAM + 0x38) = 0x6000; //5-face
+	*(unsigned short *)(MEM_VRAM + 0x3A) = 0x0666; //5-face
+
+    
+	*(unsigned short *)(MEM_VRAM + 0x3C) = 0x2120; //1-shirt
+	*(unsigned short *)(MEM_VRAM + 0x3E) = 0x0212; //1-shirt
+	*(unsigned short *)(MEM_VRAM + 0x40) = 0x2122; //2-shirt
+	*(unsigned short *)(MEM_VRAM + 0x42) = 0x2212; //2-shirt
+	*(unsigned short *)(MEM_VRAM + 0x44) = 0x2212; //3-shirt
+	*(unsigned short *)(MEM_VRAM + 0x46) = 0x2212; //3-shirt
+
+
+	*(unsigned short *)(MEM_VRAM + 0x48) = 0x1415; //1-pants
+	*(unsigned short *)(MEM_VRAM + 0x4A) = 0x5141; //1-pants
+	*(unsigned short *)(MEM_VRAM + 0x4C) = 0x1155; //2-pants
+	*(unsigned short *)(MEM_VRAM + 0x4E) = 0x5511; //2-pants
+	*(unsigned short *)(MEM_VRAM + 0x50) = 0x0110; //3-pants
+	*(unsigned short *)(MEM_VRAM + 0x52) = 0x0110; //3-pants
+	*(unsigned short *)(MEM_VRAM + 0x54) = 0x0110; //4-pants
+	*(unsigned short *)(MEM_VRAM + 0x56) = 0x0110; //4-pants
+	
+    *(unsigned short *)(MEM_VRAM + 0x58) = 0x0333; //1-shoes
+	*(unsigned short *)(MEM_VRAM + 0x5A) = 0x3330; //1-shoes
+
+    /**(unsigned short *)(MEM_VRAM + 0x40) = 0x1100;
+	*(unsigned short *)(MEM_VRAM + 0x42) = 0x0011;
+	*(unsigned short *)(MEM_VRAM + 0x44) = 0x1110;
+	*(unsigned short *)(MEM_VRAM + 0x46) = 0x0111;
+	*(unsigned short *)(MEM_VRAM + 0x48) = 0x1111;
+	for (short i = 0x48; i <= 0x5E; i += 0x02) {
 		*(unsigned short *)(MEM_VRAM + i) = 0x1111;
-	}
+	}*/
 
 	//set screen data format for ball
 	*(unsigned short *)(MEM_VRAM + 0x60) = 0x1234;
