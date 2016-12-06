@@ -32,8 +32,8 @@ module obj_rot_scale_unit
   assign product_x = a * dx + b * dy + {x_bias, 8'b0};
   assign product_y = c * dx + d * dy + {y_bias, 8'b0};
 
-  assign x = negx ? ~product_x + 6'b1 : product_x[13:8]; //truncate the 8 fractional bits
-  assign y = negy ? ~product_y + 6'b1 : product_y[13:8];
+  assign x = negx ? ~product_x[13:8] + 6'b1 : product_x[13:8]; //truncate the 8 fractional bits
+  assign y = negy ? ~product_y[13:8] + 6'b1 : product_y[13:8];
 
   assign transparent = |product_x[22:14] | |product_y[22:14];
 
