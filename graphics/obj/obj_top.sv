@@ -3,10 +3,10 @@
 module obj_top (
     input  logic        clock, reset,
 
-    output logic [31:0] OAM_mem_addr, 
+    output logic [31:0] OAM_mem_addr,
     output logic [14:0] VRAM_mem_addr,
     output logic [19:0] obj_packet,
-    input  logic [31:0] OAM_mem_data, 
+    input  logic [31:0] OAM_mem_data,
     input  logic [15:0] VRAM_mem_data,
     input  logic [15:0] dispcnt,
     input  logic [15:0] mosaic_mmio_reg,
@@ -49,25 +49,27 @@ module obj_top (
     logic  [1:0] objmode_PIPELINE, pri_PIPELINE;
     logic        palettemode_PIPELINE, transparent_PIPELINE, wen_PIPELINE;
 
-    enum logic  [3:0] {RESET, GETOBJDATA, WAITOBJDATA, GETOBJATTR, WRITE} cs, ns;
+    enum logic  [3:0] {RESET, STARTROW, GETOBJDATA, WAITOBJDATA, GETOBJATTR, WRITE} cs, ns;
 
     assign hsize = (dblsize) ? {obj_hsize[6:0], 1'b0} : obj_hsize;
     assign vsize = (dblsize) ? {obj_vsize[6:0], 1'b0} : obj_vsize;
 
     assign hscale = mosaic_mmio_reg[11:8];
-    assign vscale = mosaic_mmio_reg[15:12]; 
+    assign vscale = mosaic_mmio_reg[15:12];
 
     assign row = vcount + 1;
-    assign col = rotation ? objx + col_offset : objx - hsize[7:1] + col_offset;
-    assign transparent = (col >= 9'd240) || (rot_scale_transparent && rotation) || ~valid;
+    assign col = rotation ? objx - hsize[7:1] + col_offset : objx + col_offset;
+    assign transparent = (col >= 9'd240) /*|| (rot_scale_transparent && rotation)*/ || ~valid || ~visible || objmode[1] || (dblsize && ~rotation);
     assign obj_wdata = {pri_PIPELINE, 3'd5, objmode_PIPELINE, 5'd1, pinfo};
     assign VRAM_mem_addr = vram_addr;
     assign startrow = (timer == 11'd1231) || clear_timer;
     assign oam_mode = dispcnt[6];
 
+    assign X = rotation ? rotX : mosaicX;
+    assign Y = rotation ? rotY : mosaicY;
 
     //control logic
-    obj_counter #(9) col_cntr(.q(col_offset), .en(step), .clear(stepobj), .clock, .reset);
+    obj_counter #(9) col_cntr(.q(col_offset), .en(step), .clear(stepobj | startrow), .clock, .reset);
     obj_counter #(11) kitchen_timer(.q(timer), .en(1'b1), .clear(startrow), .clock, .reset); //ding every 1232 clock cycles
     obj_counter #(2) reset_timer(.q(waitstate), .en(1'b1), .clear(1'b0), .clock, .reset); //ding every 1232 clock cycles
 
@@ -89,29 +91,36 @@ module obj_top (
             RESET: begin
                 if(waitstate == 2'd2) begin
                     ns = GETOBJDATA;
+                    stepobj = 1'b1;
                     clear_timer = 1'b1;
                 end
+            end
+            STARTROW: begin
+                ns = GETOBJDATA;
             end
             GETOBJDATA: begin
                 if(~startrow)
                     ns = WAITOBJDATA;
                 else
-                    ns = GETOBJDATA;
+                    ns = STARTROW;
             end
             WAITOBJDATA: begin
                 if(~startrow)
-                    if(rotation) begin
+                    if(~visible) begin
+                        ns = GETOBJDATA;
+                        stepobj = 1'b1;
+                    end
+                    else if(rotation) begin
                         ns = GETOBJATTR;
                         lookupAttr = 1'b1;
                     end
                     else begin
                         ns = WRITE;
-                        lookupAttr = 1'b1;
                         wen = 1'b1;
                         step = 1'b1;
                     end
                 else
-                    ns = GETOBJDATA;
+                    ns = STARTROW;
             end
             GETOBJATTR: begin
                 if(~startrow)
@@ -124,7 +133,7 @@ module obj_top (
                         step = 1'b1;
                     end
                 else
-                    ns = GETOBJDATA;
+                    ns = STARTROW;
             end
             WRITE: begin
                 if(~startrow)
@@ -136,10 +145,9 @@ module obj_top (
                     else begin
                         ns = GETOBJDATA;
                         stepobj = 1'b1;
-                        wen = 1'b1;
                     end
                 else
-                    ns = GETOBJDATA;
+                    ns = STARTROW;
             end
         endcase
     end
@@ -150,16 +158,16 @@ module obj_top (
                          .hsize(obj_hsize), .vsize(obj_vsize),
                          .attrno, .paletteno, .objmode,
                          .pri, .mosaic, .rotation, .dblsize, .hflip, .vflip,
-                         .palettemode, .step, .startrow, .OAMdata(OAM_mem_data));
+                         .palettemode, .step(stepobj), .startrow, .OAMdata(OAM_mem_data));
 
     attribute_lookup_unit alu (.clock, .reset, .A, .B, .C, .D,
                                 .OAMaddr(OAMaddr_attr), .readOAM, .done(attr_done),
                                 .attrno, .start(lookupAttr),
                                 .OAMdata(OAM_mem_data));
-                                
+
     assign OAM_mem_addr = readOAM ? OAMaddr_attr : OAMaddr_obj;
 
-    mosaic_processing_unit mpu(.hscale, .vscale, .mosaic, .row(X), .col(Y), .x(mosaicX), .y(mosaicY));
+    mosaic_processing_unit mpu(.hscale, .vscale, .mosaic, .row(vcount-objy), .col(col_offset), .x(mosaicX), .y(mosaicY));
 
     row_visible_unit rvu (.visible, .row, .objy, .vsize, .rotation);
 
@@ -178,10 +186,10 @@ module obj_top (
                                 .clock, .reset);
 
     obj_rot_scale_unit orsu (.a(A), .b(B), .c(C), .d(D), .objx, .objy, .hsize, .vsize,
-                             .dblsize, .x(X), .y(Y), .transparent(rot_scale_transparent),
+                             .dblsize, .x(rotX), .y(rotY), .transparent(rot_scale_transparent),
                              .row, .col(col[7:0]));
 
-    obj_data_unit odu (.palette_info(pinfo), .X, .palettemode(palettemode_PIPELINE), .addr(vram_addr_PIPELINE),
+    obj_data_unit odu (.palette_info(pinfo), .X(x_PIPELINE), .palettemode(palettemode_PIPELINE), .addr(vram_addr_PIPELINE),
                        .paletteno(paletteno_PIPELINE), .data({16'b0, VRAM_mem_data}));
 
     //pipeline registers

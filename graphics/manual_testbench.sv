@@ -71,17 +71,17 @@ module manual_bench (
     assign IO_reg_datas[`BLDCNT_IDX][15:0] = bldcnt;
     assign IO_reg_datas[`BLDALPHA_IDX][31:16] = bldalpha;
     assign IO_reg_datas[`BLDY_IDX][15:0] = bldy;
-    
+
     assign IO_reg_datas[`BG0CNT_IDX][15:0] = bg0cnt;
     assign IO_reg_datas[`BG1CNT_IDX][31:16] = bg1cnt;
     assign IO_reg_datas[`BG2CNT_IDX][15:0] = bg2cnt;
     assign IO_reg_datas[`BG3CNT_IDX][31:16] = bg3cnt;
-    
+
     assign IO_reg_datas[`BG0HOFS_IDX][15:0] = bg0hofs;
     assign IO_reg_datas[`BG1HOFS_IDX][15:0] = bg1hofs;
     assign IO_reg_datas[`BG2HOFS_IDX][15:0] = bg2hofs;
     assign IO_reg_datas[`BG3HOFS_IDX][15:0] = bg3hofs;
-    
+
     assign IO_reg_datas[`BG0VOFS_IDX][31:16] = bg0vofs;
     assign IO_reg_datas[`BG1VOFS_IDX][31:16] = bg1vofs;
     assign IO_reg_datas[`BG2VOFS_IDX][31:16] = bg2vofs;
@@ -101,7 +101,7 @@ module manual_bench (
     assign IO_reg_datas[`BG3PC_IDX][15:0] = bg3pc;
     assign IO_reg_datas[`BG3PD_IDX][31:16] = bg3pd;
     assign IO_reg_datas[`MOSAIC_IDX][15:0] = mosaic;
-    
+
     assign dispcnt = {3'b111, 1'b1, SW[3:0], 1'b0, 1'b1, 1'b0, 1'b0, 1'b0, 3'b001};
     //no windows
     //display layers specified by switches
@@ -163,7 +163,7 @@ module manual_bench (
     assign bg3vofs = SW[7] ? 16'd128 : 16'b0;
 
     //default BG2 to no rotation
-    //rotate 45 degrees if SW[6] is set 
+    //rotate 45 degrees if SW[6] is set
     assign bg2pa = SW[6] ? 16'h00B5 : 16'h0100;
     assign bg2pb = SW[6] ? 16'h80B5 : 16'h0000;
     assign bg2pc = SW[6] ? 16'h00B5 : 16'h0000;
@@ -182,7 +182,8 @@ module manual_bench (
     assign win1V = 16'h50A0;
 
     //enable display in win0 if BTNL is pressed, in win1 if BTNR
-    assign winin = {2'b0, {6{BTNR}}, 2'b0, {6{BTNL}}};
+    //assign winin = {2'b0, {6{BTNR}}, 2'b0, {6{BTNL}}};
+    assign winin = {2'b0, 2'b11, {4{BTNR}}, 2'b0, 2'b11, {4{BTNL}}};
     assign winout = 16'hFFFF; //always display outside of windows
 
     //disable special effects
@@ -196,7 +197,7 @@ module manual_bench (
     logic wen, toggle;
     logic [14:0] graphics_color, vga_color;
     logic [16:0] graphics_addr, vga_addr;
-   
+
     logic [14:0] buffer0_dout, buffer1_dout;
     logic [16:0] buffer0_address, buffer1_address;
     logic [14:0] buffer0_din, buffer1_din;
@@ -222,7 +223,7 @@ module manual_bench (
     vga_top video(.clock(vga_clock), .reset(BTND), .data(vga_color), .addr(vga_addr), .VGA_R, .VGA_G, .VGA_B, .VGA_HS, .VGA_VS);
 
     //graphics
-    graphics_top(.clock(graphics_clock), .reset,
+    graphics_top gfx(.clock(graphics_clock), .reset,
                  .gfx_vram_A_data, .gfx_vram_B_data, .gfx_vram_C_data,
                  .gfx_oam_data, .gfx_palette_bg_data, .gfx_palette_obj_data,
                  .gfx_vram_A_data2,
@@ -243,15 +244,15 @@ module dblbuffer_driver(
     input logic clk,
     input logic rst_b
     );
-    
+
     assign vcount = row;
-    
+
     dbdriver_counter #(20, 842687) toggler(.clk, .rst_b, .en(1'b1), .clear(1'b0), .last(toggle), .Q());
-    
+
     logic [18:0] timer;
     (* mark_debug = "true" *)logic [7:0] row;
     (* mark_debug = "true" *)logic [8:0] col;
-    
+
     (* mark_debug = "true" *)logic step_row;
     (* mark_debug = "true" *)logic next_frame;
     logic step;
@@ -263,10 +264,10 @@ module dblbuffer_driver(
     dbdriver_counter #(9, 307) cols(.clk(graphics_clock), .en(step), .clear(next_frame & step), .rst_b, .last(step_row), .Q(col));
 
     assign wen = row < 8'd160 && col < 9'd240;
-    
+
 endmodule
 
-module dbdriver_counter 
+module dbdriver_counter
     #(
     parameter WIDTH=18,
     parameter MAX = 210671
@@ -279,14 +280,14 @@ module dbdriver_counter
     output logic [WIDTH-1:0] Q,
     output logic last
     );
-    
+
     assign last = Q == MAX;
-    
+
     logic [WIDTH-1:0] next;
-        
+
     always_comb begin
         if(clear) begin
-            next = 0;    
+            next = 0;
         end
         else if(~en) begin
             next = Q;
@@ -297,7 +298,7 @@ module dbdriver_counter
         else begin
             next = Q + 1;
         end
-    end 
+    end
 
     always_ff @(posedge clk, negedge rst_b) begin
         if(~rst_b) begin

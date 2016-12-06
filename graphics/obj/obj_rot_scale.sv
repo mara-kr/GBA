@@ -12,23 +12,28 @@ module obj_rot_scale_unit
   logic [6:0] dx;
   logic [6:0] dy;
 
-  assign dx = col - objx;
-  assign dy = row - objy;
+  logic negx, negy;
+
+  assign negx = col < objx;
+  assign negy = row < objy;
+
+  assign dx = negx ? objx - col : col - objx;
+  assign dy = negy ? objy - row : row - objy;
 
   //justify results into the range [0, 64)
   logic [5:0] x_bias;
   logic [5:0] y_bias;
 
-  assign x_bias = dblsize ? hsize[7:2] : hsize[6:1];
-  assign y_bias = dblsize ? vsize[7:2] : vsize[6:1];
+  assign x_bias = dblsize ? hsize[6:0] : hsize[5:0];
+  assign y_bias = dblsize ? vsize[6:0] : vsize[5:0];
 
   //math
   logic [22:0] product_x, product_y;
   assign product_x = a * dx + b * dy + {x_bias, 8'b0};
   assign product_y = c * dx + d * dy + {y_bias, 8'b0};
 
-  assign x = product_x[13:8]; //truncate the 8 fractional bits
-  assign y = product_y[13:8];
+  assign x = negx ? ~product_x + 6'b1 : product_x[13:8]; //truncate the 8 fractional bits
+  assign y = negy ? ~product_y + 6'b1 : product_y[13:8];
 
   assign transparent = |product_x[22:14] | |product_y[22:14];
 
