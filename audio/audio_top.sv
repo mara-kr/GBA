@@ -8,7 +8,7 @@ module gba_audio_top (
     input  logic gba_clk,
     input  logic reset,
     input  logic SW,
-    input  logic [2:0]  FIFO_size_A,
+    input  logic [3:0]  FIFO_size_A,
     input  logic [31:0] FIFO_val_A,
     output logic FIFO_re_A,
     output logic FIFO_clr_A,
@@ -39,7 +39,7 @@ module gba_audio_top (
     //audio codec
     logic        clk_100_buffered;
     logic [5:0]  counter_saw_tooth;
-    (* mark_debug = "true" *) logic [23:0] hphone_l, hphone_r;
+    logic [23:0] hphone_l, hphone_r;
     (* mark_debug = "true" *) logic        hphone_valid;
     (* mark_debug = "true" *) logic        new_sample;
     logic        sample_clk_48k;
@@ -62,7 +62,7 @@ module gba_audio_top (
     logic [23:0] channel_2;
 
     //square1 channel
-    (* mark_debug = "true" *) logic [7:0] NR10, NR11, NR12, NR13, NR14;
+    logic [7:0] NR10, NR11, NR12, NR13, NR14;
     logic [23:0] channel_1;
 
     //noise channel
@@ -79,8 +79,7 @@ module gba_audio_top (
     logic reset_c4;
 
     //final mixer
-    logic [23:0] direct_A;
-    logic [23:0] direct_B;
+    (* mark_debug = "true" *) logic [23:0] direct_A, direct_B;
     (* mark_debug = "true" *) logic [15:0] SOUND_CNT_H;
     logic timer_numA;
     logic timer_numB;
@@ -255,7 +254,6 @@ module gba_audio_top (
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
 
-    logic [5:0] counter_saw_tooth;
 
     always_ff @(posedge clk_100) begin
         hphone_valid <= 0;
