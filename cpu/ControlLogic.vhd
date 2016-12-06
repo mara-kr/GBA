@@ -591,12 +591,10 @@ signal NewTFlag  : std_logic := '0';
 
 -- Pipeline stagnation
 signal StagnatePipeline_Int : std_logic := '0';
-attribute mark_debug of StagnatePipeline_Int : signal is "true";
 
 
 -- StagnatePipeline signal delayed by one clock cycle
 signal StagnatePipelineDel_Int : std_logic := '0';
-attribute mark_debug of StagnatePipelineDel_Int : signal is "true";
 
 
 -- First instruction fetch after reset

@@ -256,7 +256,7 @@ module dma_dp
   register #(32) dad(.d(nextDAddr), .q(dAddrRaw), .clk, .clear(1'b0), .enable(dadEnable), .rst_b);
   register #(32) data_reg(.d(rdata), .q(data), .clk, .clear(1'b0), .enable(storeRData), .rst_b);
   counter #(14) xferCnt (.d(14'b0), .q(xfers), .clk, .enable(stepSRC), .clear(reload_xfers), .load(1'b0), .up(1'b1), .rst_b);
-  (* mark_debug = "true" *) logic [13:0] words_to_transfer;
+  logic [13:0] words_to_transfer;
   assign words_to_transfer = (sound) ? 14'd4 : controlL[13:0];
   assign xferDone = (xfers == words_to_transfer);
 
