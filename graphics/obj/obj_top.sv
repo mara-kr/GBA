@@ -15,7 +15,7 @@ module obj_top (
 
     );
 
-    logic [15:0] obj_wdata;
+    logic [19:0] obj_wdata;
     logic [14:0] vram_addr;
 
     logic  [5:0] X, Y;
@@ -25,20 +25,19 @@ module obj_top (
     logic        visible, valid, transparent;
 
     logic [15:0] A, B, C, D;
-    logic  [4:0] attr_no;
-    logic        readOAM, attr_done, lookupAttr, start;
+    logic  [4:0] attrno;
+    logic        readOAM, attr_done, lookupAttr;
 
     logic [10:0] timer;
     logic  [9:0] objname, OAMaddr_attr, OAMaddr_obj;
     logic  [8:0] objx, col, col_offset;
     logic  [7:0] objy, hsize, vsize;
     logic  [6:0] obj_hsize, obj_vsize;
-    logic  [4:0] attrno;
     logic  [3:0] paletteno;
     logic  [1:0] objmode, pri;
     logic  [1:0] waitstate;
     logic        mosaic, rotation, dblsize, hflip, vflip, palettemode, oam_mode;
-    logic        step, stepdot, stepobj, startrow, wen;
+    logic        step, stepobj, startrow, wen;
     logic        rot_scale_transparent;
     logic        clear_timer;
 

@@ -1,7 +1,7 @@
 `default_nettype none
 module obj_row_double_buffer (
     output logic [19:0] rdata,
-    input  logic [15:0] wdata,
+    input  logic [19:0] wdata,
     input  logic  [7:0] wcol, rcol, row,
     input  logic        palettemode, clear, transparent,
     input  logic        we,
@@ -11,11 +11,11 @@ module obj_row_double_buffer (
 
     obj_row_buffer odd (.wdata, .transparent, .palettemode,
                          .wcol, .rcol, .clear, .rdata(rdata_odd),
-                         .en((clear | we) & row[0]), .clock, .reset);
+                         .en((clear | we) & ~row[0]), .clock, .reset);
 
     obj_row_buffer even  (.wdata, .transparent, .palettemode,
                          .wcol, .rcol, .clear, .rdata(rdata_even),
-                         .en((clear | we) & ~row[0]), .clock, .reset);
+                         .en((clear | we) & row[0]), .clock, .reset);
 
     assign rdata = (row[0]) ? rdata_even : rdata_odd;
 endmodule: obj_row_double_buffer
@@ -23,7 +23,7 @@ endmodule: obj_row_double_buffer
 module obj_row_buffer (
     input  logic        clock, reset,
     output logic [19:0] rdata,
-    input  logic [15:0] wdata,
+    input  logic [19:0] wdata,
     input  logic  [7:0] wcol, rcol,
     input  logic        palettemode, clear, transparent, en);
 
@@ -31,7 +31,7 @@ module obj_row_buffer (
     logic [19:0] reg_in [239:0];
     logic [19:0] reg_out [239:0];
     logic [19:0] rdata_bus;
-    logic  [15:0] col_data;
+    logic [19:0] col_data;
 
     // 8:256 ones hot decoder
     always_comb begin
