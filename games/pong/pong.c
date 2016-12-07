@@ -716,6 +716,7 @@ int main(void) {
 	bg_palette_memory[7] = RGB15(0x00, 0x0, 0x0); //black=0
 
     //set colors in PRAM 2
+	bg_palette_memory[16] = RGB15(0x00, 0x00, 0x00);//gray
 	bg_palette_memory[17] = 0x7C00; //blue = 1
 	bg_palette_memory[18] = RGB15(0x00, 0x1F, 0x00); //green = 2
 	bg_palette_memory[19] = RGB15(0x0, 0x0, 0x0); //black = 3
@@ -724,6 +725,7 @@ int main(void) {
 	bg_palette_memory[22] = RGB15(0xf7, 0xae, 0x4f); //skin = 6
 	bg_palette_memory[23] = RGB15(0x0, 0x0, 0x0); //black = 7
 
+	bg_palette_memory[32] = RGB15(0x00, 0x00, 0x00);//gray
 	bg_palette_memory[33] = RGB15(0x1F, 0x00, 0x00); //red = 1
 	bg_palette_memory[34] = RGB15(0x1F, 0x1F, 0x1F); //white = 2
 	bg_palette_memory[35] = RGB15(0x0, 0x0, 0x0); //black = 3
@@ -832,7 +834,7 @@ int main(void) {
     short player_0 = CENTER_V_SCREEN;
     uint16 counter = 0;
 
-   // turn sound on
+   // turn sound on to set up
     *soundcnt_x= (1 << 0x7);
     // snd1 on left/right ; both full volume
     *soundcnt_l = SDMG_BUILD_LR(SDMG_SQR1, 7);
@@ -843,104 +845,104 @@ int main(void) {
     *sound1cnt_l= 0x00;
     // envelope: vol=12, decay, max step time (7) ; 50% duty
     *sound1cnt_h = 0xC78;
+    // turn sound off to set up
+    *soundcnt_x= (1 << 0x7);
 
 
 	//play a jig
 	const uint8 lens[6]= { 3,4, 8, 8, 4, 3};
 	const uint8 notes[6]= { 0x02, 0x05, 0x08};
 
-	while (1) {
+    while (1) {
         counter = counter + 1;
         // Skip past the rest of any current V-Blank, then skip past the V-Draw
         while(REG_DISPLAY_VCOUNT >= 160);
         while(REG_DISPLAY_VCOUNT < 160);
-        if (counter % 200 == 0x00){
-            if (ball_x == CENTER_H_SCREEN && ball_y == CENTER_V_SCREEN){
-                //reset_sound
-                *soundcnt_x= (1 << 0x7);
-                for(int ii=0; ii<3; ii++)
-                {
-                    //play the actual note
-                    *sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
-                    for (int i = 0; i < (8*lens[ii] * 2000); i ++ );
-                }
-                *soundcnt_x= 0;
+        if (ball_x == CENTER_H_SCREEN && ball_y == CENTER_V_SCREEN){
+            //reset_sound
+            *soundcnt_x= (1 << 0x7);
+            for(int ii=0; ii<3; ii++)
+            {
+                //play the actual note
+                *sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
+                for (int i = 0; i < (8*lens[ii] * 2000); i ++ );
             }
-            //turn sound off
-            *soundcnt_x = 0; 
-            
-            //update location
-            ball_x = ball_x + x_dir;
-            ball_y = ball_y + y_dir;
-
-            // get current key states (*REG_KEY_INPUT stores the states inverted)
-            key_states = ~*REG_KEY_INPUT & KEY_ANY;
-            if (key_states & KEY_DOWN) {
-                player_1 = clamp((player_1 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
-            }
-            if (key_states & KEY_UP) {
-                player_1 = clamp((player_1 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
-            }
-            if (key_states & KEY_B) {
-                player_0 = clamp((player_0 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
-            }
-            if (key_states & KEY_A) {
-                player_0 = clamp((player_0 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
-            }
-
-            //game over
-            if (ball_x == PADDLE_1_X + BALL_WIDTH || ball_x == PADDLE_0_X - BALL_WIDTH) {
-                *soundcnt_x= (1 << 0x7);
-                for(int ii=2; ii>=0; ii--)
-                {
-                    //play the actual note
-                    *sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
-                    for (int i = 0; i < (8*lens[ii + 3] * 2000); i ++ );
-                }
-                *soundcnt_x= 0;
-                while (1) {
-                    if (ball_x == PADDLE_1_X + BALL_WIDTH){ //luigi wins
-                        luigi_wins();
-                    }
-                    else {
-                        mario_wins();
-                    }
-                    key_states = ~*REG_KEY_INPUT & KEY_ANY;
-                    if (key_states & KEY_START){
-                        player_0 = CENTER_V_SCREEN;
-                        player_1 = CENTER_V_SCREEN;
-                        ball_x = CENTER_H_SCREEN;
-                        ball_y = CENTER_V_SCREEN;
-                        break;
-                    }
-                }
-                clear_attributes();
-
-            }
-            //bounce off vertical edges
-            else if (ball_y == MIN_V_SCREEN || ball_y == MAX_V_SCREEN) {
-                y_dir = -y_dir;
-            }
-            //bounce off paddle
-            if (((ball_x - BALL_WIDTH == PADDLE_0_X) && 
-                     (ball_y <= player_0 + PADDLE_HEIGHT - BALL_HEIGHT) && 
-                     (ball_y >= player_0 - PADDLE_HEIGHT + BALL_HEIGHT - 8)) ||
-                    ((ball_x == PADDLE_1_X - PADDLE_WIDTH) && 
-                     (ball_y <= player_1 + PADDLE_HEIGHT - BALL_HEIGHT) && 
-                     (ball_y >= player_1 - PADDLE_HEIGHT + BALL_HEIGHT - 8))
-                    ) {
-                x_dir = -x_dir;
-                *soundcnt_x = (1 << 0x7);
-	            *sound1cnt_x = (0x1 << 15) | SND_RATE(NOTE_A, 0); //octave
-            }
-
-            //update location registers
-            *bg2hofs = ball_x;
-            *bg2vofs = ball_y;
-            *bg1vofs = player_1;
-            *bg0vofs = player_0;
-            
+            *soundcnt_x= 0;
         }
+        //turn sound off
+        *soundcnt_x = 0; 
+
+        //update location
+        ball_x = ball_x + x_dir;
+        ball_y = ball_y + y_dir;
+
+        // get current key states (*REG_KEY_INPUT stores the states inverted)
+        key_states = ~*REG_KEY_INPUT & KEY_ANY;
+        if (key_states & KEY_DOWN) {
+            player_1 = clamp((player_1 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
+        }
+        if (key_states & KEY_UP) {
+            player_1 = clamp((player_1 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
+        }
+        if (key_states & KEY_B) {
+            player_0 = clamp((player_0 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
+        }
+        if (key_states & KEY_A) {
+            player_0 = clamp((player_0 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
+        }
+
+        //game over
+        if (ball_x == PADDLE_1_X + BALL_WIDTH || ball_x == PADDLE_0_X - BALL_WIDTH) {
+            *soundcnt_x= (1 << 0x7);
+            for(int ii=2; ii>=0; ii--)
+            {
+                //play the actual note
+                *sound1cnt_x = (0x1 << 15) | SND_RATE(notes[ii]&15, notes[ii]>>4);
+                for (int i = 0; i < (8*lens[ii + 3] * 2000); i ++ );
+            }
+            *soundcnt_x= 0;
+            while (1) {
+                if (ball_x == PADDLE_1_X + BALL_WIDTH){ //luigi wins
+                    luigi_wins();
+                }
+                else {
+                    mario_wins();
+                }
+                key_states = ~*REG_KEY_INPUT & KEY_ANY;
+                if (key_states & KEY_START){
+                    player_0 = CENTER_V_SCREEN;
+                    player_1 = CENTER_V_SCREEN;
+                    ball_x = CENTER_H_SCREEN;
+                    ball_y = CENTER_V_SCREEN;
+                    break;
+                }
+            }
+            clear_attributes();
+
+        }
+        //bounce off vertical edges
+        else if (ball_y == MIN_V_SCREEN || ball_y == MAX_V_SCREEN) {
+            y_dir = -y_dir;
+        }
+        //bounce off paddle
+        if (((ball_x - BALL_WIDTH == PADDLE_0_X) && 
+                    (ball_y <= player_0 + PADDLE_HEIGHT - BALL_HEIGHT) && 
+                    (ball_y >= player_0 - PADDLE_HEIGHT + BALL_HEIGHT - 8)) ||
+                ((ball_x == PADDLE_1_X - PADDLE_WIDTH) && 
+                 (ball_y <= player_1 + PADDLE_HEIGHT - BALL_HEIGHT) && 
+                 (ball_y >= player_1 - PADDLE_HEIGHT + BALL_HEIGHT - 8))
+           ) {
+            x_dir = -x_dir;
+            *soundcnt_x = (1 << 0x7);
+            *sound1cnt_x = (0x1 << 15) | SND_RATE(NOTE_A, 0); //octave
+        }
+
+        //update location registers
+        *bg2hofs = ball_x;
+        *bg2vofs = ball_y;
+        *bg1vofs = player_1;
+        *bg0vofs = player_0;
+
 
     }
     return 0;
