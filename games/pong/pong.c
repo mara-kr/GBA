@@ -138,12 +138,12 @@ void draw_letter (char R_top_l[], char R_top_r[], char R_bot_l[], char R_bot_r[]
 void letter_M(void) {
     //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
     //y coord = 0;
-	*(volatile unsigned short *)(MEM_OAM + 0x0000) = 0x0000; 
+	*(volatile unsigned short *)(MEM_OAM + 0x0048) = 0x0000; 
     //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
     //x coord = 0
-	*(volatile unsigned short *)(MEM_OAM + 0x0002) = 0x400F; 
+	*(volatile unsigned short *)(MEM_OAM + 0x004A) = 0x400F; 
     //obj attribute 2 pallette =16x16, priority 0, char 0
-	*(volatile unsigned short *)(MEM_OAM + 0x0004) = 0x0000; 
+	*(volatile unsigned short *)(MEM_OAM + 0x004C) = 0x0024; 
 
     char M_top_left[256] = {
         0,1,1,0,0,0,0,0, 
@@ -185,7 +185,7 @@ void letter_M(void) {
         0,0,0,0,0,1,1,0,
         0,0,0,0,0,1,1,0};
 
-    draw_letter(M_top_left, M_top_right, M_bottom_left, M_bottom_right, 0x10000);
+    draw_letter(M_top_left, M_top_right, M_bottom_left, M_bottom_right, 0x10480);
 }
 
 void letter_A (void){
@@ -706,35 +706,35 @@ int main(void) {
 	*bg2cnt = 0x0A00;
 
 	//set colors in PRAM 1
-	bg_palette_memory[0] = 0x0000;//RGB15(0x00, 0x00, 0x00); //black
+	bg_palette_memory[0] = RGB15(0x08, 0x08, 0x08);//gray
 	bg_palette_memory[1] = 0x7C00; //blue = 1
 	bg_palette_memory[2] = RGB15(0x1F, 0x00, 0x00); //red = 2
-	bg_palette_memory[3] = RGB15(0x8, 0x8, 0x0); //brown = 3
+	bg_palette_memory[3] = RGB15(0x8, 0x0, 0x0); //black = 3
 	bg_palette_memory[4] = RGB15(0x1F, 0x1F, 0x0); //yellow = 4
 	bg_palette_memory[5] = RGB15(0x1F, 0x1F, 0x1F); //white = 5
 	bg_palette_memory[6] = RGB15(0xf7, 0xae, 0x4f); //skin = 6
-	bg_palette_memory[7] = RGB15(0x0, 0x8, 0x8); //gray = 7
+	bg_palette_memory[7] = RGB15(0x00, 0x0, 0x0); //black=0
 
     //set colors in PRAM 2
 	bg_palette_memory[17] = 0x7C00; //blue = 1
 	bg_palette_memory[18] = RGB15(0x00, 0x1F, 0x00); //green = 2
-	bg_palette_memory[19] = RGB15(0x8, 0x8, 0x0); //brown = 3
+	bg_palette_memory[19] = RGB15(0x0, 0x0, 0x0); //black = 3
 	bg_palette_memory[20] = RGB15(0x1F, 0x1F, 0x0); //yellow = 4
 	bg_palette_memory[21] = RGB15(0x1F, 0x1F, 0x1F); //white = 5
 	bg_palette_memory[22] = RGB15(0xf7, 0xae, 0x4f); //skin = 6
-	bg_palette_memory[23] = RGB15(0x0, 0x8, 0x8); //gray = 7
+	bg_palette_memory[23] = RGB15(0x0, 0x0, 0x0); //black = 7
 
 	bg_palette_memory[33] = RGB15(0x1F, 0x00, 0x00); //red = 1
 	bg_palette_memory[34] = RGB15(0x1F, 0x1F, 0x1F); //white = 2
-	bg_palette_memory[35] = RGB15(0x7, 0x7, 0x7); //gray = 3
+	bg_palette_memory[35] = RGB15(0x0, 0x0, 0x0); //black = 3
 	bg_palette_memory[36] = RGB15(0x1F, 0x1F, 0x0); //yellow = 4
 	bg_palette_memory[37] = RGB15(0x0, 0x1F, 0x1F); //tourquoise = 5
 	bg_palette_memory[38] = RGB15(0x1F, 0x0, 0x1F); //magenta = 6
 	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //brown = 7
-	bg_palette_memory[40] = RGB15(0x0, 0x8, 0x8); //gray = 8
+	bg_palette_memory[40] = RGB15(0x0, 0x0, 0x0); //black = 8
 
     //set colors in OBJ PRAM
-    obj_palette_memory[1] = RGB15(0x1F, 0x1F, 0x1F); // white = 1
+    obj_palette_memory[1] = RGB15(0x00, 0x1F, 0x1F); // cyan = 1
     obj_palette_memory[2] = RGB15(0x1F, 0x00, 0x00); // red = 2;
 
 	//set screen data format for paddle 1
