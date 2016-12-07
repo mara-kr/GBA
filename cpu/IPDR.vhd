@@ -44,7 +44,6 @@ entity IPDR is port(
 end IPDR;
 
 architecture RTL of IPDR is
-attribute mark_debug : string;
 
 -- Endian converter
 signal EndianConverterOut : std_logic_vector(RDATA'range) := (others => '0');
@@ -59,7 +58,6 @@ signal PrefetchedHWAdr : std_logic := '0'; -- Address of halfword (ADDR[1])
 
 -- Set of signals for fetch
 signal FetchedInstructionIn : std_logic_vector(RDATA'range) := (others => '0');
-attribute mark_debug of FetchedInstructionIn : signal is "true";
 
 signal FetchedAbortIn       : std_logic := '0';
 signal FetchADDRLow         : std_logic_vector(ADDRLow'range) := (others => '0');

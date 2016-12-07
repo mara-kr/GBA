@@ -11,7 +11,7 @@ module bg_processing_circuit
    input logic [15:0] dispcnt,
    input logic [15:0] mosaic, //MOSAIC MMIO register
 
-   output logic [7:0] hcount, //BG processing circuit will tell OBJ circuit which column to output to 
+   output logic [7:0] hcount, //BG processing circuit will tell OBJ circuit which column to output to
    output logic [2:0] bgmode,
    output logic [16:0] bg_addr, //Used to lookup palette/color info
    output logic [15:0] bg_screen_addr, //used to lookup screen data
@@ -28,7 +28,7 @@ module bg_processing_circuit
   logic frame;
   logic [7:0] vcount, row;
 
-  //datapath signals 
+  //datapath signals
   logic [8:0] col, col_INTERMEDIATE, col_OUTPUT;
   logic [1:0] bgno, bgno_INTERMEDIATE, bgno_OUTPUT;
 
@@ -74,8 +74,8 @@ module bg_processing_circuit
 
   assign start_row = (col == 9'd307) & (&bgno);
   assign new_frame = start_row && (vcount == 8'd227);
-  bg_counter #(8) row_counter(.q(vcount), .d(), .enable(start_row), 
-                              .clear(new_frame), 
+  bg_counter #(8) row_counter(.q(vcount), .d(), .enable(start_row),
+                              .clear(new_frame),
                               .load(1'b0), .up(1'b1), .rst_b, .clk(clock));
   assign row = vcount;
 
@@ -110,12 +110,6 @@ module bg_processing_circuit
 
   bg_scrolling_unit bsu(.hofs, .vofs, .row, .col(col[7:0]), .x(scroll_x), .y(scroll_y));
 
-/*  bg_rot_scale_unit rsu(.A(dx), .B(dmx), .C(dy), .D(dmy), .bgx, .bgy,
-                        .step(&bgno), .steprow(start_row), .newframe(new_frame),
-                        .clock, .rst_b,
-                        .x(rot_scale_x), .y(rot_scale_y),
-                        .overflow(rot_scale_overflowed));
-*/
   bg_rot_scale_top rsu(.bg2x, .bg2y, .bg3x, .bg3y,
                         .bg2pa, .bg2pb, .bg2pc, .bg2pd,
                         .bg3pa, .bg3pb, .bg3pc, .bg3pd,
@@ -142,14 +136,14 @@ module bg_processing_circuit
                        .addr(char_addr), .sixteen_color_dot_select);
 
   bitmap_address_unit bmau(.x(x[7:0]), .y(y[7:0]), .hmax, .bitmap_color, .frame, .addr(bitmap_addr));
-  
+
   bg_mux_2_to_1 #(17) bg_addr_mux(.i0({1'b0, char_addr}), .i1(bitmap_addr_INTERMEDIATE), .s(bitmapped_INTERMEDIATE), .y(bg_addr));
 
   overflow_handler ovrflw_hndlr(.hmax, .vmax, .x, .y, .rot_scale_overflowed,
                                 .bitmapped, .rotate, .overflow, .transparent);
 
   //mux on x input shown on diagram is redundant, both inputs are identical
-  data_formatter formatter(.data(bg_VRAM_data[14:0]),
+  data_formatter formatter(.data(bg_VRAM_data),
                            .sixteen_color_dot_select(sixteen_color_dot_select_OUTPUT),
                            .paletteno(paletteno_OUTPUT),
                            .palettemode(palettemode_OUTPUT),

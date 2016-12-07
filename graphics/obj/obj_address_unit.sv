@@ -9,20 +9,23 @@ module obj_address_unit (
     input  logic  [6:0] hsize);
 
     logic [14:0] x_addr, data_offset;
-    logic [12:0] y_addr;
+    logic [12:0] y_addr, y_offset, y_addr_one_dim, y_addr_two_dim;
     logic  [7:0] adj_size;
     logic  [5:0] adj_x;
     logic  [2:0] pri;
 
     obj_pri_encoder pri_enc (.pri, .val(adj_size));
 
-    assign data_offset = {objname[9] | bgmode | (bgmode[1] & bgmode[0]),
+    assign data_offset = {objname[9] | bgmode[2] | (bgmode[1] & bgmode[0]),
                           objname[8:1], objname[0] & (~palettemode | oam_mode),
                           5'b0};
-    assign adj_x = (palettemode) ? x : {1'b0, x[5:1]};
+    assign adj_x = (palettemode) ? {x[5:3], 3'b0, x[2:0]} : {1'b0, x[5:3], 3'b0, x[2:1]};
     assign x_addr = data_offset + adj_x;
     assign adj_size = (oam_mode) ? {1'b0, hsize} : 8'd128;
-    assign y_addr = y << pri;
+    assign y_offset = ({y[5:3], 3'b0} << pri) + {y[2:0], 3'b0};
+    assign y_addr_one_dim = palettemode ? y_offset : {1'b0, y_offset[12:1]};
+    assign y_addr_two_dim = palettemode ? y_offset : {y_offset[12:6], 1'b0, y_offset[5:1]};
+    assign y_addr = oam_mode ? y_addr_one_dim : y_addr_two_dim;
     assign addr = x_addr + y_addr;
 
 endmodule: obj_address_unit

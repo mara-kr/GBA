@@ -8,7 +8,7 @@ module gba_audio_top (
     input  logic gba_clk,
     input  logic reset,
     input  logic SW,
-    input  logic [2:0]  FIFO_size_A,
+    input  logic [3:0]  FIFO_size_A,
     input  logic [31:0] FIFO_val_A,
     output logic FIFO_re_A,
     output logic FIFO_clr_A,
@@ -29,7 +29,7 @@ module gba_audio_top (
     output logic sound_req2,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
     (* mark_debug = "true" *) input logic [15:0] internal_TM0CNT_L,
-    (* mark_debug = "true" *) input logic [15:0] internal_TM1CNT_L,
+    input logic [15:0] internal_TM1CNT_L,
     input logic dsASqRst, dsBSqRst);
 
     logic clk_100_output, clk_256_output;
@@ -61,7 +61,7 @@ module gba_audio_top (
     logic [23:0] channel_2;
 
     //square1 channel
-    (* mark_debug = "true" *) logic [7:0] NR10, NR11, NR12, NR13, NR14;
+    logic [7:0] NR10, NR11, NR12, NR13, NR14;
     logic [23:0] channel_1;
 
     //noise channel
@@ -78,13 +78,10 @@ module gba_audio_top (
     logic reset_c4;
 
     //final mixer
-    logic [23:0] direct_A;
-    logic [23:0] direct_B;
-    (* mark_debug = "true" *) logic [15:0] SOUND_CNT_H;
+    (* mark_debug = "true" *) logic [23:0] direct_A, direct_B;
+    logic [15:0] SOUND_CNT_H;
     logic timer_numA;
     logic timer_numB;
-    logic reset_directA;
-    logic reset_directB;
     (* mark_debug = "true" *) logic [23:0] output_wave_r;
     (* mark_debug = "true" *) logic [23:0] output_wave_l;
 
@@ -241,8 +238,6 @@ module gba_audio_top (
         .sound_cnt_h(SOUND_CNT_H),
         .timer_numA,
         .timer_numB,
-        .reset_directA,
-        .reset_directB,
         .output_wave_r,
         .output_wave_l);
 

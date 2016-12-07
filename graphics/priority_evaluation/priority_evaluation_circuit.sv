@@ -74,8 +74,17 @@ module priority_eval (
     priority_comparator priority_comparator1(.inputA(BG), .inputB(OBJ), 
                 .mask(mask), .bgno, .replace(replace1));
     
-    pe_mux_2_to_1 #(20) mux1(.out(top_in), .in0(OBJ), .in1(BG), .select(replace1));
-    pe_mux_2_to_1 #(20) mux2(.out(out_mux2), .in0(BG), .in1(OBJ), .select(replace1));
+    //HACK
+    logic [19:0] bg_masked;
+    assign bg_masked = mask[bgno] ? BG : {BG[19:16], 1'b0, BG[14:0]};
+    logic [19:0] obj_masked;
+    assign obj_masked = mask[4] ? OBJ : {OBJ[19:16], 1'b0, OBJ[14:0]};
+    //ENDHACK
+    
+    pe_mux_2_to_1 #(20) mux1(.out(top_in), .in0(obj_masked), .in1(bg_masked), .select(replace1));
+    pe_mux_2_to_1 #(20) mux2(.out(out_mux2), .in0(bg_masked), .in1(obj_masked), .select(replace1));
+    //pe_mux_2_to_1 #(20) mux1(.out(top_in), .in0(OBJ), .in1(BG), .select(replace1));
+    //pe_mux_2_to_1 #(20) mux2(.out(out_mux2), .in0(BG), .in1(OBJ), .select(replace1));
     pe_mux_2_to_1 #(20) mux3(.out(out_mux3), .in0(top_saved), .in1(out_mux2), 
                 .select(~out_valid1 & out_valid2 & out_valid3));
     pe_mux_2_to_1 #(20) mux4(.out(bot_in), .in0(top_in), .in1(out_mux3), 

@@ -5,7 +5,7 @@
 
 module dma_fsm
   (input  logic mem_wait, dma_repeat,  
-   (* mark_debug = "true" *) input  logic enable, start,
+   input  logic enable, start,
    input  logic new_transfer, preempted,
    input  logic genIRQ,
    input  logic allowed_to_begin, xferDone,
@@ -15,7 +15,7 @@ module dma_fsm
    output logic reload_xfers,
    input  logic clk, rst_b);
 
-  (* mark_debug = "true" *) enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD} cs, ns;
+  enum logic [2:0] {OFF, IDLE, QUEUED, READ, WRITE, PREEMPTEDREAD} cs, ns;
 
   always_ff @(posedge clk, negedge rst_b) begin
     if(~rst_b)
@@ -256,7 +256,7 @@ module dma_dp
   register #(32) dad(.d(nextDAddr), .q(dAddrRaw), .clk, .clear(1'b0), .enable(dadEnable), .rst_b);
   register #(32) data_reg(.d(rdata), .q(data), .clk, .clear(1'b0), .enable(storeRData), .rst_b);
   counter #(14) xferCnt (.d(14'b0), .q(xfers), .clk, .enable(stepSRC), .clear(reload_xfers), .load(1'b0), .up(1'b1), .rst_b);
-  (* mark_debug = "true" *) logic [13:0] words_to_transfer;
+  logic [13:0] words_to_transfer;
   assign words_to_transfer = (sound) ? 14'd4 : controlL[13:0];
   assign xferDone = (xfers == words_to_transfer);
 
@@ -279,7 +279,7 @@ module dma_start
 
   logic display_sync_startable;
   logic passed_go;
-  (* mark_debug = "true" *) logic hold_sound;
+  logic hold_sound;
 
   always_ff @(posedge clk, negedge rst_b)
     if(~rst_b)
@@ -407,7 +407,7 @@ module dma_top
   (input  logic [31:0] registers [`NUM_IO_REGS-1:0],
    input  logic [15:0] vcount, hcount,
    input  logic cpu_preemptable,
-   (* mark_debug = "true" *) input  logic        sound_req1, sound_req2,
+   input  logic        sound_req1, sound_req2,
 
    input  logic        mem_wait,
 
@@ -427,11 +427,11 @@ module dma_top
    logic [15:0] srcAddrL0, srcAddrH0;
    logic [15:0] destAddrL0, destAddrH0;
 
-   (* mark_debug = "true" *) logic [15:0] controlL1, controlH1;
+   logic [15:0] controlL1, controlH1;
    logic [15:0] srcAddrL1, srcAddrH1;
    logic [15:0] destAddrL1, destAddrH1;
 
-   (* mark_debug = "true" *) logic [15:0] controlL2, controlH2;
+   logic [15:0] controlL2, controlH2;
    logic [15:0] srcAddrL2, srcAddrH2;
    logic [15:0] destAddrL2, destAddrH2;
 
@@ -467,10 +467,10 @@ module dma_top
    assign destAddrL3 = registers[`DMA3DAD_L_IDX][15:0];
    assign destAddrH3 = registers [`DMA3DAD_H_IDX][31:16];
 
-   (* mark_debug = "true" *) logic [3:0] preempts;
+   logic [3:0] preempts;
    (* mark_debug = "true" *) logic [3:0] actives;
    logic [3:0] mid_process;
-   (* mark_debug = "true" *) logic allowed_to_begin;
+   logic allowed_to_begin;
 
    assign active = |actives;
    assign preempts[0] = 1'b0;

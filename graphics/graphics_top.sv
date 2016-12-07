@@ -59,21 +59,18 @@ module graphics_top(
     assign win1H = registers[`WIN1H_IDX][31:16];
     assign win0V = registers[`WIN0V_IDX][15:0];
     assign win1V = registers[`WIN1V_IDX][31:16];
-    assign vcount = registers[`VCOUNT_IDX][15:8];
+    assign vcount = registers[`VCOUNT_IDX][23:16];
     assign bldcnt = registers[`BLDCNT_IDX][15:0];
     assign bldalpha = registers[`BLDALPHA_IDX][31:16];
     assign bldy = registers[`BLDY_IDX][15:0];
-
     assign bg0cnt = registers[`BG0CNT_IDX][15:0];
     assign bg1cnt = registers[`BG1CNT_IDX][31:16];
     assign bg2cnt = registers[`BG2CNT_IDX][15:0];
     assign bg3cnt = registers[`BG3CNT_IDX][31:16];
-
     assign bg0hofs = registers[`BG0HOFS_IDX][15:0];
     assign bg1hofs = registers[`BG1HOFS_IDX][15:0];
     assign bg2hofs = registers[`BG2HOFS_IDX][15:0];
     assign bg3hofs = registers[`BG3HOFS_IDX][15:0];
-
     assign bg0vofs = registers[`BG0VOFS_IDX][31:16];
     assign bg1vofs = registers[`BG1VOFS_IDX][31:16];
     assign bg2vofs = registers[`BG2VOFS_IDX][31:16];
@@ -155,7 +152,7 @@ module graphics_top(
         .OAM_mem_addr(gfx_oam_addr), .VRAM_mem_addr(obj_addr),
         .obj_packet(obj),
         .OAM_mem_data(gfx_oam_data), .VRAM_mem_data(obj_data),
-        .vcount(vcount + 8'b1), .hcount,
+        .vcount, .hcount,
         .dispcnt, .mosaic_mmio_reg(mosaic), .bgmode);
     //row is 3 ahead of VCOUNT
     //Priority Evaluation

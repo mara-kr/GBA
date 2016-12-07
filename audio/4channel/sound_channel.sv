@@ -7,14 +7,14 @@ module square1 (
     input logic [7:0] NR12,
     input logic [7:0] NR13,
     input logic [7:0] NR14,
-    (* mark_debug = "true" *) output logic [23:0]output_wave); 
+    output logic [23:0]output_wave); 
 
     logic clock_128;
     logic clock_64;
     logic enable_square_wave;
-    (* mark_debug = "true" *) logic [23:0] square_wave;
-    (* mark_debug = "true" *) logic [23:0] length_wave;
-    (* mark_debug = "true" *) logic [3:0] volume_level;
+    logic [23:0] square_wave;
+    logic [23:0] length_wave;
+    logic [3:0] volume_level;
     logic [7:0] internal_NR13;
     logic [7:0] internal_NR14;
     
@@ -26,8 +26,8 @@ module square1 (
     //give volume an aribitrary weight, but keep it consistant
 
     clock_divider cd(clock_256, reset,  clock_128, clock_64);
-    frequency_sweep fs(clock_128, reset, NR10, NR13, NR14, internal_NR13, internal_NR14, enable_square_wave);
-    square_wave sw(system_clock, reset, NR11, internal_NR13, internal_NR14, square_wave);
+    //frequency_sweep fs(clock_128, reset, NR10, NR13, NR14, internal_NR13, internal_NR14, enable_square_wave);
+    square_wave sw(system_clock, reset, NR11, NR13, NR14, square_wave);
     length_counter lc(clock_256, reset, square_wave, NR11, NR14, length_wave);
     volume_envelope ve(clock_64, reset, NR12, volume_level);
  
