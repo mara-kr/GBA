@@ -17,23 +17,32 @@ module obj_rot_scale_unit
   assign negx = col < objx;
   assign negy = row < objy;
 
-  assign dx = negx ? objx - col : col - objx;
-  assign dy = negy ? objy - row : row - objy;
+  //assign dx = negx ? objx - col : col - objx;
+  //assign dy = negy ? objy - row : row - objy;
+  assign dx = col - objx;
+  assign dy = row - objy;
+  
+  logic [14:0] sa, sb, sc, sd;
+  
+  assign sa = a[15] ? ~a + 14'b1 : a;
+  assign sb = b[15] ? ~b + 14'b1 : b;
+  assign sc = c[15] ? ~c + 14'b1 : c;
+  assign sd = d[15] ? ~d + 14'b1 : d;
 
   //justify results into the range [0, 64)
   logic [5:0] x_bias;
   logic [5:0] y_bias;
 
-  assign x_bias = dblsize ? hsize[6:0] : hsize[5:0];
-  assign y_bias = dblsize ? vsize[6:0] : vsize[5:0];
+  assign x_bias = hsize[7:1];
+  assign y_bias = vsize[7:1];
 
   //math
   logic [22:0] product_x, product_y;
-  assign product_x = a * dx + b * dy + {x_bias, 8'b0};
-  assign product_y = c * dx + d * dy + {y_bias, 8'b0};
+  assign product_x = sa * dx + sb * dy + {x_bias, 8'b0};
+  assign product_y = sc * dx + sd * dy + {y_bias, 8'b0};
 
-  assign x = negx ? ~product_x + 6'b1 : product_x[13:8]; //truncate the 8 fractional bits
-  assign y = negy ? ~product_y + 6'b1 : product_y[13:8];
+  assign x = product_x[13:8]; //truncate the 8 fractional bits
+  assign y = product_y[13:8];
 
   assign transparent = |product_x[22:14] | |product_y[22:14];
 
