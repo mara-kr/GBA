@@ -16,17 +16,18 @@
 `define LATCH_CYCLES ((6 * `US_CYCLES) - 1) // (half the full (12us) clock)
 
 module controller
-    ((* mark_debug = "true" *) output logic        data_latch, data_clock,
+    (output logic        data_latch, data_clock,
      output logic [15:0] buttons,
-     (* mark_debug = "true" *) input  logic        serial_data, 
+     input  logic        serial_data,
      input  logic        clock, reset);
 
      enum logic [2:0] {WAIT, LATCH_PULSE, LATCH_WAIT, CYC_HI, CYC_LO} cs, ns;
 
      logic [`CYC_WIDTH-1:0] cycle_cnt;
-     (* mark_debug = "true" *) logic [15:0] buttons_int;
-     (* mark_debug = "true" *) logic [3:0] button_cyc_cnt;
-     (* mark_debug = "true" *) logic cycle_clr, button_clr, button_en;
+     logic [15:0] buttons_int, buttons_sync;
+     logic [3:0] button_cyc_cnt;
+     logic cycle_clr, button_clr, button_en;
+     logic [15:0] buttons_i;
 
      controller_counter #(`CYC_WIDTH)
         cycles (.clock, .reset, .enable(1'b1), .clear(cycle_clr),
@@ -48,18 +49,29 @@ module controller
          else buttons_int[button_cyc_cnt] <= serial_data;
      end
 
-     // Reordering to match GBA spec
-     always_comb begin
-        buttons[0] = buttons_int[7]; // A
-        buttons[1] = buttons_int[15]; // B
-        buttons[2] = buttons_int[1]; // Select
-        buttons[3] = buttons_int[2]; // Start
-        buttons[4] = buttons_int[6]; // Right
-        buttons[5] = buttons_int[5]; // Left
-        buttons[6] = buttons_int[3]; // Up
-        buttons[7] = buttons_int[4]; // Down
-        buttons[8] = buttons_int[10]; // R
-        buttons[9] = buttons_int[9]; // L
+    // Synchronization
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) begin
+            buttons_i <= 16'b0;
+            buttons_sync <= 16'b0;
+        end else begin
+            buttons_i <= buttons_int;
+            buttons_sync <= buttons_i;
+        end
+    end
+    
+    // SNES to GBA mappings
+    always_comb begin
+        buttons[0] = buttons_sync[8]; // A
+        buttons[1] = buttons_sync[0]; // B
+        buttons[2] = buttons_sync[2]; // Select
+        buttons[3] = buttons_sync[3]; // Start
+        buttons[4] = buttons_sync[7]; // Right
+        buttons[5] = buttons_sync[6]; // Left
+        buttons[6] = buttons_sync[4]; // Up
+        buttons[7] = buttons_sync[5]; // Down
+        buttons[8] = buttons_sync[11]; // R
+        buttons[9] = buttons_sync[10]; // L
         buttons[15:10] = 6'h3F;
      end
 
@@ -109,7 +121,7 @@ module controller
                  if (cycle_cnt == `LATCH_CYCLES) begin
                      cycle_clr = 1'b1;
                      button_en = 1'b1;
-                     if (button_cyc_cnt == 4'd14) begin
+                     if (button_cyc_cnt == 4'd15) begin
                          ns = WAIT;
                      end else begin
                          ns = CYC_LO;

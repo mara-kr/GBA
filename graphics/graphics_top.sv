@@ -59,7 +59,7 @@ module graphics_top(
     assign win1H = registers[`WIN1H_IDX][31:16];
     assign win0V = registers[`WIN0V_IDX][15:0];
     assign win1V = registers[`WIN1V_IDX][31:16];
-    assign vcount = registers[`VCOUNT_IDX][15:8];
+    assign vcount = registers[`VCOUNT_IDX][23:16];
     assign bldcnt = registers[`BLDCNT_IDX][15:0];
     assign bldalpha = registers[`BLDALPHA_IDX][31:16];
     assign bldy = registers[`BLDY_IDX][15:0];
