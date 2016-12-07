@@ -38,7 +38,6 @@ module gba_audio_top (
 
     //audio codec
     logic        clk_100_buffered;
-    logic [5:0]  counter_saw_tooth;
     (* mark_debug = "true" *) logic [23:0] hphone_l, hphone_r;
     (* mark_debug = "true" *) logic        hphone_valid;
     (* mark_debug = "true" *) logic        new_sample;
@@ -255,29 +254,19 @@ module gba_audio_top (
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
 
-    logic [5:0] counter_saw_tooth;
+     (* mark_debug = "true" *) logic [31:0] counter; 
+     counter #(32)(.q(counter), .clk(clock), .rst_b(~reset), .up(1'b1), .clear(1'b0), .enable(1'b1), .load(1'b0), .d(1'b0));
 
     always_ff @(posedge clk_100) begin
         hphone_valid <= 0;
         hphone_l <= 0;
         hphone_r <= 0;
 
-        if (reset) begin
-            counter_saw_tooth <= 0;
-        end
-
         if (new_sample == 1) begin
-            if (SW) begin
-                counter_saw_tooth <= counter_saw_tooth + 1;
-                hphone_valid <= 1'b1;
-                hphone_r <= {counter_saw_tooth, 18'd0};
-                hphone_l <= {counter_saw_tooth, 18'd0};
-            end
-            else begin
-                hphone_valid <= 1'b1;
-                hphone_r <= {output_wave_r};
-                hphone_l <= {output_wave_l};
-            end
+
+            hphone_valid <= 1'b1;
+            hphone_r <= {output_wave_r};
+            hphone_l <= {output_wave_l};
         end
     end
 
