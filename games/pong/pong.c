@@ -19,7 +19,7 @@ typedef uint32 tile4bpp[8];
 #define KEY_DOWN   0x0080
 #define KEY_START  0x0008
 #define KEY_A      0x0001
-#define KEY_R      0x0100
+#define KEY_B      0x0002
 #define KEY_ANY    0x03FF
 
 #define bg_palette_memory  ((volatile rgb15 *)MEM_PAL)
@@ -98,6 +98,42 @@ const uint32 __snd_rates[12]=
 #define SDMG_BUILD_LR(_mode, _vol) SDMG_BUILD(_mode, _mode, _vol, _vol)
 
 
+void draw_letter (char R_top_l[], char R_top_r[], char R_bot_l[], char R_bot_r[], int first_address){
+    unsigned short current_val = 0;
+    int incr_addr = 0;
+    for (int i = 0; i < 64; i ++) {
+        current_val = current_val | (R_top_l[i] << ((i%4)*4));
+        if ((i+1) % 4 == 0) {
+            *(unsigned short *)(MEM_VRAM + first_address + incr_addr*2) = current_val;
+            current_val = 0;
+            incr_addr ++;
+        }
+    }
+    for (int i = 0; i < 64; i ++) {
+        current_val = current_val | (R_top_r[i] << ((i%4)*4));
+        if ((i+1) % 4 == 0) {
+            *(unsigned short *)(MEM_VRAM + first_address + incr_addr*2) = current_val;
+            current_val = 0;
+            incr_addr ++;
+        }
+    }    
+    for (int i = 0; i < 64; i ++) {
+        current_val = current_val | (R_bot_l[i] << ((i%4)*4));
+        if ((i+1) % 4 == 0) {
+            *(unsigned short *)(MEM_VRAM + first_address + incr_addr*2) = current_val;
+            current_val = 0;
+            incr_addr ++;
+        }
+    }
+    for (int i = 0; i < 64; i ++) {
+        current_val = current_val | (R_bot_r[i] << ((i%4)*4));
+        if ((i+1) % 4 == 0) {
+            *(unsigned short *)(MEM_VRAM + first_address + incr_addr*2) = current_val;
+            current_val = 0;
+            incr_addr ++;
+        }
+    }
+}
 
 void letter_M(void) {
     //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
@@ -105,118 +141,565 @@ void letter_M(void) {
 	*(volatile unsigned short *)(MEM_OAM + 0x0000) = 0x0000; 
     //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
     //x coord = 0
-	*(volatile unsigned short *)(MEM_OAM + 0x0002) = 0x4000; 
+	*(volatile unsigned short *)(MEM_OAM + 0x0002) = 0x400F; 
     //obj attribute 2 pallette =16x16, priority 0, char 0
 	*(volatile unsigned short *)(MEM_OAM + 0x0004) = 0x0000; 
 
-    *(unsigned short *)(MEM_VRAM + 0x10000) = 0x0011; //line 1 top left
-	*(unsigned short *)(MEM_VRAM + 0x10002) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x10004) = 0x0101; // line 2
-	*(unsigned short *)(MEM_VRAM + 0x10006) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x10008) = 0x1001; // line 3
-	*(unsigned short *)(MEM_VRAM + 0x1000A) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x1000C) = 0x0001; // line 4
-	*(unsigned short *)(MEM_VRAM + 0x1000E) = 0x0001;
-	*(unsigned short *)(MEM_VRAM + 0x10010) = 0x0001; // line 5
-	*(unsigned short *)(MEM_VRAM + 0x10012) = 0x0010;
-	*(unsigned short *)(MEM_VRAM + 0x10014) = 0x0001; // line 6
-	*(unsigned short *)(MEM_VRAM + 0x10016) = 0x0100;
-	*(unsigned short *)(MEM_VRAM + 0x10018) = 0x0001; // line 7
-	*(unsigned short *)(MEM_VRAM + 0x1001A) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x1001C) = 0x0001; // line 8
-	*(unsigned short *)(MEM_VRAM + 0x1001E) = 0x0000;
-	
-    *(unsigned short *)(MEM_VRAM + 0x10020) = 0x0000; //line 1 top right
-	*(unsigned short *)(MEM_VRAM + 0x10022) = 0x1100;
-	*(unsigned short *)(MEM_VRAM + 0x10024) = 0x0000; // line 2
-	*(unsigned short *)(MEM_VRAM + 0x10026) = 0x1010;
-	*(unsigned short *)(MEM_VRAM + 0x10028) = 0x0000; // line 3
-	*(unsigned short *)(MEM_VRAM + 0x1002A) = 0x1001;
-	*(unsigned short *)(MEM_VRAM + 0x1002C) = 0x1000; // line 4
-	*(unsigned short *)(MEM_VRAM + 0x1002E) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10030) = 0x0100; // line 5
-	*(unsigned short *)(MEM_VRAM + 0x10032) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10034) = 0x0010; // line 6
-	*(unsigned short *)(MEM_VRAM + 0x10036) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10038) = 0x0001; // line 7
-	*(unsigned short *)(MEM_VRAM + 0x1003A) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x1003C) = 0x0000; // line 8
-	*(unsigned short *)(MEM_VRAM + 0x1003E) = 0x1000;
-	
-    *(unsigned short *)(MEM_VRAM + 0x10040) = 0x0001; //line 9 bottom left
-	*(unsigned short *)(MEM_VRAM + 0x10042) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x10044) = 0x0001; // line 10
-	*(unsigned short *)(MEM_VRAM + 0x10046) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x10048) = 0x0001; // line 11
-	*(unsigned short *)(MEM_VRAM + 0x1004A) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x1004C) = 0x0001; // line 12
-	*(unsigned short *)(MEM_VRAM + 0x1004E) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x10050) = 0x0001; // line 13
-	*(unsigned short *)(MEM_VRAM + 0x10052) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x10054) = 0x0001; // line 14
-	*(unsigned short *)(MEM_VRAM + 0x10056) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x10058) = 0x0001; // line 15
-	*(unsigned short *)(MEM_VRAM + 0x1005A) = 0x0000;
-	*(unsigned short *)(MEM_VRAM + 0x1005C) = 0x0001; // line 16
-	*(unsigned short *)(MEM_VRAM + 0x1005E) = 0x0000;
+    char M_top_left[256] = {
+        0,1,1,0,0,0,0,0, 
+        0,1,1,1,0,0,0,0, 
+        0,1,1,1,1,0,0,0, 
+        0,1,1,0,1,1,0,0, 
+        0,1,1,0,0,1,1,0, 
+        0,1,1,0,0,0,1,1, 
+        0,1,1,0,0,0,0,1,
+        0,1,1,0,0,0,0,0};
 
-    *(unsigned short *)(MEM_VRAM + 0x10060) = 0x0000; //line 9 bottom left
-	*(unsigned short *)(MEM_VRAM + 0x10062) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10064) = 0x0000; // line 10
-	*(unsigned short *)(MEM_VRAM + 0x10066) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10068) = 0x0000; // line 11
-	*(unsigned short *)(MEM_VRAM + 0x1006A) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x1006C) = 0x0000; // line 12
-	*(unsigned short *)(MEM_VRAM + 0x1006E) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10070) = 0x0000; // line 13
-	*(unsigned short *)(MEM_VRAM + 0x10072) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10074) = 0x0000; // line 14
-	*(unsigned short *)(MEM_VRAM + 0x10076) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10078) = 0x0000; // line 15
-	*(unsigned short *)(MEM_VRAM + 0x1007A) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x1007C) = 0x0000; // line 16
-	*(unsigned short *)(MEM_VRAM + 0x1007E) = 0x1000;
+    char M_top_right[256] = {
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,1,1,1,0,
+        0,0,0,1,1,1,1,0,
+        0,0,1,1,0,1,1,0,
+        0,1,1,0,0,1,1,0,
+        1,1,0,0,0,1,1,0,
+        1,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0};
+
+    char M_bottom_left[256] = {
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0};
+
+    char M_bottom_right[256] = {
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0};
+
+    draw_letter(M_top_left, M_top_right, M_bottom_left, M_bottom_right, 0x10000);
 }
 
 void letter_A (void){
     //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
     //y coord = 0;
-	*(volatile unsigned short *)(MEM_OAM + 0x0006) = 0x0000; 
+	*(volatile unsigned short *)(MEM_OAM + 0x0008) = 0x0000; 
     //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
     //x coord = 0
-	*(volatile unsigned short *)(MEM_OAM + 0x0008) = 0x4000; 
+	*(volatile unsigned short *)(MEM_OAM + 0x000A) = 0x402F; 
     //obj attribute 2 pallette =16x16, priority 0, char 0
-	*(volatile unsigned short *)(MEM_OAM + 0x000A) = 0x0001; 
+	*(volatile unsigned short *)(MEM_OAM + 0x000C) = 0x0004; 
 
-    *(unsigned short *)(MEM_VRAM + 0x10080) = 0x0000; //line 9 bottom left
-	*(unsigned short *)(MEM_VRAM + 0x10082) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10084) = 0x0000; // line 10
-	*(unsigned short *)(MEM_VRAM + 0x10086) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10088) = 0x0000; // line 11
-	*(unsigned short *)(MEM_VRAM + 0x1008A) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x1008C) = 0x0000; // line 12
-	*(unsigned short *)(MEM_VRAM + 0x1008E) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10090) = 0x0000; // line 13
-	*(unsigned short *)(MEM_VRAM + 0x10092) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10094) = 0x0000; // line 14
-	*(unsigned short *)(MEM_VRAM + 0x10096) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x10098) = 0x0000; // line 15
-	*(unsigned short *)(MEM_VRAM + 0x1009A) = 0x1000;
-	*(unsigned short *)(MEM_VRAM + 0x1009C) = 0x0000; // line 16
-	*(unsigned short *)(MEM_VRAM + 0x1009E) = 0x1000;
+    *(unsigned short *)(MEM_VRAM + 0x10080) = 0x0000; //line 1 bottom left
+	*(unsigned short *)(MEM_VRAM + 0x10082) = 0x1100;
+	*(unsigned short *)(MEM_VRAM + 0x10084) = 0x0000; // line 2
+	*(unsigned short *)(MEM_VRAM + 0x10086) = 0x1100;
+	*(unsigned short *)(MEM_VRAM + 0x10088) = 0x0000; // line 3
+	*(unsigned short *)(MEM_VRAM + 0x1008A) = 0x0110;
+	*(unsigned short *)(MEM_VRAM + 0x1008C) = 0x0000; // line 4
+	*(unsigned short *)(MEM_VRAM + 0x1008E) = 0x0011;
+	*(unsigned short *)(MEM_VRAM + 0x10090) = 0x1000; // line 5
+	*(unsigned short *)(MEM_VRAM + 0x10092) = 0x0001;
+	*(unsigned short *)(MEM_VRAM + 0x10094) = 0x1100; // line 6
+	*(unsigned short *)(MEM_VRAM + 0x10096) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x10098) = 0x0110; // line 7
+	*(unsigned short *)(MEM_VRAM + 0x1009A) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x1009C) = 0x1110; // line 8
+	*(unsigned short *)(MEM_VRAM + 0x1009E) = 0x1111;
+
+    *(unsigned short *)(MEM_VRAM + 0x100A0) = 0x0011; //line 1 top right
+	*(unsigned short *)(MEM_VRAM + 0x100A2) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100A4) = 0x0011; // line 2
+	*(unsigned short *)(MEM_VRAM + 0x100A6) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100A8) = 0x0110; // line 3
+	*(unsigned short *)(MEM_VRAM + 0x100AA) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100AC) = 0x1100; // line 4
+	*(unsigned short *)(MEM_VRAM + 0x100AE) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100B0) = 0x1000; // line 5
+	*(unsigned short *)(MEM_VRAM + 0x100B2) = 0x0001;
+	*(unsigned short *)(MEM_VRAM + 0x100B4) = 0x0000; // line 6
+	*(unsigned short *)(MEM_VRAM + 0x100B6) = 0x0011;
+	*(unsigned short *)(MEM_VRAM + 0x100B8) = 0x0000; // line 7
+	*(unsigned short *)(MEM_VRAM + 0x100BA) = 0x0110;
+	*(unsigned short *)(MEM_VRAM + 0x100BC) = 0x1111; // line 8
+	*(unsigned short *)(MEM_VRAM + 0x100BE) = 0x0111;
+
+    *(unsigned short *)(MEM_VRAM + 0x100C0) = 0x0010; //line 1 bottom left
+	*(unsigned short *)(MEM_VRAM + 0x100C2) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100C4) = 0x0010; // line 2
+	*(unsigned short *)(MEM_VRAM + 0x100C6) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100C8) = 0x0010; // line 3
+	*(unsigned short *)(MEM_VRAM + 0x100CA) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100CC) = 0x0010; // line 4
+	*(unsigned short *)(MEM_VRAM + 0x100CE) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100D0) = 0x0010; // line 5
+	*(unsigned short *)(MEM_VRAM + 0x100D2) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100D4) = 0x0010; // line 6
+	*(unsigned short *)(MEM_VRAM + 0x100D6) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100D8) = 0x0010; // line 7
+	*(unsigned short *)(MEM_VRAM + 0x100DA) = 0x0000;
+	*(unsigned short *)(MEM_VRAM + 0x100DC) = 0x0010; // line 8
+	*(unsigned short *)(MEM_VRAM + 0x100DE) = 0x0000;
+
+    *(unsigned short *)(MEM_VRAM + 0x100E0) = 0x0000; //line 1 bottom right
+	*(unsigned short *)(MEM_VRAM + 0x100E2) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x100E4) = 0x0000; // line 2
+	*(unsigned short *)(MEM_VRAM + 0x100E6) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x100E8) = 0x0000; // line 3
+	*(unsigned short *)(MEM_VRAM + 0x100EA) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x100EC) = 0x0000; // line 4
+	*(unsigned short *)(MEM_VRAM + 0x100EE) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x100F0) = 0x0000; // line 5
+	*(unsigned short *)(MEM_VRAM + 0x100F2) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x100F4) = 0x0000; // line 6
+	*(unsigned short *)(MEM_VRAM + 0x100F6) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x100F8) = 0x0000; // line 7
+	*(unsigned short *)(MEM_VRAM + 0x100FA) = 0x0100;
+	*(unsigned short *)(MEM_VRAM + 0x100FC) = 0x0000; // line 8
+	*(unsigned short *)(MEM_VRAM + 0x100FE) = 0x0100;
 }
 
+
+void letter_R (){
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0010) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+	*(volatile unsigned short *)(MEM_OAM + 0x0012) = 0x404F; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+	*(volatile unsigned short *)(MEM_OAM + 0x0014) = 0x0008; 
+    char R_top_left[256] = {
+        0,0,1,1,1,1,1,1, 
+        0,1,1,0,0,0,0,0, 
+        0,1,0,0,0,0,0,0, 
+        0,1,0,0,0,0,0,0, 
+        0,1,0,0,0,0,0,0, 
+        0,1,0,0,0,0,0,0, 
+        0,1,1,0,0,0,0,0,
+        0,1,1,1,1,1,1,1};
+
+    char R_top_right[256] = {
+        1,0,0,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,0,1,0,0,0,0,0,
+        0,0,1,0,0,0,0,0,
+        0,0,1,0,0,0,0,0,
+        0,0,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        1,1,0,0,0,0,0,0};
+
+    char R_bottom_left[256] = {
+        0,1,0,1,1,1,0,0,
+        0,1,0,0,1,1,1,0,
+        0,1,0,0,0,0,1,1,
+        0,1,0,0,0,0,0,1,
+        0,1,0,0,0,0,0,0,
+        0,1,0,0,0,0,0,0,
+        0,1,0,0,0,0,0,0,
+        0,1,0,0,0,0,0,0};
+
+    char R_bottom_right[256] = {
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,1,0,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,0,1,1,0,0,0,0,
+        0,0,0,1,0,0,0,0};
+
+    draw_letter(R_top_left, R_top_right, R_bottom_left, R_bottom_right, 0x10100);
+
+}
+
+void letter_I (){
+
+    char I_top_left[256] = {
+        0,0,1,1,1,1,1,1,
+        0,0,1,1,1,1,1,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1};
+
+    char I_top_right[256] = {
+        1,1,1,1,1,1,0,0,
+        1,1,1,1,1,1,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0};
+
+    char I_bottom_left[256] = {
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,1,1,1,1,1,1,
+        0,0,1,1,1,1,1,1};
+
+
+    char I_bottom_right[256] = {
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,0,0,
+        1,1,1,1,1,1,0,0};
+
+
+    draw_letter(I_top_left, I_top_right, I_bottom_left, I_bottom_right, 0x10180);
+}
+
+void letter_I_mario () {
+    letter_I();
+	*(volatile unsigned short *)(MEM_OAM + 0x0018) = 0x0000; 
+    *(volatile unsigned short *)(MEM_OAM + 0x001A) = 0x406F; 
+    *(volatile unsigned short *)(MEM_OAM + 0x001C) = 0x000C; 
+}
+void letter_I_luigi_1 (){
+    letter_I();
+	*(volatile unsigned short *)(MEM_OAM + 0x0050) = 0x0000; 
+    *(volatile unsigned short *)(MEM_OAM + 0x0052) = 0x404F; 
+    *(volatile unsigned short *)(MEM_OAM + 0x0054) = 0x000C; 
+
+}
+void letter_I_luigi_2 (){
+    letter_I();
+	*(volatile unsigned short *)(MEM_OAM + 0x0058) = 0x0000; 
+    *(volatile unsigned short *)(MEM_OAM + 0x005A) = 0x408F; 
+    *(volatile unsigned short *)(MEM_OAM + 0x005C) = 0x000C; 
+
+}
+
+void letter_O (){
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0020) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+    *(volatile unsigned short *)(MEM_OAM + 0x0022) = 0x408F; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+    *(volatile unsigned short *)(MEM_OAM + 0x0024) = 0x0010; 
+    char I_top_left[256] = {
+        0,0,1,1,1,1,1,1,
+        0,1,1,1,1,1,1,1,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+    };
+
+    char I_top_right[256] = {
+        1,1,1,1,1,0,0,0,
+        1,1,1,1,1,1,0,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+ 
+    };
+
+    char I_bottom_left[256] = {
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,1,1,1,1,1,
+        0,0,1,1,1,1,1,1,
+    };
+
+
+    char I_bottom_right[256] = {
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        1,1,1,1,1,1,0,0,
+        1,1,1,1,1,0,0,0,
+
+    };
+
+
+    draw_letter(I_top_left, I_top_right, I_bottom_left, I_bottom_right, 0x10200);
+}
+
+void letter_exclamation_point (){
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0028) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+    *(volatile unsigned short *)(MEM_OAM + 0x002A) = 0x40AF; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+    *(volatile unsigned short *)(MEM_OAM + 0x002C) = 0x0014; 
+    char I_top_left[256] = {
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1
+    };
+
+    char I_top_right[256] = {
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0
+    };
+
+    char I_bottom_left[256] = {
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,1,
+        0,0,0,0,0,0,0,1
+    };
+
+    char I_bottom_right[256] = {
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0
+    };
+
+    draw_letter(I_top_left, I_top_right, I_bottom_left, I_bottom_right, 0x10280);
+}
+
+void letter_L (){
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0030) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+    *(volatile unsigned short *)(MEM_OAM + 0x0032) = 0x400F; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+    *(volatile unsigned short *)(MEM_OAM + 0x0034) = 0x0018; 
+    char I_top_left[256] = {
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0
+    };
+
+    char I_top_right[256] = {
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0
+    };
+
+    char I_bottom_left[256] = {
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,1,1,1,1,1,
+        0,1,1,1,1,1,1,1,
+        0,0,0,0,0,0,0,0
+    };
+
+    char I_bottom_right[256] = {
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,0,
+        1,1,1,1,1,1,1,0,
+        0,0,0,0,0,0,0,0
+    };
+
+    draw_letter(I_top_left, I_top_right, I_bottom_left, I_bottom_right, 0x10300);
+}
+void letter_U (){
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0038) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+    *(volatile unsigned short *)(MEM_OAM + 0x003A) = 0x402F; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+    *(volatile unsigned short *)(MEM_OAM + 0x003C) = 0x001C; 
+    char I_top_left[256] = {
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0
+    };
+
+    char I_top_right[256] = {
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0
+    };
+
+    char I_bottom_left[256] = {
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,1,1,1,1,1,
+        0,1,1,1,1,1,1,1,
+        0,0,0,0,0,0,0,0
+    };
+
+    char I_bottom_right[256] = {
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        1,1,1,1,1,1,1,0,
+        1,1,1,1,1,1,1,0,
+        0,0,0,0,0,0,0,0
+    };
+
+    draw_letter(I_top_left, I_top_right, I_bottom_left, I_bottom_right, 0x10380);
+}
+void letter_G (){
+    //attribute 0 square, 16x16 palette, mosaic off, normal oBL, single-fold, no rotation scaling,
+    //y coord = 0;
+	*(volatile unsigned short *)(MEM_OAM + 0x0040) = 0x0000; 
+    //attribute 1 obj size =16x16, no horizontal, vertical flip, no rotation scaling
+    //x coord = 0
+    *(volatile unsigned short *)(MEM_OAM + 0x0042) = 0x406F; 
+    //obj attribute 2 pallette =16x16, priority 0, char 0
+    *(volatile unsigned short *)(MEM_OAM + 0x0044) = 0x0020; 
+    char I_top_left[256] = {
+        0,0,0,0,0,0,0,0,
+        0,1,1,1,1,1,1,1,
+        0,1,1,1,1,1,1,1,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+
+    };
+
+    char I_top_right[256] = {
+        0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,0,
+        1,1,1,1,1,1,1,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,
+ 
+    };
+
+    char I_bottom_left[256] = {
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,0,0,0,0,0,
+        0,1,1,1,1,1,1,1,
+        0,1,1,1,1,1,1,1,
+        0,0,0,0,0,0,0,0,
+
+    };
+
+    char I_bottom_right[256] = {
+        0,0,1,1,1,1,1,0,
+        0,0,1,1,1,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        0,0,0,0,0,1,1,0,
+        1,1,1,1,1,1,1,0,
+        1,1,1,1,1,1,1,0,
+        0,0,0,0,0,0,0,0,
+    };
+
+    draw_letter(I_top_left, I_top_right, I_bottom_left, I_bottom_right, 0x10400);
+}
+void clear_attributes(){
+    for (int i = 0; i <0x60; i +=2){
+	*(volatile unsigned short *)(MEM_OAM + i) = 0; 
+    }
+}
 void mario_wins(void){
 	*dispcnt = 0x1740; //bg mode0, display window 0 and 1, turn on bg2, bg1, bg0A
     
     letter_M();
+    letter_A();
+    letter_R();
+    letter_I_mario();
+    letter_O();
+    letter_exclamation_point();
 }
 void luigi_wins(void){
-
+	*dispcnt = 0x1740; //bg mode0, display window 0 and 1, turn on bg2, bg1, bg0A
+    letter_L();
+    letter_U();
+    letter_I_luigi_1();
+    letter_G();
+    letter_I_luigi_2();
+    letter_exclamation_point();
 }
 int main(void) {
 	//set DISPCNT
-	*dispcnt = 0x0700; //bg mode0, display window 0 and 1, turn on bg2, bg1, bg0
+	*dispcnt = 0x1740; //bg mode0, display window 0 and 1, turn on bg2, bg1, bg0A
 
 	*bg0cnt = 0x0801;
 	*bg1cnt = 0x0902;
@@ -244,11 +727,11 @@ int main(void) {
 	bg_palette_memory[33] = RGB15(0x1F, 0x00, 0x00); //red = 1
 	bg_palette_memory[34] = RGB15(0x1F, 0x1F, 0x1F); //white = 2
 	bg_palette_memory[35] = RGB15(0x7, 0x7, 0x7); //gray = 3
-	bg_palette_memory[36] = RGB15(0x1F, 0x1F, 0x0); //yellow = 3
-	bg_palette_memory[37] = RGB15(0x0, 0x1F, 0x1F); //tourquoise = 3
-	bg_palette_memory[38] = RGB15(0x1F, 0x0, 0x1F); //magenta = 3
-	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //brown = 3
-	bg_palette_memory[40] = RGB15(0x0, 0x8, 0x8); //gray = 3
+	bg_palette_memory[36] = RGB15(0x1F, 0x1F, 0x0); //yellow = 4
+	bg_palette_memory[37] = RGB15(0x0, 0x1F, 0x1F); //tourquoise = 5
+	bg_palette_memory[38] = RGB15(0x1F, 0x0, 0x1F); //magenta = 6
+	bg_palette_memory[39] = RGB15(0x8, 0x8, 0x0); //brown = 7
+	bg_palette_memory[40] = RGB15(0x0, 0x8, 0x8); //gray = 8
 
     //set colors in OBJ PRAM
     obj_palette_memory[1] = RGB15(0x1F, 0x1F, 0x1F); // white = 1
@@ -271,6 +754,12 @@ int main(void) {
 	*(volatile unsigned short *)(MEM_VRAM + 0x5000) = 0x2003;
 	*bg2hofs = CENTER_H_SCREEN;
 	*bg2vofs = CENTER_V_SCREEN;
+
+	//border is tile 4
+    /*for (int i = 0; i < 0x39; i ++){
+	    *(volatile unsigned short *)(MEM_VRAM + 0x5800) = 0x2004;
+    }*/
+
 
 	//set screen data format for paddle 1
 	*(unsigned short *)(MEM_VRAM + 0x20) = 0x2200; //1-hathat
@@ -328,9 +817,12 @@ int main(void) {
 	*(unsigned short *)(MEM_VRAM + 0x7C) = 0x2000;
 	*(unsigned short *)(MEM_VRAM + 0x7E) = 0x0002;
 
-
-
-	uint32 volatile key_states = 0;
+	//set screen data format for border
+    /*for (int i = 0; i < 0x20; i ++) {
+	    *(unsigned short *)(MEM_VRAM + 0x80 + i) = 0x6666;
+    }*/
+	
+    uint32 volatile key_states = 0;
 	int x_dir = 2;
     int y_dir = 1;
     int paddle_velocity = 2;
@@ -358,7 +850,6 @@ int main(void) {
 	const uint8 notes[6]= { 0x02, 0x05, 0x08};
 
 	while (1) {
-        mario_wins();
         counter = counter + 1;
         // Skip past the rest of any current V-Blank, then skip past the V-Draw
         while(REG_DISPLAY_VCOUNT >= 160);
@@ -393,7 +884,7 @@ int main(void) {
             if (key_states & KEY_A) {
                 player_0 = clamp((player_0 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
             }
-            if (key_states & KEY_R) {
+            if (key_states & KEY_B) {
                 player_0 = clamp((player_0 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
             }
 
@@ -408,6 +899,12 @@ int main(void) {
                 }
                 *soundcnt_x= 0;
                 while (1) {
+                    if (ball_x == PADDLE_1_X + BALL_WIDTH){ //luigi wins
+                        luigi_wins();
+                    }
+                    else {
+                        mario_wins();
+                    }
                     key_states = ~*REG_KEY_INPUT & KEY_ANY;
                     if (key_states & KEY_START){
                         player_0 = CENTER_V_SCREEN;
@@ -417,10 +914,7 @@ int main(void) {
                         break;
                     }
                 }
-                if (ball_x == PADDLE_1_X + BALL_WIDTH){ //mario wins
-                    mario_wins();
-                }
-                else luigi_wins;
+                clear_attributes();
 
             }
             //bounce off vertical edges
@@ -436,7 +930,7 @@ int main(void) {
                      (ball_y >= player_1 - PADDLE_HEIGHT + BALL_HEIGHT - 8))
                     ) {
                 x_dir = -x_dir;
-                *soundcnt_x= (1 << 0x7);
+                *soundcnt_x = (1 << 0x7);
 	            *sound1cnt_x = (0x1 << 15) | SND_RATE(NOTE_A, 0); //octave
             }
 
