@@ -881,10 +881,10 @@ int main(void) {
             if (key_states & KEY_UP) {
                 player_1 = clamp((player_1 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
             }
-            if (key_states & KEY_A) {
+            if (key_states & KEY_B) {
                 player_0 = clamp((player_0 - paddle_velocity), (MAX_V_SCREEN + BALL_HEIGHT), MIN_V_SCREEN);
             }
-            if (key_states & KEY_B) {
+            if (key_states & KEY_A) {
                 player_0 = clamp((player_0 + paddle_velocity), MAX_V_SCREEN, MIN_V_SCREEN);
             }
 
