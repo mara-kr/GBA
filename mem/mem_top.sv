@@ -102,7 +102,7 @@ module mem_top (
     mem_register #(32) baddr (.clock, .reset, .en(1'b1), .clr(1'b0),
                           .D(bus_addr), .Q(bus_addr_lat1));
     mem_register #(1) bwrite (.clock, .reset, .en(1'b1), .clr(1'b0),
-                          .D(bus_write), .Q(bus_write_lat1));
+                          .D(bus_write & ~bus_pause), .Q(bus_write_lat1));
     mem_register #(2) bsize (.clock, .reset, .en(1'b1), .clr(1'b0),
                          .D(bus_size), .Q(bus_size_lat1));
     // Pauses due to writes, could be extended
@@ -144,7 +144,7 @@ module mem_top (
     assign bus_pak_init_1_read = (bus_addr_lat1 - `PAK_INIT_1_START) <= `PAK_INIT_1_SIZE;
     assign bus_pak_init_1_addr = bus_addr_lat1 - `PAK_INIT_1_START;
 
-    (* mark_debug = "true" *) logic FIFO_we_A, FIFO_we_B, full_A, full_B, empty_A, empty_B;
+    logic FIFO_we_A, FIFO_we_B, full_A, full_B, empty_A, empty_B;
 
     fifo #(32) dsA (.clk(clock), .rst(reset), .we(FIFO_we_A), .re(FIFO_re_A),
                     .full(full_A), .empty(empty_A), .data_in(bus_wdata),
@@ -155,7 +155,6 @@ module mem_top (
                     .full(full_B), .empty(empty_B), .data_in(bus_wdata),
                     .data_out(FIFO_val_B), .size(FIFO_size_B),
                     .clr(FIFO_clr_B));
-
 
 
     // Data width set to 32bits, so addresses are aligned
@@ -623,8 +622,19 @@ module fifo(clk, rst, data_in, we, re, full, empty, data_out, size, clr);
   output logic [WIDTH-1:0] data_out;
   output logic [3:0] size;
 
-  logic [WIDTH-1:0] Q [7]; // memory array of 7 bytes
-  logic [1:0] getPtr, putPtr;
+  logic [WIDTH-1:0] Q [7:0]; // memory array of 7 bytes
+  logic [31:0] elem0;
+  logic [31:0] elem1, elem2, elem3, elem4, elem5, elem6, elem7;
+  assign elem0 = Q[0];
+  assign elem1 = Q[1];
+  assign elem2 = Q[2];
+  assign elem3 = Q[3];
+  assign elem4 = Q[4];
+  assign elem5 = Q[5];
+  assign elem6 = Q[6];
+  assign elem7 = Q[7];
+
+  logic [2:0] getPtr, putPtr;
   assign empty = (size == 4'd0);
   assign full = (size == 4'd8);
   assign data_out = Q[getPtr];
