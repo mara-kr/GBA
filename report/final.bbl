@@ -1,0 +1,62 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.6 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{GBATek}{online}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Korth}{K.}%
+     {Martin}{M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{KM1}
+  \strng{fullhash}{KM1}
+  \field{sortinit}{K}
+  \field{subtitle}{Gameboy Advance / Nintendo DS / DSi - Technical Info}
+  \field{title}{GBATEK}
+  \verb{url}
+  \verb http://problemkaputt.de/gbatek.htm
+  \endverb
+  \field{year}{2014}
+  \warn{\item Invalid format of field 'urldate'}
+\endentry
+
+\entry{GBAManual}{manual}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Nintendo}{N.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Nintendo of America Inc.}%
+  }
+  \strng{namehash}{N1}
+  \strng{fullhash}{N1}
+  \field{sortinit}{N}
+  \field{title}{AGB Programming Manual}
+  \field{version}{1.1}
+  \warn{\item Invalid format of field 'date' \item Invalid format of field
+  'date'}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput
