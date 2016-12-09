@@ -28,7 +28,7 @@ module gba_audio_top (
     output logic sound_req1,
     output logic sound_req2,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
-    (* mark_debug = "true" *) input logic [15:0] internal_TM0CNT_L,
+    input logic [15:0] internal_TM0CNT_L,
     input logic [15:0] internal_TM1CNT_L,
     input logic dsASqRst, dsBSqRst);
 
@@ -78,7 +78,7 @@ module gba_audio_top (
     logic reset_c4;
 
     //final mixer
-    (* mark_debug = "true" *) logic [23:0] direct_A, direct_B;
+    logic [23:0] direct_A, direct_B;
     logic [15:0] SOUND_CNT_H;
     logic timer_numA;
     logic timer_numB;
@@ -249,19 +249,29 @@ module gba_audio_top (
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
 
-     (* mark_debug = "true" *) logic [31:0] counter; 
-     counter #(32)(.q(counter), .clk(clock), .rst_b(~reset), .up(1'b1), .clear(1'b0), .enable(1'b1), .load(1'b0), .d(1'b0));
+    (* mark_debug = "true" *) logic [15:0] counter_100;
+    always_ff @(posedge clk_100, posedge reset) begin
+        if (reset || new_sample)
+            counter_100 <= 16'b0;
+        else
+            counter_100 <= counter_100 + 1;
+    end
+    
+    always_ff @(posedge clk_100, posedge reset) begin
+        if (reset) begin
+            hphone_valid <= 0;
+            hphone_l <= 0;
+            hphone_r <= 0;
+        end else begin
+            hphone_valid <= 0;
+            hphone_l <= 0;
+            hphone_r <= 0;
 
-    always_ff @(posedge clk_100) begin
-        hphone_valid <= 0;
-        hphone_l <= 0;
-        hphone_r <= 0;
-
-        if (new_sample == 1) begin
-
-            hphone_valid <= 1'b1;
-            hphone_r <= {output_wave_r};
-            hphone_l <= {output_wave_l};
+            if (new_sample == 1) begin
+                hphone_valid <= 1'b1;
+                hphone_r <= {output_wave_r};
+                hphone_l <= {output_wave_l};
+            end
         end
     end
 

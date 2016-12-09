@@ -5,8 +5,10 @@ module bitmap_address_unit
    input logic frame,
    output logic [16:0] addr);
 
-  logic [7:0] row_offset;
-  assign row_offset = y * (hmax+8'b1); //TODO Does vivado infer multiplication onto a DSP?
+  logic [15:0] row_offset;
+  logic [15:0] scale;
+  assign scale = {8'b0, hmax};
+  assign row_offset = y * scale;
 
   logic [15:0] pixelno;
   assign pixelno = row_offset + x;

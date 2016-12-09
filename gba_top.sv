@@ -28,23 +28,23 @@ module gba_top (
                     .gba_clk, .clk_100, .clk_256, .vga_clk);
 
     // Buttons register output
-    (* mark_debug = "true" *) logic [15:0] buttons;
+    logic [15:0] buttons;
 
     // CPU
     logic  [4:0] mode;
     (* mark_debug = "true" *) logic        nIRQ;
     logic        abort;
-    (* mark_debug = "true" *) logic        cpu_preemptable;
+    logic        cpu_preemptable;
 
     // Interrupt signals
     logic [15:0] reg_IF, reg_IE, reg_ACK;
-    (* mark_debug = "true" *) logic        timer0, timer1, timer2, timer3;
+    logic        timer0, timer1, timer2, timer3;
 
     // DMA
     (* mark_debug = "true" *) logic        dmaActive;
-    (* mark_debug = "true" *) logic        dma0, dma1, dma2, dma3;
+    logic        dma0, dma1, dma2, dma3;
     logic  [3:0] disable_dma;
-    (* mark_debug = "true" *) logic        sound_req1, sound_req2;
+    logic        sound_req1, sound_req2;
 
     // Timer
     (* mark_debug = "true" *) logic [15:0] internal_TM0CNT_L;
@@ -66,7 +66,12 @@ module gba_top (
 
     logic        FIFO_re_A, FIFO_re_B, FIFO_clr_A, FIFO_clr_B;
     logic [31:0] FIFO_val_A, FIFO_val_B;
-    (* mark_debug = "true" *) logic  [3:0] FIFO_size_A, FIFO_size_B;
+    logic  [3:0] FIFO_size_A, FIFO_size_B;
+    
+    logic  vblank, hblank, vcount_match;
+    assign vblank = (vcount >= 8'd160);
+    assign hblank = (hcount >= 9'd240);
+    assign vcount_match = (vcount == IO_reg_datas[`DISPSTAT_IDX][15:8]);
 
     logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0];
 
@@ -114,7 +119,8 @@ module gba_top (
                  .TM0CNT_L, .TM1CNT_L, .TM2CNT_L, .TM3CNT_L, .dsASqRst, .dsBSqRst,
 
                  .FIFO_re_A, .FIFO_re_B, .FIFO_clr_A, .FIFO_clr_B, .FIFO_val_A,
-                 .FIFO_val_B, .FIFO_size_A, .FIFO_size_B);
+                 .FIFO_val_B, .FIFO_size_A, .FIFO_size_B,
+                 .vblank, .hblank, .vcount_match);
 
     graphics_system gfx (.gfx_vram_A_addr, .gfx_vram_B_addr, .gfx_vram_C_addr,
                          .gfx_oam_addr, .gfx_palette_bg_addr,

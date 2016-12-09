@@ -12,8 +12,8 @@ module direct_sound (
     input logic [31:0] FIFO_value,
     output logic FIFO_re,
     output logic FIFO_clr,
-    (* mark_debug = "true" *) input logic timer_num,
-    (* mark_debug = "true" *) input logic sequencer_reset,
+    input logic timer_num,
+    input logic sequencer_reset,
     output logic [23:0] waveout,
     output logic sound_req);
 
