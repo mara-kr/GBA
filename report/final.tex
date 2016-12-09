@@ -12,6 +12,7 @@
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \usepackage[english]{babel}
 \usepackage{csquotes}
+\usepackage{hyperref}
 \usepackage[backend=bibtex]{biblatex}
 \bibliography{mybib}
 \begin{document}
@@ -20,18 +21,36 @@
 	\maketitle
 	\newpage
 	
-	\section{System Overview}
-	The Game Boy Advance (GBA) is composed of four major subsystems - the ARM7TDMI CPU, the graphics pipeline, the sound engine, and the Link Cable serial interface. In the interest of time and completeness, we plan to only implement the first three subsystems, leaving the serial interface as a bonus if we have time. Additionally, the Game Boy Advance contains a Direct Memory Access (DMA) controller, several programmable timers, an interrupt controller, and 10 buttons. The graphics pipeline outputs to a 240x160 RGB LCD screen; the sound outputs to either a mono speaker, or the GBA's stereo headphone jack. The system is clocked 16.78MHz.\cite{GBAManual} \\\\
-	Our system differs slightly from the original GBA implementation. First, we chose the Zedboard as our FPGA primarily for its stereo audio support via the on-board ADAU 1761 Audio Chip, as well as its VGA output (given the low resolution of the GBA, HDMI is excessive). Second, given the lack of push buttons on the Zedboard and the fact that the GBA expects the user to press 3+ buttons as once, we used a SNES controller for the GBA's button input. We use the Zedboard's 12-bit RGB VGA interface for our display. We had planned to use an SD card to store Game Pak ROMs in lieu of a cartridge interface, but time constraints didn't allow for this.\\\\	
-	On a high level, the GBA architecture is a MMIO register based system. Memory from \texttt{0x04000000} to about \texttt{0x04000807} is mapped to I/O registers (the programmers manual only lists register mappings up to \texttt{0x04000208}, but hobbyist reverse engineering shows some internal registers up to location \texttt{0x04000800}). The CPU configures other subsystems through this interface by writing to the MMIO locations.\\\\
-	Initially, we had planned to finish the semester with a working GameBoy Advance that could play three games: Pokemon Ruby, Legend of Zelda: Minish Cap, and Kim Possible 3: Team Possible (the favorite childhood games of our group members), but several aspects of the project ended up taking much, much longer than we anticipated. This project is
+	\section{Overview}
+	The GameBoy Advance (GBA) was an extremely popular handheld console by Nintendo, released in 2001, succeeding the GameBoy Color. As with previous Nintendo handheld consoles, it was a single-player device, with the option of attaching a link cable between devices for multiplayer interactions. The serial port on the top of the device that the link cable attached to was also used for a wireless adapter in \textit{Pokemon: Fire Red and Leaf Green}, as well as for links between the Nintendo GameCube and the GameBoy Advance. The GameBoy Advance was also backwards compatible with GameBoy Color games.\\\\
+	
+	The Game Boy Advance (GBA) is composed of four major subsystems - the ARM7TDMI CPU, the graphics pipeline, the sound engine, and the Link Cable serial interface. The GBA also includes a Zilog Z80 processor for backwards GameBoy Color compatibility. Additionally, the Game Boy Advance contains a Direct Memory Access (DMA) controller, several programmable timers, an interrupt controller, and 10 buttons. The graphics pipeline outputs to a 240x160 RGB LCD screen; the sound outputs to either a mono speaker, or the GBA's stereo headphone jack. The system clock is the same as the CPU clock, running at 16.78MHz.\cite{GBAManual} \\\\	
+	On a high level, the GBA architecture is a MMIO register based system. The ARM7TDMI acts as a master to configure the various subsystems. Generally, registers act as control points, but are occasionally used to give the status of subsystems to the CPU.\\\\
+	Initially, we had planned to finish the semester with a working GameBoy Advance that could play three games: Pokemon Ruby, Legend of Zelda: Minish Cap, and Kim Possible 3: Team Possible (the favorite childhood games of our group members), but several aspects of the project ended up taking much, much longer than we anticipated. We feel, however, that enough dense roadblocks have been dealt with to make this a very achievable project for future groups to complete.\\\\
 	
 	
+	\subsection{Architecture}
+	While the GBA generally operates in a master-slave fashion, there are several points of interactions between the subsystems. For the most part in this project, we made no attempt to create a cycle accurate system. It is possible that some games exist that abuse the specifics of the hardware enough to make this a problem, but from our understanding of the GBA specification, there is little incentive to cut game timing close enough to make this a problem - the "hacky" characteristics of some 80s arcade cabinets are unlikely to be present in the GameBoy Advance. Namely, games are likely compiled, instead of hand-assembled.\\\\
+	As previously stated, the ARM7TDMI core controls most of the system. 
+	
+	
+	\subsection{GBA Schematic}
+	\includegraphics[width=12cm, height=20cm, keepaspectratio=true]{gba_schematic}
 	
 	\subsection{System Diagram}
 	\includegraphics[width=12cm, height=20cm, angle=270, keepaspectratio=true]{system}
 	
-	\section{Memory Overview}
+	\section{Infrastructure}
+	\subsubsection{DevKitARM}
+	\subsubsection{Emulators}
+	\subsubsection{Synthesis \& Verification}
+
+	
+	For the most part, we used the standard toolchain - Vivado for synthesis (and occasionally simulation), and VCS for pre-synthesis verification. We also used the \href{http://devkitpro.org/wiki/Getting_Started/devkitARM}{DevKitARM} toolchain for compiling programs to run on the GBA's CPU. 
+	
+	
+	
+	\section{Memory}
 	The Game Boy Advance memory is divided into 11 regions:\\
 	\textbf{System ROM}: Mapped from \texttt{0x00000000} to \texttt{0x00003FFF}. Holds the GBA BIOS.\\
 	\textbf{CPU External RAM}: Mapped from \texttt{0x02000000} to \texttt{0x0203FFFF}.\\
@@ -44,6 +63,9 @@
 	\textbf{Game Pak ROM, WS1}: Mapped from \texttt{0x0A000000} to \texttt{0x0BFFFFFFF}. Cartridge ROM.\\
 	\textbf{Game Pak ROM, WS2}: Mapped from \texttt{0x0C000000} to \texttt{0x0DFFFFFFF}. Cartridge ROM.\\
 	\textbf{Game Pak RAM}: Mapped from \texttt{0x0E000000} to \texttt{0x0E00FFFF}. Cartridge RAM.\cite{GBAManual}\\
+	
+	Memory from \texttt{0x04000000} to about \texttt{0x04000807} is mapped to I/O registers (the programmers manual only lists register mappings up to \texttt{0x04000208}, but hobbyist reverse engineering shows some internal registers up to location \texttt{0x04000800}).
+	
 	
 	Additionally, the upper 1M-bit of each ROM region is used as flash memory.
 	
