@@ -7,15 +7,15 @@ module obj_row_double_buffer (
     input  logic        we,
     input  logic        clock, reset);
 
-    logic [19:0] rdata_even, rdata_odd;
+    (* mark_debug="true" *) logic [19:0] rdata_even, rdata_odd;
 
     obj_row_buffer odd (.wdata, .transparent, .palettemode,
                          .wcol, .rcol, .clear, .rdata(rdata_odd),
-                         .en((clear | we) & ~row[0]), .clock, .reset);
+                         .en((clear & ~row[0]) | (we & row[0] & ~clear)), .clock, .reset);
 
     obj_row_buffer even  (.wdata, .transparent, .palettemode,
                          .wcol, .rcol, .clear, .rdata(rdata_even),
-                         .en((clear | we) & row[0]), .clock, .reset);
+                         .en((clear & row[0]) | (we & ~row[0] & ~clear)), .clock, .reset);
 
     assign rdata = (row[0]) ? rdata_even : rdata_odd;
 endmodule: obj_row_double_buffer
@@ -24,8 +24,8 @@ module obj_row_buffer (
     input  logic        clock, reset,
     output logic [19:0] rdata,
     input  logic [19:0] wdata,
-    input  logic  [7:0] wcol, rcol,
-    input  logic        palettemode, clear, transparent, en);
+    (* mark_debug="true" *) input  logic  [7:0] wcol, rcol,
+    (* mark_debug="true" *) input  logic        palettemode, clear, transparent, en);
 
     logic [255:0] col_ones_hot, transparent_col;
     logic [19:0] reg_in [239:0];

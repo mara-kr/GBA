@@ -9,8 +9,8 @@ module obj_rot_scale_unit
    output logic transparent);
 
   //distances from reference point of rotation (obj center)
-  logic [6:0] dx;
-  logic [6:0] dy;
+  (* mark_debug="true" *) logic [6:0] dx;
+  (* mark_debug="true" *) logic [6:0] dy;
 
   logic negx, negy;
 

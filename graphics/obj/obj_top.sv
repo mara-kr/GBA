@@ -3,41 +3,41 @@
 module obj_top (
     input  logic        clock, reset,
 
-    output logic [31:0] OAM_mem_addr,
-    output logic [14:0] VRAM_mem_addr,
-    output logic [19:0] obj_packet,
-    input  logic [31:0] OAM_mem_data,
-    input  logic [15:0] VRAM_mem_data,
+    (* mark_debug="true" *) output logic [31:0] OAM_mem_addr,
+    (* mark_debug="true" *) output logic [14:0] VRAM_mem_addr,
+    (* mark_debug="true" *) output logic [19:0] obj_packet,
+    (* mark_debug="true" *) input  logic [31:0] OAM_mem_data,
+    (* mark_debug="true" *) input  logic [15:0] VRAM_mem_data,
     input  logic [15:0] dispcnt,
     input  logic [15:0] mosaic_mmio_reg,
-    input  logic  [7:0] vcount, hcount, //vcount is current row being displayed, hcount is column being output by BG
+    (* mark_debug="true" *) input  logic  [7:0] vcount, hcount, //vcount is current row being displayed, hcount is column being output by BG
     input  logic  [2:0] bgmode
 
     );
 
-    logic [19:0] obj_wdata;
+    (* mark_debug="true" *) logic [19:0] obj_wdata;
     logic [14:0] vram_addr;
 
-    logic  [5:0] X, Y;
-    logic  [5:0] mosaicX, mosaicY, flipX, flipY, rotX, rotY;
+    (* mark_debug="true" *) logic  [5:0] X, Y;
+    (* mark_debug="true" *) logic  [5:0] mosaicX, mosaicY, flipX, flipY, rotX, rotY;
     logic  [3:0] hscale, vscale;
     logic  [7:0] row, pinfo;
-    logic        visible, valid, transparent;
+    (* mark_debug="true" *) logic        visible, valid, transparent;
 
     logic [15:0] A, B, C, D;
     logic  [4:0] attrno;
-    logic        readOAM, attr_done, lookupAttr;
+    (* mark_debug="true" *) logic        readOAM, attr_done, lookupAttr;
 
     logic [10:0] timer;
-    logic  [9:0] objname, OAMaddr_attr, OAMaddr_obj;
-    logic  [8:0] objx, col, col_offset;
-    logic  [7:0] objy, hsize, vsize;
+    (* mark_debug="true" *) logic  [9:0] objname, OAMaddr_attr, OAMaddr_obj;
+    (* mark_debug="true" *) logic  [8:0] objx, col, col_offset;
+    (* mark_debug="true" *) logic  [7:0] objy, hsize, vsize;
     logic  [6:0] obj_hsize, obj_vsize;
     logic  [3:0] paletteno;
-    logic  [1:0] objmode, pri;
+    (* mark_debug="true" *) logic  [1:0] objmode, pri;
     logic  [1:0] waitstate;
-    logic        mosaic, rotation, dblsize, hflip, vflip, palettemode, oam_mode;
-    logic        step, stepobj, startrow, wen;
+    (* mark_debug="true" *) logic        mosaic, rotation, dblsize, hflip, vflip, palettemode, oam_mode;
+    (* mark_debug="true" *) logic        step, stepobj, startrow, wen;
     logic        rot_scale_transparent;
     logic        clear_timer;
 
@@ -166,7 +166,7 @@ module obj_top (
 
     assign OAM_mem_addr = readOAM ? OAMaddr_attr : OAMaddr_obj;
 
-    mosaic_processing_unit mpu(.hscale, .vscale, .mosaic, .row(vcount-objy), .col(col_offset), .x(mosaicX), .y(mosaicY));
+    mosaic_processing_unit mpu(.hscale, .vscale, .mosaic, .row(row-objy), .col(col_offset), .x(mosaicX), .y(mosaicY));
 
     row_visible_unit rvu (.visible, .row, .objy, .vsize, .rotation);
 

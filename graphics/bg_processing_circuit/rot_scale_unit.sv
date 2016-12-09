@@ -17,16 +17,16 @@ module bg_rot_scale_unit
   logic [27:0] prev_bgx, prev_bgy;
 
   //sign-extend parameters
-  (* mark_debug = "true" *) logic [27:0] dx, dy, dmx, dmy;
+  logic [27:0] dx, dy, dmx, dmy;
   assign dx = A[15] ? {13'h1FFF, ~A[14:0]} + 28'b1 : {13'h0, A[14:0]};
   assign dmx = B[15] ? {13'h1FFF, ~B[14:0]} + 28'b1 : {13'h0, B[14:0]};
   assign dy = C[15] ? {13'h1FFF, ~C[14:0]} + 28'b1 : {13'h0, C[14:0]};
   assign dmy = D[15] ? {13'h1FFF, ~D[14:0]} + 28'b1 : {13'h0, D[14:0]};
 
-  (* mark_debug = "true" *) logic [27:0] col_x_offset, col_y_offset;
-  (* mark_debug = "true" *) logic [27:0] row_x_offset, row_y_offset;
-  (* mark_debug = "true" *) logic [27:0] next_col_x_offset, next_col_y_offset;
-  (* mark_debug = "true" *) logic [27:0] next_row_x_offset, next_row_y_offset;
+  logic [27:0] col_x_offset, col_y_offset;
+  logic [27:0] row_x_offset, row_y_offset;
+  logic [27:0] next_col_x_offset, next_col_y_offset;
+  logic [27:0] next_row_x_offset, next_row_y_offset;
 
   logic update_col_offsets, update_row_offsets;
 
@@ -67,7 +67,7 @@ module bg_rot_scale_unit
   bg_register #(28) row_y_offset_reg(.q(row_y_offset), .d(next_row_y_offset), .clk(clock), .clear(1'b0), .enable(update_row_offsets), .rst_b); 
 
   //intermediate summation
-  (* mark_debug = "true" *) logic [27:0] actual_x, actual_y;
+  logic [27:0] actual_x, actual_y;
   assign actual_x = bgx + col_x_offset + row_x_offset;
   assign actual_y = bgy + col_y_offset + row_y_offset;
 

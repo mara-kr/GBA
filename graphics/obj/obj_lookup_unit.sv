@@ -14,10 +14,12 @@ module obj_lookup_unit (
     input  logic        step, startrow);
 
     logic [7:0] addr;
-    logic [6:0] hsize_d, vsize_d;
+    logic [6:0] hsize_d, vsize_d, hsize_q, vsize_q;
     logic       en_low, en_high; // Upper or lower 32 bits
     logic       addr_lat1, step_lat1, startrow_lat1;
 
+    //assign hsize = en_low ? hsize_d : hsize_q;
+    //assign vsize = en_low ? vsize_d : vsize_q;
 
     obj_register #(1) lrow (.clock, .reset, .q(startrow_lat1), .d(startrow),
                             .en(1'b1), .clear(1'b0));
