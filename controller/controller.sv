@@ -26,7 +26,7 @@ module controller
      logic [`CYC_WIDTH-1:0] cycle_cnt;
      logic [15:0] buttons_int, buttons_sync;
      logic [3:0] button_cyc_cnt;
-     logic cycle_clr, button_clr, button_en;
+     logic cycle_clr, button_clr, button_en, last_dclk;
      logic [15:0] buttons_i;
 
      controller_counter #(`CYC_WIDTH)
@@ -43,10 +43,17 @@ module controller
          else cs <= ns;
      end
 
+     always_ff @(posedge clock, posedge reset) begin
+         if (reset) last_dclk <= 1'b0;
+         else last_dclk <= data_clock;
+     end
+     
      // Buttons register
-     always_ff @(negedge data_clock, posedge reset) begin
-         if (reset) buttons_int <= 16'hFFFF;
-         else buttons_int[button_cyc_cnt] <= serial_data;
+     always_ff @(posedge clock, posedge reset) begin
+         if (reset)
+            buttons_int <= 16'hFFFF;
+         else if (last_dclk && ~data_clock)
+            buttons_int[button_cyc_cnt] <= serial_data;
      end
 
     // Synchronization
