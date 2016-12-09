@@ -2,7 +2,7 @@ module test_fsm
   (output logic [15:0] controlL0, controlH0,
    output logic [15:0] srcAddrL0, srcAddrH0,
    output logic [15:0] destAddrL0, destAddrH0,
-   
+
    output logic [15:0] controlL1, controlH1,
    output logic [15:0] srcAddrL1, srcAddrH1,
    output logic [15:0] destAddrL1, destAddrH1,
@@ -15,7 +15,7 @@ module test_fsm
    output logic [15:0] srcAddrL3, srcAddrH3,
    output logic [15:0] destAddrL3, destAddrH3,
    output logic        check_correctness,
-   (* mark_debug = "true" *) output logic        passed,
+   output logic        passed,
    output logic [31:0] test_addr,
    input  logic [31:0] rdata,
    output  logic [15:0] hcount,
@@ -24,7 +24,7 @@ module test_fsm
    input  logic pause,
    input  logic [10:0] count_time);
 
-  (* mark_debug = "true" *)enum logic [4:0] {OFF, BASIC1, BASIC2, PREEMPT_DMA2, PREEMPT_DMA1, PREEMPT_DMA0, 
+  enum logic [4:0] {OFF, BASIC1, BASIC2, PREEMPT_DMA2, PREEMPT_DMA1, PREEMPT_DMA0,
                     CHECK_BASIC1_1, CHECK_BASIC1_2, HCOUNT, CHECK_BASIC2_1, CHECK_BASIC2_2,
                     CHECK_PREEMPT_1, CHECK_PREEMPT_2, CHECK_HCOUNT_1, CHECK_HCOUNT_2, DONE} cs, ns;
 
@@ -70,7 +70,7 @@ module test_fsm
         destAddrL0 = 16'b0000_0000_0000_1010;
         destAddrH0 = 16'b0000_0101_0000_0000;
         controlL0 = 16'b0000_0000_0000_0001;
-        //DMA on, interrupt enabled, start timing immediately, 16 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 16 bit transfer,
         //DMA_repeat off, incr source and dest after transfer
         controlH0 = 16'b1100_1000_0000_0000;
         ns = (count_time == 11'd5 && ~pause) ? CHECK_BASIC1_1 : BASIC1;
@@ -91,7 +91,7 @@ module test_fsm
         destAddrL0 = 16'b0000_0000_0000_1000;
         destAddrH0 = 16'b0000_0011_0000_0000;
         controlL0 = 16'b0000_0000_0000_1000;
-        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer,
         //DMA_repeat off, source incr and dest after transfer
         controlH0 = 16'b1100_1100_0000_0000;
         ns = (count_time == 11'd30 && ~pause) ? CHECK_BASIC2_1 : BASIC2;
@@ -121,7 +121,7 @@ module test_fsm
         destAddrL2 = 16'b0000_1000_0000_1000;
         destAddrH2 = 16'b0000_0011_0000_0000;
         controlL2 = 16'b0000_0000_0000_0100;
-        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer,
         //DMA_repeat off, fixed source incr and dest after transfer
         controlH2 = 16'b1100_1101_0000_0000;
         ns = (count_time == 11'd50 && ~pause) ? PREEMPT_DMA1 : PREEMPT_DMA2;
@@ -133,7 +133,7 @@ module test_fsm
         destAddrL2 = 16'b0000_1000_0000_1000;
         destAddrH2 = 16'b0000_0011_0000_0000;
         controlL2 = 16'b0000_0000_0000_0100;
-        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer,
         //DMA_repeat off, fixed source incr and dest after transfer
         controlH2 = 16'b1100_1101_0000_0000;
 
@@ -142,7 +142,7 @@ module test_fsm
         destAddrL1 = 16'b0000_0000_1000_1000;
         destAddrH1 = 16'b0000_0011_0000_0000;
         controlL1 = 16'b0000_0000_0000_1010;
-        //DMA on, interrupt enabled, start timing immediately, 16 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 16 bit transfer,
         //DMA_repeat off, incr source incr and dest after transfer
         controlH1 = 16'b1100_1000_0000_0000;
         ns = (count_time == 11'd54 && ~pause) ? PREEMPT_DMA0 : PREEMPT_DMA1;
@@ -154,7 +154,7 @@ module test_fsm
         destAddrL2 = 16'b0000_1000_0000_1000;
         destAddrH2 = 16'b0000_0011_0000_0000;
         controlL2 = 16'b0000_0000_0000_0100;
-        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer,
         //DMA_repeat off, fixed source, incr dest after transfer
         controlH2 = 16'b1100_1101_0000_0000;
 
@@ -163,7 +163,7 @@ module test_fsm
         destAddrL1 = 16'b0000_0000_1000_1000;
         destAddrH1 = 16'b0000_0011_0000_0000;
         controlL1 = 16'b0000_0000_0000_0110;
-        //DMA on, interrupt enabled, start timing immediately, 16 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 16 bit transfer,
         //DMA_repeat off, incr source, incr dest after transfer
         controlH1 = 16'b1100_1000_0000_0000;
 
@@ -172,7 +172,7 @@ module test_fsm
         destAddrL0 = 16'b0000_0000_0000_1000;
         destAddrH0 = 16'b0000_0011_0000_0000;
         controlL0 = 16'b0000_0000_0000_0001;
-        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+        //DMA on, interrupt enabled, start timing immediately, 32 bit transfer,
         //DMA_repeat off, fixed source and fixed dest after transfer
         controlH0 = 16'b1100_1101_0100_0000;
         ns = (count_time == 11'd80 && ~pause) ? CHECK_PREEMPT_1 : PREEMPT_DMA0;
@@ -228,7 +228,7 @@ module test_fsm
           destAddrL3 = 16'b0000_0011_0000_1000;
           destAddrH3 = 16'b0000_0011_0000_0000;
           controlL3 = 16'b0000_0000_0000_0010;
-          //DMA on, interrupt enabled, start timing immediately, 32 bit transfer, 
+          //DMA on, interrupt enabled, start timing immediately, 32 bit transfer,
           //DMA_repeat on H-blank, fixed source and dest after transfer
           controlH3 = 16'b1110_1101_0100_0000;
           ns = (count_time == 11'd140 && ~pause) ? CHECK_HCOUNT_1 : HCOUNT;

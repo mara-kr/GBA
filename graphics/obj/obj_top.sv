@@ -57,8 +57,9 @@ module obj_top (
     assign vscale = mosaic_mmio_reg[15:12];
 
     assign row = vcount + 1;
-    assign col = rotation ? objx - hsize[7:1] + col_offset : objx + col_offset;
-    assign transparent = (col >= 9'd240) /*|| (rot_scale_transparent && rotation)*/ || ~valid || ~visible || objmode[1] || (dblsize && ~rotation);
+    //assign col = rotation ? objx - hsize[7:1] + col_offset : objx + col_offset;
+    assign col = objx + col_offset;
+    assign transparent = (col >= 9'd240) || (rot_scale_transparent && rotation) || ~valid || ~visible || objmode[1] || (dblsize && ~rotation);
     assign obj_wdata = {pri_PIPELINE, 3'd5, objmode_PIPELINE, 5'd1, pinfo};
     assign VRAM_mem_addr = vram_addr;
     assign startrow = (timer == 11'd1231) || clear_timer;
@@ -168,7 +169,7 @@ module obj_top (
 
     mosaic_processing_unit mpu(.hscale, .vscale, .mosaic, .row(row-objy), .col(col_offset), .x(mosaicX), .y(mosaicY));
 
-    row_visible_unit rvu (.visible, .row, .objy, .vsize, .rotation);
+    row_visible_unit rvu (.visible, .row, .objy, .vsize);
 
     within_preimage_checker wpc (.valid, .X, .Y, .hsize(obj_hsize),
                                  .vsize(obj_vsize));

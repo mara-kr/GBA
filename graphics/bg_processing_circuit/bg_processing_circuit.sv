@@ -8,11 +8,11 @@ module bg_processing_circuit
    input logic [27:0] bg2y, bg3y,
    input logic [15:0] bg2pa, bg2pb, bg2pc, bg2pd,
    input logic [15:0] bg3pa, bg3pb, bg3pc, bg3pd,
-   input logic [15:0] dispcnt,
+   (* mark_debug="true" *) input logic [15:0] dispcnt,
    input logic [15:0] mosaic, //MOSAIC MMIO register
 
    output logic [7:0] hcount, //BG processing circuit will tell OBJ circuit which column to output to
-   output logic [2:0] bgmode,
+   (* mark_debug="true" *) output logic [2:0] bgmode,
    output logic [16:0] bg_addr, //Used to lookup palette/color info
    output logic [15:0] bg_screen_addr, //used to lookup screen data
    input logic [15:0] bg_VRAM_data, bg_screen_data, //VRAMA/B and VRAM A data connections
@@ -81,8 +81,10 @@ module bg_processing_circuit
 
   assign vscale = mosaic[7:4];
   assign hscale = mosaic[3:0];
+  
+  assign frame = dispcnt[4];
 
-  bg_counter #(1) frame_toggle(.q(frame), .d(), .enable(new_frame), .clear(start_row), .load(1'b0), .up(1'b1), .rst_b, .clk(clock));
+  //bg_counter #(1) frame_toggle(.q(frame), .d(), .enable(new_frame), .clear(start_row), .load(1'b0), .up(1'b1), .rst_b, .clk(clock));
   always_comb begin
     case(bgno)
       2'd0: bgused = bgmode < 3'd2;

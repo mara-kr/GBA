@@ -6,7 +6,7 @@ module timer_top (
     input logic clock_16,
     input logic reset,
     input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
-    (* mark_debug = "true" *) input logic [15:0] TM0CNT_L,
+    input logic [15:0] TM0CNT_L,
     input logic [15:0] TM1CNT_L,
     input logic [15:0] TM2CNT_L,
     input logic [15:0] TM3CNT_L,
@@ -19,7 +19,7 @@ module timer_top (
     output logic [15:0] internal_TM2CNT_L,
     output logic [15:0] internal_TM3CNT_L);
 
-    (* mark_debug = "true" *) logic [15:0] TM0CNT_H;
+    logic [15:0] TM0CNT_H;
     logic [15:0] TM1CNT_H;
     logic [15:0] TM2CNT_H, TM3CNT_H;
 

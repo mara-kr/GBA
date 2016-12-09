@@ -6,7 +6,7 @@ module reg_decoder
    input logic [27:0] bg2y, bg3y,
    input logic [15:0] bg2pa, bg2pb, bg2pc, bg2pd,
    input logic [15:0] bg3pa, bg3pb, bg3pc, bg3pd,
-   input logic [1:0] bgno,
+   (* mark_debug="true" *) input logic [1:0] bgno,
    input logic [2:0] bgmode,
    output logic [9:0] hofs, vofs,
    output logic [15:0] dx, dy, dmx, dmy,

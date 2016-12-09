@@ -56,6 +56,7 @@ module mem_top (
 
     // Values for R/O registers
     input  logic [15:0] buttons, vcount, reg_IF,
+    input  logic        vcount_match, vblank, hblank,
     output logic [15:0] int_acks,
     input  logic [15:0] internal_TM0CNT_L, internal_TM1CNT_L, internal_TM2CNT_L,
     input  logic [15:0] internal_TM3CNT_L,
@@ -187,7 +188,8 @@ module mem_top (
     oam_mem oam (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
                  .bus_we, .bus_write_lat1, .gfx_oam_addr, .gfx_oam_data,
                  .bus_rdata(bus_oam_rdata), .read_in_oam);
-
+    
+    logic [15:0] vcount_reg_low_rdata;
     generate
         for (genvar i = 0; i < `NUM_IO_REGS; i++) begin
             localparam [31:0] reg_addr = `IO_REG_RAM_START + (i*4);
@@ -203,7 +205,8 @@ module mem_top (
                 IO_register16 vcount_low
                               (.clock, .reset, .wdata(bus_wdata[15:0]),
                                .we(IO_reg_we[i][1:0]), .clear(1'b0),
-                               .rdata(IO_reg_datas[i][15:0]));
+                               .rdata(vcount_reg_low_rdata));
+                assign IO_reg_datas[i][15:0]  = {vcount_reg_low_rdata[15:3], vcount_match, hblank, vblank};
                 assign IO_reg_datas[i][31:16] = vcount;
             end else if (i == `IF_IDX) begin
                 // Reads to 0x202 read re_IF
