@@ -162,7 +162,7 @@ module mem_top (
                       .addra(bus_system_addr[13:2]),
                       .douta(bus_system_rdata));
 
-    game_rom game (.clka(clock), .rsta(reset), .addra(bus_game_addr[11:2]),
+    game_rom game (.clka(clock), .rsta(reset), .addra(bus_game_addr[14:2]),
                    .douta(bus_game_rdata));
 
     intern_mem intern (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
@@ -501,7 +501,7 @@ module vram_mem (
                       .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb(gfx_vram_B_addr[13:2]),
                       .doutb(gfx_vram_B_data), .dinb(32'b0));
-
+    
     vram_C vram_C    (.clka(clock), .rsta(reset),
                       .wea(vram_C_we), .addra(vram_C_addr[13:2]),
                       .douta(vram_C_rdata), .dina(bus_wdata),
@@ -509,7 +509,7 @@ module vram_mem (
                       .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb(gfx_vram_C_addr[13:2]),
                       .doutb(gfx_vram_C_data), .dinb(32'b0));
-
+    
 endmodule: vram_mem
 
 /* Setup byte write enables for memory (assumes that CPU deals with

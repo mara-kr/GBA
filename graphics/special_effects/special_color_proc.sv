@@ -20,8 +20,8 @@ module special_color_proc (
     logic [4:0] col3;
     
     //HACK to support the goat-butt from bios
-    logic [14:0] no_fx_color;
-    assign no_fx_color = layer0[15] ? color0 : color1;
+    //logic [14:0] no_fx_color;
+    //assign no_fx_color = layer0[15] ? color0 : color1;
     //END HACK
     
     //which bit of effects to look at
@@ -42,6 +42,6 @@ module special_color_proc (
 
     process_color pc3(.first(color0[14:10]), .second(color1[14:10]), 
                         .alpha(bldalpha), .Y(bldy), .control, .color(col3));
-    //assign color = (select_color) ? {col3, col2, col1} : color0;
-    assign color = (select_color) ? {col3, col2, col1} : no_fx_color;
+    assign color = (select_color) ? {col3, col2, col1} : color0;
+    //assign color = (select_color) ? {col3, col2, col1} : no_fx_color;
 endmodule: special_color_proc
