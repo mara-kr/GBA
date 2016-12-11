@@ -51,6 +51,10 @@
   \strng{fullhash}{N1}
   \field{sortinit}{N}
   \field{title}{AGB Programming Manual}
+  \verb{url}
+  \verb https://www.manualslib.com/manual/448341/Nintendo-1504166-Game-Boy-Adva
+  \verb nce-Sp-Edition-Console.html#manual
+  \endverb
   \field{version}{1.1}
   \warn{\item Invalid format of field 'date' \item Invalid format of field
   'date'}

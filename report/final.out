@@ -1,0 +1,47 @@
+\BOOKMARK [1][-]{section.1}{Statement of Use}{}% 1
+\BOOKMARK [1][-]{section.2}{Origin of the Team Name}{}% 2
+\BOOKMARK [1][-]{section.3}{Overview}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{GBA Architecture}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{GBA Schematic}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{System Diagram}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{Infrastructure}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Custom ROMs}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Emulators}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Memory}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{DRAM}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{Memory Regions Bus Widths}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.3}{Memory Interface}{section.5}% 13
+\BOOKMARK [2][-]{subsection.5.4}{Memory Timings}{section.5}% 14
+\BOOKMARK [2][-]{subsection.5.5}{Memory Region Access Timings}{section.5}% 15
+\BOOKMARK [1][-]{section.6}{CPU}{}% 16
+\BOOKMARK [2][-]{subsection.6.1}{Overview}{section.6}% 17
+\BOOKMARK [2][-]{subsection.6.2}{Pipeline Overview}{section.6}% 18
+\BOOKMARK [2][-]{subsection.6.3}{THUMB Mode}{section.6}% 19
+\BOOKMARK [2][-]{subsection.6.4}{Branches}{section.6}% 20
+\BOOKMARK [3][-]{subsubsection.6.4.1}{Branch and Link}{subsection.6.4}% 21
+\BOOKMARK [3][-]{subsubsection.6.4.2}{Branch and Exchange}{subsection.6.4}% 22
+\BOOKMARK [2][-]{subsection.6.5}{Load/Store Timings}{section.6}% 23
+\BOOKMARK [2][-]{subsection.6.6}{Errata}{section.6}% 24
+\BOOKMARK [2][-]{subsection.6.7}{CPU Interface}{section.6}% 25
+\BOOKMARK [2][-]{subsection.6.8}{Testing}{section.6}% 26
+\BOOKMARK [2][-]{subsection.6.9}{Interrupts}{section.6}% 27
+\BOOKMARK [1][-]{section.7}{DMA}{}% 28
+\BOOKMARK [1][-]{section.8}{Graphics}{}% 29
+\BOOKMARK [2][-]{subsection.8.1}{Objects}{section.8}% 30
+\BOOKMARK [2][-]{subsection.8.2}{Priority}{section.8}% 31
+\BOOKMARK [2][-]{subsection.8.3}{Windowing}{section.8}% 32
+\BOOKMARK [2][-]{subsection.8.4}{Mosaics}{section.8}% 33
+\BOOKMARK [2][-]{subsection.8.5}{VGA Display}{section.8}% 34
+\BOOKMARK [1][-]{section.9}{Audio}{}% 35
+\BOOKMARK [2][-]{subsection.9.1}{Zedboard Audio Codec}{section.9}% 36
+\BOOKMARK [1][-]{section.10}{Timers}{}% 37
+\BOOKMARK [1][-]{section.11}{Controller}{}% 38
+\BOOKMARK [2][-]{subsection.11.1}{Status \046 Future Work}{section.11}% 39
+\BOOKMARK [1][-]{section.12}{Vivado Tips and Tricks}{}% 40
+\BOOKMARK [1][-]{section.13}{Lessons Learned}{}% 41
+\BOOKMARK [1][-]{section.14}{Personal Statements}{}% 42
+\BOOKMARK [2][-]{subsection.14.1}{Rachel}{section.14}% 43
+\BOOKMARK [2][-]{subsection.14.2}{Steven}{section.14}% 44
+\BOOKMARK [2][-]{subsection.14.3}{Neil}{section.14}% 45
+\BOOKMARK [1][-]{section.15}{Future Groups}{}% 46
+\BOOKMARK [2][-]{subsection.15.1}{Resources}{section.15}% 47
