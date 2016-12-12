@@ -48,7 +48,6 @@ test_core:
 gui:
 	cd build && ./simv -gui &
 
-# Run the simulation, since VCS is weird about using build directories
 simv:
 	cd build && ./simv
 
