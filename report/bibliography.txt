@@ -1,8 +1,0 @@
-	@manual{GBAManual,
-		author = {Nintendo},
-		title = {AGB Programming Manual},
-		date = {April 2, 2001},
-		version = {1.1},
-		publisher = {Nintendo of America Inc.},
-		url = {https://www.manualslib.com/manual/448341/Nintendo-1504166-Game-Boy-Advance-Sp-Edition-Console.html#manual},
-	}
