@@ -45,7 +45,8 @@
     timer_top.sv : the top module for al 4 timers
     timer.sv : one individual timer
 ####zedboard_audio-master:
-    This directory was taken from https://github.com/ems-kl/zedboard_audio. The code in hdl/ outputs to the audio chip
+    This directory was taken from https://github.com/ems-kl/zedboard_audio. The code in hdl/ outputs to 
+    the audio chip
     hdl/ : the source code
     doku/ : documentation taken from the project repo
     constraints/ : a constraints file for the project (not needed for our project)
