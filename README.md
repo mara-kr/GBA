@@ -6,18 +6,43 @@
     direct_sound/ : mixer and files for direct sound
     4channel/ : mixer and modules for each of the 4 channels
     
+####coe_files
+    mem_test.coe : Test for block RAMs
+    mem_test_new.coe : Another test for block RAMs
+    pixels.coe : COE file for ROM that puts 3 pixels on a screen
+    pmt.coe : COE file for Mario & Luigi Pong ROM w/ sound (final)
+    pong.coe : Basic pong ROM from DevKitARM demo
+    pong_mario.coe : 1st iteration of Mario & Luigi pong
+    pong_mario_txt.coe : 2nd interation of Mario & Luigi pong
+    wstein.coe : ROM for WolfARMStein
+    
+    There'd normally be gba_bios.coe here, but we remvoed it for copyright reasons. 
+    Go find it on the internet, then use the following commands:
+    
+    xxd -ps -c 1 gba_bios.rom > gba_bios.hex
+    python endian_convert.py gba_bios.hex
+    mv outfile.hex gba_bios.coe
+    
+    endian_convert.py is in mem/
+    Then add the two lines at the top of COE files - see any other COE file for an example
+    
 ####controller
     controller.sv : the source code fo the controller
     interface.txt : detail documentation on the controller interface
     CI.sv : chip interface for the controller
     
 ####cpu
+    Multiplier/ : source code for the multiplier (the M in TDMI)
+    file_lists/ : File lists to pass to the Makefile for simulation
     roms/ : test roms including the GBA bios
-    Multiplier : source code for the multiplier (the M in TDMI)
+    test_files/ : Files for defunct testing infrastructure
     ThumbDecoder.vhd : decoder for thumb mode the (T in TDMI)
-    ARM7TDMIS_TOP.vhd : the top module for the entire CU
+    ARM7TDMIS_TOP.vhd : the top module for the entire CPU
     cpu_top.sv : wrapper for ARM7TDMIS_TOP.vhd in system verilog
     ControlLogic.vhd : control logic for the instruction pipeline
+    interrupt_controller.sv : Interrupt controller for system
+    
+    See project report for more details on CPU
 
 ####dma
     dma.sv : includes the datapath and fsm for dma, as well as the top module for all 4 dma's
@@ -28,6 +53,9 @@
     
 ####doc
     Docs for each of the major systems, summary of the programming reference manual
+    
+####games
+    Source for the Mario & Luigi pong game that we made for demo day
     
 ####graphics
     graphics_top.sv : A top module for all of graphics
@@ -59,6 +87,7 @@
 
 
 ### Instructions to make Project
-1. Unzip and open the GBA_archive.xpr.zip Vivado Project
-2. Create COE file out of game ROM you want to play, make sure to convert to Little Endian.
+1. Unzip and open the GBA_archive.xpr.zip Vivado Project (get from Dropbox/AFS)
+2. Make a COE file for the GBA BIOS
+3. Create COE file out of game ROM you want to play, make sure to convert to Little Endian.
     Input COE file into Game Pack ROM 
