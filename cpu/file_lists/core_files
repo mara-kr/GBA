@@ -2,8 +2,8 @@
 ../ARMSMSSPackage.vhd
 ../MSSCompPackage.vhd
 
-../ALU/ALU.vhd
-../Shifter/Shifter.vhd
+../ALU.vhd
+../Shifter.vhd
 ../Multiplier/Multiplier.vhd
 ../Multiplier/MulCtrlAndRegs.vhd
 ../Multiplier/Mul32x8Comb.vhd

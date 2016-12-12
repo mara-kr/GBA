@@ -51,9 +51,7 @@ module core_tb;
     logic inst_ex;
     /* So the simulation stops */
     initial begin
-        #20001 irq_n <= 1'b0;
-        #14 irq_n <= 1'b1;
-        #10000 $finish;
+        #100000 $finish;
     end
 
     assign inst_pc = (DUT.ThDC_ThumbDecoderEn) ?
