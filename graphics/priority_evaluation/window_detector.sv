@@ -13,7 +13,7 @@ module pe_window_detector (
     assign obj = objmode[1];
     assign win0 = ((win0H[15:8] <= X) & (X <= win0H[7:0])) &
                   ((win0V[15:8] <= Y) & (Y <= win0V[7:0]));
-    
+
     assign win1 = ((win1H[15:8] <= X) & (X <= win1H[7:0])) &
                   ((win1V[15:8] <= Y) & (Y <= win1V[7:0]));
 endmodule: pe_window_detector

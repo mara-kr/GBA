@@ -25,7 +25,8 @@ entity ARM7TDMIS_Top is port(
 							WRITE         : out std_logic;
                             SIZE          : out std_logic_vector(1 downto 0);
                             -- Information signals
-                            MODE          : out std_logic_vector(4 downto 0)
+                            MODE          : out std_logic_vector(4 downto 0);
+                            PREEMPTABLE    : out std_logic
 							);
 end ARM7TDMIS_Top;
 
@@ -51,6 +52,7 @@ component ALU is port (
 						-- Flag inputs
 						CFlagIn	   : in  std_logic;
 						CFlagUse   : in  std_logic; -- ADC/SBC/RSC instructions
+                        ThADR      : in  std_logic;
 						-- Flag outputs
 						CFlagOut    : out  std_logic;
 						VFlagOut    : out  std_logic;
@@ -319,8 +321,10 @@ component ThumbDecoder is port(
 					   ExpandedInst	   : out std_logic_vector(31 downto 0);
 					   HalfWordAddress : in  std_logic;
 					   ThumbDecoderEn  : in  std_logic;
+                       StagnatePipeline: in  std_logic;
 					   ThBLFP          : out std_logic;
-                       ThBLSP          : out std_logic
+                       ThBLSP          : out std_logic;
+                       ThADR           : out std_logic
 					       );
 end component;
 
@@ -365,7 +369,7 @@ component ControlLogic is port(
 					   PCInSel		        : out std_logic;
 					   ALUInSel		        : out std_logic;
 					   ExceptionVectorSel   : out std_logic;
-					   PCIncStep            : out std_logic; 	-- ?? Common  1
+			  		   PCIncStep            : out std_logic; 	-- ?? Common  1
 					   AdrIncStep		    : out std_logic;
 					   AdrToPCSel	        : out std_logic;
 					   AdrCntEn             : out std_logic;
@@ -506,7 +510,8 @@ component ControlLogic is port(
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
-                       SIZE       : out std_logic_vector(1 downto 0)
+                       SIZE       : out std_logic_vector(1 downto 0);
+                       PREEMPTABLE : out std_logic
 					   );
 end component;
 
@@ -531,11 +536,13 @@ signal ALU_CFlagOut : std_logic := '0';
 signal ALU_VFlagOut : std_logic := '0';
 signal ALU_NFlagOut : std_logic := '0';
 signal ALU_ZFlagOut : std_logic := '0';
+signal ALU_ThADR    : std_logic := '0';
 
 
 -- Shifter signals
 signal	Shifter_ShBBusIn   : std_logic_vector(31 downto 0) := (others => '0');
 signal	Shifter_ShOut      : std_logic_vector(31 downto 0) := (others => '0');
+
 signal	Shifter_ShCFlagIn  : std_logic := '0';
 signal	Shifter_ShCFlagOut : std_logic := '0';
 signal	Shifter_ShLenRs    : std_logic_vector(7 downto 0) := (others => '0');
@@ -547,23 +554,16 @@ signal	Shifter_ShCFlagEn  : std_logic := '0';
 
 -- Register file signals
 signal RegFile_ABusOut        : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RegFile_ABusOut : signal is "true";
 signal RegFile_BBusOut        : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RegFile_BBusOut : signal is "true";
 signal RegFile_ABusRdAdr      : std_logic_vector(3 downto 0) := (others => '0');
-attribute mark_debug of RegFile_ABusRdAdr : signal is "true";
 signal RegFile_BBusRdAdr      : std_logic_vector(3 downto 0) := (others => '0');
-attribute mark_debug of RegFile_BBusRdAdr : signal is "true";
 signal RegFile_WriteAdr       : std_logic_vector(3 downto 0) := (others => '0');
 signal RegFile_WrEn	  	      : std_logic := '0';
 signal RegFile_PCIn           : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RegFile_PCIn : signal is "true";
 signal RegFile_PCOut          : std_logic_vector(31 downto 0) := (others => '0');
 attribute mark_debug of RegFile_PCOut : signal is "true";
 signal RegFile_PCWrEn         : std_logic := '0';
-attribute mark_debug of RegFile_PCWrEn : signal is "true";
 signal RegFile_PCSrcSel       : std_logic := '0';
-attribute mark_debug of RegFile_PCSrcSel : signal is "true";
 signal RegFile_RFMode         : std_logic_vector(4 downto 0) := (others => '0');
 signal RegFile_SaveBaseReg    : std_logic := '0';
 signal RegFile_RestoreBaseReg : std_logic := '0';
@@ -631,12 +631,6 @@ signal AMI_PCIncStep          : std_logic := '0';
 signal AMI_AdrIncStep		  : std_logic := '0';
 signal AMI_AdrToPCSel		  : std_logic := '0';
 signal AMI_AdrCntEn			  : std_logic := '0';
-attribute mark_debug of AMI_PCInSel : signal is "true";
-attribute mark_debug of AMI_ALUInSel : signal is "true";
-attribute mark_debug of AMI_AdrIncStep : signal is "true";
-attribute mark_debug of AMI_PCIncStep : signal is "true";
-attribute mark_debug of AMI_AdrCntEn : signal is "true";
-
 
 
 -- Data out register signals
@@ -673,9 +667,9 @@ signal LSAdrGen_DecAfterSel   : std_logic := '0';
 signal LSAdrGen_MltAdrSel	  : std_logic := '0';
 signal LSAdrGen_SngMltSel	  : std_logic := '0';
 
+
 -- Bit 0,1 clearer
 signal RBM_DataOut    : std_logic_vector(31 downto 0) := (others => '0');
-attribute mark_debug of RBM_DataOut : signal is "true";
 signal RBM_ClrBitZero : std_logic := '0';
 signal RBM_ClrBitOne  : std_logic := '0';
 signal RBM_SetBitZero : std_logic := '0';
@@ -688,6 +682,7 @@ attribute mark_debug of ThDC_ThumbDecoderEn : signal is "true";
 -- Internal copies of some core outputs
 signal ADDR_Int              : std_logic_vector(ADDR'range) := (others => '0');
 signal SIZE_Int              : std_logic_vector(SIZE'range) := (others => '0');
+signal PREEMPTABLE_Int        : std_logic := '0';
 
 signal BigEndianMode : std_logic := '0';
 
@@ -709,6 +704,7 @@ ALU_Inst:component ALU port map(
 						-- Flag inputs
 						CFlagIn	   => ALU_CFlagIn,
 						CFlagUse   => ALU_CFlagUse,
+                        ThADR      => ALU_ThADR,
 						-- Flag outputs
 						CFlagOut   => ALU_CFlagOut,
 						VFlagOut   => ALU_VFlagOut,
@@ -964,8 +960,10 @@ ThumbDecoder_Inst:component ThumbDecoder
 					   ExpandedInst	   => IPDR_FromThumbDecoder,
 					   HalfWordAddress => IPDR_HalfWordAddress,
 					   ThumbDecoderEn  => ThDC_ThumbDecoderEn,
+                       StagnatePipeline=> IPDR_StagnatePipeline,
 					   ThBLFP          => ThDC_ThBLFP,
                        ThBLSP          => ThDC_ThBLSP,
+                       ThADR           => ALU_ThADR,
                        CLK             => CLK,
                        nRESET          => nRESET,
                        CLKEN           => CLKEN
@@ -1154,40 +1152,20 @@ ControlLogic_Inst:component ControlLogic port map(
 					   -- Memory interface
 					   ABORT      => ABORT,
    					   WRITE      => WRITE,
-                       SIZE       => SIZE_Int
+                       SIZE       => SIZE_Int,
+                       PREEMPTABLE => PREEMPTABLE_Int
 					   );
 
 
 -- Generate CLKEN signal
 CLKEN <= not PAUSE;
 
--- Check if slack estimation takes place
-assert not CSlackEstim
- report"Normal simulation is impossible"
-  severity FAILURE;
 
-NormalCompilation:if not CSlackEstim generate
--- Outputs of the core
 ADDR <= ADDR_Int;
 SIZE <= SIZE_Int;
 MODE <= PSR_CPSROut(4 downto 0);
-end generate;
+PREEMPTABLE <= PREEMPTABLE_Int;
 
-EstimationCompilation:if CSlackEstim generate
-OnlyForSlackEstimation:process(nRESET,CLK)
-begin
- if nRESET='0' then                -- Reset
-  ADDR <= (others => '0');
-  SIZE <= (others => '0');
- elsif CLK='1' and CLK'event then  -- Clock
-  if CLKEN='1' then                -- Clock enable
-  ADDR <= ADDR_Int;
-  SIZE <= SIZE_Int;
- end if;
-end if;
-end process;
-
-end generate;
 
 
 end Struct;

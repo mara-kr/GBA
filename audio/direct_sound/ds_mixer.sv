@@ -8,8 +8,6 @@ module ds_mixer (
        input logic [15:0] sound_cnt_h,
        output logic timer_numA,
        output logic timer_numB,
-       output logic reset_directA,
-       output logic reset_directB,
        output logic [23:0] output_wave_r,
        output logic [23:0] output_wave_l);
 
@@ -17,9 +15,6 @@ module ds_mixer (
 
        assign timer_numB = sound_cnt_h[14];
        assign timer_numA = sound_cnt_h[10];
-
-       assign reset_directA = sound_cnt_h[11];
-       assign reset_directB = sound_cnt_h[15];
 
        logic [23:0] directA_l;
        logic [23:0] directA_r;
@@ -30,10 +25,10 @@ module ds_mixer (
        logic out_ratio_B;
        logic [1:0] out_ratio_4ch;
 
-       assign directA_l = (sound_cnt_h[9] && !reset_directA) ? direct_A : 23'b0;
-       assign directB_l = (sound_cnt_h[13] && !reset_directB) ? direct_B : 23'b0;
-       assign directA_r = (sound_cnt_h[8] && !reset_directA) ? direct_A : 23'b0;
-       assign directB_r = (sound_cnt_h[12] && !reset_directB) ? direct_B : 23'b0;
+       assign directA_l = (sound_cnt_h[9]) ? direct_A : 23'b0;
+       assign directB_l = (sound_cnt_h[13]) ? direct_B : 23'b0;
+       assign directA_r = (sound_cnt_h[8]) ? direct_A : 23'b0;
+       assign directB_r = (sound_cnt_h[12]) ? direct_B : 23'b0;
 
        assign out_ratio_A =  (sound_cnt_h[2]) ? 1'b0 : 1'b1; //right shift by one decreases sound by half
        assign out_ratio_B =  (sound_cnt_h[3]) ? 1'b0 : 1'b1; //right shift by one decreases sound by half

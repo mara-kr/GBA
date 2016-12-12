@@ -9,8 +9,8 @@ VCS_REG_FILE=$(BUILD_DIR)/vcs_reg_out.txt
 BIOS_FILE=$(WORK_DIR)/gba_bios.hex
 #BIOS_FILE=$(WORK_DIR)/roms/pixels.hex
 #BIOS_FILE=$(WORK_DIR)/roms/mem_test.hex
-#ROM_FILE=$(WORK_DIR)/roms/pixels.hex
-ROM_FILE=$(WORK_DIR)/roms/loz_minish.hex
+ROM_FILE=$(WORK_DIR)/roms/pixels.hex
+#ROM_FILE=$(WORK_DIR)/roms/loz_minish.hex
 #QEMU_REG_FILE=$(WORK_DIR)/test_files/pixels.regs
 QEMU_REG_FILE=$(WORK_DIR)/test_files/bios.regs
 BUS_LOG_FILE=$(WORK_DIR)/BusLog.txt
@@ -26,18 +26,17 @@ export GBA_PAK_INIT_1_FILE=$(WORK_DIR)/roms/pak_init_1.hex
 
 default: core
 
-test_alu: clean
-	$(INIT) && \
-	vhdlan -f $(WORK_DIR)/file_lists/alu_files && \
-	$(VLOGAN) $(WORK_DIR)/ALU/alu_tb.sv && \
-	$(VCS) alu_sv_tb
-
+# Build the CPU for testing
 core:
 	$(INIT) && \
 	vhdlan -f $(WORK_DIR)/file_lists/core_files && \
 	$(VLOGAN) $(WORK_DIR)/core_tb_defines.vh $(WORK_DIR)/core_tb.sv && \
 	$(VCS) core_tb
 
+# Build and test the CPU.
+# NOTE: testing infrastructure is outdated with modifications to the memory
+# subsystem. It would be prudent to have the memory controller re-written
+# to work in synthesis or simulation (like the P18240)
 test_core:
 	$(INIT) && \
 	vhdlan -f $(WORK_DIR)/file_lists/core_files && \
@@ -45,7 +44,7 @@ test_core:
 	$(VCS) -R core_tb > $(VCS_REG_FILE) && \
 	python $(WORK_DIR)/test_files/reg_diff.py --vcs $(VCS_REG_FILE) --qemu $(QEMU_REG_FILE) --dir $(BUILD_DIR)/
 
-
+# Run the VCS waveform viewer, since VCS is weird about using build directories
 gui:
 	cd build && ./simv -gui &
 

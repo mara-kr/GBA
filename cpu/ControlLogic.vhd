@@ -193,7 +193,8 @@ entity ControlLogic is port(
 					   -- Memory interface
    					   ABORT      : in  std_logic;
 					   WRITE      : out std_logic;
-                       SIZE       : out std_logic_vector(1 downto 0)
+                       SIZE       : out std_logic_vector(1 downto 0);
+                       PREEMPTABLE : out std_logic
 					   );
 
 end ControlLogic;
@@ -374,6 +375,7 @@ signal IDR_MRS     : std_logic := '0';
 signal IDR_B     : std_logic := '0';
 attribute mark_debug of IDR_B : signal is "true";
 signal IDR_BL    : std_logic := '0';
+attribute mark_debug of IDR_BL : signal is "true";
 signal IDR_BX    : std_logic := '0';
 attribute mark_debug of IDR_BX : signal is "true";
 
@@ -563,6 +565,7 @@ signal ExceptSM_St2   : std_logic := '0';
 
 signal ExceptFC		  : std_logic := '0'; -- The first cycle of exception
 
+
 -- Individual exception start signals
 signal DAbtExcStart      : std_logic := '0'; -- Data abort exception start
 signal FIQExcStart       : std_logic := '0'; -- FIQ exception start
@@ -588,12 +591,10 @@ signal NewTFlag  : std_logic := '0';
 
 -- Pipeline stagnation
 signal StagnatePipeline_Int : std_logic := '0';
-attribute mark_debug of StagnatePipeline_Int : signal is "true";
 
 
 -- StagnatePipeline signal delayed by one clock cycle
 signal StagnatePipelineDel_Int : std_logic := '0';
-attribute mark_debug of StagnatePipelineDel_Int : signal is "true";
 
 
 -- First instruction fetch after reset
@@ -1528,7 +1529,7 @@ case StagnatePipeline_Int is
     MemDataRegOutSel   <= '0';
     SExtOffset24BitSel <= IDC_B or IDC_BL;
     Offset12BitSel     <= IDC_LSImmOffset;
-    Offset8BitSel      <= IDC_LHWBSImmOffset or IDC_LHWBSImmOffset;
+    Offset8BitSel      <= IDC_LHWBSImmOffset or IDC_LSHWImmOffset;
     Immediate8BitSel   <= IDC_DPIImmRot or IDC_MSR_I;
     AdrGenDataSel      <= IDC_LDM or IDC_STM;
 
@@ -1723,7 +1724,8 @@ DecAfterSel  <= '1' when U='0' and P='0' else '0';
 MltAdrSel <= (IDR_LDM or IDR_STM) and ExecuteInst;  -- Base register update for LDM/STM
 SngMltSel <= (IDR_LDR or IDR_LDRT or IDR_LDRB or IDR_LDRBT or
               IDR_LDRSB or IDR_LDRH or IDR_LDRSH or
-			  IDR_STR or IDR_STRT or IDR_STRB or IDR_STRBT or IDR_STRH)and ExecuteInst; -- ??? TBD '0' -> LDM/STM and LR corrections
+			  IDR_STR or IDR_STRT or IDR_STRB or IDR_STRBT or IDR_STRH)
+              and ExecuteInst and (not IDC_STM); -- ??? TBD '0' -> LDM/STM and LR corrections
 
 -- Notes:
 -- IncBeforeSel has the highest priority
@@ -1834,7 +1836,7 @@ ConditionIsTrue <= '1' when (cond="0000" and CPSRZFlag='1')or -- EQ
 							(cond="1010" and CPSRNFlag=CPSRVFlag)or -- GE
 							(cond="1011" and CPSRNFlag/=CPSRVFlag)or -- LT
 							(cond="1100" and CPSRZFlag='0'and CPSRNFlag=CPSRVFlag )or -- GT
-							(cond="1101" and CPSRZFlag='1'and CPSRNFlag/=CPSRVFlag )or -- LE
+							(cond="1101" and (CPSRZFlag='1' or (CPSRNFlag/=CPSRVFlag)))or -- LE
 							 cond="1110" else -- AL
 							 '0';
 
@@ -2399,7 +2401,8 @@ CPSRFFlWE <= '1' when RestCPSR='1' or
 -- T flag write enable
 CPSRTFlWE <= '1' when RestCPSR='1' or
 			 (IDR_BX='1' and ExecuteInst='1' and nBranch_St0='0') or -- Branch with exchange (First cycle)
-             (WriteToCPSR='1' and CPSRMode /= CUserMode and Mask(0)='1') -- Write to CPSR (ignored in User Mode)
+             (WriteToCPSR='1' and CPSRMode /= CUserMode and Mask(0)='1') or -- Write to CPSR (ignored in User Mode)
+             (ExceptFC='1')
 			 else '0';
 
 -- Was done in order to avoid some Aldec(4.2) bug
@@ -2474,4 +2477,7 @@ DataAddrLow <= LastAddr(1 downto 0) when (Branch_St1='1' or Branch_St2='1') else
                "00" when (nLDM_St0='1') else
                LastAddr(1 downto 0);
 
+PREEMPTABLE <= '1' when StagnatePipeline_Int='0' and PipelineRefilling='0' and
+                        StagnatePipelineDel_Int='0'
+                   else '0';
 end RTL;

@@ -1,9 +1,9 @@
 `default_nettype none
 module obj_lookup_unit (
     input  logic        clock, reset,
-    output logic  [9:0] objname,
+    output logic  [9:0] objname, OAMaddr,
     output logic  [8:0] objx,
-    output logic  [7:0] objy, OAMaddr,
+    output logic  [8:0] objy,
     output logic  [6:0] hsize, vsize,
     output logic  [4:0] attrno,
     output logic  [3:0] paletteno,
@@ -14,26 +14,31 @@ module obj_lookup_unit (
     input  logic        step, startrow);
 
     logic [7:0] addr;
-    logic [6:0] hsize_d, vsize_d;
+    logic [6:0] hsize_d, vsize_d, hsize_q, vsize_q;
     logic       en_low, en_high; // Upper or lower 32 bits
-    logic       addr_lat1, step_lat1;
+    logic       addr_lat1, step_lat1, startrow_lat1;
 
-    obj_register #(1) lstep (.clock, .reset, .q(step_lat1), .d(step),
-                             .en(1'b1), .clear(1'b0));
+    //assign hsize = en_low ? hsize_d : hsize_q;
+    //assign vsize = en_low ? vsize_d : vsize_q;
+
+    obj_register #(1) lrow (.clock, .reset, .q(startrow_lat1), .d(startrow),
+                            .en(1'b1), .clear(1'b0));
+    obj_register #(1) lstep (.clock, .reset, .q(step_lat1), .d(step | startrow_lat1),
+                             .en(1'b1), .clear(startrow));
     obj_register #(1) laddr
         (.clock, .reset, .q(addr_lat1), .d(OAMaddr[2]),
          .en(1'b1), .clear(1'b0));
 
-    assign en_low = (step | startrow) & ~addr_lat1;
-    assign en_high = (step | startrow) & addr_lat1;
+    assign en_low = (step | startrow_lat1) & ~startrow;
+    assign en_high = (step_lat1 & ~startrow);
 
-    assign OAMaddr = (startrow) ? 8'b0 : {addr, 2'b0};
+    assign OAMaddr = (startrow) ? 10'b0 : ((en_low | en_high) ? {addr+8'b1, 2'b0} : {addr, 2'b0});
 
     obj_size_lookup osl (.hsize(hsize_d), .vsize(vsize_d),
                          .size(OAMdata[31:30]), .shape(OAMdata[15:14]));
 
     obj_counter #(8) adr
-        (.clock, .reset, .q(addr), .en(step | step_lat1), .clear(startrow));
+        (.clock, .reset, .q(addr), .en(en_low | en_high), .clear(startrow));
 
     obj_register #(2) om (.clock, .reset, .q(objmode), .d(OAMdata[11:10]),
                           .en(en_low), .clear(1'b0));

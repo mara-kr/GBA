@@ -58,7 +58,7 @@ module dma_tb (
     assign registers[`DMA3DAD_L_IDX][15:0] = destAddrL3;
     assign registers[`DMA3DAD_H_IDX][31:16] = destAddrH3;
 
-    logic passed, all_passed;
+    logic passed;
     logic [10:0] count_time;
 
      always_ff @(posedge clk, negedge rst_n) begin

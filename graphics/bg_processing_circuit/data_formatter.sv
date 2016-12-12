@@ -1,5 +1,5 @@
 module data_formatter
-  (input logic [14:0] data,
+  (input logic [15:0] data,
    input logic sixteen_color_dot_select,
    input logic palettemode,
    input logic bitmapped, transparent,
@@ -25,7 +25,7 @@ module data_formatter
 
   logic [14:0] bitmapped_data, char_data, payload;
   assign char_data = {4'b0, bgno, 1'b0, pinfo};
-  assign bitmapped_data = data;
+  assign bitmapped_data = data[14:0];
   bg_mux_2_to_1 #(15) payload_mux(.i0(char_data), .i1(bitmapped_data), .s(bitmapped), .y(payload));
 
   assign formatted = {bg_priority, 1'b0, bitmapped, visible, payload};

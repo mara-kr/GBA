@@ -14,11 +14,11 @@ module core_tb;
     logic [15:0] controlL0, controlH0;
     logic [15:0] srcAddrL0, srcAddrH0;
     logic [15:0] destAddrL0, destAddrH0;
-    
+
     logic [15:0] controlL1, controlH1;
     logic [15:0] srcAddrL1, srcAddrH1;
     logic [15:0] destAddrL1, destAddrH1;
-    
+
     logic [15:0] controlL2, controlH2;
     logic [15:0] srcAddrL2, srcAddrH2;
     logic [15:0] destAddrL2, destAddrH2;
@@ -62,7 +62,6 @@ module core_tb;
     logic irq0, irq1, irq2, irq3;
 
     logic [15:0] hcount, vcount;
-    logic sound_req;
 
     wire [31:0] dma_addr;
     wire [1:0]  dma_size;
@@ -71,11 +70,12 @@ module core_tb;
     logic check_correctness;
     logic passed, all_passed;
     logic [10:0] count_time;
+    logic sound_req1;
+    logic cpu_preemptable;
 
     dma_top dut (
         .registers,
         .vcount, .hcount,
-        .sound_req,
 
         .mem_wait(pause),
 
@@ -87,7 +87,8 @@ module core_tb;
         .disable_dma,
         .active,
         .irq0, .irq1, .irq2, .irq3,
-
+        .cpu_preemptable,
+        .sound_req1, .sound_req2(1'b0),
         .clk, .rst_b(rst_n));
 
     bus_monitor #("GBA_CPU_BUS_LOG") busMon (.clk, .rst_n, .pause, .addr,
@@ -97,7 +98,7 @@ module core_tb;
     sim_memory sim_mem (.clk, .rst_n, .addr, .wdata, .size, .write,
                          .rdata, .abort, .pause);
 
-    test_fsm fsm(.clk, .rst_n, 
+    /**test_fsm fsm(.clk, .rst_n,
         .controlL0, .controlH0,
         .srcAddrL0, .srcAddrH0,
         .destAddrL0, .destAddrH0,
@@ -117,8 +118,8 @@ module core_tb;
         .count_time, .passed,
         .test_addr, .rdata,
         .pause,
-        .hcount);
-    
+        .hcount);*/
+
     always_ff @(posedge clk, negedge rst_n) begin
         if (rst_n == 0) begin
             count_time <= 0;
@@ -139,16 +140,23 @@ module core_tb;
     assign write = (check_correctness) ? 1'b0 : dma_write;
     /* Clock and Reset Generation */
     initial begin
-        $monitor ("Passed:%b, rdata:%h, addr:%h, cs:%s, xfer_count:%d, rest=%b, irq0=%b, irq1=%b irq2=%b, irq3=%b", 
-                    all_passed, rdata, addr, fsm.cs, fsm.xfer_count, rst_n, irq0, irq1, irq2, irq3);
+        $monitor ("Passed:%b, wdata:%h, addr:%h, active:%b, rest=%b",
+                    all_passed, wdata, addr, active, rst_n);
+        //$monitor ("Passed:%b, wdata:%h, addr:%h, active:%b, cs:%s, xfer_count:%d, rest=%b, irq0=%b, irq1=%b irq2=%b, irq3=%b",
+        //            all_passed, wdata, addr, active, fsm.cs, fsm.xfer_count, rst_n, irq0, irq1, irq2, irq3);
         $display("Start"); // Start of SIM for diff script
         clk = 0;
         rst_n = 1'b1;
         irq_n = 1'b1;
         #1 rst_n <= 1'b0;
         #1 rst_n <= 1'b1;
-        #100 rst_n <= 1'b0;
-        #100 rst_n <= 1'b1;
+        controlH1 <= 16'hb600;
+        sound_req1 <=1'b1;
+        cpu_preemptable <= 1'b0;
+        #2 sound_req1 <=1'b0;
+        #16 cpu_preemptable <= 1'b1;
+        //#100 rst_n <= 1'b0;
+        //#100 rst_n <= 1'b1;
         #400 $finish;
     end
 
@@ -180,10 +188,10 @@ module sim_memory
          if (~rst_n) count_random <= 3'b0;
          else count_random <= count_random + 1;
      end
-             
+
       assign pause_en = count_random[2];
       assign num_cycles = 1'b1;
-    
+
       pause_generator pause_gen (.clk, .rst_n, .pause,
                                .en(pause_en), .num_cycles(num_cycles));
     /* GBA RAMs */
@@ -228,7 +236,7 @@ module sim_memory
         pause_en = 1'b0;
         num_cycles = 3'd0;
         // TODO Rework abort logic with new system
-        
+
         if (prev_addr <= `SYSTEM_ROM_END) begin
             abort = write; // Write to ROM illegal
         end else if (`PAK_ROM_1_START <= prev_addr &&
@@ -250,7 +258,7 @@ module sim_memory
         end else if (~$isunknown(prev_addr) && write) begin
             $display("Addr %h does not map to memory region!", prev_addr);
         end
-        
+
     end*/
 
 endmodule: sim_memory

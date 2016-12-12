@@ -1,17 +1,19 @@
 `default_nettype none
-//Assumptions: processor can only update the timer setting (TMxCNT_L) when 
+//Assumptions: processor can only update the timer setting (TMxCNT_L) when
 // the timer is paused when the timer is running it will internally update its setting
 
 module timer (
     input logic clock_16,
     input logic reset,
-    inout wire [15:0] TMxCNT_L,
+    input logic [15:0] TMxCNT_L,
     input logic [15:0] TMxCNT_H,
     input logic [15:0] prev_timer,
+    output logic [15:0] internal_TMxCNT_L,
     output logic genIRQ);
 
     //every control point from control registers
     logic start_timer;
+    logic prev_start_timer;
     logic enable_irq;
     logic count_up_timing;
     logic [1:0] prescaler;
@@ -30,10 +32,13 @@ module timer (
     assign count_up = (count_up_timing) ? start_timer: (start_timer && prev_timer_finished);
 
     logic [15:0] timer_register;
-    assign TMxCNT_L = (count_up) ? timer_register : 16'bZ;
+    assign internal_TMxCNT_L = timer_register;
+
+    logic start_from_0_to_1;
+    assign start_from_0_to_1 = (prev_start_timer == 1'b0 && start_timer == 1'b1) ? 1'b1 : 1'b0;
 
     //logic from prescaler clock to run at
-    timer_clock_divider (.clock_16, .reset(), .cycles_64, .cycles_256, .cycles_1024);
+    timer_clock_divider tcd (.clock_16, .reset(reset), .cycles_64, .cycles_256, .cycles_1024);
     logic internal_clock;
     always_comb begin
         case (prescaler) //based on prescaler
@@ -44,32 +49,38 @@ module timer (
             default: internal_clock = clock_16;
         endcase
     end
-    
+
     always_ff @(posedge clock_16) begin
         if (reset || start_timer == 0)begin
             prev_timer_finished <= 0;
+            prev_start_timer <= 0;
         end
-        else if (prev_timer == 16'hFF) begin
+        else if (prev_timer == 16'hFFFF) begin
             prev_timer_finished <=1;
         end
         else begin
             prev_timer_finished <= prev_timer_finished;
         end
+        prev_start_timer <= start_timer;
     end
 
     always_ff @(posedge internal_clock) begin
-        if (count_up) begin
-            timer_register <= timer_register + 1;
-        end
-        else begin
+        if (start_from_0_to_1) begin
             timer_register <= TMxCNT_L;
         end
-        if (timer_register == 16'hFF && enable_irq) begin
-            genIRQ <= 1;
+        if (timer_register == 16'hFFFF) begin
+            if (enable_irq) begin
+                genIRQ <= 1;
+            end
+            else begin
+                genIRQ <= 0;
+            end
+            timer_register <= TMxCNT_L;
         end
-        else begin
-            genIRQ <= 0;
+        else if (~count_up_timing) begin
+            timer_register <= timer_register + 1;
         end
+        // TODO count_up_timing
     end
 
 endmodule: timer
@@ -80,7 +91,7 @@ module timer_clock_divider (
     output logic cycles_64,
     output logic cycles_256,
     output logic cycles_1024);
-    
+
     logic [9:0] count;
 
     assign cycles_64 = count[5];
@@ -104,7 +115,7 @@ module timer_clock_divider (
     wire [15:0] TMxCNT_L;
     logic [15:0] TMxCNT_H;
     logic genIRQ;
-    
+
     timer dut(.clock_16, .reset, .TMxCNT_L, .TMxCNT_H, .genIRQ);
 
     logic start_timing;
@@ -118,7 +129,7 @@ module timer_clock_divider (
         reset <= 1;
         start_timing <= 0;
         TMxCNT_H <= 16'b0;
-        #2 
+        #2
         reset <= 0;
         TMxCNT_H <= 16'b00000000_1_0_000_0_00;
         start_timing <= 1;

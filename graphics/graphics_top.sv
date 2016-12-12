@@ -5,7 +5,6 @@
 module graphics_top(
     input logic clock, reset,
 
-    //input logic [31:0] registers [`NUM_IO_REGS-1:0],
     input logic [31:0] gfx_vram_A_data, gfx_vram_B_data, gfx_vram_C_data,
     input logic [31:0] gfx_oam_data, gfx_palette_bg_data, gfx_palette_obj_data,
     input logic [31:0] gfx_vram_A_data2,
@@ -60,21 +59,18 @@ module graphics_top(
     assign win1H = registers[`WIN1H_IDX][31:16];
     assign win0V = registers[`WIN0V_IDX][15:0];
     assign win1V = registers[`WIN1V_IDX][31:16];
-    assign vcount = registers[`VCOUNT_IDX][15:8];
+    assign vcount = registers[`VCOUNT_IDX][23:16];
     assign bldcnt = registers[`BLDCNT_IDX][15:0];
     assign bldalpha = registers[`BLDALPHA_IDX][31:16];
     assign bldy = registers[`BLDY_IDX][15:0];
-    
     assign bg0cnt = registers[`BG0CNT_IDX][15:0];
     assign bg1cnt = registers[`BG1CNT_IDX][31:16];
     assign bg2cnt = registers[`BG2CNT_IDX][15:0];
     assign bg3cnt = registers[`BG3CNT_IDX][31:16];
-    
     assign bg0hofs = registers[`BG0HOFS_IDX][15:0];
     assign bg1hofs = registers[`BG1HOFS_IDX][15:0];
     assign bg2hofs = registers[`BG2HOFS_IDX][15:0];
     assign bg3hofs = registers[`BG3HOFS_IDX][15:0];
-    
     assign bg0vofs = registers[`BG0VOFS_IDX][31:16];
     assign bg1vofs = registers[`BG1VOFS_IDX][31:16];
     assign bg2vofs = registers[`BG2VOFS_IDX][31:16];
@@ -119,20 +115,20 @@ module graphics_top(
 
     //Background
     bg_processing_circuit bg_circ(
-        .bg0cnt, .bg1cnt, 
+        .bg0cnt, .bg1cnt,
         .bg2cnt, .bg3cnt,
-        .bg0hofs, .bg1hofs, 
+        .bg0hofs, .bg1hofs,
         .bg2hofs, .bg3hofs,
-        .bg0vofs, .bg1vofs, 
+        .bg0vofs, .bg1vofs,
         .bg2vofs, .bg3vofs,
         .bg2x, .bg3x,
-        .bg2y, .bg3y, .bg2pa, 
+        .bg2y, .bg3y, .bg2pa,
         .bg2pb, .bg2pc, .bg2pd,
         .bg3pa, .bg3pb, .bg3pc, .bg3pd,
         .dispcnt, .mosaic,
         .hcount,
         .bgmode, .bg_addr,
-        .bg_screen_addr, 
+        .bg_screen_addr,
         .bg_VRAM_data, .bg_screen_data,
         .bg_packet(bg),
         .clock, .rst_b(~reset));
@@ -156,11 +152,11 @@ module graphics_top(
         .OAM_mem_addr(gfx_oam_addr), .VRAM_mem_addr(obj_addr),
         .obj_packet(obj),
         .OAM_mem_data(gfx_oam_data), .VRAM_mem_data(obj_data),
-        .vcount(vcount + 8'b1), .hcount,
+        .vcount, .hcount,
         .dispcnt, .mosaic_mmio_reg(mosaic), .bgmode);
     //row is 3 ahead of VCOUNT
     //Priority Evaluation
-    pe_top pe( 
+    pe_top pe(
         .clock, .reset,
         .BG(bg), .OBJ(obj),
         .winin, .winout,.dispcnt,

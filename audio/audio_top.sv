@@ -3,8 +3,19 @@
 `include "../gba_core_defines.vh"
 
 module gba_audio_top (
-    input logic clk_100,
-    input logic reset,
+    input  logic clk_100,
+    input  logic clk_256,
+    input  logic gba_clk,
+    input  logic reset,
+    input  logic SW,
+    input  logic [3:0]  FIFO_size_A,
+    input  logic [31:0] FIFO_val_A,
+    output logic FIFO_re_A,
+    output logic FIFO_clr_A,
+    input  logic [3:0] FIFO_size_B,
+    input  logic [31:0] FIFO_val_B,
+    output logic FIFO_re_B,
+    output logic FIFO_clr_B,
     output logic AC_ADR0,
     output logic AC_ADR1,
     output logic AC_GPIO0,
@@ -16,26 +27,20 @@ module gba_audio_top (
     inout  wire AC_SDA,
     output logic sound_req1,
     output logic sound_req2,
-    input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0]);
+    input logic [31:0] IO_reg_datas [`NUM_IO_REGS-1:0],
+    input logic [15:0] internal_TM0CNT_L,
+    input logic [15:0] internal_TM1CNT_L,
+    input logic dsASqRst, dsBSqRst);
 
-    logic clk_100_output;
-    logic clk_256_output;
-
-
-    clk_wiz_1 clock_generate
-   (
-   // Clock in ports
-    .clk_in1(clk_100),      // input clk_in1
-    // Clock out ports
-    .clk_out1(clk_100_output),     // output clk_out1
-    .clk_out2(clk_256_output));       // input reset
+    logic clk_100_output, clk_256_output;
+    assign clk_100_output = clk_100;
+    assign clk_256_output = clk_256;
 
     //audio codec
     logic        clk_100_buffered;
-    logic [5:0]  counter_saw_tooth;
-    logic [23:0] hphone_l, hphone_r;
-    logic        hphone_valid;
-    logic        new_sample;
+    (* mark_debug = "true" *) logic [23:0] hphone_l, hphone_r;
+    (* mark_debug = "true" *) logic        hphone_valid;
+    (* mark_debug = "true" *) logic        new_sample;
     logic        sample_clk_48k;
     logic [23:0] line_in_r, line_in_l;
 
@@ -64,36 +69,21 @@ module gba_audio_top (
     logic [23:0] channel_4;
 
     //mixed channel
-    logic [7:0] NR50, NR51,  NR52;
+    (* mark_debug = "true" *) logic [7:0] NR50, NR51,  NR52;
     logic [23:0] ch4_mixed_l;
     logic [23:0] ch4_mixed_r;
-    logic pause_c1;
-    logic pause_c2;
-    logic pause_c3;
-    logic pause_c4;
     logic reset_c1;
     logic reset_c2;
     logic reset_c3;
     logic reset_c4;
 
-     //direct sound
-    logic [15:0] FIFO_A_L;
-    logic [15:0] FIFO_A_H;
-    logic [15:0] FIFO_B_L;
-    logic [15:0] FIFO_B_H;
-    logic [15:0] TM0_CNT_L;
-    logic [15:0] TM1_CNT_L;
-
     //final mixer
-    logic [23:0] direct_A;
-    logic [23:0] direct_B;
+    logic [23:0] direct_A, direct_B;
     logic [15:0] SOUND_CNT_H;
     logic timer_numA;
     logic timer_numB;
-    logic reset_directA;
-    logic reset_directB;
-    logic [23:0] output_wave_r;
-    logic [23:0] output_wave_l;
+    (* mark_debug = "true" *) logic [23:0] output_wave_r;
+    (* mark_debug = "true" *) logic [23:0] output_wave_l;
 
     assign NR10 = IO_reg_datas[`SOUND1CNT_L_IDX][7:0];
     assign NR11 = IO_reg_datas[`SOUND1CNT_H_IDX][23:16];
@@ -130,10 +120,7 @@ module gba_audio_top (
     assign NR51 = IO_reg_datas[`SOUNDCNT_L_IDX][15:8];
     assign NR52 = IO_reg_datas[`SOUNDCNT_X_IDX][7:0];
 
-    assign FIFO_A_L = IO_reg_datas[`FIFO_A_L][15:0];
-    assign FIFO_A_H = IO_reg_datas[`FIFO_A_H][31:16];
-    assign FIFO_B_L = IO_reg_datas[`FIFO_B_L][15:0];
-    assign FIFO_B_H = IO_reg_datas[`FIFO_B_H][31:16];
+    assign SOUND_CNT_H = IO_reg_datas[`SOUNDCNT_H_IDX][31:16];
 
     audio_top top(
     .clk_100(clk_100_buffered),
@@ -192,7 +179,7 @@ module gba_audio_top (
     square1 sq1(
         .system_clock(clk_100),
         .clock_256(clk_256_output),
-        .reset(reset || reset_c1),
+        .reset(reset || ~NR52[7]),
         .NR10, .NR11, .NR12, .NR13,
         .NR14, .output_wave(channel_1));
 
@@ -202,10 +189,6 @@ module gba_audio_top (
         .channel2(channel_2),
         .channel3(channel_3),
         .channel4(channel_4),
-        .pause_channel_1(pause_c1),
-        .pause_channel_2(pause_c2),
-        .pause_channel_3(pause_c3),
-        .pause_channel_4(pause_c4),
         .NR50, .NR51, .NR52,
         .output_wave_left(ch4_mixed_l),
         .output_wave_right(ch4_mixed_r)); //used to reset the system
@@ -214,31 +197,39 @@ module gba_audio_top (
 
 
     direct_sound dsA(
-        .clock(clk_100_output),
+        .clock(gba_clk),
         .reset(reset),
-        .FIFO_L(FIFO_A_L),
-        .FIFO_H(FIFO_A_H),
-        .TM0_CNT_L,
-        .TM1_CNT_L,
+        .FIFO_size(FIFO_size_A),
+        .FIFO_value(FIFO_val_A),
+        .FIFO_re(FIFO_re_A),
+        .FIFO_clr(FIFO_clr_A),
+        .TM0_CNT_L(internal_TM0CNT_L),
+        .TM1_CNT_L(internal_TM1CNT_L),
         .timer_num(timer_numA),
-        .sequencer_reset (reset_directA),
+        .sequencer_reset (dsASqRst),
         .waveout(direct_A),
+        .output_r(SOUND_CNT_H[8]),
+        .output_l(SOUND_CNT_H[9]),
         .sound_req(sound_req1));
 
     direct_sound dsB(
-        .clock(clk_100_output),
+        .clock(gba_clk),
         .reset(reset),
-        .FIFO_L(FIFO_B_L),
-        .FIFO_H(FIFO_B_H),
-        .TM0_CNT_L,
-        .TM1_CNT_L,
+        .FIFO_size(FIFO_size_B),
+        .FIFO_value(FIFO_val_B),
+        .FIFO_re(FIFO_re_B),
+        .FIFO_clr(FIFO_clr_B),
+        .TM0_CNT_L(internal_TM0CNT_L),
+        .TM1_CNT_L(internal_TM1CNT_L),
         .timer_num(timer_numB),
-        .sequencer_reset(reset_directB),
+        .sequencer_reset(dsBSqRst),
         .waveout(direct_B),
+        .output_r(SOUND_CNT_H[12]),
+        .output_l(SOUND_CNT_H[13]),
         .sound_req(sound_req2));
 
     ds_mixer dsm(
-        .clock(clk_100_output),
+        .clock(clk_100),
         .reset,
         .direct_A,
         .direct_B,
@@ -247,38 +238,46 @@ module gba_audio_top (
         .sound_cnt_h(SOUND_CNT_H),
         .timer_numA,
         .timer_numB,
-        .reset_directA,
-        .reset_directB,
         .output_wave_r,
         .output_wave_l);
 
     power p(
-        .clock(clk_100_output),
+        .clock(clk_100),
         .NR52,
-        .pause_channel1(pause_c1),
-        .pause_channel2(pause_c2),
-        .pause_channel3(pause_c3),
-        .pause_channel4(pause_c4),
         .reset_channel1(reset_c1),
         .reset_channel2(reset_c2),
         .reset_channel3(reset_c3),
         .reset_channel4(reset_c4));
 
-    always_ff @(posedge clk_100_output) begin
-        hphone_valid <= 0;
-        hphone_l <= 0;
-        hphone_r <= 0;
+    (* mark_debug = "true" *) logic [15:0] counter_100;
+    always_ff @(posedge clk_100, posedge reset) begin
+        if (reset || new_sample)
+            counter_100 <= 16'b0;
+        else
+            counter_100 <= counter_100 + 1;
+    end
+    
+    always_ff @(posedge clk_100, posedge reset) begin
+        if (reset) begin
+            hphone_valid <= 0;
+            hphone_l <= 0;
+            hphone_r <= 0;
+        end else begin
+            hphone_valid <= 0;
+            hphone_l <= 0;
+            hphone_r <= 0;
 
-        if (new_sample == 1) begin
-            hphone_valid <= 1'b1;
-            hphone_r <= {output_wave_r};
-            hphone_l <= {output_wave_l};
+            if (new_sample == 1) begin
+                hphone_valid <= 1'b1;
+                hphone_r <= {output_wave_r};
+                hphone_l <= {output_wave_l};
+            end
         end
     end
 
     BUFG BUFG_inst(
         .O (clk_100_buffered),
-        .I (clk_100_output)
+        .I (clk_100)
         );
 
 

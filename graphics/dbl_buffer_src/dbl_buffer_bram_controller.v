@@ -18,35 +18,35 @@ module double_buffer
     vga_addr,
     vga_color,
     wen,
-    
+
     buffer0_address,
     buffer0_din,
     buffer0_dout,
     buffer0_ce,
     buffer0_we,
-    
+
     buffer1_address,
     buffer1_din,
     buffer1_dout,
     buffer1_ce,
     buffer1_we
     );
-    
+
   input ap_clk;
   input ap_rst_n;
   input [16:0]graphics_addr;
   input [14:0]graphics_color;
-  (* mark_debug = "true" *) input toggle;
+  input toggle;
   input [16:0]vga_addr;
   output [14:0]vga_color;
   input [0:0]wen;
-  
+
   input [14:0] buffer0_dout;
   output [14:0] buffer0_din;
   output [16:0] buffer0_address;
   output buffer0_ce;
   output buffer0_we;
-  
+
   input [14:0] buffer1_dout;
   output [14:0] buffer1_din;
   output [16:0] buffer1_address;
@@ -97,7 +97,7 @@ module double_buffer
         .ena(buffer1_ce),
         .wea(buffer1_we));
   */
-  
+
   graphics_counter #(1) buffer_selecter
         (.q(c_counter_binary_0_Q), .d(1'b0), .clk(ap_clk_1), .enable(toggle_1), .clear(1'b0), .load(1'b0), .up(1'b1), .rst_b(ap_rst_n_1));
   /*

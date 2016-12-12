@@ -41,6 +41,7 @@ module mem_top (
     input  logic  [1:0] bus_size,
     output logic        bus_pause,
     input  logic        bus_write,
+    input  logic        dmaActive,
 
     // Signals for graphics Bus
     input  logic [31:0] gfx_vram_A_addr, gfx_vram_B_addr, gfx_vram_C_addr,
@@ -55,7 +56,18 @@ module mem_top (
 
     // Values for R/O registers
     input  logic [15:0] buttons, vcount, reg_IF,
-    output logic [15:0] int_acks
+    input  logic        vcount_match, vblank, hblank,
+    output logic [15:0] int_acks,
+    input  logic [15:0] internal_TM0CNT_L, internal_TM1CNT_L, internal_TM2CNT_L,
+    input  logic [15:0] internal_TM3CNT_L,
+    output logic [15:0] TM0CNT_L, TM1CNT_L, TM2CNT_L, TM3CNT_L,
+    output logic        dsASqRst, dsBSqRst,
+
+    // Value for DMA Sound FIFO
+    input  logic        FIFO_re_A, FIFO_re_B,
+    output logic [31:0] FIFO_val_A, FIFO_val_B,
+    output logic [3:0]  FIFO_size_A, FIFO_size_B,
+    input  logic        FIFO_clr_A, FIFO_clr_B
     );
 
     /* Single cycle latency for writes */
@@ -63,6 +75,23 @@ module mem_top (
     logic [31:0] bus_mem_addr;
     logic  [1:0] bus_size_lat1;
     logic        bus_write_lat1;
+
+    // DMA Bus interaction fixes (preempt cpu sync to inst. stream
+    logic posedge_dmaActive, negedge_dmaActive;
+    logic dmaActive_lat1;
+    logic [31:0] old_cpu_rdata; // RDATA when CPU was preempted
+    logic [31:0] bus_rdata_int; // Internal RDATA
+    mem_register #(1) dmaA (.clock, .reset, .en(1'b1), .clr(1'b0),
+                            .D(dmaActive), .Q(dmaActive_lat1));
+    assign posedge_dmaActive = ~dmaActive_lat1 & dmaActive;
+    assign negedge_dmaActive = dmaActive_lat1 & ~dmaActive;
+
+    mem_register #(32) rdata (.clock, .reset, .clr(1'b0),
+                              .en(posedge_dmaActive),
+                              .D(bus_rdata), .Q(old_cpu_rdata));
+
+    assign bus_rdata = (negedge_dmaActive) ? old_cpu_rdata : bus_rdata_int;
+
 
     // Could add more pauses for memory regions, this is needed
     // because of the CPU's write format
@@ -74,7 +103,7 @@ module mem_top (
     mem_register #(32) baddr (.clock, .reset, .en(1'b1), .clr(1'b0),
                           .D(bus_addr), .Q(bus_addr_lat1));
     mem_register #(1) bwrite (.clock, .reset, .en(1'b1), .clr(1'b0),
-                          .D(bus_write), .Q(bus_write_lat1));
+                          .D(bus_write & ~bus_pause), .Q(bus_write_lat1));
     mem_register #(2) bsize (.clock, .reset, .en(1'b1), .clr(1'b0),
                          .D(bus_size), .Q(bus_size_lat1));
     // Pauses due to writes, could be extended
@@ -87,13 +116,16 @@ module mem_top (
     logic [31:0] bus_pak_init_1_addr;
     logic        bus_pak_init_1_read;
 
+    logic [31:0] bus_game_addr, bus_game_rdata;
+    logic        bus_game_read;
+
     logic [31:0] bus_intern_rdata, bus_palette_rdata, bus_vram_rdata;
     logic [31:0] bus_oam_rdata;
     logic  [3:0] bus_we;
 
     logic [3:0]  IO_reg_we [`NUM_IO_REGS-1:0];
     logic [`NUM_IO_REGS-1:0] IO_reg_en;
-    tri0 [31:0] bus_io_reg_rdata;
+    tri0  [31:0] bus_io_reg_rdata;
     logic        bus_io_reg_read;
 
     logic read_in_intern, read_in_palette, read_in_vram, read_in_oam;
@@ -101,18 +133,38 @@ module mem_top (
                          .write(bus_write_lat1), .byte_we(bus_we));
 
     assign bus_system_addr = bus_mem_addr;
+    assign bus_game_addr = bus_mem_addr;
 
     assign bus_system_read = bus_addr_lat1[31:24] == 8'h0;
+    assign bus_game_read = (bus_addr_lat1[31:24] == 8'h08) ||
+                           (bus_addr_lat1[31:24] == 8'h0A) ||
+                           (bus_addr_lat1[31:24] == 8'h0C);
 
     assign bus_io_reg_read = (bus_addr_lat1 - `IO_REG_RAM_START) <= `IO_REG_RAM_SIZE;
 
     assign bus_pak_init_1_read = (bus_addr_lat1 - `PAK_INIT_1_START) <= `PAK_INIT_1_SIZE;
     assign bus_pak_init_1_addr = bus_addr_lat1 - `PAK_INIT_1_START;
 
+    logic FIFO_we_A, FIFO_we_B, full_A, full_B, empty_A, empty_B;
+
+    fifo #(32) dsA (.clk(clock), .rst(reset), .we(FIFO_we_A), .re(FIFO_re_A),
+                    .full(full_A), .empty(empty_A), .data_in(bus_wdata),
+                    .data_out(FIFO_val_A), .size(FIFO_size_A),
+                    .clr(FIFO_clr_A));
+
+    fifo #(32) dsB (.clk(clock), .rst(reset), .we(FIFO_we_B), .re(FIFO_re_B),
+                    .full(full_B), .empty(empty_B), .data_in(bus_wdata),
+                    .data_out(FIFO_val_B), .size(FIFO_size_B),
+                    .clr(FIFO_clr_B));
+
+
     // Data width set to 32bits, so addresses are aligned
     system_rom sys   (.clka(clock), .rsta(reset),
                       .addra(bus_system_addr[13:2]),
                       .douta(bus_system_rdata));
+
+    game_rom game (.clka(clock), .rsta(reset), .addra(bus_game_addr[14:2]),
+                   .douta(bus_game_rdata));
 
     intern_mem intern (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
                        .bus_we, .bus_write_lat1, .bus_rdata(bus_intern_rdata),
@@ -136,12 +188,14 @@ module mem_top (
     oam_mem oam (.clock, .reset, .bus_addr, .bus_addr_lat1, .bus_wdata,
                  .bus_we, .bus_write_lat1, .gfx_oam_addr, .gfx_oam_data,
                  .bus_rdata(bus_oam_rdata), .read_in_oam);
-
+    
+    logic [15:0] vcount_reg_low_rdata;
     generate
         for (genvar i = 0; i < `NUM_IO_REGS; i++) begin
             localparam [31:0] reg_addr = `IO_REG_RAM_START + (i*4);
             assign IO_reg_en[i] = bus_addr_lat1[31:2] == reg_addr[31:2];
             assign IO_reg_we[i] = (IO_reg_en[i]) ? bus_we : 4'd0;
+            assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
             if (i == `KEYINPUT_IDX) begin // Read-only for lowest 16 bits
                 IO_register16 key_high (.clock, .reset, .wdata(bus_wdata[31:16]),
                                         .we(IO_reg_we[i][3:2]), .clear(1'b0),
@@ -151,7 +205,8 @@ module mem_top (
                 IO_register16 vcount_low
                               (.clock, .reset, .wdata(bus_wdata[15:0]),
                                .we(IO_reg_we[i][1:0]), .clear(1'b0),
-                               .rdata(IO_reg_datas[i][15:0]));
+                               .rdata(vcount_reg_low_rdata));
+                assign IO_reg_datas[i][15:0]  = {vcount_reg_low_rdata[15:3], vcount_match, hblank, vblank};
                 assign IO_reg_datas[i][31:16] = vcount;
             end else if (i == `IF_IDX) begin
                 // Reads to 0x202 read re_IF
@@ -162,8 +217,59 @@ module mem_top (
                                     .we(IO_reg_we[i][3:2]), .clear(1'b1),
                                     .rdata(int_acks));
                 assign IO_reg_datas[i][31:16] = reg_IF;
+            end else if (i == `TM0CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T0_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM0CNT_L));
+                IO_register16 T0_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM0CNT_L;
+            end else if (i == `TM1CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T1_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM1CNT_L));
+                IO_register16 T1_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM1CNT_L;
+            end else if (i == `TM2CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T2_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM2CNT_L));
+                IO_register16 T2_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM2CNT_L;
+            end else if (i == `TM3CNT_L_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 T3_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(TM3CNT_L));
+                IO_register16 T3_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign IO_reg_datas[i][15:0] = internal_TM3CNT_L;
+            end else if (i == `SOUNDCNT_H_IDX) begin
+                // Reads to low read current counter value
+                IO_register16 SCH_L (.clock, .reset, .wdata(bus_wdata[15:0]),
+                                  .we(IO_reg_we[i][1:0]), .clear(1'b0),
+                                  .rdata(IO_reg_datas[i][15:0]));
+                IO_register16 SCH_H (.clock, .reset, .wdata(bus_wdata[31:16]),
+                                    .we(IO_reg_we[i][3:2]), .clear(1'b0),
+                                    .rdata(IO_reg_datas[i][31:16]));
+                assign dsASqRst = IO_reg_we[i][3] & bus_wdata[27];
+                assign dsBSqRst = IO_reg_we[i][3] & bus_wdata[31];
+            end else if (i == `FIFO_A_L) begin
+                assign IO_reg_datas[i] = FIFO_val_A;
+                assign FIFO_we_A = IO_reg_we[i][0];
+            end else if (i == `FIFO_B_L) begin
+                assign IO_reg_datas[i] = FIFO_val_B;
+                assign FIFO_we_B = IO_reg_we[i][0];
             end else begin
-                assign bus_io_reg_rdata = (IO_reg_en[i]) ? IO_reg_datas[i] : 32'bz;
                 IO_register32 IO (.clock, .reset, .wdata(bus_wdata),
                                   .we(IO_reg_we[i]), .rdata(IO_reg_datas[i]));
             end
@@ -172,22 +278,24 @@ module mem_top (
 
     always_comb begin
         if (bus_system_read)
-            bus_rdata = bus_system_rdata;
+            bus_rdata_int = bus_system_rdata;
         else if (read_in_intern)
-            bus_rdata = bus_intern_rdata;
+            bus_rdata_int = bus_intern_rdata;
         else if (read_in_vram)
-            bus_rdata = bus_vram_rdata;
+            bus_rdata_int = bus_vram_rdata;
         else if (read_in_palette)
-            bus_rdata = bus_palette_rdata;
+            bus_rdata_int = bus_palette_rdata;
         else if (read_in_oam)
-            bus_rdata = bus_oam_rdata;
+            bus_rdata_int = bus_oam_rdata;
         else if (bus_io_reg_read)
-            bus_rdata = bus_io_reg_rdata;
+            bus_rdata_int = bus_io_reg_rdata;
         else if (bus_pak_init_1_read)
-            bus_rdata = {12'hFFF, bus_pak_init_1_addr[4:2], 1'b1,
+            bus_rdata_int = {12'hFFF, bus_pak_init_1_addr[4:2], 1'b1,
                          12'hFFF, bus_pak_init_1_addr[4:2], 1'b0};
+        else if (bus_game_read)
+            bus_rdata_int = bus_game_rdata;
         else
-            bus_rdata = 32'hz;
+            bus_rdata_int = 32'h0;
     end
 
 endmodule: mem_top
@@ -396,7 +504,7 @@ module vram_mem (
                       .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb(gfx_vram_B_addr[13:2]),
                       .doutb(gfx_vram_B_data), .dinb(32'b0));
-
+    
     vram_C vram_C    (.clka(clock), .rsta(reset),
                       .wea(vram_C_we), .addra(vram_C_addr[13:2]),
                       .douta(vram_C_rdata), .dina(bus_wdata),
@@ -404,7 +512,7 @@ module vram_mem (
                       .clkb(clock), .rstb(reset),
                       .web(4'd0), .addrb(gfx_vram_C_addr[13:2]),
                       .doutb(gfx_vram_C_data), .dinb(32'b0));
-
+    
 endmodule: vram_mem
 
 /* Setup byte write enables for memory (assumes that CPU deals with
@@ -493,3 +601,68 @@ module IO_register16
         else rdata <= data_next;
     end
 endmodule: IO_register16
+
+/*  Create a fifo (First In First Out) with depth 4 using the given interface
+ *  and constraints.
+ *  -The fifo is initally empty.
+ *  -Reads are combinational, so "data_out" is valid unless "empty" is asserted.
+ *   Removal from the queue is processed on the clock edge.
+ *  -Writes are processed on the clock edge.
+ *  -If the "we" happens to be asserted while the fifo is full, do NOT update
+ *   the fifo.
+ *  -Similarly, if the "re" is asserted while the fifo is empty, do NOT update
+ *   the fifo.
+ */
+module fifo(clk, rst, data_in, we, re, full, empty, data_out, size, clr);
+  parameter WIDTH = 32;
+  input logic clk, rst;
+  input logic [WIDTH-1:0] data_in;
+  input logic we; //write enable
+  input logic re; //read enable
+  input logic clr;
+  output logic full;
+  output logic empty;
+  output logic [WIDTH-1:0] data_out;
+  output logic [3:0] size;
+
+  logic [WIDTH-1:0] Q [7:0]; // memory array of 7 bytes
+  logic [31:0] elem0;
+  logic [31:0] elem1, elem2, elem3, elem4, elem5, elem6, elem7;
+  assign elem0 = Q[0];
+  assign elem1 = Q[1];
+  assign elem2 = Q[2];
+  assign elem3 = Q[3];
+  assign elem4 = Q[4];
+  assign elem5 = Q[5];
+  assign elem6 = Q[6];
+  assign elem7 = Q[7];
+
+  logic [2:0] getPtr, putPtr;
+  assign empty = (size == 4'd0);
+  assign full = (size == 4'd8);
+  assign data_out = Q[getPtr];
+  always_ff @(posedge clk, posedge rst) begin
+      if (rst || clr) begin
+          getPtr <= 0;
+          putPtr <= 0;
+          size <= 0;
+      end else begin
+          /* re && we adds and removes (if we can) */
+          if (we && (!full) && re && (!empty)) begin
+              Q[putPtr] <= data_in;
+              putPtr <= putPtr + 1;
+              getPtr <= getPtr + 1;
+          end
+          else if (we && (!full)) begin // put stuff in queue
+              Q[putPtr] <= data_in;
+              putPtr <= putPtr + 1;
+              size <= size + 1;
+          end
+          else if (re && (!empty)) begin // read stuff out of the queue
+              getPtr <= getPtr + 1;
+              size <= size - 1;
+          end
+      end
+  end
+
+endmodule: fifo

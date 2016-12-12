@@ -23,8 +23,8 @@ module vram_controller
     graphics_VRAM_A_addr = bg_addr[15:0];
     graphics_VRAM_C_addr = obj_addr[13:0];
     graphics_VRAM_B_addr = bgmode > 2 ? bg_addr[13:0] : obj_addr[13:0];
-    graphics_VRAM_A_addr2 = bg_screen_addr;
-    
+    graphics_VRAM_A_addr2 = bg_screen_addr;    
+
     if(bgmode > 2) begin
       obj_data = saved_obj_addr[1] ? graphics_VRAM_C_data[31:16] : graphics_VRAM_C_data[15:0];
       if(saved_bg_addr[16]) begin
@@ -35,7 +35,13 @@ module vram_controller
       end
     end
     else begin
-      bg_data = saved_bg_addr[1] ? graphics_VRAM_A_data[31:16] : graphics_VRAM_A_data[15:0];
+      //bg_data = saved_bg_addr[1] ? graphics_VRAM_A_data[31:16] : graphics_VRAM_A_data[15:0];
+      case(saved_bg_addr[1:0])
+        2'b00: bg_data = {graphics_VRAM_A_data[15:0]};
+        2'b01: bg_data = {graphics_VRAM_A_data[15:8], graphics_VRAM_A_data[15:8]};
+        2'b10: bg_data = {graphics_VRAM_A_data[31:16]};
+        2'b11: bg_data = {graphics_VRAM_A_data[31:24], graphics_VRAM_A_data[31:24]};
+      endcase      
       if(saved_obj_addr[14]) begin
         obj_data = saved_obj_addr[1] ? graphics_VRAM_C_data[31:16] : graphics_VRAM_C_data[15:0];
       end

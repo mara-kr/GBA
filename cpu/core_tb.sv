@@ -19,13 +19,14 @@ module core_tb;
     wire  [31:0] rdata;
     logic [4:0] mode;
     logic [1:0] size;
-    logic abort, write;
+    logic abort, write, preemptable;
 
 
     ARM7TDMIS_Top DUT (.CLK(clk), .PAUSE(pause), .NRESET(rst_n),
                        .NIRQ(irq_n), .ADDR(addr), .WDATA(wdata),
                        .RDATA(rdata), .SIZE(size), .ABORT(abort),
-                       .WRITE(write), .MODE(mode), .NFIQ(1'b1));
+                       .WRITE(write), .MODE(mode), .NFIQ(1'b1),
+                       .PREEMPTABLE(preemptable));
 
     bus_monitor #("GBA_CPU_BUS_LOG") busMon (.clk, .rst_n, .pause, .addr,
                                              .wdata, .rdata, .size, .abort,
@@ -50,9 +51,7 @@ module core_tb;
     logic inst_ex;
     /* So the simulation stops */
     initial begin
-        #20001 irq_n <= 1'b0;
-        #14 irq_n <= 1'b1;
-        #10000 $finish;
+        #100000 $finish;
     end
 
     assign inst_pc = (DUT.ThDC_ThumbDecoderEn) ?
